@@ -38,30 +38,30 @@ class StockReport(models.TransientModel):
     _name = "wizard.stock.history"
     _description = "Current Stock History"
     
-    start_date = fields.Date(string='Start Date',required=True)
-    end_date = fields.Date(string='End Date',required=True)
+    start_date = fields.Date(string='Start Date')
+    end_date = fields.Date(string='End Date')
 
-    warehouse = fields.Many2many('stock.warehouse', string='Warehouse', required=True)
+    warehouse = fields.Many2many('stock.warehouse', string='Warehouse')
+    products = fields.Many2many('product.template', string='Product Lists')
     category = fields.Many2many('product.category', 'categ_wiz_rel', 'categ', 'wiz', string='Warehouse')
 #     user = fields.Many2many('res.partner', string='Customer', required=True)
-    user = fields.Many2many('res.partner', string='Customer',required=True)
+    user = fields.Many2many('res.partner', string='Customer')
 #     user = fields.Many2many('res.partner', string='User',required=True)
 
     
     def print_report_xml(self):
-        obj = self.env['res.partner'].search([('id', 'in', self.user.ids)])
-        l1 = []
-        l2 = []
-        for j in obj:
-            l1.append(j.name)
-            l2.append(j.id)
+#         product_ids = []
+#         if self.products.ids:
+#             obj = self.env['product.template'].search([('id', 'in', self.products.ids)])
+#             for temp in obj:
+#                 product_ids.append(temp.id)
         data = {
-            'ids': self.ids,
-            'start_date': self.start_date, 
-            'end_date': self.end_date,
-            'user_id': l1,
-            'user_name': l2,
-            'warehouse': self.warehouse.ids,
-            'category': self.category.ids
+            'product_ids': self.products.ids,
+#             'start_date': self.start_date, 
+#             'end_date': self.end_date,
+#             'user_id': l1,
+#             'user_name': l2,
+#             'warehouse': self.warehouse.ids,
+#             'category': self.category.ids
         }
         return self.env.ref('export_stock.sale_xml_report').report_action(self, data=data)
