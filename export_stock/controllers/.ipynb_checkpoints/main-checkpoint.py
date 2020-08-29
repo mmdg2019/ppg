@@ -27,33 +27,33 @@ from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields
 
-class XLSXReportController(http.Controller):
+# class XLSXReportController(http.Controller):
 
-    @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'], csrf=False)
-    def get_report_xlsx(self, model, options, output_format, token, report_name, **kw):
-        uid = request.session.uid
-        report_obj = request.env[model].with_user(uid)
-        options = json.loads(options)
-        try:
-            if output_format == 'xlsx':
-                response = request.make_response(
-                    None,
-                    headers=[
-                        ('Content-Type', 'application/vnd.ms-excel'),
-                        ('Content-Disposition', content_disposition(report_name + '.xlsx'))
-                    ]
-                )
-                report_obj.get_xlsx_report(options, response)
-            response.set_cookie('fileToken', token)
-            return response
-        except Exception as e:
-            se = _serialize_exception(e)
-            error = {
-                'code': 200,
-                'message': 'Odoo Server Error',
-                'data': se
-            }
-            return request.make_response(html_escape(json.dumps(error)))
+#     @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'], csrf=False)
+#     def get_report_xlsx(self, model, options, output_format, token, report_name, **kw):
+#         uid = request.session.uid
+#         report_obj = request.env[model].with_user(uid)
+#         options = json.loads(options)
+#         try:
+#             if output_format == 'xlsx':
+#                 response = request.make_response(
+#                     None,
+#                     headers=[
+#                         ('Content-Type', 'application/vnd.ms-excel'),
+#                         ('Content-Disposition', content_disposition(report_name + '.xlsx'))
+#                     ]
+#                 )
+#                 report_obj.get_xlsx_report(options, response)
+#             response.set_cookie('fileToken', token)
+#             return response
+#         except Exception as e:
+#             se = _serialize_exception(e)
+#             error = {
+#                 'code': 200,
+#                 'message': 'Odoo Server Error',
+#                 'data': se
+#             }
+#             return request.make_response(html_escape(json.dumps(error)))
         
         
 
@@ -63,44 +63,46 @@ class VendorBillXmlReport(models.TransientModel):
     
     @api.model
     def _get_report_values(self, docids, data=None):
-        start_date = data['start_date']
-        end_date = data['end_date']
+        docs = None
+#         start_date = data['start_date']
+#         end_date = data['end_date']
 #         user = data['user']
-        user = data['warehouse']
+#         user = data['warehouse']
 #         lines = self.browse(data['ids'])
 #         get_warehouse = self.get_warehouse(lines)
 #         d = lines.category
 #         wh = lines.warehouse.mapped('id')
-        obj = self.env['stock.warehouse'].search([('id', 'in', data['warehouse'])])
-        l1 = []
-        l2 = []
-        for j in obj:
-            l1.append(j.name)
-            l2.append(j.id)
+#         obj = self.env['stock.warehouse'].search([('id', 'in', data['warehouse'])])
+#         l1 = []
+#         l2 = []
+#         for j in obj:
+#             l1.append(j.name)
+#             l2.append(j.id)
         
 #         test = None
 #         test = self.browse(data['user'])
 #         lines = self.browse(data['warehouse'])).export_stock.report_sale_docs()
-        test = data['user_id']
-        
-        t_list = l1
-#         d = lines.category
-#         test = self.env['res.partner'].browse(categ_id).name
-        cr = self._cr
-        query = """select so.name as sale_sequence,so.amount_total as total_amount,rp.name as sales_person_name
-from sale_order so
-join res_users ru
-on ru.id = so.user_id
-join res_partner rp
-on rp.id = ru.partner_id
-where so.date_order >= '%s' and so.date_order <= '%s'""" % (start_date, end_date)
-        cr.execute(query)
-        dat = cr.dictfetchall()
+#         test = data['user_id']
+#         t_list = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',start_date),('invoice_date', '<=',end_date)])
+        if data['product_ids']:
+            docs = self.env['product.template'].search([('id', 'in', data['product_ids'])])
+        else:
+            docs = self.env['product.template'].search([])
+#         cr = self._cr
+#         query = """select so.name as sale_sequence,so.amount_total as total_amount,rp.name as sales_person_name
+# from sale_order so
+# join res_users ru
+# on ru.id = so.user_id
+# join res_partner rp
+# on rp.id = ru.partner_id
+# where so.date_order >= '%s' and so.date_order <= '%s'""" % (start_date, end_date)
+#         cr.execute(query)
+#         dat = cr.dictfetchall()
         return {
-           'start_date': start_date,
-           'end_date': end_date,
-           'dat': dat,
-            'test':test,
-            't_list':t_list
+#            'start_date': start_date,
+#            'end_date': end_date,
+           'docs': docs,
+#             'test':test,
+#             't_list':t_list
        }
     

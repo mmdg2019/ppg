@@ -52,44 +52,96 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Stock Transfer Information (Posted) by Date</span>
+                                        <span>Sales Report by Product Code (After Approval)</span>
                                     </font>
                                 </b>
                             </div>
                         </div>
                         <br/>
                         <br/>
-                        <div class="row" style="text-align:center; font-size: 20px;">
-                            <div class="col">
-<!--                                 <t t-foreach="docs.sorted(key=lambda x:x.create_date,reverse=False)" t-as="date">
-                                    <t t-if="date_first"> -->
-                                        <span>
-                                            <b>From : </b><t t-esc="start_date"/>
-                                        </span>
-<!--                                     </t> -->
-<!--                                     <t t-if="date_last"> -->
-                                        <span>
-                                            <b>To : </b><t t-esc="end_date"/>
-                                        </span>
-                                <span>
-<!--                                             <b></b><t t-foreach="user" t-as="a"> -->
-                                    <t t-esc="test" />
-                                     <b></b><t t-foreach="t_list" t-as="a">
-                                    <t t-esc="a" />
-                                    </t>
-                                        </span>
-<!--                                     </t>
-                                </t> -->
-                            </div>
-                        </div>
                         <br/>
                         <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
-                            <t t-set="ttl" t-value="0"/>
-                           <t t-foreach="dat" t-as="sales">
-               <t t-esc="sales['sale_sequence']"/>
-               <t t-esc="sales['total_amount']"/>
-               <t t-esc="sales['sales_person_name']"/>
-           </t>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Invoice Date</span>
+                                    </th>
+                                    <th>
+                                        <span>Code No.</span>
+                                    </th>
+                                    <th>
+                                        <span>Name</span>
+                                    </th>
+                                    <th>
+                                        <span>Sales Price</span>
+                                    </th>
+                                    <th>
+                                        <span>UM</span>
+                                    </th>
+                                    <th>
+                                        <span>Quantity</span>
+                                    </th>
+                                    <th>
+                                        <span>Amount</span>
+                                    </th>                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="sub" t-value="0"/>
+                                <t t-set="sub_name" t-value=""/>
+                                <t t-set="ttl_amount" t-value="0"/>
+                                <t t-foreach="docs" t-as="table_line">
+                                <t t-set="ttl_amount" t-value="ttl_amount + (table_line.sales_count * table_line.list_price)"/>                               
+                                    <tr>
+                                        <td>
+                                            <span t-esc="context_timestamp(table_line.create_date).strftime('%m/%d/%Y')"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="table_line.default_code"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="table_line.name"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="table_line.list_price" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="table_line.uom_name"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-field="table_line.sales_count"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="table_line.sales_count * table_line.list_price" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            
+                            <tfooter>
+                                <t t-set="total_currency_id" t-value="docs.currency_id"/>
+                                <t t-set="ttl" t-value="0"/>
+                                <tr>
+                                    <th>
+                                        <span></span>
+                                    </th>
+                                    <th>
+                                        <span></span>
+                                    </th>
+                                    <th>
+                                        <span></span>
+                                    </th>
+                                    <th>
+                                        <span></span>
+                                    </th>
+                                    <th colspan="2">
+                                        <span>Grand Total</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span><t t-esc="ttl_amount" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
+                                    </th>
+                                </tr>
+                            </tfooter>
                         </table>
                     </div>
                     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
