@@ -50,18 +50,26 @@ class StockReport(models.TransientModel):
 
     
     def print_report_xml(self):
-#         product_ids = []
-#         if self.products.ids:
-#             obj = self.env['product.template'].search([('id', 'in', self.products.ids)])
-#             for temp in obj:
-#                 product_ids.append(temp.id)
+        product_ids = []
+        if self.products.ids:
+            obj = self.env['product.template'].search([('id', 'in', self.products.ids)])
+            for temp in obj:
+                product_ids.append(temp.display_name)
         data = {
-            'product_ids': self.products.ids,
-#             'start_date': self.start_date, 
-#             'end_date': self.end_date,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'product_ids': product_ids,
+
 #             'user_id': l1,
 #             'user_name': l2,
 #             'warehouse': self.warehouse.ids,
 #             'category': self.category.ids
         }
         return self.env.ref('export_stock.sale_xml_report').report_action(self, data=data)
+    
+    def print_sales_report_by_client(self):
+        data = {
+            'user_ids': self.user.ids,
+        }
+        return self.env.ref('export_stock.sales_report_by_client').report_action(self, data=data)
