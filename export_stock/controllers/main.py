@@ -64,8 +64,8 @@ class VendorBillXmlReport(models.TransientModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = None
-#         start_date = data['start_date']
-#         end_date = data['end_date']
+#         start_date = fields.Date.from_string(data['start_date'])
+#         end_date = fields.Date.from_string(data['end_date'])
 #         user = data['user']
 #         user = data['warehouse']
 #         lines = self.browse(data['ids'])
@@ -84,10 +84,10 @@ class VendorBillXmlReport(models.TransientModel):
 #         lines = self.browse(data['warehouse'])).export_stock.report_sale_docs()
 #         test = data['user_id']
 #         t_list = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',start_date),('invoice_date', '<=',end_date)])
-        if data['product_ids']:
-            docs = self.env['product.template'].search([('id', 'in', data['product_ids'])])
+        if data['user_ids']:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         else:
-            docs = self.env['product.template'].search([])
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
 #         cr = self._cr
 #         query = """select so.name as sale_sequence,so.amount_total as total_amount,rp.name as sales_person_name
 # from sale_order so
@@ -98,11 +98,28 @@ class VendorBillXmlReport(models.TransientModel):
 # where so.date_order >= '%s' and so.date_order <= '%s'""" % (start_date, end_date)
 #         cr.execute(query)
 #         dat = cr.dictfetchall()
+
         return {
 #            'start_date': start_date,
 #            'end_date': end_date,
-           'docs': docs,
-#             'test':test,
+            'docs': docs,
+            'start_date': data['start_date'], 
+            'end_date': data['end_date'],
+            'product_ids':data['product_ids']
 #             't_list':t_list
+       }
+
+class EditSalesReportbyClientReport(models.TransientModel):
+    _name = "report.export_stock.report_sales_report_by_client"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['user_ids']:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids'])])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice')])
+        return {
+            'docs': docs
        }
     
