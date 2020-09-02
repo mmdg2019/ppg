@@ -26,6 +26,8 @@ from odoo.http import content_disposition, request
 from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 
 # class XLSXReportController(http.Controller):
 
@@ -173,8 +175,8 @@ class edit_report_sales_analysis_report_by_cust(models.TransientModel):
        }
 
 
-class edit_report_stock_analysis_by_date_and_cus(models.AbstractModel):
-    _name="report.popular_reports.report_stock_analysis_by_date_and_cus"
+class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
+    _name="report.popular_reports.report_stock_analysis_by_date_and_cust"
     _description="Report Editing"
 
     @api.model
@@ -182,6 +184,7 @@ class edit_report_stock_analysis_by_date_and_cus(models.AbstractModel):
         docs = None
         temp = None
         c = None
+        pids = []
         if data['user_ids']:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         else:
@@ -194,17 +197,17 @@ class edit_report_stock_analysis_by_date_and_cus(models.AbstractModel):
             temp_dtl = []
             tmp = []
             temp = []
-            for doc in docs.sorted(key=lambda x:x.create_date,reverse=False):
-                if doc.state=='posted' and name == doc.partner_id.display_name:
-                    for table_line in doc.invoice_line_ids:
-                        if table_line.name != "Special Discount" and table_line.name != "Other Charges":
-                            tmp.append(table_line.product_id.id)               
-                            temp_dtl.append({'id':table_line.product_id.id,
-                                             'name':table_line.product_id.display_name,
-                                             'qty':table_line.quantity,
-                                             'date':doc.invoice_date.strftime('%m/%d/%Y')})
-            tmp = sorted(list(set(tmp)))            
             for date in dates:
+                for doc in docs.sorted(key=lambda x:x.create_date,reverse=False):
+                    if doc.state=='posted' and name == doc.partner_id.display_name and date == doc.invoice_date.strftime('%m/%d/%Y'):
+                        for table_line in doc.invoice_line_ids:
+                            if table_line.name != "Special Discount" and table_line.name != "Other Charges":
+                                tmp.append(table_line.product_id.id)               
+                                temp_dtl.append({'id':table_line.product_id.id,
+                                                 'name':table_line.product_id.display_name,
+                                                 'qty':table_line.quantity,
+                                                 'date':doc.invoice_date.strftime('%m/%d/%Y')})
+                tmp = sorted(list(set(tmp)))
                 for id in tmp:
                     sum_qty=0
                     i_name = None
@@ -212,7 +215,8 @@ class edit_report_stock_analysis_by_date_and_cus(models.AbstractModel):
                         if line['date'] == date and line['id'] == id:
                             i_name = line['name']
                             sum_qty += line['qty']
-                            temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
+                    if i_name != None:
+                        temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
             pids.append({'c_name':name,'items':temp})
         return {
             'docs':docs,
@@ -223,33 +227,36 @@ class edit_report_stock_analysis_by_date_and_cus(models.AbstractModel):
             'end_date': data['end_date']
             }
     
-class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
-    _name="report.popular_reports.report_stock_analysis_by_mon_and_cus"
+class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
+    _name="report.popular_reports.report_stock_analysis_by_month_and_cust"
     _description="Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
-        docs=self.env['account.move'].browse(docids)
-        report_obj = self.env['ir.actions.report']
-        report = report_obj._get_report_from_name('popular_reports.report_stock_analysis_by_mon_and_cus')
+        docs = None
+        if data['user_ids']:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         pids=[]
         temp = []
-        dates = [doc.invoice_date.strftime('%B/%Y') for doc in docs if doc.state=='posted' ]
+        tmp = []
+        dates = [doc.invoice_date.strftime('%b/%Y') for doc in docs if doc.state=='posted']
         dates = list(set(dates))
-        dates.sort(key = lambda date: datetime.strptime(date, '%B/%Y')) 
+        dates.sort(key = lambda date: datetime.strptime(date, '%b/%Y')) 
         for date in dates:
             temp_dtl = []
             tmp = []
             temp = []
             for doc in docs.sorted(key=lambda x:x.create_date,reverse=False):
-                if doc.state=='posted' and date == doc.invoice_date.strftime('%B/%Y'):
+                if doc.state=='posted' and date == doc.invoice_date.strftime('%b/%Y'):
                     for table_line in doc.invoice_line_ids:
                         if table_line.name != "Special Discount" and table_line.name != "Other Charges":
                             tmp.append(table_line.product_id.id)               
                             temp_dtl.append({'id':table_line.product_id.id,
                                              'name':table_line.product_id.display_name,
                                              'qty':table_line.quantity,
-                                             'date':doc.invoice_date.strftime('%B/%Y')})               
+                                             'date':doc.invoice_date.strftime('%b/%Y')})               
             tmp = sorted(list(set(tmp)))
             for id in tmp:
                 sum_qty=0
@@ -261,40 +268,37 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
                 temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
             pids.append({'c_name':date,'items':temp})
         return {
-            'doc_model':'stock.picking',
-            'data':data,
-            'docs':docs,
             'lst':pids,
-            'temp':tmp,
+            's_month':data['s_month'],
+            's_year': data['s_year']
             }
     
-class edit_report_monthly_stock_analysis(models.AbstractModel):
+class edit_report_monthly_stock_analysis(models.TransientModel):
     _name="report.popular_reports.report_monthly_stock_analysis_report"
     _description="Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
-        docs=self.env['account.move'].browse(docids)
-        report_obj = self.env['ir.actions.report']
-        report = report_obj._get_report_from_name('popular_reports.report_monthly_stock_analysis_report')
+        docs = None
+        docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         pids=[]
         temp = []
-        dates = [doc.invoice_date.strftime('%B/%Y') for doc in docs if doc.state=='posted' ]
+        dates = [doc.invoice_date.strftime('%b/%Y') for doc in docs if doc.state=='posted' ]
         dates = list(set(dates))
-        dates.sort(key = lambda date: datetime.strptime(date, '%B/%Y')) 
+        dates.sort(key = lambda date: datetime.strptime(date, '%b/%Y')) 
         for date in dates:
             temp_dtl = []
             tmp = []
             temp = []
             for doc in docs.sorted(key=lambda x:x.create_date,reverse=False):
-                if doc.state=='posted' and date == doc.invoice_date.strftime('%B/%Y'):
+                if doc.state=='posted' and date == doc.invoice_date.strftime('%b/%Y'):
                     for table_line in doc.invoice_line_ids:
                         if table_line.name != "Special Discount" and table_line.name != "Other Charges":
                             tmp.append(table_line.product_id.id)               
                             temp_dtl.append({'id':table_line.product_id.id,
                                              'name':table_line.product_id.display_name,
                                              'qty':table_line.quantity,
-                                             'date':doc.invoice_date.strftime('%B/%Y')})               
+                                             'date':doc.invoice_date.strftime('%b/%Y')})               
             tmp = sorted(list(set(tmp)))
             for id in tmp:
                 sum_qty=0
@@ -306,29 +310,22 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
                 temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
             pids.append({'c_name':date,'items':temp})
         return {
-            'doc_model':'stock.picking',
-            'data':data,
-            'docs':docs,
-            'lst':pids,
-            'temp':tmp,
+            'lst':pids
             }
     
-class edit_report_stock_analysis_by_date(models.AbstractModel):
+class edit_report_stock_analysis_by_date(models.TransientModel):
     _name="report.popular_reports.report_stock_analysis_by_date"
     _description="Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
-        docs=self.env['account.move'].browse(docids)
-        report_obj = self.env['ir.actions.report']
-        
-        report = report_obj._get_report_from_name('popular_reports.report_stock_analysis_by_date')
+        docs=self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         pids=[]
         temp = []
         tmp = []
-        dates = [doc.invoice_date.strftime('%d/%B/%Y') for doc in docs if doc.state=='posted' ]
+        dates = [doc.invoice_date.strftime('%m/%d/%Y') for doc in docs if doc.state=='posted' ]
         dates = list(set(dates))
-        dates.sort(key = lambda date: datetime.strptime(date, '%d/%B/%Y'))
+        dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
         items = []
         for doc in docs.sorted(key=lambda x:x.create_date,reverse=False):
             for table_line in doc.invoice_line_ids:
@@ -346,7 +343,7 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
             i_name = None
             for date in dates:
                 for doc in docs.sorted(key=lambda x:x.create_date,reverse=False):
-                    if doc.state=='posted' and date == doc.invoice_date.strftime('%d/%B/%Y'):
+                    if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
                         for table_line in doc.invoice_line_ids:
                             if table_line.name == item and table_line.name != "Special Discount" and table_line.name != "Other Charges":
                                 sum_qty+=table_line.quantity
@@ -357,10 +354,34 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
             if i_name != None:
                 pids.append({'c_name':item,'items':temp,'ttl_qty':sub_ttl_qty})
         return {
-            'doc_model':'stock.picking',
-            'data':data,
             'docs':docs,
             'lst':pids,
-            'temp':tmp,
             }
+    
+class edit_report_stock_transfer_info(models.TransientModel):
+    _name = "report.popular_reports.report_stock_transfer_info"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        docs = self.env['stock.picking'].search([('scheduled_date', '>=',data['start_date']),('scheduled_date', '<=',data['end_date'])])
+        return {
+            'docs': docs,
+            'start_date': data['start_date'], 
+            'end_date': data['end_date']
+       }
+    
+class edit_report_stock_valuation_info(models.TransientModel):
+    _name = "report.popular_reports.report_stock_valuation_info"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['product_ids']:
+            docs = self.env['product.template'].search([('id', 'in', data['product_ids'])])
+        else:
+            docs = self.env['product.template'].search([])
+        return {
+            'docs': docs
+       }
     

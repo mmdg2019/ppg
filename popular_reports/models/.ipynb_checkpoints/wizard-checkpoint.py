@@ -23,7 +23,6 @@ import time
 from datetime import date, datetime
 import pytz
 import json
-import datetime
 import io
 from odoo import api, fields, models, _
 from odoo.tools import date_utils
@@ -32,10 +31,15 @@ try:
 except ImportError:
     import xlsxwriter
 
+
+
 class StockReport(models.TransientModel):
     _name = "wizard.stock.history"
     _description = "Current Stock History"
-    
+    MONTH_LIST= [('1','January'), ('2', 'February'), ('3', 'March'), ('4', 'April'), ('5', 'May'), ('6', 'June'), ('7', 'July'), ('8', 'August'), ('9', 'September'), ('10', 'October'), ('11', 'November'),('12', 'December')]
+    YEAR_LIST = [(str(i),str(i)) for i in range(2000, 2101)]
+#     default=MONTH_LIST[int(datetime.datetime.now().strftime('%m'))-1]
+#     year = fields.Selection(compute ='_get_year')
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
 
@@ -45,8 +49,17 @@ class StockReport(models.TransientModel):
 #     user = fields.Many2many('res.partner', string='Customer', required=True)
     user = fields.Many2many('res.partner', string='Customer')
 #     user = fields.Many2many('res.partner', string='User',required=True)
-
+    s_month = fields.Selection(MONTH_LIST, string='Month')
+    s_year = fields.Selection(YEAR_LIST, string='Year')
+    e_month = fields.Selection(MONTH_LIST, string='Month')
+    e_year = fields.Selection(YEAR_LIST, string='Year')
+#     value = fields.Char(string='Value')
     
+#     @api.one
+#     @api.depends('year')
+#     def _get_value(self):
+#         return [('1','January'), ('2', 'February'), ('3', 'March'), ('4', 'April'), ('5', 'May'), ('6', 'June'), ('7', 'July'), ('8', 'August'), ('9', 'September'), ('10', 'October'), ('11', 'November'),('12', 'December')]
+        
     def print_report_sales_report_by_product_code(self):
         product_ids = []
         if self.products.ids:
@@ -106,8 +119,11 @@ class StockReport(models.TransientModel):
     
     def print_report_stock_analysis_by_month_and_cust(self):
         data = {
-            'start_date': self.start_date, 
-            'end_date': self.end_date
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+            'user_ids': self.user.ids
         }
         return self.env.ref('popular_reports.stock_analysis_by_month_and_cust').report_action(self, data=data)
     
@@ -120,19 +136,27 @@ class StockReport(models.TransientModel):
     
     def print_report_stock_valuation_info(self):
         data = {
-            'start_date': self.start_date, 
-            'end_date': self.end_date
+            'product_ids': self.products.ids
         }
         return self.env.ref('popular_reports.stock_valuation_info').report_action(self, data=data)
     
+    def print_report_monthly_stock_analysis_report(self):
+        data = {
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.monthly_stock_analysis_report').report_action(self, data=data)
     
-#     print_report_all_balance_listing
+    
+#     
 #     print_report_cash_payment_listing_by_lumpsum
 #     print_report_cash_receipt_listing_by_date_or_by_customer  
 #     print_report_daily_sales_report_by_date
 #     print_report_damage_sales_return_listing_by_product_code
 #     print_report_damage_sales_return_listing_by_cust_no
-#     print_report_monthly_stock_analysis_report
+#     
 #     print_report_outstanding_inv_report_by_cust
 #     print_report_purchase_analysis_report_by_supplier
 #     print_report_purchase_invoice_listing_by_inv_no

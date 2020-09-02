@@ -104,9 +104,14 @@
             <field name="model">wizard.stock.history</field>
             <field name="arch" type="xml">
                 <form string="Monthly Stock Analysis Report">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
-                    </group>
+                    <group col="4" colspan="4" string="Start From:">
+                        <field name="s_month" required="1"></field>
+                        <field name="s_year" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4" string="End To:">
+                        <field name="e_month" required="1"></field>
+                        <field name="e_year" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_monthly_stock_analysis_report" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -168,9 +173,10 @@
             <field name="model">wizard.stock.history</field>
             <field name="arch" type="xml">
                 <form string="Purchase Stock Analysis by Date">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
-                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_purchase_stock_analysis_by_date" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -264,9 +270,10 @@
             <field name="model">wizard.stock.history</field>
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Date">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
-                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_stock_analysis_by_date" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -300,9 +307,17 @@
             <field name="model">wizard.stock.history</field>
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Month and Customer">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
+                    <group col="4" colspan="4" string="Start From:">
+                        <field name="s_month" required="1"></field>
+                        <field name="s_year" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4" string="End To:">
+                        <field name="e_month" required="1"></field>
+                        <field name="e_year" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_stock_analysis_by_month_and_cust" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -316,9 +331,10 @@
             <field name="model">wizard.stock.history</field>
             <field name="arch" type="xml">
                 <form string="Stock Transfer Information">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
-                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_stock_transfer_info" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
