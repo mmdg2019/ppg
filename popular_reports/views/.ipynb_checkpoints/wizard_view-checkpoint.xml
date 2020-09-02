@@ -2,7 +2,7 @@
 
 <odoo>
     <data>
-         <record model='ir.ui.view' id='wizard_form'>
+<!--          <record model='ir.ui.view' id='wizard_form'>
             <field name="name">wizard.stock.history.form</field>
             <field name="model">wizard.stock.history</field>
             <field name="arch" type="xml">
@@ -10,24 +10,12 @@
                     <group string="Customer">
                         <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
-<!--                     <group string="Warehouse">
-                            <field name="warehouse" widget="many2many_tags"/>
-                        </group> -->
-<!--                     <notebook>
-                            <page string="Category">
-                                <field name="category">
-                                    <tree>
-                                        <field name="name"/>
-                                    </tree>
-                                </field>
-                            </page>
-                        </notebook> -->
                     <group string="Product">
                         <field name="products" widget="many2many_tags"/>
                     </group>
                <group col="4" colspan="4">
-                   <field name="start_date" required="true"/>
-                   <field name="end_date" required="true"/>
+                   <field name="start_date" />
+                   <field name="end_date" />
                </group>
                <footer>
                    <button name="print_report_xml" type="object" string="Print Report" class="oe_highlight"/>
@@ -51,6 +39,21 @@
            </form>
             </field>
         </record>
+        <record model='ir.ui.view' id='wizard_form_report_all_balance_listing'>
+            <field name="name">wizard.stock.history.form</field>
+            <field name="model">wizard.stock.history</field>
+            <field name="arch" type="xml">
+                <form string="Sales Report by Client">
+                    <group string="Product">
+                        <field name="products" widget="many2many_tags"/>
+                    </group>
+               <footer>
+                   <button name="print_report_all_balance_listing" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
 
         <record model='ir.actions.act_window' id='wizard_act'>
             <field name="name">Export Sales Report by Product Code</field>
@@ -68,16 +71,14 @@
             <field name="view_id" ref="wizard_form_sales_report_by_client"/>
             <field name="target">new</field>
         </record>
-
-
-<!--         <menuitem name="Sale Report by Product Code"
-                  parent="sale.sale_menu_root"
-                  id="export_excel"/> -->
-<!--         <menuitem name="Sale Report by Product Code"
-                  parent="account.account_reports_legal_statements_menu"
-                  id="export_excel"
-                  action="wizard_act"
-                  sequence="10"/> -->
+        <record model='ir.actions.act_window' id='wizard_act_report_all_balance_listing'>
+            <field name="name">Export All Balance Listing</field>
+            <field name="res_model">wizard.stock.history</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_all_balance_listing"/>
+            <field name="target">new</field>
+        </record>
         
         <menuitem name="Popular Report"
                   parent="account_accountant.menu_accounting"
@@ -93,18 +94,19 @@
                   parent="account.export_excel"
                   id="account.report_sales_report_by_client"
                   action="wizard_act_sales_report_by_client"
-                  sequence="1"/>
+                  sequence="1"/> -->
         
-<!--         <menuitem id="Reporting" model="ir.ui.menu" context="{'studio': True}">
-    <field name="action" ref="base.action_open_website"/>
-    <field name="active" eval="True"/>
-    <field name="groups_id" eval="[(6, 0, [])]"/>
-    <field name="name">Popular Report</field>
-    <field name="parent_id" ref="account.account_reports_legal_statements_menu"/>
-    <field name="sequence"eval="False">
-    <field name="web_icon" eval="False"/> -->
-
-    
+        
+        
+        
+        
+<!--         <menuitem name="All Balance Listing"
+                  parent="account.export_excel"
+                  id="popular_reports.menu_report_all_balance_listing"
+                  action="wizard_act_report_all_balance_listing"
+                  sequence="1"/> -->
+        
+        
        
     </data>
     

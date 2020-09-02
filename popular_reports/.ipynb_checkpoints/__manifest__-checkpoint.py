@@ -38,6 +38,9 @@
                 ],
     'data': [
             'views/wizard_view.xml',
+            'views/wizard_forms.xml',
+            'views/wizard_menus.xml',
+        
             'views/action_manager.xml',
             'views/report.xml',
             ],
