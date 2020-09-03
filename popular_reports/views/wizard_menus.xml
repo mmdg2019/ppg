@@ -33,14 +33,14 @@
         
         <menuitem name="Damage Sales Return Listing (Approved) by Product Code"
                   parent="account.export_excel"
-                  id="popular_reports.menu_report_damage_sales_return_listing_by_product_code"
-                  action="popular_reports.wizard_act_report_damage_sales_return_listing_by_product_code"
+                  id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_product"
+                  action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_product"
                   sequence="5"/>
         
         <menuitem name="Damage Sales Return Listing (Not Approved) by Customer No."
                   parent="account.export_excel"
-                  id="popular_reports.menu_report_damage_sales_return_listing_by_cust_no"
-                  action="popular_reports.wizard_act_report_damage_sales_return_listing_by_cust_no"
+                  id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_cust_no"
+                  action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_cust_no"
                   sequence="6"/>
         
         <menuitem name="Monthly Stock Analysis Report"
@@ -57,8 +57,8 @@
         
         <menuitem name="Purchase Analysis Report by Supplier"
                   parent="account.export_excel"
-                  id="popular_reports.menu_report_purchase_analysis_report_by_supplier"
-                  action="popular_reports.wizard_act_report_purchase_analysis_report_by_supplier"
+                  id="popular_reports.menu_report_purchase_analysis_report_by_sup"
+                  action="popular_reports.wizard_act_report_purchase_analysis_report_by_sup"
                   sequence="9"/>
         
         <menuitem name="Purchase Invoice Listing by Invoice No.(Before Posted)"

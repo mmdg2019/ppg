@@ -4,8 +4,8 @@
     <data>
         
         <record model='ir.ui.view' id='wizard_form_report_all_balance_listing'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="All Balance Listing">
                     <group string="Product">
@@ -20,13 +20,14 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_cash_payment_listing_by_lumpsum'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Cash Payent Listing by Lumpsum">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
-                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_cash_payment_listing_by_lumpsum" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -36,13 +37,17 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_cash_receipt_listing_by_date_or_by_customer'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Cash Receipt Listing by Date/ by Customer">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_cash_receipt_listing_by_date_or_by_customer" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -52,13 +57,14 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_daily_sales_report_by_date'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Daily Sales Repory by Date">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
-                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_daily_sales_report_by_date" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -67,32 +73,40 @@
             </field>
         </record>
         
-        <record model='ir.ui.view' id='wizard_form_report_damage_sales_return_listing_by_product_code'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+        <record model='ir.ui.view' id='wizard_form_report_dmg_sales_rtrn_lst_by_product'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Damage Sales Return Listing (Approved) by Product Code">
                     <group string="Product">
                         <field name="products" widget="many2many_tags"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
-                   <button name="print_report_damage_sales_return_listing_by_product_code" type="object" string="Print Report" class="oe_highlight"/>
+                   <button name="print_report_dmg_sales_rtrn_lst_by_product" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
             </field>
         </record>
         
-        <record model='ir.ui.view' id='wizard_form_report_damage_sales_return_listing_by_cust_no'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+        <record model='ir.ui.view' id='wizard_form_report_dmg_sales_rtrn_lst_by_cust_no'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Damage Sales Return Listing (Not Approved) by Customer No.">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
-                   <button name="print_report_damage_sales_return_listing_by_cust_no" type="object" string="Print Report" class="oe_highlight"/>
+                   <button name="print_report_dmg_sales_rtrn_lst_by_cust_no" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
@@ -100,8 +114,8 @@
         </record>
         
          <record model='ir.ui.view' id='wizard_form_report_monthly_stock_analysis_report'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Monthly Stock Analysis Report">
                     <group col="4" colspan="4" string="Start From:">
@@ -121,13 +135,17 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_outstanding_inv_report_by_cust'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Outstanding Invoice Report by Customer">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
                    <button name="print_report_outstanding_inv_report_by_cust" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -136,16 +154,20 @@
             </field>
         </record>
         
-        <record model='ir.ui.view' id='wizard_form_report_purchase_analysis_report_by_supplier'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+        <record model='ir.ui.view' id='wizard_form_report_purchase_analysis_report_by_sup'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Purchase Analysis Report by Supplier">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                    <group string="Vendor">
+                        <field name="user" widget="many2many_tags" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
-                   <button name="print_report_purchase_analysis_report_by_supplier" type="object" string="Print Report" class="oe_highlight"/>
+                   <button name="print_report_purchase_analysis_report_by_sup" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
@@ -153,15 +175,19 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_purchase_invoice_listing_by_inv_no'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Purchase Invoice Listing by Invoice No.(Before Posted)">
-                    <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                    <group string="List of Invoice No.">
+                        <field name="invoice_no" widget="many2many_tags" context="{'default_type': 'in_invoice'}" domain="[('type', '=', 'in_invoice'),('state', '!=', 'posted')]"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
                <footer>
-                   <button name="print_report_purchase_invoice_listing_by_inv_no" type="object" string="Print Report" class="oe_highlight"/>
+                   <button name="print_report_purchase_inv_lst_by_inv_no" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
@@ -169,8 +195,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_purchase_stock_analysis_by_date'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Purchase Stock Analysis by Date">
                     <group col="4" colspan="4">
@@ -186,12 +212,12 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_sales_analysis_report_by_cust'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Analysis Report by Customer">
-                    <group string="User">
-                        <field name="user" widget="many2many_tags"/>
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -206,8 +232,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_sales_report_by_client'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Report by Client (After Approval)">
                     <group string="Customer">
@@ -226,8 +252,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_sales_report_by_date'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Report by Date (After Approval)">
                     <group col="4" colspan="4">
@@ -243,8 +269,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_sales_report_by_product_code'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Report by Product Code (After Approval)">
                     <group string="Customer">
@@ -266,8 +292,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_stock_analysis_by_date'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Date">
                     <group col="4" colspan="4">
@@ -283,8 +309,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_stock_analysis_by_date_and_cust'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Date and Customer">
                     <group string="Customer">
@@ -303,8 +329,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_stock_analysis_by_month_and_cust'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Month and Customer">
                     <group string="Customer">
@@ -327,8 +353,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_stock_transfer_info'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Transfer Information">
                     <group col="4" colspan="4">
@@ -344,8 +370,8 @@
         </record>
         
         <record model='ir.ui.view' id='wizard_form_report_stock_valuation_info'>
-            <field name="name">wizard.stock.history.form</field>
-            <field name="model">wizard.stock.history</field>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Valuation Information">
                     <group string="Product">
@@ -360,7 +386,7 @@
         </record>
         <record model='ir.actions.act_window' id='wizard_act_report_all_balance_listing'>
             <field name="name">Export All Balance Listing</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_all_balance_listing"/>
@@ -369,7 +395,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_cash_payment_listing_by_lumpsum'>
             <field name="name">Export Cash Payent Listing by Lumpsum</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_cash_payment_listing_by_lumpsum"/>
@@ -378,7 +404,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_cash_receipt_listing_by_date_or_by_customer'>
             <field name="name">Export Cash Receipt Listing by Date/ by Customer</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_cash_receipt_listing_by_date_or_by_customer"/>
@@ -387,34 +413,34 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_daily_sales_report_by_date'>
             <field name="name">Export Daily Sales Repory by Date</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_daily_sales_report_by_date"/>
             <field name="target">new</field>
         </record>
         
-        <record model='ir.actions.act_window' id='wizard_act_report_damage_sales_return_listing_by_product_code'>
+        <record model='ir.actions.act_window' id='wizard_act_report_dmg_sales_rtrn_lst_by_product'>
             <field name="name">Export Damage Sales Return Listing (Approved) by Product Code</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="wizard_form_report_damage_sales_return_listing_by_product_code"/>
+            <field name="view_id" ref="wizard_form_report_dmg_sales_rtrn_lst_by_product"/>
             <field name="target">new</field>
         </record>
         
-        <record model='ir.actions.act_window' id='wizard_act_report_damage_sales_return_listing_by_cust_no'>
+        <record model='ir.actions.act_window' id='wizard_act_report_dmg_sales_rtrn_lst_by_cust_no'>
             <field name="name">Export Damage Sales Return Listing (Not Approved) by Customer No.</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="wizard_form_report_monthly_stock_analysis_report"/>
+            <field name="view_id" ref="wizard_form_report_dmg_sales_rtrn_lst_by_cust_no"/>
             <field name="target">new</field>
         </record>        
         
         <record model='ir.actions.act_window' id='wizard_act_report_monthly_stock_analysis_report'>
             <field name="name">Export Monthly Stock Analysis Report</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_monthly_stock_analysis_report"/>
@@ -423,25 +449,25 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_outstanding_inv_report_by_cust'>
             <field name="name">Export Outstanding Invoice Report by Customer</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_outstanding_inv_report_by_cust"/>
             <field name="target">new</field>
         </record>
         
-        <record model='ir.actions.act_window' id='wizard_act_report_purchase_analysis_report_by_supplier'>
+        <record model='ir.actions.act_window' id='wizard_act_report_purchase_analysis_report_by_sup'>
             <field name="name">Export Purchase Analysis Report by Supplier</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="wizard_form_report_purchase_analysis_report_by_supplier"/>
+            <field name="view_id" ref="wizard_form_report_purchase_analysis_report_by_sup"/>
             <field name="target">new</field>
         </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_purchase_invoice_listing_by_inv_no'>
             <field name="name">Export Purchase Invoice Listing by Invoice No.(Before Posted)</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_purchase_invoice_listing_by_inv_no"/>
@@ -450,7 +476,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_purchase_stock_analysis_by_date'>
             <field name="name">Export Purchase Stock Analysis by Date</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_purchase_stock_analysis_by_date"/>
@@ -459,7 +485,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_sales_analysis_report_by_cust'>
             <field name="name">Export Sales Analysis Report by Customer</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_sales_analysis_report_by_cust"/>
@@ -468,7 +494,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_sales_report_by_client'>
             <field name="name">Export Sales Report by Client (After Approval)</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_sales_report_by_client"/>
@@ -477,7 +503,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_sales_report_by_date'>
             <field name="name">Export Sales Report by Date (After Approval)</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_sales_report_by_date"/>
@@ -486,7 +512,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_sales_report_by_product_code'>
             <field name="name">Export Sales Report by Product Code (After Approval)</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_sales_report_by_product_code"/>
@@ -495,7 +521,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_analysis_by_date'>
             <field name="name">Export Stock Analysis by Date</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_analysis_by_date"/>
@@ -504,7 +530,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_analysis_by_date_and_cust'>
             <field name="name">Export Stock Analysis by Date and Customer</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_analysis_by_date_and_cust"/>
@@ -513,7 +539,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_analysis_by_month_and_cust'>
             <field name="name">Export Stock Analysis by Month and Customer</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_analysis_by_month_and_cust"/>
@@ -523,7 +549,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_transfer_info'>
             <field name="name">Export Stock Transfer Information</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_transfer_info"/>
@@ -532,7 +558,7 @@
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_valuation_info'>
             <field name="name">Export Stock Valuation Information</field>
-            <field name="res_model">wizard.stock.history</field>
+            <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_valuation_info"/>
