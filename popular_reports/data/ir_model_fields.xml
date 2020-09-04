@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="popular_reports.name_popular_reports_56ddca44-e820-4c22-a535-965c2db0c64b" model="ir.model.fields" context="{'studio': True}">
+    <field name="complete_name" eval="False"/>
+    <field name="compute" eval="False"/>
+    <field name="copied" eval="False"/>
+    <field name="depends" eval="False"/>
+    <field name="domain">[]</field>
+    <field name="field_description">Name</field>
+    <field name="groups" eval="[(6, 0, [])]"/>
+    <field name="help" eval="False"/>
+    <field name="index" eval="False"/>
+    <field name="model">x_popular_reports</field>
+    <field name="model_id" ref="popular_reports.popular_reports_63193484-a4bd-4c8a-a1ce-a54bf4c58d4c"/>
+    <field name="name">x_name</field>
+    <field name="on_delete" eval="False"/>
+    <field name="readonly" eval="False"/>
+    <field name="related" eval="False"/>
+    <field name="relation" eval="False"/>
+    <field name="relation_field" eval="False"/>
+    <field name="relation_table" eval="False"/>
+    <field name="required" eval="False"/>
+    <field name="selectable" eval="True"/>
+    <field name="selection" eval="False"/>
+    <field name="size" eval="False"/>
+    <field name="state">manual</field>
+    <field name="store" eval="True"/>
+    <field name="tracking" eval="False"/>
+    <field name="translate" eval="False"/>
+    <field name="ttype">char</field>
+  </record>
+</odoo>

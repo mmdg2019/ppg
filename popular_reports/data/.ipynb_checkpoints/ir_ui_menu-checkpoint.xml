@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="popular_reports.popular_reports_main_menu" model="ir.ui.menu" context="{'studio': True}">
+    <field name="action" eval="False"/>
+    <field name="active" eval="True"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="name">Popular Report</field>
+    <field name="parent_id" eval="False"/>
+    <field name="sequence">10</field>
+    <field name="web_icon">fa fa-diamond,#f1c40f,#34495e</field>
+  </record>
+  <record id="popular_reports.popular_reports_popular_reports_sub_menu" model="ir.ui.menu" context="{'studio': True}">
+    <field name="action" ref="popular_reports.popular_reports_8959fb2a-a44e-488e-aa22-fc24208bdfa1"/>
+    <field name="active" eval="True"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="name">Popular Report</field>
+    <field name="parent_id" ref="popular_reports.popular_reports_main_menu"/>
+    <field name="sequence">10</field>
+    <field name="web_icon" eval="False"/>
+  </record>
+</odoo>

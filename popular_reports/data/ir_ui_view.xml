@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <record id="popular_reports.default_form_view_fo_09defea2-0b15-40fd-bb24-25e5b0b26a98" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form>
+        <sheet string="Popular Report">
+          <div class="oe_title">
+            <h1>
+              <field name="x_name" required="1"/>
+            </h1>
+          </div>
+          <group name="studio_group_3fdd4c">
+            <group name="studio_group_3fdd4c_left"/>
+            <group name="studio_group_3fdd4c_right"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default form view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">form</field>
+  </record>
+  <record id="popular_reports.default_tree_view_fo_7a4a1a8a-e66e-478e-867c-5259d259ff80" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <tree string="Popular Report">
+        <field name="x_name" modifiers="{}"/>
+      </tree>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default tree view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">tree</field>
+  </record>
+  <record id="popular_reports.default_dashboard_vi_5ce2c368-16e3-41e1-a27f-19d58fe66e5c" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <dashboard>
+        <view type="graph"/>
+        <view type="pivot"/>
+      </dashboard>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default dashboard view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">dashboard</field>
+  </record>
+  <record id="popular_reports.default_calendar_vie_62140121-ede7-4788-8d18-865ecbe3a9b8" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <calendar date_start="create_date" date_stop="write_date" string="Default calendar view for x_popular_reports"/>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default calendar view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">calendar</field>
+  </record>
+  <record id="popular_reports.default_search_view__db10a0c9-baae-4891-acb1-68615bbd7c74" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="Popular Report">
+        <field name="x_name" modifiers="{}"/>
+      </search>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default search view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">search</field>
+  </record>
+  <record id="popular_reports.default_graph_view_f_1abbf79a-165b-4271-9716-0b4f8e879bda" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <graph string="Popular Report">
+        <field name="x_name" modifiers="{}"/>
+      </graph>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default graph view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">graph</field>
+  </record>
+  <record id="popular_reports.default_pivot_view_f_c1c2cf91-7ebe-402a-bdd4-88a47bc19d1b" model="ir.ui.view" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <pivot string="Popular Report"/>
+    </field>
+    <field name="field_parent" eval="False"/>
+    <field name="groups_id" eval="[(6, 0, [])]"/>
+    <field name="inherit_id" eval="False"/>
+    <field name="key" eval="False"/>
+    <field name="mode">primary</field>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Default pivot view for x_popular_reports</field>
+    <field name="priority">16</field>
+    <field name="type">pivot</field>
+  </record>
+</odoo>
