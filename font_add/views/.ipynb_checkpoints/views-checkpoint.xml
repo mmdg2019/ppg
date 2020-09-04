@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="font_add.list">
+      <field name="name">font_add list</field>
+      <field name="model">font_add.font_add</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="font_add.action_window">
+      <field name="name">font_add window</field>
+      <field name="res_model">font_add.font_add</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="font_add.action_server">
+      <field name="name">font_add server</field>
+      <field name="model_id" ref="model_font_add_font_add"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="font_add" id="font_add.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="font_add.menu_1" parent="font_add.menu_root"/>
+    <menuitem name="Menu 2" id="font_add.menu_2" parent="font_add.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="font_add.menu_1_list" parent="font_add.menu_1"
+              action="font_add.action_window"/>
+    <menuitem name="Server to list" id="font_add" parent="font_add.menu_2"
+              action="font_add.action_server"/>
+-->
+  </data>
+</odoo>
