@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <menuitem name="Popular Report"
+                  parent="account_accountant.menu_accounting"
+                  id="popular_reports.popular_reports_popular_reports_sub_menu"
+                  sequence="1"/>
+        
+        <menuitem name="All Balance Listing"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_all_balance_listing"
+                  action="popular_reports.wizard_act_report_all_balance_listing"
+                  sequence="1"/>
+        
+        <menuitem name="Cash Payent Listing by Lumpsum"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_cash_payment_listing_by_lumpsum"
+                  action="popular_reports.wizard_act_report_cash_payment_listing_by_lumpsum"
+                  sequence="2"/>
+        
+        <menuitem name="Cash Receipt Listing by Date/ by Customer"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_cash_receipt_listing_by_date_or_by_customer"
+                  action="popular_reports.wizard_act_report_cash_receipt_listing_by_date_or_by_customer"
+                  sequence="3"/>
+        
+        <menuitem name="Daily Sales Repory by Date"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_daily_sales_report_by_date"
+                  action="popular_reports.wizard_act_report_daily_sales_report_by_date"
+                  sequence="4"/>
+        
+        <menuitem name="Damage Sales Return Listing (Approved) by Product Code"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_product"
+                  action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_product"
+                  sequence="5"/>
+        
+        <menuitem name="Damage Sales Return Listing (Not Approved) by Customer No."
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_cust_no"
+                  action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_cust_no"
+                  sequence="6"/>
+        
+        <menuitem name="Monthly Stock Analysis Report"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_monthly_stock_analysis_report"
+                  action="popular_reports.wizard_act_report_monthly_stock_analysis_report"
+                  sequence="7"/>
+        
+        <menuitem name="Outstanding Invoice Report by Customer"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_outstanding_inv_report_by_cust"
+                  action="popular_reports.wizard_act_report_outstanding_inv_report_by_cust"
+                  sequence="8"/>
+        
+        <menuitem name="Purchase Analysis Report by Supplier"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_purchase_analysis_report_by_sup"
+                  action="popular_reports.wizard_act_report_purchase_analysis_report_by_sup"
+                  sequence="9"/>
+        
+        <menuitem name="Purchase Invoice Listing by Invoice No.(Before Posted)"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_purchase_invoice_listing_by_inv_no"
+                  action="popular_reports.wizard_act_report_purchase_invoice_listing_by_inv_no"
+                  sequence="10"/>
+        
+        <menuitem name="Purchase Stock Analysis by Date"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_purchase_stock_analysis_by_date"
+                  action="popular_reports.wizard_act_report_purchase_stock_analysis_by_date"
+                  sequence="11"/>
+        
+        <menuitem name="Sales Analysis Report by Customer"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_sales_analysis_report_by_cust"
+                  action="popular_reports.wizard_act_report_sales_analysis_report_by_cust"
+                  sequence="12"/>
+        
+        <menuitem name="Sales Report by Client (After Approval)"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_sales_report_by_client"
+                  action="popular_reports.wizard_act_report_sales_report_by_client"
+                  sequence="13"/>
+        
+        <menuitem name="Sales Report by Date (After Approval)"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_sales_report_by_date"
+                  action="popular_reports.wizard_act_report_sales_report_by_date"
+                  sequence="14"/>
+        
+        <menuitem name="Sales Report by Product Code (After Approval)"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_sales_report_by_product_code"
+                  action="popular_reports.wizard_act_report_sales_report_by_product_code"
+                  sequence="15"/>        
+        
+        <menuitem name="Stock Analysis by Date"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_stock_analysis_by_date"
+                  action="popular_reports.wizard_act_report_stock_analysis_by_date"
+                  sequence="16"/>
+        
+        <menuitem name="Stock Analysis by Date and Customer"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_stock_analysis_by_date_and_cust"
+                  action="popular_reports.wizard_act_report_stock_analysis_by_date_and_cust"
+                  sequence="17"/>
+        
+        <menuitem name="Stock Analysis by Month and Customer"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_stock_analysis_by_month_and_cust"
+                  action="popular_reports.wizard_act_report_stock_analysis_by_month_and_cust"
+                  sequence="18"/>
+        
+        <menuitem name="Stock Transfer Information"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_stock_transfer_info"
+                  action="popular_reports.wizard_act_report_stock_transfer_info"
+                  sequence="19"/>
+        
+        <menuitem name="Stock Valuation Information"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu"
+                  id="popular_reports.menu_report_stock_valuation_info"
+                  action="popular_reports.wizard_act_report_stock_valuation_info"
+                  sequence="20"/>
+    
+    </data>
+</odoo>
