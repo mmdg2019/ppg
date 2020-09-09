@@ -1253,10 +1253,10 @@
                                                 <span><t t-esc="sub_ttl-sub_ttl_due" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th style="text-align:right;">
-<!--                                                 <span><t t-esc="sub_ttl_other_charges" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span> -->
+                                                <span><t t-esc="sub_ttl_other_charges" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th style="text-align:right;">
-<!--                                                 <span><t t-esc="sub_ttl_discount_amount" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span> -->
+                                                <span><t t-esc="sub_ttl_discount_amount" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th style="text-align:right;">
                                                 <span><t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
@@ -1296,10 +1296,10 @@
                                             <span t-esc="table_line.amount_total_signed-table_line.amount_residual_signed" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
                                         </td>
                                         <td style="text-align:right;">
-<!--                                             <span t-field="table_line.x_studio_other_charges_i"/> -->
+                                            <span t-field="table_line.x_studio_other_charges_i"/>
                                         </td>
                                         <td style="text-align:right;">
-<!--                                             <span t-field="table_line.x_studio_special_discount_amount_i"/> -->
+                                            <span t-field="table_line.x_studio_special_discount_amount_i"/>
                                         </td>
                                         <td style="text-align:right;">
                                             <span t-field="table_line.amount_total_signed"/>
@@ -1309,8 +1309,8 @@
                                         </td>
                                     </tr>
                                     <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
-<!--                                     <t t-set="sub_ttl_other_charges" t-value="sub_ttl_other_charges + table_line.x_studio_other_charges_i"/> -->
-<!--                                     <t t-set="sub_ttl_discount_amount" t-value="sub_ttl_discount_amount + table_line.x_studio_special_discount_amount_i"/> -->
+                                    <t t-set="sub_ttl_other_charges" t-value="sub_ttl_other_charges + table_line.x_studio_other_charges_i"/>
+                                    <t t-set="sub_ttl_discount_amount" t-value="sub_ttl_discount_amount + table_line.x_studio_special_discount_amount_i"/>
                                     <t t-set="sub_ttl_due" t-value="sub_ttl_due + table_line.amount_residual_signed"/>
                                     <t t-set="sub_ttl_tax_excluded" t-value="sub_ttl_tax_excluded + table_line.amount_untaxed_signed"/>
                                     <t t-if="table_line_last">
@@ -1328,10 +1328,10 @@
                                                 <span><t t-esc="sub_ttl-sub_ttl_due" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th style="text-align:right;">
-<!--                                                 <span><t t-esc="sub_ttl_other_charges" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span> -->
+                                                <span><t t-esc="sub_ttl_other_charges" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th style="text-align:right;">
-<!--                                                 <span><t t-esc="sub_ttl_discount_amount" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span> -->
+                                                <span><t t-esc="sub_ttl_discount_amount" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th style="text-align:right;">
                                                 <span><t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
@@ -1352,8 +1352,8 @@
                                 <t t-set="ttl_tax_excluded" t-value="0"/>
                                 <t t-foreach="docs" t-as="table_line">
                                     <t t-set="ttl" t-value="ttl + table_line.amount_total_signed"/>
-<!--                                     <t t-set="ttl_other_charges" t-value="ttl_other_charges + table_line.x_studio_other_charges_i"/> -->
-<!--                                     <t t-set="ttl_discount_amount" t-value="ttl_discount_amount + table_line.x_studio_special_discount_amount_i"/> -->
+                                    <t t-set="ttl_other_charges" t-value="ttl_other_charges + table_line.x_studio_other_charges_i"/>
+                                    <t t-set="ttl_discount_amount" t-value="ttl_discount_amount + table_line.x_studio_special_discount_amount_i"/>
                                     <t t-set="ttl_due" t-value="ttl_due + table_line.amount_residual_signed"/>
                                     <t t-set="ttl_tax_excluded" t-value="ttl_tax_excluded + table_line.amount_untaxed_signed"/>
                                 </t>
@@ -1371,10 +1371,10 @@
                                         <span><t t-esc="ttl-ttl_due" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
                                     </th>
                                     <th style="text-align:right;">
-<!--                                         <span><t t-esc="ttl_other_charges" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span> -->
+                                        <span><t t-esc="ttl_other_charges" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
                                     </th>
                                     <th style="text-align:right;">
-<!--                                         <span><t t-esc="ttl_discount_amount" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span> -->
+                                        <span><t t-esc="ttl_discount_amount" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
@@ -2020,9 +2020,9 @@
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.price_unit"/>
                                             </td>
-                                            <!-- <td class="text-right">
+                                            <td class="text-right">
                                                 <span t-field="table_line.discount"/>
-                                            </td> -->
+                                            </td>
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.price_subtotal"/>
                                             </td>
@@ -2059,7 +2059,7 @@
                                                 <span>Sub Total:</span>
                                             </th>
                                             <th style="text-align:right;">
-<!--                                                 <span t-field="doc.x_studio_subtotal_i"/> -->
+                                                <span t-field="doc.x_studio_subtotal_i"/>
                                             </th>
                                             <th>
                                                 <span></span>
@@ -2082,10 +2082,10 @@
                                                 <span></span>
                                             </th>
                                             <th colspan="3">
-<!--                                                 <span t-field="doc.x_studio_special_discount_percent_i"/><span>% </span><span>Special Discount:</span> -->
+                                                <span t-field="doc.x_studio_special_discount_percent_i"/><span>% </span><span>Special Discount:</span>
                                             </th>
                                             <th style="text-align:right;">
-<!--                                                 <span t-field="doc.x_studio_special_discount_amount_i"/> -->
+                                                <span t-field="doc.x_studio_special_discount_amount_i"/>
                                             </th>
                                             <th>
                                                 <span></span>
