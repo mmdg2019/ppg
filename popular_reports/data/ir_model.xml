@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+<!--   <record id="popular_reports.popular_reports_63193484-a4bd-4c8a-a1ce-a54bf4c58d4c" model="ir.model" context="{'studio': True}">
+    <field name="info"> Main super-class for regular database-persisted Odoo models.
+
+    Odoo models are created by inheriting from this class::
+
+        class user(Model):
+            ...
+
+    The system will later instantiate the class once per database (on
+    which the class' module is installed).
+    </field>
+    <field name="is_mail_thread" eval="False"/>
+    <field name="is_mail_activity" eval="False"/>
+    <field name="model">x_popular_reports</field>
+    <field name="name">Popular Reports</field>
+    <field name="state">manual</field>
+    <field name="transient" eval="False"/>
+  </record> -->
+<!--     <record id="popular_reports.popular_reports_model_id" model="ir.model" context="{'studio': True}">
+    <field name="info"> Main super-class for regular database-persisted Odoo models.
+
+    Odoo models are created by inheriting from this class::
+
+        class user(Model):
+            ...
+
+    The system will later instantiate the class once per database (on
+    which the class' module is installed).
+    </field>
+    <field name="is_mail_thread" eval="False"/>
+    <field name="is_mail_activity" eval="False"/>
+    <field name="model">wizard.popular.reports</field>
+    <field name="name">Popular Reports</field>
+    <field name="state">manual</field>
+    <field name="transient" eval="False"/>
+    </record> -->
+    
+</odoo>

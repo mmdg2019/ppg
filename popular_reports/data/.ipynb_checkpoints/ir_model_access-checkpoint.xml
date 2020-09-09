@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+<!--   <record id="popular_reports.popular_reports_group_458d7d9e-9235-4154-945f-201d3f87e433" model="ir.model.access" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="group_id" ref="base.group_system"/>
+    <field name="model_id" ref="popular_reports.popular_reports_63193484-a4bd-4c8a-a1ce-a54bf4c58d4c"/>
+    <field name="name">Popular Reports group_system</field>
+    <field name="perm_create" eval="True"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_unlink" eval="True"/>
+    <field name="perm_write" eval="True"/>
+  </record>
+  <record id="popular_reports.popular_reports_group_6d1e46e0-c2be-4653-9235-183e5f494e0b" model="ir.model.access" context="{'studio': True}">
+    <field name="active" eval="True"/>
+    <field name="group_id" ref="base.group_user"/>
+    <field name="model_id" ref="popular_reports.popular_reports_63193484-a4bd-4c8a-a1ce-a54bf4c58d4c"/>
+    <field name="name">Popular Reports group_user</field>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_unlink" eval="False"/>
+    <field name="perm_write" eval="False"/>
+  </record> -->
+</odoo>
