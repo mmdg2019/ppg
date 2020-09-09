@@ -1,6 +1,6 @@
 
 {
-    'name': 'Popular Reports'',
+    'name': 'Popular Reports',
     'version': '13.0.1.1.2',
     'summary': "Reports for popular company",
     'description': "Current Stock Report for all Products in each Warehouse, Odoo 13,Odoo13",
