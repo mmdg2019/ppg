@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <odoo>
-  <record id="popular_reports.popular_reports_8959fb2a-a44e-488e-aa22-fc24208bdfa1" model="ir.actions.act_window" context="{'studio': True}">
+<!--   <record id="popular_reports.popular_reports_8959fb2a-a44e-488e-aa22-fc24208bdfa1" model="ir.actions.act_window" context="{'studio': True}">
     <field name="binding_model_id" eval="False"/>
     <field name="binding_type">action</field>
     <field name="binding_view_types">list,form</field>
@@ -17,13 +17,13 @@
                     </p>
                 ]]></field>
     <field name="limit">80</field>
-    <field name="name">Popular Report</field>
+    <field name="name">Popular Reports</field>
     <field name="res_model">x_popular_reports</field>
     <field name="search_view_id" eval="False"/>
     <field name="target">current</field>
     <field name="type">ir.actions.act_window</field>
     <field name="usage" eval="False"/>
     <field name="view_id" eval="False"/>
-    <field name="view_mode">dashboard,graph,pivot</field>
-  </record>
+    <field name="view_mode">dashboard</field>
+  </record> -->
 </odoo>
