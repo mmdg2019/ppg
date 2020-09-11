@@ -2,14 +2,16 @@
 
 <odoo>
     <data>
-        <menuitem name="Purchase Reports"
-                  parent="popular_reports.popular_reports_main_menu"
-                  id="popular_reports.popular_reports_popular_reports_sub_menu_2"
-                  sequence="2"/>
+        
+        
         <menuitem name="Sales Reports"
                   parent="popular_reports.popular_reports_main_menu"
                   id="popular_reports.popular_reports_popular_reports_sub_menu_1"
                   sequence="1"/>
+        <menuitem name="Purchase Reports"
+                  parent="popular_reports.popular_reports_main_menu"
+                  id="popular_reports.popular_reports_popular_reports_sub_menu_2"
+                  sequence="2"/>
         <menuitem name="Stock Reports"
                   parent="popular_reports.popular_reports_main_menu"
                   id="popular_reports.popular_reports_popular_reports_sub_menu_3"
@@ -31,17 +33,18 @@
                   action="popular_reports.wizard_act_report_cash_payment_listing_by_lumpsum"
                   sequence="2"/>
         
-        <menuitem name="Cash Receipt Listing by Date/ by Customer"
+        <menuitem name="Cash Receipt Listing by Customer"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_4"
-                  id="popular_reports.menu_report_cash_receipt_listing_by_date_or_by_customer"
-                  action="popular_reports.wizard_act_report_cash_receipt_listing_by_date_or_by_customer"
+                  id="popular_reports.menu_report_cash_receipt_listing_by_customer"
+                  action="popular_reports.wizard_act_report_cash_receipt_listing_by_customer"
+                  sequence="3"/>
+        <menuitem name="Cash Receipt Listing by Date"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu_4"
+                  id="popular_reports.menu_report_cash_receipt_listing_by_date"
+                  action="popular_reports.wizard_act_report_cash_receipt_listing_by_date"
                   sequence="3"/>
         
-        <menuitem name="Daily Sales Repory by Date"
-                  parent="popular_reports.popular_reports_popular_reports_sub_menu_4"
-                  id="popular_reports.menu_report_daily_sales_report_by_date"
-                  action="popular_reports.wizard_act_report_daily_sales_report_by_date"
-                  sequence="4"/>
+        
         
         <menuitem name="Damage Sales Return Listing (Approved) by Product Code"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_4"
@@ -85,35 +88,41 @@
                   action="popular_reports.wizard_act_report_purchase_stock_analysis_by_date"
                   sequence="11"/>
         
+        <menuitem name="Daily Sales Repory by Date"
+                  parent="popular_reports.popular_reports_popular_reports_sub_menu_1"
+                  id="popular_reports.menu_report_daily_sales_report_by_date"
+                  action="popular_reports.wizard_act_report_daily_sales_report_by_date"
+                  sequence="1"/>
+        
         <menuitem name="Sales Analysis Report by Customer"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_1"
                   id="popular_reports.menu_report_sales_analysis_report_by_cust"
                   action="popular_reports.wizard_act_report_sales_analysis_report_by_cust"
-                  sequence="12"/>
+                  sequence="2"/>
         
-        <menuitem name="Sales Report by Client (After Approval)"
+        <menuitem name="Sales Report by Client"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_1"
                   id="popular_reports.menu_report_sales_report_by_client"
                   action="popular_reports.wizard_act_report_sales_report_by_client"
-                  sequence="13"/>
+                  sequence="3"/>
         
-        <menuitem name="Sales Report by Date (After Approval)"
+        <menuitem name="Sales Report by Date"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_1"
                   id="popular_reports.menu_report_sales_report_by_date"
                   action="popular_reports.wizard_act_report_sales_report_by_date"
-                  sequence="14"/>
+                  sequence="4"/>
         
-        <menuitem name="Sales Report by Product Code (After Approval)"
+        <menuitem name="Sales Report by Product Code"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_1"
                   id="popular_reports.menu_report_sales_report_by_product_code"
                   action="popular_reports.wizard_act_report_sales_report_by_product_code"
-                  sequence="15"/>        
+                  sequence="5"/>        
         
         <menuitem name="Stock Analysis by Date"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_3"
                   id="popular_reports.menu_report_stock_analysis_by_date"
                   action="popular_reports.wizard_act_report_stock_analysis_by_date"
-                  sequence="16"/>
+                  sequence="6"/>
         
         <menuitem name="Stock Analysis by Date and Customer"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_3"
