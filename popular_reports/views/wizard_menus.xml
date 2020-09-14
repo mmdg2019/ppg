@@ -2,8 +2,6 @@
 
 <odoo>
     <data>
-        
-        
         <menuitem name="Sales Reports"
                   parent="popular_reports.popular_reports_main_menu"
                   id="popular_reports.popular_reports_popular_reports_sub_menu_1"
@@ -46,13 +44,13 @@
         
         
         
-        <menuitem name="Damage Sales Return Listing (Approved) by Product Code"
+        <menuitem name="Damage Sales Return Listing by Product Code"
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_4"
                   id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_product"
                   action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_product"
                   sequence="5"/>
         
-        <menuitem name="Damage Sales Return Listing (Not Approved) by Customer No."
+        <menuitem name="Damage Sales Return Listing by Customer No."
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_4"
                   id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_cust_no"
                   action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_cust_no"
@@ -76,7 +74,7 @@
                   action="popular_reports.wizard_act_report_purchase_analysis_report_by_sup"
                   sequence="9"/>
         
-        <menuitem name="Purchase Invoice Listing by Invoice No.(Before Posted)"
+        <menuitem name="Purchase Invoice Listing by Invoice No."
                   parent="popular_reports.popular_reports_popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_purchase_invoice_listing_by_inv_no"
                   action="popular_reports.wizard_act_report_purchase_invoice_listing_by_inv_no"

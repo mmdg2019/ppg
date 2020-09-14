@@ -18,7 +18,7 @@
         id="stock_transfer_info"
         model="stock.picking"
         string="Stock Transfer Information (Posted) by Date"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_stock_transfer_info"
         file="popular_reports.report_stock_transfer_info" 
         print_report_name="Stock Transfer Information (Posted) by Date"
@@ -27,11 +27,11 @@
     <report
         id="cash_receipt_listing_by_date"
         model="account.payment"
-        string="Cash Receipt Listing by Date (Approved)"
-        report_type="qweb-pdf"
+        string="Cash Receipt Listing by Date"
+        report_type="qweb-html"
         name="popular_reports.report_cash_receipt_listing_by_date"
         file="popular_reports.report_cash_receipt_listing_by_date" 
-        print_report_name="Cash Receipt Listing by Date (Approved)"
+        print_report_name="Cash Receipt Listing by Date"
         paperformat="paperformat_popular_report"
     />
     
@@ -39,7 +39,7 @@
         id="stock_analysis_by_date_and_cust"
         model="account.move"
         string="Stock Analysis by Date and Customer"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_stock_analysis_by_date_and_cust"
         file="popular_reports.report_stock_analysis_by_date_and_cust" 
         print_report_name="Stock Analysis by Date and Customer"
@@ -48,7 +48,7 @@
         id="monthly_stock_analysis_report"
         model="account.move"
         string="Monthly Stock Analysis Report"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_monthly_stock_analysis_report"
         file="popular_reports.report_monthly_stock_analysis_report" 
         print_report_name="Monthly Stock Analysis Report"
@@ -57,7 +57,7 @@
         id="stock_analysis_by_month_and_cust"
         model="account.move"
         string="Stock Analysis by Month and Customer"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_stock_analysis_by_month_and_cust"
         file="popular_reports.report_stock_analysis_by_month_and_cust" 
         print_report_name="Stock Analysis by Month and Customer"
@@ -66,7 +66,7 @@
         id="stock_analysis_by_date"
         model="account.move"
         string="Stock Analysis by Date"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_stock_analysis_by_date"
         file="popular_reports.report_stock_analysis_by_date" 
         print_report_name="Stock Analysis by Date"
@@ -75,7 +75,7 @@
         id="purchase_stock_analysis_by_date"
         model="account.move"
         string="Stock Analysis by Date"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_purchase_stock_analysis_by_date"
         file="popular_reports.report_purchase_stock_analysis_by_date" 
         print_report_name="Purchase Stock Analysis by Date"
@@ -85,7 +85,7 @@
         id="sales_analysis_report_by_cust"
         model="account.move"
         string="Sales Analysis Report by Customer"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_sales_analysis_report_by_cust"
         file="popular_reports.report_sales_analysis_report_by_cust"
         print_report_name="Sales Analysis Report by Customer"
@@ -95,7 +95,7 @@
         id="sales_report_by_client"
         model="account.move"
         string="Sales Report by Client"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_sales_report_by_client"
         file="popular_reports.report_sales_report_by_client"
         print_report_name="Sales Report by Client"
@@ -105,7 +105,7 @@
         id="sales_report_by_product_code"
         model="product.template"
         string="Sales Report by Product Code"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_sales_report_by_product_code"
         file="popular_reports.report_sales_report_by_product_code"
         print_report_name="Sales Report by Product Code"
@@ -115,7 +115,7 @@
         id="all_balance_listing"
         model="product.template"
         string="All Balance Listing"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_all_balance_listing"
         file="popular_reports.report_all_balance_listing"
         print_report_name="All Balance Listing"
@@ -125,7 +125,7 @@
         id="stock_valuation_info"
         model="product.template"
         string="Stock Valuation Information"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_stock_valuation_info"
         file="popular_reports.report_stock_valuation_info"
         print_report_name="Stock Valuation Information"
@@ -135,7 +135,7 @@
         id="purchase_inv_lst_by_inv_no"
         model="account.move"
         string="Purchase Invoice Listing by Invoice No."
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_purchase_inv_lst_by_inv_no"
         file="popular_reports.report_purchase_inv_lst_by_inv_no"
         print_report_name="Purchase Invoice Listing by Invoice No." 
@@ -145,7 +145,7 @@
         id="sales_report_by_month"
         model="account.move"
         string="Sales Report by Month"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_sales_report_by_month"
         file="popular_reports.report_sales_report_by_month" 
         print_report_name="Sales Report by Month"
@@ -155,7 +155,7 @@
         id="sales_report_by_date"
         model="account.move"
         string="Sales Report by Date"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_sales_report_by_date"
         file="popular_reports.report_sales_report_by_date" 
         print_report_name="Sales Report by Date"
@@ -166,7 +166,7 @@
         id="daily_sales_report_by_date"
         model="account.move"
         string="Daily Sales Report by Date"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_daily_sales_report_by_date"
         file="popular_reports.report_daily_sales_report_by_date" 
         print_report_name="Sales Report by Month"
@@ -175,28 +175,28 @@
     <report
         id="dmg_sales_rtrn_lst_by_cust_no"
         model="account.move"
-        string="Damage Sales Return by Group Listing (Not Approved) by Customer No"
-        report_type="qweb-pdf"
+        string="Damage Sales Return by Group Listing by Customer No"
+        report_type="qweb-html"
         name="popular_reports.report_dmg_sales_rtrn_lst_by_cust_no"
         file="popular_reports.report_dmg_sales_rtrn_lst_by_cust_no" 
-        print_report_name="Damage Sales Return by Group Listing (Not Approved) by Customer No"
+        print_report_name="Damage Sales Return by Group Listing by Customer No"
         paperformat="paperformat_popular_report"
     />
     <report
         id="dmg_sales_rtrn_lst_by_product"
         model="account.move"
-        string="Damage Sales Listing (Approved) by Produt Code"
-        report_type="qweb-pdf"
+        string="Damage Sales Listing by Produt Code"
+        report_type="qweb-html"
         name="popular_reports.report_dmg_sales_rtrn_lst_by_product"
         file="popular_reports.report_dmg_sales_rtrn_lst_by_product" 
-        print_report_name="Damage Sales Listing (Approved) by Produt Code"
+        print_report_name="Damage Sales Listing by Produt Code"
         paperformat="paperformat_popular_report"
     />
     <report
         id="cash_receipt_listing_by_cust_no"
         model="account.payment"
         string="Cash Receipt Listing by Customer No (Approved)"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_cash_receipt_listing_by_cust_no"
         file="popular_reports.report_cash_receipt_listing_by_cust_no"
         print_report_name="Cash Receipt Listing by Customer No (Approved)"
@@ -206,7 +206,7 @@
         id="purchase_analysis_report_by_sup"
         model="account.move"
         string="Purchase Analysis Report by Supplier"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_purchase_analysis_report_by_sup"
         file="popular_reports.report_purchase_analysis_report_by_sup"
         print_report_name="Purchase Analysis Report by Supplier"
@@ -216,7 +216,7 @@
         id="cash_payment_listing_by_lumpsum"
         model="account.payment"
         string="Cash Payment Listing by Lumpsum"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_cash_payment_listing_by_lumpsum"
         file="popular_reports.report_cash_payment_listing_by_lumpsum"
         print_report_name="Cash Payment Listing by Lumpsum"
@@ -226,7 +226,7 @@
         id="outstanding_inv_report_by_cust"
         model="account.move"
         string="Outstanding Invoice Report by Customer"
-        report_type="qweb-pdf"
+        report_type="qweb-html"
         name="popular_reports.report_outstanding_inv_report_by_cust"
         file="popular_reports.report_outstanding_inv_report_by_cust"
         print_report_name="Outstanding Invoice Report by Customer"
@@ -267,12 +267,16 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Stock Transfer Information (Posted) by Date</span>
+                                        <span>Stock Transfer Information by Date
+                                            <t t-if="filter_post_stock=='1'">(Avaliable)</t>
+                                            <t t-elif="filter_post_stock=='2'">(Cancel)</t>
+                                            <t t-if="filter_post_stock=='3'">(Done)</t>
+                                            <t t-elif="filter_post_stock=='4'">(Draft)</t>
+                                            <t t-if="filter_post_stock=='5'">(Waiting)</t></span>
                                     </font>
                                 </b>
                             </div>
                         </div>
-                        <br/>
                         <br/>
                         <div class="row" style="text-align:center; font-size: 20px;">
                             <div class="col">
@@ -433,8 +437,7 @@
                                 </span>
                             </div>
                         </div>
-                        <br/>
-                        
+                        <br/>                        
                         <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
@@ -451,7 +454,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                             <t t-foreach="lst" t-as="line">
+                            <t t-foreach="lst" t-as="line">
                                  <tbody>
                                  <t t-foreach="line['items']" t-as="item">
                                      <tr t-if="item_first">
@@ -570,6 +573,7 @@
                             </thead>
                             <t t-if="lst">
                                  <t t-foreach="lst" t-as="line">
+                                     <span t-esc="line['test']"/>
                                      <tbody>
                                      <t t-foreach="line['items']" t-as="item">
                                          <tr>
@@ -589,7 +593,8 @@
                                                 </t>
                                             </td>                          
                                          </tr>
-                                     </t>
+                                     </t>                                                    
+
                                      </tbody>
                                  </t>
                              </t>
@@ -681,29 +686,36 @@
                             </thead>
                             <t t-if="lst">
                                  <t t-foreach="lst" t-as="line">
-                                     <tbody>
-                                     <t t-foreach="line['items']" t-as="item">
-                                         <tr>
-                                            <td>
-                                                <t>
-                                                    <span t-esc="item['name']"/>
-                                                </t>
-                                            </td>
-                                            <td style="text-align:center;">
-                                                <t>
-                                                    <span t-esc="item['date']"/>
-                                                </t>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <t>
-                                                    <span t-esc="item['qty']"/>
-                                                </t>
-                                            </td>                          
-                                         </tr>
-                                     </t>
-                                     </tbody>
-                                    </t>
+                                 <tbody>
+                                 <t t-foreach="line['items']" t-as="item">
+                                     <tr t-if="item_first">
+                                        <td colspan="3">
+                                            <t>
+                                                <span t-esc="line['c_name']"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <t>
+                                                <span t-esc="item['name']"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <t>
+                                                <span t-esc="item['date']"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <t>
+                                                <span t-esc="item['qty']"/>
+                                            </t>
+                                        </td>                          
+                                     </tr>
+                                 </t>
+                                 </tbody>
                                 </t>
+                             </t>
                             <t t-else="">
                                 <tbody>
                                     <tr>
@@ -814,16 +826,16 @@
                                          </tr>
                                      </t>
                                     <tr>
-                                        <td>
-                                        </td>
-                                        <td style="text-align:center;">
+                                        <th>
+                                        </th>
+                                        <th style="text-align:center;">
                                             <span>Sub Total</span>
-                                        </td>
-                                        <td style="text-align:right;">
+                                        </th>
+                                        <th style="text-align:right;">
                                             <t>
                                                 <span t-esc="line['ttl_qty']"/>
                                             </t>
-                                        </td>                          
+                                        </th>                          
                                      </tr>
                                 </t>
                            </tbody>
@@ -939,16 +951,16 @@
                                          </tr>
                                      </t>
                                     <tr>
-                                        <td>
-                                        </td>
-                                        <td style="text-align:center;">
+                                        <th>
+                                        </th>
+                                        <th style="text-align:center;">
                                             <span>Sub Total</span>
-                                        </td>
-                                        <td style="text-align:right;">
+                                        </th>
+                                        <th style="text-align:right;">
                                             <t>
                                                 <span t-esc="line['ttl_qty']"/>
                                             </t>
-                                        </td>                          
+                                        </th>                          
                                      </tr>
                                 </t>
                            </tbody>
@@ -1008,7 +1020,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Sales Analysis Report by Customer</span>
+                                        <span>Sales Analysis Report by Customer <t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t></span>
                                     </font>
                                 </b>
                             </div>
@@ -1235,7 +1247,7 @@
                                 <t t-set="sub_ttl_other_charges" t-value="0"/>
                                 <t t-set="sub_ttl_discount_amount" t-value="0"/>
                                 <t t-set="sub_ttl_tax_excluded" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: x.invoice_partner_display_name,reverse=False)" t-as="table_line">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date),reverse=False)" t-as="table_line">
                                     <t t-if="table_line_first">
                                         <t t-set="sub_name" t-value="table_line.partner_id.display_name"/>
                                     </t>
@@ -1473,38 +1485,36 @@
                                         <span>Invoice Date</span>
                                     </th>
                                     <th>
-                                        <span>Product No.</span>
-                                    </th>
-                                    <th>
                                         <span>Product</span>
                                     </th>
                                     <th>
                                         <span>Customer Name</span>
                                     </th>
+                                    <th style="text-align:right;">
+                                        <span>Quantity</span>
+                                    </th>
                                     <th>
                                         <span>UM</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Quantity</span>
+                                        <span>Discount Amount</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Sales Price</span>
-                                    </th>
-                                    <th style="text-align:right;">
-                                        <span>Amount</span>
+                                        <span>Net Amount</span>
                                     </th>                                
                                 </tr>
                             </thead>
                             <t t-if="docs">
                             <tbody>
-                                <t t-set="sub" t-value="0"/>
+                                <t t-set="sub" t-value="1"/>
                                 <t t-set="sub_date" t-value=""/>
                                 <t t-set="currency_id" t-value="docs.currency_id"/>
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="product" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x:x.invoice_date,reverse=False)" t-as="doc">
-                                    <t t-if="doc_first">
+                                    <t t-set="ttl" t-value="ttl + doc.amount_residual"/>
+<!--                                     <t t-if="doc_first">
                                         <t t-set="sub_date" t-value="doc.invoice_date"/>
                                     </t>
                                     <t t-else="">
@@ -1516,7 +1526,7 @@
                                             <t t-set="sub" t-value="0"/>
                                         </t>
                                     </t>
-                                    <t t-if="sub==1 and product==1">
+                                    <t t-if="sub==1">
                                         <tr>
                                             <th>
                                                 <span></span>
@@ -1542,65 +1552,85 @@
                                         </tr>
                                         <t t-set="sub_ttl" t-value="0"/>
                                         <t t-set="product" t-value="0"/>
+                                    </t> -->
+                                    <t t-if="doc_first">
+                                        <t t-set="sub_date" t-value="doc.invoice_date"/>
+                                        <t t-set="sub" t-value="0"/>
+                                    </t>
+                                    <t t-if="sub_date != doc.invoice_date">
+                                        <tr>
+                                            <th>
+                                                <span></span>
+                                            </th>
+                                            <th>
+                                                <span></span>
+                                            </th>
+                                            <th>
+                                                <span></span>
+                                            </th>
+                                            <th>
+                                                <span></span>
+                                            </th>
+                                            <th colspan="2">
+                                                <span>Sub Total</span>
+                                            </th>
+                                            <th style="text-align:right;">
+                                                <span><t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                            </th>
+                                        </tr>
+                                        <t t-set="sub_ttl" t-value="0"/>
+                                        <t t-set="product" t-value="0"/>
+                                        <t t-set="sub_date" t-value="doc.invoice_date"/>
+                                        <t t-set="sub" t-value="1"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-set="sub" t-value="0"/>
                                     </t>
                                     <t t-foreach="doc.invoice_line_ids" t-as="table_line"  t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_id.display_name in product_ids">
-                                        <t t-set="product" t-value="1"/>
                                         <tr>
                                             <td>
-                                                <t t-if="table_line_first">
+                                                <t t-if="table_line_first and doc_first">
                                                     <span t-field="doc.invoice_date"/>
                                                 </t>
-                                                <t t-else="">
+<!--                                                 <t t-else=""> -->
                                                     <t t-if="sub==1">
                                                        <span t-field="doc.invoice_date"/>
+                                                        <t t-set="sub" t-value="0"/>
                                                     </t>
-                                                </t>                         
+<!--                                                 </t>                          -->
                                             </td>
                                             <td>
                                                 <span t-field="table_line.product_id"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.product_id.name"/>
-                                            </td>
-                                            <td>
                                                 <t t-if="table_line_first">
                                                     <span t-field="doc.partner_id.display_name"/>
-                                                </t>
-                                                <t t-else="">
-                                                    <t t-if="sub==1">
-                                                       <span t-field="doc.partner_id.display_name"/>
-                                                    </t>
-                                                </t>                         
+                                                </t>                  
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-field="table_line.quantity"/>
                                             </td>
                                             <td style="text-align:center;">
                                                 <span t-field="table_line.product_id.uom_name"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <span t-field="table_line.quantity"/>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span t-field="table_line.price_unit"/>
+                                                <span t-esc="(table_line.price_unit * table_line.quantity) - table_line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                             </td>
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.price_subtotal"/>
                                                 <t t-set="sub_ttl" t-value="sub_ttl + table_line.price_subtotal"/>
-                                                <t t-set="ttl" t-value="ttl + table_line.price_subtotal"/>
-
                                             </td>
                                         </tr>
-                                    <t t-if="doc_first"></t>
+<!--                                     <t t-if="doc_first"></t>
                                     <t t-else="">
                                         <t t-if="sub==1"></t>
                                         <t t-else="">
                                             <t t-set="sub" t-value="0"/>
                                         </t>
-                                        </t>
+                                        </t> -->
                                     </t>
                                     <t t-if="doc_last">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
                                             <th>
                                                 <span></span>
                                             </th>
@@ -1625,9 +1655,6 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <th>
-                                        <span></span>
-                                    </th>
                                     <th>
                                         <span></span>
                                     </th>
@@ -1938,7 +1965,7 @@
 
                 </head>
                 <body>
-                    <div class="container-fluid" id="wrapwrap">
+                   <div class="container-fluid" id="wrapwrap">
                         <div class="row" style="text-align:center;">
                             <div class="col">
                                 <b>
@@ -2232,7 +2259,7 @@
 
                 </head>
                 <body >
-                    <div class="container-fluid" id="wrapwrap">
+                   <div class="container-fluid" id="wrapwrap">
                         <div class="row" style="text-align:center;">
                             <div class="col">
                                 <b>
@@ -2244,12 +2271,12 @@
                         </div>
                         <div class="row" style="text-align:center;">
                             <div class="col">
-                                <b class="text-center">
+                                <b>
                                     <font style="font-size: 24px;">
                                       Sales Report by Month (
-                                    <t t-foreach="docs.sorted(key=lambda x:x.create_date,reverse=False)" t-as="date">
+                                    <t t-foreach="docs.sorted(key=lambda x:x.invoice_date,reverse=False)" t-as="date">
                                         <t t-if="date_last">
-                                            <t t-esc="context_timestamp(date.create_date).strftime('%B %Y')"/></t>
+                                            <t t-esc="context_timestamp(date.invoice_date).strftime('%B %Y')"/></t>
                                     </t>)
                                     <br/>
                                 </font>
@@ -2409,9 +2436,9 @@
                         </div>
                         <div class="row" style="text-align:center;">
                             <div class="col">
-                                <b class="text-center">
+                                <b>
                                     <font style="font-size: 24px;">
-                                      Daily Sales Report by Date                      
+                                      Daily Sales Report by Date <t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t>                   
                                     <br/>
                                 </font>
                             </b>
@@ -2604,7 +2631,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Purchase Invoice Listing by Invoice No.(Before Posted)</span>
+                                        <span>Purchase Invoice Listing by Invoice No.<t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t></span>
                                     </font>
                                 </b>
                             </div>
@@ -2798,7 +2825,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Damage Sales Return by Group Listing (Not Approved) by Customer No. </span>
+                                        <span>Damage Sales Return by Group Listing by Customer No.<t t-if="filter_post_credit=='1'">(Draft)</t><t t-elif="filter_post_credit=='2'">(Posted)</t></span>
                                     </font>
                                 </b>
                             </div>
@@ -2837,7 +2864,7 @@
                             <t t-set="sub_name" t-value=""/>
                             <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                             <t t-set="sub_ttl" t-value="0"/>
-                            <t t-foreach="docs.sorted(key=lambda x: x.invoice_partner_display_name,reverse=False)" t-as="doc">
+                            <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date),reverse=False)" t-as="doc">
                             <t t-if="doc_first">
                                 <t t-set="sub_name" t-value="doc.partner_id.display_name"/>
                             </t>
@@ -3025,7 +3052,9 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Damage Sales Return Listing (Approved) by Product Code</span>
+                                        <span>Damage Sales Return Listing by Product Code 
+<!--                                             <t t-if="filter_post_credit=='1'">(Draft)</t><t t-elif="filter_post_credit=='2'">(Posted)</t> -->
+                                        </span>
                                     </font>
                                 </b>
                             </div>
@@ -3064,7 +3093,7 @@
                             
                             <tbody>
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs" t-as="doc">
+                                <t t-foreach="docs.sorted(key=lambda x: x.invoice_date,reverse=False)" t-as="doc">
                                 <t t-set="sub" t-value="0"/>
                                 <t t-set="sub_name" t-value=""/>
                                 <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -3214,7 +3243,13 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Cash Receipt Listing by Customer No (Approved)</span>
+                                        <span>Cash Receipt Listing by Customer No
+                                            <t t-if="filter_post_payment=='1'">(Cancelled)</t>
+                                            <t t-elif="filter_post_payment=='2'">(Draft)</t>
+                                            <t t-elif="filter_post_payment=='3'">(Reconciled)</t>
+                                            <t t-if="filter_post_payment=='4'">(Sent)</t>
+                                            <t t-if="filter_post_payment=='5'">(Validated)</t>
+                                        </span>
                                     </font>
                                 </b>
                             </div>
@@ -3247,7 +3282,7 @@
                                         <span>Clear Status</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Receipt Amount</span>
+                                        <span>Amount</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -3258,7 +3293,7 @@
                                 <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: x.partner_id.display_name,reverse=False)" t-as="table_line">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
                                     <t t-set="ttl" t-value="ttl+table_line.amount"/>
 
                                     <t t-if="table_line_first">
@@ -3409,7 +3444,13 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Cash Receipt Listing by Date (Approved)</span>
+                                        <span>Cash Receipt Listing by Date
+                                            <t t-if="filter_post_payment=='1'">(Cancelled)</t>
+                                            <t t-elif="filter_post_payment=='2'">(Draft)</t>
+                                            <t t-elif="filter_post_payment=='3'">(Reconciled)</t>
+                                            <t t-if="filter_post_payment=='4'">(Sent)</t>
+                                            <t t-if="filter_post_payment=='5'">(Validated)</t>
+                                        </span>
                                     </font>
                                 </b>
                             </div>
@@ -3453,7 +3494,7 @@
                                 <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: x.partner_id.display_name,reverse=False)" t-as="table_line">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
                                     <t t-set="ttl" t-value="ttl+table_line.amount"/>
 
                                     <t t-if="table_line_first">
@@ -3604,7 +3645,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Purchase Analysis Report by Supplier</span>
+                                        <span>Purchase Analysis Report by Supplier <t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t></span>
                                     </font>
                                 </b>
                             </div>
@@ -3826,7 +3867,7 @@
                                 <t t-set="sub_ttl_tax_excluded" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
 
-                                <t t-foreach="docs.sorted(key=lambda x: x.invoice_partner_display_name,reverse=False)" t-as="table_line">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date),reverse=False)" t-as="table_line">
                                     
                                     <t t-if="table_line_first">
                                         <t t-set="sub_name" t-value="table_line.partner_id.display_name"/>
@@ -4003,7 +4044,13 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Cash Payment Listing by Lumpsum (After Posted)</span>
+                                        <span>Cash Payment Listing by Lumpsum
+                                            <t t-if="filter_post_payment=='1'">(Cancelled)</t>
+                                            <t t-elif="filter_post_payment=='2'">(Draft)</t>
+                                            <t t-elif="filter_post_payment=='3'">(Reconciled)</t>
+                                            <t t-if="filter_post_payment=='4'">(Sent)</t>
+                                            <t t-if="filter_post_payment=='5'">(Validated)</t>
+                                        </span>
                                     </font>
                                 </b>
                             </div>
@@ -4053,7 +4100,7 @@
                                 <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: x.partner_id.display_name,reverse=False)" t-as="table_line">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
                                     <t t-set="ttl" t-value="ttl+table_line.amount"/>
 
                                     <t t-if="table_line_first">

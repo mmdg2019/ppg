@@ -27,6 +27,9 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Cash Payment Listing by Lumpsum">
+                    <group>
+                        <field name="filter_post_payment" widget="many2one_tags" string="Status"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
@@ -44,6 +47,9 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Cash Receipt Listing by Date">
+                    <group>
+                        <field name="filter_post_payment" widget="many2one_tags" string="Status"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
@@ -63,6 +69,9 @@
                 <form string="Cash Receipt Listing by Customer">
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_payment" widget="many2one_tags" string="Status"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -85,6 +94,10 @@
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
                    </group>
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
+                    
                <footer>
                    <button name="print_report_daily_sales_report_by_date" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -97,9 +110,12 @@
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
-                <form string="Damage Sales Return Listing (Approved) by Product Code">
+                <form string="Damage Sales Return Listing by Product Code">
                     <group string="Product">
                         <field name="products" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -117,9 +133,12 @@
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
-                <form string="Damage Sales Return Listing (Not Approved) by Customer No.">
+                <form string="Damage Sales Return Listing by Customer No.">
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -182,6 +201,9 @@
                     <group string="Vendor">
                         <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
                     </group>
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
@@ -198,9 +220,12 @@
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
-                <form string="Purchase Invoice Listing by Invoice No.(Before Posted)">
+                <form string="Purchase Invoice Listing by Invoice No.">
                     <group string="List of Invoice No.">
-                        <field name="invoice_no" widget="many2many_tags" context="{'default_type': 'in_invoice'}" domain="[('type', '=', 'in_invoice'),('state', '!=', 'posted')]"/>
+                        <field name="invoice_no" widget="many2many_tags" context="{'default_type': 'in_invoice'}" domain="[('type', '=', 'in_invoice')]"/>
+                    </group>
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -219,6 +244,9 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Purchase Stock Analysis by Date">
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
@@ -238,6 +266,9 @@
                 <form string="Sales Analysis Report by Customer">
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -279,13 +310,14 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Report by Date">
-                    <group col="4" colspan="4">
-                       <field name="start_date" required="1"></field>
-                       <field name="end_date" required="1"></field>
-                   </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
                     </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+                    
                <footer>
                    <button name="print_report_sales_report_by_date" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -386,10 +418,14 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Transfer Information">
+                    <group>
+                        <field name="filter_post_stock" widget="many2one_tags" string="Status"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
-                   </group>
+                    </group>
+                    
                <footer>
                    <button name="print_report_stock_transfer_info" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -462,7 +498,7 @@
         </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_dmg_sales_rtrn_lst_by_product'>
-            <field name="name">Export Damage Sales Return Listing (Approved) by Product Code</field>
+            <field name="name">Export Damage Sales Return Listing by Product Code</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
@@ -471,7 +507,7 @@
         </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_dmg_sales_rtrn_lst_by_cust_no'>
-            <field name="name">Export Damage Sales Return Listing (Not Approved) by Customer No.</field>
+            <field name="name">Export Damage Sales Return Listing by Customer No.</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
@@ -507,7 +543,7 @@
         </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_purchase_invoice_listing_by_inv_no'>
-            <field name="name">Export Purchase Invoice Listing by Invoice No.(Before Posted)</field>
+            <field name="name">Export Purchase Invoice Listing by Invoice No.</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
