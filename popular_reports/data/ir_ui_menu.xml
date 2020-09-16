@@ -7,7 +7,7 @@
     <field name="name">Popular Reports</field>
     <field name="parent_id" eval="False"/>
     <field name="sequence">10</field>
-    <field name="web_icon">fa fa-diamond,#f1c40f,#34495e</field>
+    <field name="web_icon">popular_reports,static/src/img/logo.png</field>
   </record>
 <!--   <record id="popular_reports.popular_reports_popular_reports_sub_menu" model="ir.ui.menu" context="{'studio': True}">
     <field name="action" ref="popular_reports.popular_reports_8959fb2a-a44e-488e-aa22-fc24208bdfa1"/>

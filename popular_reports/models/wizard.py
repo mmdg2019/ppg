@@ -42,16 +42,22 @@ class PopularReport(models.TransientModel):
     POST_STOCK_LIST = [('1','Avaliable'),('2','Cancel'),('3','Done'),('4','Draft'),('5','Waiting')]
 
 
-
-#     default=MONTH_LIST[int(datetime.datetime.now().strftime('%m'))-1]
-#     year = fields.Selection(compute ='_get_year')
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
 
     warehouse = fields.Many2many('stock.warehouse', string='Warehouse')
     products = fields.Many2many('product.product', string='Product Lists')
+    product_cats = fields.Many2many('product.category', string='Product Category')
     invoice_no = fields.Many2many('account.move', string='Inovice No.')
     stock_location = fields.Many2many('stock.location', string='Location')
+    location_src = fields.Many2one('stock.location')
+    location_dest = fields.Many2one('stock.location')
+
+#     location_src_id = fields.Many2many('stock.location','location_src_id', string='Source')
+#     location_dest_id = fields.Many2many('stock.location','location_dest_id', string='Destination')
+#     location_id = fields.Many2many('stock.location', string='Location')
+#     location_dest_id = fields.Many2many('stock.location', string='Location')
+
 
 
     category = fields.Many2many('product.category', 'categ_wiz_rel', 'categ', 'wiz', string='Warehouse')
@@ -88,6 +94,16 @@ class PopularReport(models.TransientModel):
             'product_ids': self.products.ids
         }
         return self.env.ref('popular_reports.sales_report_by_product_code').report_action(self, data=data)
+    def print_report_sales_report_by_product_cat(self):
+        
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'product_cats_ids': self.product_cats.ids
+        }
+        return self.env.ref('popular_reports.sales_report_by_product_cat').report_action(self, data=data)
     
     def print_sales_report_by_client(self):
         data = {
@@ -115,6 +131,17 @@ class PopularReport(models.TransientModel):
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.sales_analysis_report_by_cust').report_action(self, data=data)
+    
+    def print_report_sales_analysis_by_month_and_cust(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.sales_analysis_by_month_and_cust').report_action(self, data=data)
     
     def print_report_sales_report_by_date(self):
         data = {
@@ -152,6 +179,8 @@ class PopularReport(models.TransientModel):
     def print_report_stock_transfer_info(self):
         data = {
             'filter_post_stock':self.filter_post_stock,
+            'location_src':self.location_src.ids,
+            'location_dest':self.location_dest.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
@@ -234,18 +263,10 @@ class PopularReport(models.TransientModel):
         return self.env.ref('popular_reports.daily_sales_report_by_date').report_action(self, data=data)
     
     def print_report_dmg_sales_rtrn_lst_by_product(self):
-        product_ids = []
-        if self.products.ids:
-            obj = self.env['product.product'].search([('id', 'in', self.products.ids)])
-            for temp in obj:
-                product_ids.append(temp.display_name)
-        else:
-            obj = self.env['product.product'].search([])
-            for temp in obj:
-                product_ids.append(temp.display_name)
+        
         data = {
             'filter_post_credit':self.filter_post_credit,
-            'product_ids': product_ids,
+            'product_ids': self.products.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
