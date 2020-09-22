@@ -206,6 +206,9 @@
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
@@ -235,6 +238,29 @@
                    </group>
                <footer>
                    <button name="print_report_purchase_analysis_report_by_sup" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        
+        <record model='ir.ui.view' id='wizard_form_report_purchase_listing_by_sup'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Listing by Supplier">
+                    <group string="Vendor">
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                    </group>
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_purchase_listing_by_sup" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
@@ -599,6 +625,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_purchase_analysis_report_by_sup"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_purchase_listing_by_sup'>
+            <field name="name">Export Purchase Listing by Supplier</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_purchase_listing_by_sup"/>
             <field name="target">new</field>
         </record>
         

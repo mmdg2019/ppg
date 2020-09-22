@@ -212,6 +212,15 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.purchase_analysis_report_by_sup').report_action(self, data=data)
     
+    def print_report_purchase_listing_by_sup(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.purchase_listing_by_sup').report_action(self, data=data)
+    
     def print_report_purchase_inv_lst_by_inv_no(self):
         data = {
             'filter_post':self.filter_post,
@@ -283,6 +292,7 @@ class PopularReport(models.TransientModel):
     
     def print_report_outstanding_inv_report_by_cust(self):
         data = {
+            'filter_post':self.filter_post,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date

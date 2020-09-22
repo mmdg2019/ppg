@@ -87,6 +87,17 @@
     />
     
     <report
+        id="purchase_listing_by_sup"
+        model="account.move"
+        string="Purchase Listing by Supplier"
+        report_type="qweb-html"
+        name="popular_reports.report_purchase_listing_by_sup"
+        file="popular_reports.report_purchase_listing_by_sup" 
+        print_report_name="Purchase Listing by Supplier"
+        paperformat="paperformat_popular_report"
+    />
+    
+    <report
         id="sales_analysis_report_by_cust"
         model="account.move"
         string="Sales Analysis Report by Customer"
@@ -190,11 +201,11 @@
     <report
         id="sales_analysis_by_month_and_cust"
         model="account.move"
-        string="Sales Report by Month and Customer"
+        string="Sales Analysis Report by Month and Customer"
         report_type="qweb-html"
         name="popular_reports.report_sales_analysis_by_month_and_cust"
         file="popular_reports.report_sales_analysis_by_month_and_cust" 
-        print_report_name="Sales Report by Month and Customer"
+        print_report_name="Sales Analysis Report by Month and Customer"
         paperformat="paperformat_popular_report"
     />
     <report
@@ -1822,8 +1833,8 @@
                             </thead>
                             <t t-if="docs">
                             <tbody>
-                                <t t-foreach="docs.sorted(key=lambda x: (x.location_id,x.product_id),reverse=False)" t-as="doc">
-                                    <t t-foreach="doc.quant_ids" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids">
+                                <t t-foreach="docs.sorted(key=lambda x: x.location_id, reverse=False)" t-as="doc">
+                                    <t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids">
                                     <tr>
                                         <td>
                                             <span t-field="table_line.location_id"/>
@@ -1940,8 +1951,8 @@
                             <tbody>
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="total_currency_id" t-value=""/>
-                                <t t-foreach="docs.sorted(key=lambda x: (x.location_id,x.product_id.display_name),reverse=False)" t-as="doc">
-                                    <t t-foreach="doc.quant_ids" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids">
+                                <t t-foreach="docs.sorted(key=lambda x: x.location_id,reverse=False)" t-as="doc">
+                                    <t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids">
                                     <t t-set="total_currency_id" t-value="table_line.currency_id"/>
 
                                     <tr>
@@ -2727,9 +2738,9 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
-                                    
+                                <tbody>  
                                     <t t-set="currency_id" t-value="docs.currency_id"/>
+                                    <t t-set="ttl" t-value="0"/>
                                     <t t-foreach="user_ids" t-as="cust">
                                         <t t-set="sub" t-value="0"/>
                                         <t t-set="sub_ttl" t-value="0"/>
@@ -2737,8 +2748,6 @@
                                             <t t-set="sub_ttl" t-value="0"/>
                                             <t t-foreach="docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date)" t-as="table_line" t-if="table_line.partner_id.id==cust.id">
                                                 <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
-                                                <t t-set="sub" t-value="sub + sub_ttl"/>
-                                                <t t-set="ttl" t-value="0"/>
                                             </t>
                                             <tr>
                                                 <td>
@@ -2749,7 +2758,7 @@
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
-                                                    
+                                                    <t t-set="sub" t-value="sub + sub_ttl"/>
                                                 </td>
                                             </tr>
                                         </t>
@@ -2761,97 +2770,20 @@
                                             </th>
                                             <th style="text-align:right;">
                                                 <span><t t-esc="abs(sub)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                                <t t-set="ttl" t-value="ttl + sub"/>
                                             </th>
                                         </tr>
                                     </t>
-<!-- <span t-esc="cust"/>
-        
-                                </t> -->
-
-<!--                                 <t t-foreach="docs.sorted(key=lambda x: x.invoice_date,reverse=False)" t-as="table_line">
-                                    <t t-set="ttl" t-value="ttl + table_line.amount_total_signed"/>
-                                    <t t-set="ttl_due" t-value="ttl_due + table_line.amount_residual_signed"/>
-                                    <t t-if="table_line_first">
-                                        <t t-set="sub_date" t-value="table_line.invoice_date.strftime('%b/%Y')"/>
-                                        <t t-set="first_date" t-value="table_line.invoice_date.strftime('%b/%Y')"/>
-                                    </t>
-                                    <t t-else="">
-                                        <t t-if="sub_date != table_line.invoice_date.strftime('%b/%Y')">
-                                            <t t-set="temp_date" t-value="sub_date"/>
-                                            <t t-set="sub_date" t-value="table_line.invoice_date.strftime('%b/%Y')"/>
-                                            <t t-set="sub" t-value="1"/>
-                                        </t>
-                                        <t t-else="">
-                                            <t t-set="sub" t-value="0"/>
-                                        </t>
-                                    </t>
-                                    <t t-if="sub==1">
-                                        <tr>
-                                            <td style="text-align:right;">
-                                                <span t-esc="no"></span>.
-                                                <span t-set="no" t-value="no + 1"></span>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span><t t-esc="cust"/></span>
-                                            </td>
-                                            <td>
-                                                <t t-if="first_date">
-                                                    <span t-esc="first_date"/>
-                                                    <t t-set="first_date" t-value=""/>
-                                                </t>
-                                                <t t-else="">
-                                                    <span t-esc="temp_date"/>
-                                                </t>
-
-                                            </td>
-                                            
-                                        <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
-                                        <t t-set="sub_ttl" t-value="0"/>
-                                        <t t-set="sub_ttl_due" t-value="0"/>
-                                    </t>                                
-                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
-                                    <t t-set="sub_ttl_due" t-value="sub_ttl_due + table_line.amount_residual_signed"/>
-                                    <t t-if="table_line_last">
-                                        <tr>
-                                            <td style="text-align:right;">
-                                                <span t-esc="no"></span>.
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span><t t-esc="cust"/></span>
-                                            </td>
-                                            <td>
-                                                <span t-esc="table_line.invoice_date.strftime('%b/%Y')"/>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span><t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span><t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
-                                            </td>
-                                        </tr>
-                                    </t>
-                                </t>
-                                </t> -->
-                            </tbody>
+                                </tbody>
                             <tfooter>
-                                <tr>                                    
-                                    <th colspan="2">
+                                <tr> 
+                                    <th>
+                                    </th>
+                                    <th>
                                         <span>Grand Total</span>
                                     </th>
-                                    <td style="text-align:right;">
-<!--                                         <span><t t-esc=""/></span> -->
-                                    </td>
-<!--                                     <th style="text-align:right;">
-                                        <span><t t-esc="abs(ttl-ttl_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
-                                    </th>
                                     <th style="text-align:right;">
-                                        <span><t t-esc="abs(ttl_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
-                                    </th> -->
-                                    <th style="text-align:right;">
-<!--                                         <span><t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span> -->
+                                        <span><t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
                                     </th>
                                 </tr>
                             </tfooter>
@@ -3965,7 +3897,7 @@
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date),reverse=False)" t-as="table_line" >
-                                    <t t-set="ttl" t-value="ttl+table_line.amount_total_signed * (-1)"/>
+                                    <t t-set="ttl" t-value="ttl+table_line.amount_total_signed"/>
 
                                     <t t-if="table_line_first">
                                         <t t-set="sub_name" t-value="table_line.partner_id.display_name"/>
@@ -3991,7 +3923,7 @@
                                                 <span>Sub Total</span>
                                             </th>
                                             <th style="text-align:right;">
-                                                <span><t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
+                                                <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th>
                                                 <span></span>
@@ -4022,14 +3954,14 @@
                                             <span t-field="table_line.display_name"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <span t-esc="table_line.amount_total_signed * (-1)"/>
+                                            <span t-esc="abs(table_line.amount_total_signed)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                         </td>
                                         <td style="text-align:center;">
                                             <span t-field="table_line.state"/>
                                         </td>
                                         
                                     </tr>
-                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed * (-1)"/>
+                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
                                     <t t-if="table_line_last">
                                         <tr>
                                             <th>
@@ -4042,7 +3974,7 @@
                                                 <span>Sub Total</span>
                                             </th>
                                             <th style="text-align:right;">
-                                                <span><t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
+                                                <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
                                             </th>
                                             <th>
                                                 <span></span>
@@ -4064,7 +3996,7 @@
                                         <span>Grand Total</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/></span>
+                                        <span><t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/></span>
                                     </th>
                                     <th>
                                         <span></span>
@@ -4126,7 +4058,11 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Outstanding Invoice Report by Customer</span>
+                                        <span>Outstanding Invoice Report by Customer
+                                            <t t-if="filter_post=='1'">(Cancel)</t>
+                                            <t t-elif="filter_post=='2'">(Draft)</t>
+                                            <t t-elif="filter_post=='3'">(Posted)</t>
+                                        </span>
                                     </font>
                                 </b>
                             </div>
@@ -4159,8 +4095,14 @@
                                         <span>Status</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Pay Amount</span>
+                                        <span>Payment Receipt</span>
                                     </th>
+                                    <th style="text-align:right;">
+                                        <span>Damage</span>
+                                    </th>
+<!--                                     <th style="text-align:right;">
+                                        <span>Pay Amount</span>
+                                    </th> -->
                                     <th style="text-align:right;">
                                         <span>Amount</span>
                                     </th>
@@ -4181,7 +4123,7 @@
                                 <t t-set="sub_ttl_tax_excluded" t-value="0"/>
                                 <t t-set="ttl" t-value="0"/>
 
-                                <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date,x.display_name),reverse=False)" t-as="table_line">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date,x.display_name),reverse=False)" t-as="table_line"  t-if="table_line.amount_residual_signed > 0">
                                     
                                     <t t-if="table_line_first">
                                         <t t-set="sub_name" t-value="table_line.partner_id.display_name"/>
@@ -4195,20 +4137,9 @@
                                             <t t-set="sub" t-value="0"/>
                                         </t>
                                     </t>
-                                    <t t-if="table_line.amount_residual_signed > 0">
-                                        <t t-if="sub==1">
+                                    <t t-if="sub==1">
                                             <tr>
-                                                <th>
-                                                    <span></span>
-                                                </th>
-                                                <th>
-                                                    <span></span>
-                                                </th>
-
-                                                <th>
-                                                    <span></span>
-                                                </th>
-                                                <th>
+                                                <th colspan="5">
                                                     <span></span>
                                                 </th>
                                                 <th colspan="2">
@@ -4232,7 +4163,6 @@
                                             </td>
                                             <td>
                                                 <span t-field="table_line.partner_id.display_name"/>
-
                                             </td>
                                             <td>
                                                 <span t-field="table_line.display_name"/>
@@ -4240,9 +4170,24 @@
                                             <td>
                                                 <span t-field="table_line.invoice_payment_state"/>
                                             </td>
+                                            <t t-set="ttl_credit" t-value="0"/>
+                                            <t t-set="ttl_payment" t-value="0"/>
+                                            <t t-if="table_line.invoice_payments_widget != 'false'">
+                                                <span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+                                                    <span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+                                                    <span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/>
+                                                </span>
+                                            </t>
                                             <td style="text-align:right;">
-                                                <span t-esc="table_line.amount_total_signed-table_line.amount_residual_signed" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                                <span  t-esc="ttl_credit" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
                                             </td>
+                                            <td style="text-align:right;">
+                                                <span  t-esc="ttl_payment" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                            </td>
+<!--                                             <td style="text-align:right;">
+                                                <span t-esc="table_line.amount_total_signed-table_line.amount_residual_signed" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                            </td> -->
+                                            
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.amount_total_signed"/>
                                                 
@@ -4254,20 +4199,9 @@
                                             
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_residual_signed"/>
-                                    </t>
                                     <t t-if="table_line_last">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
-
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
+                                            <th colspan="5">
                                                 <span></span>
                                             </th>
                                             <th colspan="2">
@@ -4282,17 +4216,7 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
-                                        <span></span>
-                                    </th>
-
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
+                                    <th colspan="5">
                                         <span></span>
                                     </th>
                                     <th colspan="2">
@@ -4394,12 +4318,6 @@
                                         <span>Name</span>
                                     </th>
                                     <th>
-                                        <span>Start Date</span>
-                                    </th>
-                                    <th>
-                                        <span>End Date</span>
-                                    </th>
-                                    <th>
                                         <span>Cur</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -4437,12 +4355,6 @@
                                             <th>
                                                 <span></span>
                                             </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
                                             <th colspan="2">
                                                 <span>Sub Total</span>
                                             </th>
@@ -4464,12 +4376,6 @@
                                             <span t-field="table_line.partner_id.display_name"/>
                                         </td>
                                         <td>
-                                            <span t-esc="s_date"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="e_date"/>
-                                        </td>
-                                        <td>
                                             <span t-field="table_line.currency_id"/>
                                         </td>
                                         <td style="text-align:right;">
@@ -4479,12 +4385,6 @@
                                     <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount"/>
                                     <t t-if="table_line_last">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
                                             <th>
                                                 <span></span>
                                             </th>
@@ -4503,12 +4403,6 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
-                                        <span></span>
-                                    </th>
                                     <th>
                                         <span></span>
                                     </th>
@@ -4579,7 +4473,10 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Sales Report by Date <t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t></span>
+                                        <span>Sales Report by Product Category
+                                            <t t-if="filter_post=='1'">(Cancel)</t>
+                                            <t t-elif="filter_post=='2'">(Draft)</t>
+                                            <t t-elif="filter_post=='3'">(Posted)</t></span>
                                     </font>
                                 </b>
                             </div>
@@ -4599,10 +4496,7 @@
                         <table class="table o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <span>Invoice Date</span>
-                                    </th>
-                                    <th>
+                                    <th t-if='user_ids'>
                                         <span>Customer Name</span>
                                     </th>
                                     <th>
@@ -4613,38 +4507,211 @@
                                     </th>
                                 </tr>
                             </thead>
+<!--                             <t t-foreach="product_cats['temp']" t-as='users'>
+                                        <t t-if="'user' in users">
+
+                                            
+                                        </t>
+                                        <t t-else="">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="product_cats['product_cats_id']"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="product_cats['ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <t t-set="ttl" t-value="ttl + product_cats['ttl']"/>
+                                        </td>
+                                    </tr>
+                                    </t>
+                                    </t> -->
+
                         <t t-if="lst">
                             <tbody>
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="lst" t-as="product_cats">
-                                    <t t-foreach="product_cats['temp']" t-as='users'>
-                                        <t t-foreach="users['sub_temp']" t-as='user'>
-                                            <tr>                                    
+                                    <t t-if='user_ids'>
+                                        <t t-foreach="product_cats['customer']" t-as="customer">
+                                            <tr>
                                                 <td>
-                                                    <span t-esc="user['date']"/>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="users['user'].display_name"/>
+                                                    <span t-esc="customer['sub_cust'].display_name"/>
                                                 </td>
                                                 <td>
                                                     <span t-esc="product_cats['product_cats_id']"/>
                                                 </td>
                                                 <td style="text-align:right;">
-                                                    <span t-esc="user['sub_ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                    <span t-esc="customer['sub_ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                                 </td>
                                             </tr>
+                                            <tr t-if="customer_last">
+                                                <th>
+                                                    <span></span>
+                                                </th>
+                                                <th>
+                                                    <span>Sub Total</span>
+                                                </th>
+                                                <th style="text-align:right;">
+                                                    <span><t t-esc="product_cats['ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                                    <t t-set="ttl" t-value="ttl + product_cats['ttl']"/>
+                                                </th>
+                                            </tr>
                                         </t>
-                                        <tr t-if="users_last">
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th colspan="2">
-                                                <span>Sub Total</span>
-                                            </th>
-                                            <th style="text-align:right;">
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="product_cats['product_cats_id']"/>
+                                            </td>
+                                            <td style="text-align:right;">
                                                 <span t-esc="product_cats['ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                                 <t t-set="ttl" t-value="ttl + product_cats['ttl']"/>
-                                            </th>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                            <tfooter>
+                                <tr>
+                                    <th  t-if='user_ids'>
+                                        <span></span>
+                                    </th>
+                                    <th>
+                                        <span>Grand Total</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                    </th>
+                                </tr>
+                            </tfooter>
+                        </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+    
+    <template id="report_purchase_listing_by_sup">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+
+                </head>
+                <body>
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-field="res_company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        <span>Purchase Listing by Supplier <t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t></span>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b><t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b><t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Supplier Name</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Amount</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                            <tbody>
+                                <t t-set="sub" t-value="0"/>
+                                <t t-set="sub_name" t-value=""/>
+                                <t t-set="temp_name" t-value=""/>
+                                <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+                                <t t-set="sub_ttl" t-value="0"/>
+                                <t t-set="ttl" t-value="0"/>
+                                <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.invoice_date),reverse=False)" t-as="table_line" >
+                                    <t t-set="ttl" t-value="ttl+table_line.amount_total_signed"/>
+
+                                    <t t-if="table_line_first">
+                                        <t t-set="sub_name" t-value="table_line.partner_id.id"/>
+                                        <t t-set="temp_name" t-value="table_line.partner_id.display_name"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-if="sub_name != table_line.partner_id.id">
+                                            <t t-set="sub_name" t-value="table_line.partner_id.id"/>
+                                            <t t-set="sub" t-value="1"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-set="sub" t-value="0"/>
+                                        </t>
+                                    </t>
+                                    <t t-if="sub==1">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="temp_name"></span>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
+                                            </td>
+                                        </tr>
+                                        <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+                                        <t t-set="sub_ttl" t-value="0"/>
+                                        <t t-set="temp_name" t-value="table_line.partner_id.display_name"/>
+                                    </t>
+                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
+                                    <t t-if="table_line_last">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="temp_name"></span>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/></span>
+                                            </td>
                                         </tr>
                                     </t>
                                 </t>
@@ -4652,13 +4719,10 @@
                             <tfooter>
                                 <tr>
                                     <th>
-                                        <span></span>
-                                    </th>
-                                    <th colspan="2">
                                         <span>Grand Total</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                        <span><t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/></span>
                                     </th>
                                 </tr>
                             </tfooter>

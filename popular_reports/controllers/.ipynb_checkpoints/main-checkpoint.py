@@ -54,7 +54,7 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
-            docs = docs.search([('partner_id', 'in', data['user_ids'])])
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
             'filter_post': data['filter_post'],
             'docs': docs,
@@ -78,7 +78,7 @@ class edit_report_sales_report_by_product_cat(models.TransientModel):
             obj = self.env['product.category'].search([])
             for temp in obj:
                 product_cats_ids.append(temp.name)
-                
+        product_cats_ids = sorted(product_cats_ids)
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
@@ -87,40 +87,46 @@ class edit_report_sales_report_by_product_cat(models.TransientModel):
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-        if data['user_ids']:
-            docs = docs.search([('partner_id', 'in', data['user_ids'])])
+#         if data['user_ids']:
+#             docs = docs.search([('partner_id', 'in', data['user_ids'])])
         dates = list(set([doc.invoice_date for doc in docs]))
-        if data['user_ids']:
-            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='name asc')
-        else:
-            user_ids = self.env['res.partner'].search([],order='name asc')
+        dates = sorted(dates)
+        user_ids = None
         temp = []
         sub_temp = []
         lst = []
-        for product_cats_id in product_cats_ids:
-            customer = None
-            sub = 0
-            temp = []
-            ttl = 0
-            for user in user_ids:
-                sub_temp = []
+        if data['user_ids']:
+            for product_cats_id in product_cats_ids:
+                ttl = 0
+                cutomer = []
+                sub_cust = None
+                for user in data['user_ids']:
+                    sub_ttl = 0
+                    sub_cust = self.env['res.partner'].search([('id', '=', user)])
+                    for date in dates:
+                        for table_line in docs:
+                            if table_line.invoice_date == date and table_line.x_studio_category_i == product_cats_id and table_line.partner_id.id == user:
+                                sub_ttl = sub_ttl + table_line.amount_total_signed
+                    ttl = ttl + sub_ttl
+                    cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
+                if ttl > 0:
+                    lst.append({'product_cats_id':product_cats_id,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
+        else:
+            for product_cats_id in product_cats_ids:
+                ttl = 0
                 for date in dates:
-                    date_ttl = 0
-                    for table_line in docs.search([('invoice_date','=',date),('x_studio_category_i','=',product_cats_id),('partner_id','=',user.id)]):
-                        date_ttl = date_ttl + table_line.amount_total_signed
-                    if date_ttl > 0:
-                        ttl = ttl + date_ttl
-                        sub_temp.append({'sub_ttl':date_ttl,'date':date})
-                if sub_temp:
-                    temp.append({'user':user,'sub_temp':sub_temp})
-            if temp:
-                lst.append({'product_cats_id':product_cats_id,'temp':temp,'ttl':ttl})
+                    for table_line in docs:
+                        if table_line.invoice_date == date and table_line.x_studio_category_i == product_cats_id:
+                            ttl = ttl + table_line.amount_total_signed
+                if ttl > 0:
+                    lst.append({'product_cats_id':product_cats_id,'ttl':ttl})
         return {
             'filter_post': data['filter_post'],
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
             'lst':lst,
-            'currency_id':docs.currency_id
+            'currency_id':docs.currency_id,
+            'user_ids':data['user_ids']
        }
 
 class edit_report_sales_report_by_client(models.TransientModel):
@@ -139,7 +145,7 @@ class edit_report_sales_report_by_client(models.TransientModel):
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
-            docs = docs.search([('partner_id', 'in', data['user_ids'])])
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
             'filter_post': data['filter_post'],
             'docs': docs,
@@ -281,12 +287,11 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
                             sum_qty += line['qty']
                     if i_name != None:
                         temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
-            pids.append({'c_name':name,'items':temp})
+            pids.append({'c_name':name,'items':sorted(temp, key = lambda i: (i['name'], datetime.strptime(i['date'], '%m/%d/%Y')))})
         return {
             'docs':docs,
             'lst':pids,
             'c':c,
-            'temp':temp,
             'start_date': data['start_date'], 
             'end_date': data['end_date']
             }
@@ -376,7 +381,7 @@ class edit_report_monthly_stock_analysis(models.TransientModel):
                         i_name = line['name']
                         sum_qty += line['qty']
                 temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date,'inv':line['id']})
-            pids.append({'c_name':date,'items':sorted(temp, key = lambda i: i['name']),'test':test})
+            pids.append({'c_name':date,'items':sorted(temp, key = lambda i: (i['name'], datetime.strptime(i['date'], '%m/%d/%Y'))),'test':test})
         return {
             'lst':pids
             }
@@ -418,7 +423,7 @@ class edit_report_stock_analysis_by_date(models.TransientModel):
                     temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
                     sub_ttl_qty += sum_qty
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: i['name']),'ttl_qty':sub_ttl_qty})
+                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'], datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
         return {
             'docs':docs,
             'lst':pids,
@@ -492,7 +497,8 @@ class edit_report_purchase_analysis_report_by_sup(models.TransientModel):
         else:
             docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
-           docs = docs.search([('partner_id', 'in', data['user_ids'])])            
+           
+           docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
             'filter_post': data['filter_post'],
             'docs': docs,
@@ -500,6 +506,30 @@ class edit_report_purchase_analysis_report_by_sup(models.TransientModel):
             'end_date': data['end_date']
        }
     
+class edit_report_purchase_listing_by_sup(models.TransientModel):
+    _name = "report.popular_reports.report_purchase_listing_by_sup"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        if data['user_ids']:
+           
+           docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        return {
+            'filter_post': data['filter_post'],
+            'docs': docs,
+            'start_date': data['start_date'], 
+            'end_date': data['end_date']
+        }
+
 class edit_report_purchase_inv_lst_by_inv_no(models.TransientModel):
     _name = "report.popular_reports.report_purchase_inv_lst_by_inv_no"
     
@@ -557,7 +587,7 @@ class edit_report_purchase_stock_analysis_by_date(models.TransientModel):
                     temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
                     sub_ttl_qty += sum_qty
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: i['name']),'ttl_qty':sub_ttl_qty})
+                pids.append({'c_name':item,'temp':sorted(temp, key = lambda i: (i['name'], datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
         return {
             'docs':docs,
             'lst':pids
@@ -605,7 +635,7 @@ class edit_report_cash_receipt_listing_by_cust_no(models.TransientModel):
         else:
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date'])])
         if data['user_ids']:
-            docs = docs.search([('partner_id', 'in', data['user_ids'])])
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
             'filter_post_payment': data['filter_post_payment'],
             'docs': docs
@@ -692,7 +722,7 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.TransientModel):
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
-            docs = docs.search([('partner_id', 'in', data['user_ids'])])
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {            
             'filter_post_credit': data['filter_post_credit'],
             'docs': docs
@@ -704,11 +734,18 @@ class edit_report_outstanding_inv_report_by_cust(models.TransientModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = None
-        if data['user_ids']:
-            docs = self.env['account.move'].search([('partner_id', 'in', data['user_ids']),('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
+            'filter_post': data['filter_post'],
             'docs': docs
        }
 
