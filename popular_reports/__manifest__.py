@@ -15,24 +15,14 @@
                 'sale',
                 'purchase',
                 'account',
-                'inventory'
+                'stock'
                 ],
-    'data': [
-        'data/ir_model.xml',
-            'data/ir_model_fields.xml',
-            'data/ir_ui_view.xml',
-            'data/ir_actions_act_window.xml',
-            'data/ir_ui_menu.xml',
-            'data/ir_model_access.xml',
-        
+    'data': [        
             'views/wizard_view.xml',
             'views/wizard_forms.xml',
             'views/wizard_menus.xml',
-        
             'views/action_manager.xml',
             'views/report.xml',
-        
-            
             ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
