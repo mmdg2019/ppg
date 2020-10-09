@@ -1,7 +1,7 @@
 
 {
     'name': 'Popular Reports',
-    'version': '13.0.1.1.2',
+    'version': '1.0.0.0',
     'summary': "Reports for popular company",
     'description': "Current Stock Report for all Products in each Warehouse, Odoo 13,Odoo13",
     'category': 'App',
@@ -21,7 +21,6 @@
             'views/wizard_view.xml',
             'views/wizard_forms.xml',
             'views/wizard_menus.xml',
-            'views/action_manager.xml',
             'views/report.xml',
             ],
     'images': ['static/description/banner.png'],
