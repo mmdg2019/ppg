@@ -24,6 +24,8 @@ class PopularReport(models.TransientModel):
     POST_STOCK_LIST = [('cancel','Cancelled'),('done','Done'),('draft','Draft'),('assigned','Ready'),('confirmed','Waiting'),('waiting','Waiting Another Operation')]
     POST_ORDER_LIST = [('1','Fully Invoice'),('2','Nothing to Invoice'),('3','To Invoice'),('4','Upselling Opportunity')]
     POST_QUOT_LIST = [('1','Cancelled'),('2','Locked'),('3','Quotation'),('4','Quotation Sent'),('5','Sales Order')]
+    PUR_QUOT_LIST = [('cancel','Cancelled'),('done','Locked'),('draft','RFQ'),('purchase','Purchase Order'),('sent','RFQ Sent'),('to approve','To Approve')]
+    PUR_ORDER_LIST = [('invoiced','Fully Billed'),('no','Nothing to Bill'),('to invoice','Waiting to Bills')]
     
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
@@ -58,6 +60,8 @@ class PopularReport(models.TransientModel):
     filter_post_stock = fields.Selection(POST_STOCK_LIST, string='Status')
     filter_post_order = fields.Selection(POST_ORDER_LIST, string='Status')
     filter_post_quot = fields.Selection(POST_QUOT_LIST, string='Status')
+    filter_post_pur_quot = fields.Selection(PUR_QUOT_LIST, string='Status')
+    filter_post_pur_order = fields.Selection(PUR_ORDER_LIST, string='Status')
 
     def get_company(self):
         return self.env.company
@@ -155,6 +159,7 @@ class PopularReport(models.TransientModel):
     
     def print_report_stock_analysis_by_date(self):
         data = {
+            'product_ids': self.products.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
@@ -195,6 +200,7 @@ class PopularReport(models.TransientModel):
     
     def print_report_monthly_stock_analysis_report(self):
         data = {
+            'product_ids': self.products.ids,
             's_month':self.s_month,
             's_year': self.s_year,
             'e_month': self.e_month,
@@ -231,6 +237,7 @@ class PopularReport(models.TransientModel):
     
     def print_report_purchase_stock_analysis_by_date(self):
         data = {
+            'product_ids': self.products.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
@@ -297,6 +304,15 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.outstanding_inv_report_by_cust').report_action(self, data=data)
     
+    def print_report_outstanding_bill_report_by_ven(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.outstanding_bill_report_by_ven').report_action(self, data=data)
+    
     def print_sales_order_report_by_client(self):
         data = {
             'filter_post_order':self.filter_post_order,
@@ -341,3 +357,32 @@ class PopularReport(models.TransientModel):
             'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.sales_quot_report_by_p_code').report_action(self, data=data)
+    
+    def print_report_refund_lst_by_product_code(self):
+        
+        data = {
+            'filter_post_credit':self.filter_post_credit,
+            'product_ids': self.products.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.refund_lst_by_product_code').report_action(self, data=data)
+    
+    def print_report_refund_lst_by_vendor(self):
+        data = {
+            'filter_post_credit':self.filter_post_credit,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.refund_lst_by_vendor').report_action(self, data=data)
+    
+    def print_report_purchase_order_report_by_date(self):
+        data = {
+            'filter_post_pur_quot':self.filter_post_pur_quot,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.purchase_order_report_by_date').report_action(self, data=data)
+    
