@@ -374,7 +374,7 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
             custs = self.env['res.partner'].search([])
         product_cats_ids = []
-        items = self.env['product.product'].search([],order='display_name asc').ids
+        items = self.env['product.product'].search([],order='display_name asc')
         if data['product_cats_ids']:
             pids = []
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
@@ -406,6 +406,9 @@ class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
             user_ids = user_ids.filtered(lambda r: r.state_id.id in data['filter_state_id'])
             state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name
         
+        if data['user_ids']:
+            user_ids =  user_ids.filtered(lambda r: r.id in data['user_ids'])
+            
         docs = docs.filtered(lambda r: r.partner_id in user_ids)
         
         products = self.env['product.product'].search([],order='display_name asc')
@@ -427,7 +430,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
             if sum_qty > 0:
                 temp.append({'id':product.id,'cat':cat,'name':product.display_name,'qty':sum_qty})
         return {
-            'lst':sorted(temp, key = lambda i: (i['cat'],i['name'])),
+            'lst':sorted(temp, key = lambda i: (i['name'])),
             'country': country,
             'state': state
             }

@@ -605,13 +605,15 @@
                                                      <span t-esc="cust.display_name"/>
                                                  </th>
                                              </tr>
-                                             <t t-foreach="items" t-as="item">
-                                                 <t t-foreach="cats" t-as="cat">
+                                             <t t-foreach="items.sorted(key=lambda x: x.display_name)" t-as="item">
+<!--                                                  <t t-foreach="cats" t-as="cat"> -->
                                                     <t t-set="sub_ttl" t-value="0"/>
-                                                    <t t-set="i_name" t-value=""/>
-                                                    <t t-foreach="docs.filtered(lambda x:x.partner_id == cust and x.x_studio_category_i == cat).sorted(key=lambda x: (x.partner_id.display_name,x.x_studio_category_i),reverse=False)" t-as="doc">
+                                                    <t t-set="sub_ttl" t-value="0"/>
+                                                    <t t-set="cat" t-value=""/>
+                                                    <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
                                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id.id == item)" t-as="table_line">
                                                             <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
+                                                            <t t-set="cat" t-value="doc.x_studio_category_i"/>
                                                             <t t-set="i_name" t-value="table_line.name"/>
                                                         </t>
                                                     </t>
@@ -626,7 +628,7 @@
                                                             <span t-esc="sub_ttl"/>
                                                         </td>                          
                                                      </tr>
-                                                 </t>
+<!--                                                  </t> -->
                                              </t>
                                          </t>
                                      </t>
@@ -639,17 +641,17 @@
                                                      <span t-esc="cust.display_name"/>
                                                  </th>
                                              </tr>
-                                             <t t-foreach="items" t-as="item">
+                                             <t t-foreach="items.sorted(key=lambda x: x.display_name)" t-as="item">
                                                 <t t-set="sub_ttl" t-value="0"/>
                                                 <t t-set="i_name" t-value=""/>
                                                 <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: x.partner_id.display_name)" t-as="doc">
-                                                    <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id.id == item)" t-as="table_line">
+                                                    <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
                                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
                                                         <t t-set="i_name" t-value="table_line.name"/>
                                                     </t>
                                                 </t>
                                                 <tr t-if="sub_ttl>0">
-                                                     <td>
+                                                    <td>
                                                          <span t-esc="i_name"/>
                                                      </td>
                                                      <td style="text-align:right;">
