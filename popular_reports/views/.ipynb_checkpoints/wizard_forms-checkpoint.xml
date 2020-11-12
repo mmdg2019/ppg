@@ -705,7 +705,7 @@
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Date and Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" required="1"/>
                     </group>
                     <group string="Product">
                         <field name="product_cats" widget="many2many_tags"/>
