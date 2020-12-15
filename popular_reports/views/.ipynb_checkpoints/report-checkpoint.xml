@@ -2077,23 +2077,31 @@
                             <t t-set="ttl" t-value="0"/>
                             <t t-foreach="docs.sorted(key=lambda x: (x.invoice_date,x.name),reverse=False)" t-as="doc">
                                 <tbody>
+                                    <tr>
+                                        <td>
+                                            <span t-esc="doc.invoice_date"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.partner_id.display_name"/>
+                                        </td>
+                                        <td colspan="6">
+                                            <span t-field="doc.narration"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="doc.invoice_payment_state"/>
+                                        </td>
+                                    </tr>
                                     <t t-set="ttl" t-value="ttl + doc.amount_total"/>
-                                    <t t-foreach="doc.invoice_line_ids" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
+                                    <t t-foreach="doc.invoice_line_ids" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.quantity > 0">
                                         <tr>
                                             <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.invoice_date"/>
-                                                </t>
                                             </td>
                                             <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.name"/>
-                                                </t>
                                             </td>
                                             <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.partner_id.display_name"/>
-                                                </t>                  
                                             </td>
                                             <td>
                                                 <span t-field="table_line.product_id"/>
@@ -2113,11 +2121,7 @@
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.price_subtotal"/>
                                             </td>
-                                            
-                                            <td style="text-align:center;">
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.invoice_payment_state"/>
-                                                </t>
+                                            <td>
                                             </td>
                                         </tr>
                                     </t>
@@ -2857,24 +2861,40 @@
                             <t t-set="ttl" t-value="0"/>
                             <t t-foreach="docs.sorted(key=lambda x: x.name,reverse=False)" t-as="doc">
                             <tbody>
+<!--                                 <tr>
+                                    <td>
+                                        <span t-field="doc.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="doc.invoice_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.partner_id.display_name"/>
+                                    </td>
+                                    <td colspan="4">
+                                        <span t-field="doc.narration"/>
+                                    </td>
+                                    <td style="text-align:center;">
+                                    </td>
+                                </tr> -->
                                 <t t-set="ttl" t-value="ttl + doc.amount_total"/>
-                                <t t-foreach="doc.invoice_line_ids" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
+                                <t t-foreach="doc.invoice_line_ids" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.quantity > 0">
                                     <tr>
-                                        <td>
-                                            <t t-if="table_line_first">
-                                                <span t-field="doc.name"/>
-                                            </t>
+                                        <td t-if="table_line_first">
+                                            <span t-field="doc.name"/>
+                                        </td>
+                                        <td t-if="table_line_first">
+                                            <span t-esc="doc.invoice_date"/>
+                                        </td>
+                                        <td t-if="table_line_first">
+                                            <span t-field="doc.partner_id.display_name"/>
+                                        </td>
+<!--                                         <td>
                                         </td>
                                         <td>
-                                            <t t-if="table_line_first">
-                                                <span t-field="doc.invoice_date"/>
-                                            </t>
                                         </td>
-                                        <td>
-                                            <t t-if="table_line_first">
-                                                <span t-field="doc.partner_id.display_name"/>
-                                            </t>                  
-                                        </td>
+                                        <td>              
+                                        </td> -->
                                         <td>
                                             <span t-field="table_line.product_id"/>
                                         </td>
@@ -2902,10 +2922,7 @@
                                         <th>
                                             <span></span>
                                         </th>
-                                        <th>
-                                            <span></span>
-                                        </th>
-                                        <th colspan="3">
+                                        <th colspan="4">
                                             <span>Sub Total:</span>
                                         </th>
                                         <th style="text-align:right;">
@@ -2928,10 +2945,7 @@
                                     <th>
                                         <span></span>
                                     </th>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th colspan="3">
+                                    <th colspan="4">
                                         <span>Grand Total</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -5204,14 +5218,14 @@
                                             <span t-field="table_line.x_studio_special_discount_amount"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <span t-field="table_line.amount_total"/>
+                                            <span t-field="table_line.x_studio_total"/>
                                         </td>
                                         <td>
                                             <span t-field="table_line.invoice_status"/>
                                         </td>
                                     </tr>
-                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total"/>
-                                    <t t-set="ttl" t-value="ttl + table_line.amount_total"/>
+                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.x_studio_total"/>
+                                    <t t-set="ttl" t-value="ttl + table_line.x_studio_total"/>
                                     <t t-set="sub_ttl_other_charges" t-value="sub_ttl_other_charges + table_line.x_studio_other_charges_1"/>
                                     <t t-set="sub_ttl_discount_amount" t-value="sub_ttl_discount_amount + table_line.x_studio_special_discount_amount"/>
                                     <t t-if="table_line_last">
@@ -5380,25 +5394,29 @@
                             </thead>
                             <t t-if="docs">
                             <t t-set="ttl" t-value="0"/>
-                            <t t-foreach="docs.sorted(key=lambda x: (x.create_date.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
+                            <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
                                 <tbody>
-                                    <t t-set="ttl" t-value="ttl + doc.amount_total"/>
-                                    <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="doc.date_order.strftime('%m/%d/%Y')"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.partner_id.display_name"/>
+                                        </td>
+                                        <td colspan="6">
+                                            <span t-field="doc.note"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="doc.invoice_status"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="ttl" t-value="ttl + doc.x_studio_total"/>
+                                    <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                         <tr>
-                                            <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
-                                                </t>
-                                            </td>
-                                            <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.name"/>
-                                                </t>
-                                            </td>
-                                            <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.partner_id.display_name"/>
-                                                </t>                  
+                                            <td colspan="3">
                                             </td>
                                             <td>
                                                 <span t-field="table_line.product_id"/>
@@ -5418,11 +5436,7 @@
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.price_subtotal"/>
                                             </td>
-                                            
-                                            <td style="text-align:center;">
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.invoice_status"/>
-                                                </t>
+                                            <td>
                                             </td>
                                         </tr>
                                     </t>
@@ -5476,7 +5490,7 @@
                                                 <span>Total:</span>
                                             </th>
                                             <th style="text-align:right;">
-                                                <span t-field="doc.amount_total"/>
+                                                <span t-field="doc.x_studio_total"/>
                                             </th>
                                             <th>
                                                 <span></span>
@@ -5686,14 +5700,14 @@
                                             <span t-field="table_line.x_studio_special_discount_amount"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <span t-field="table_line.amount_total"/>
+                                            <span t-field="table_line.x_studio_total"/>
                                         </td>
                                         <td>
                                             <span t-field="table_line.state"/>
                                         </td>
                                     </tr>
-                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total"/>
-                                    <t t-set="ttl" t-value="ttl + table_line.amount_total"/>
+                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.x_studio_total"/>
+                                    <t t-set="ttl" t-value="ttl + table_line.x_studio_total"/>
                                     <t t-set="sub_ttl_other_charges" t-value="sub_ttl_other_charges + table_line.x_studio_other_charges_1"/>
                                     <t t-set="sub_ttl_discount_amount" t-value="sub_ttl_discount_amount + table_line.x_studio_special_discount_amount"/>
                                     <t t-if="table_line_last">
@@ -5863,25 +5877,33 @@
                             </thead>
                             <t t-if="docs">
                             <t t-set="ttl" t-value="0"/>
-                            <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
+                            <t t-foreach="docs.sorted(key=lambda x: (x.create_date.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
                                 <tbody>
-                                    <t t-set="ttl" t-value="ttl + doc.amount_total"/>
-                                    <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
+                                    <tr>
+                                        <td>
+                                            <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.partner_id.display_name"/>
+                                        </td>
+                                        <td colspan="6">
+                                            <span t-field="doc.note"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-field="doc.state"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="ttl" t-value="ttl + doc.x_studio_total"/>
+                                    <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                         <tr>
                                             <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-esc="doc.date_order.strftime('%m/%d/%Y')"/>
-                                                </t>
                                             </td>
                                             <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.name"/>
-                                                </t>
                                             </td>
-                                            <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.partner_id.display_name"/>
-                                                </t>                  
+                                            <td>                 
                                             </td>
                                             <td>
                                                 <span t-field="table_line.product_id"/>
@@ -5900,12 +5922,8 @@
                                             </td>
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.price_subtotal"/>
-                                            </td>
-                                            
+                                            </td>                                            
                                             <td style="text-align:center;">
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.state"/>
-                                                </t>
                                             </td>
                                         </tr>
                                     </t>
@@ -5959,7 +5977,7 @@
                                                 <span>Total:</span>
                                             </th>
                                             <th style="text-align:right;">
-                                                <span t-field="doc.amount_total"/>
+                                                <span t-field="doc.x_studio_total"/>
                                             </th>
                                             <th>
                                                 <span></span>
@@ -6102,7 +6120,6 @@
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="product" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x:(x.create_date.strftime('%m/%d/%Y'),x.partner_id.display_name),reverse=False)" t-as="doc">
-                                    
                                     <t t-if="doc_first">
                                         <t t-set="sub_date" t-value="doc.create_date.strftime('%m/%d/%Y')"/>
                                         <t t-set="sub" t-value="0"/>
@@ -6127,7 +6144,7 @@
                                     <t t-else="">
                                         <t t-set="sub" t-value="0"/>
                                     </t>
-                                    <t t-foreach="doc.order_line.filtered(lambda x:x.name != &quot;Special Discount&quot; and x.name != &quot;Other Charges&quot; and x.product_id.id in product_ids and x.product_id.categ_id.id in product_cats_ids)" t-as="table_line">
+                                    <t t-foreach="doc.order_line.filtered(lambda x:x.name != &quot;Special Discount&quot; and x.name != &quot;Other Charges&quot; and x.product_id.id in product_ids and x.product_id.categ_id.id in product_cats_ids and x.product_uom_qty > 0)" t-as="table_line">
                                         <tr>
                                             <td>
                                                 <t t-if="table_line_first">
