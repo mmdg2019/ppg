@@ -887,15 +887,15 @@ class edit_report_sales_order_report_by_date(models.TransientModel):
         docs = None
         
         if data['filter_post_order'] == '1':
-            docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('invoice_status', '=', 'invoiced'),('state', 'not in', ('draft', 'sent', 'cancel'))])
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('invoice_status', '=', 'invoiced'),('state', 'not in', ('draft', 'sent', 'cancel'))])
         elif data['filter_post_order'] == '2':
-            docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('invoice_status', '=', 'no'),('state', 'not in', ('draft', 'sent', 'cancel'))])
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('invoice_status', '=', 'no'),('state', 'not in', ('draft', 'sent', 'cancel'))])
         elif data['filter_post_order'] == '3':
-            docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('invoice_status', '=', 'to invoice'),('state', 'not in', ('draft', 'sent', 'cancel'))])
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('invoice_status', '=', 'to invoice'),('state', 'not in', ('draft', 'sent', 'cancel'))])
         elif data['filter_post_order'] == '4':
-            docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('invoice_status', '=', 'upselling'),('state', 'not in', ('draft', 'sent', 'cancel'))])
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('invoice_status', '=', 'upselling'),('state', 'not in', ('draft', 'sent', 'cancel'))])
         else:
-            docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('state', 'not in', ('draft', 'sent', 'cancel'))])
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', 'not in', ('draft', 'sent', 'cancel'))])
             
         return {
             'filter_post_order': data['filter_post_order'],
