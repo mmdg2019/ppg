@@ -259,6 +259,14 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.cash_receipt_listing_by_date').report_action(self, data=data)
     
+    def print_report_cash_receipt_listing_by_r_no(self):
+        data = {
+            'filter_post_payment':self.filter_post_payment,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.cash_receipt_listing_by_r_no').report_action(self, data=data)
+    
     def print_report_cash_receipt_listing_by_customer(self):
         data = {
             'filter_post_payment':self.filter_post_payment,

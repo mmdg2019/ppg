@@ -62,6 +62,26 @@
             </field>
         </record>
         
+        <record model='ir.ui.view' id='wizard_form_report_cash_receipt_listing_by_r_no'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Cash Receipt Listing by Receipt No">
+                    <group>
+                        <field name="filter_post_payment" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_cash_receipt_listing_by_r_no" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        
         <record model='ir.ui.view' id='wizard_form_report_cash_receipt_listing_by_customer'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -859,6 +879,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_cash_receipt_listing_by_date"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_cash_receipt_listing_by_r_no'>
+            <field name="name">Export Cash Receipt Listing by Receipt No</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_cash_receipt_listing_by_r_no"/>
             <field name="target">new</field>
         </record>
         

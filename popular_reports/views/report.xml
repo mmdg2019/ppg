@@ -14,9 +14,11 @@
         <field name="header_spacing">7</field>
         <field name="dpi">90</field>
     </record>
+    
     <report
         id="stock_transfer_info"
         model="stock.picking"
+        menu="False"
         string="Stock Transfer Information (Posted) by Date"
         report_type="qweb-html"
         name="popular_reports.report_stock_transfer_info"
@@ -27,6 +29,7 @@
     <report
         id="cash_receipt_listing_by_date"
         model="account.payment"
+        menu="False"
         string="Cash Receipt Listing by Date"
         report_type="qweb-html"
         name="popular_reports.report_cash_receipt_listing_by_date"
@@ -34,9 +37,23 @@
         print_report_name="Cash Receipt Listing by Date"
         paperformat="paperformat_popular_report"
     />
+    
+    <report
+        id="cash_receipt_listing_by_r_no"
+        model="account.payment"
+        menu="False"
+        string="Cash Receipt Listing by Receipt No"
+        report_type="qweb-html"
+        name="popular_reports.report_cash_receipt_listing_by_r_no"
+        file="popular_reports.report_cash_receipt_listing_by_r_no" 
+        print_report_name="Cash Receipt Listing by Receipt No"
+        paperformat="paperformat_popular_report"
+    />
+    
     <report
         id="refund_lst_by_vendor"
         model="account.payment"
+        menu="False"
         string="Refund Listing by Vendor"
         report_type="qweb-html"
         name="popular_reports.report_refund_lst_by_vendor"
@@ -47,6 +64,7 @@
     <report
         id="refund_lst_by_product_code"
         model="account.payment"
+        menu="False"
         string="Refund Listing by Product Code"
         report_type="qweb-html"
         name="popular_reports.report_refund_lst_by_product_code"
@@ -58,6 +76,7 @@
     <report
         id="stock_analysis_by_date_and_cust"
         model="account.move"
+        menu="False"
         string="Stock Analysis by Date and Customer"
         report_type="qweb-html"
         name="popular_reports.report_stock_analysis_by_date_and_cust"
@@ -68,6 +87,7 @@
     <report
         id="monthly_stock_analysis_report"
         model="account.move"
+        menu="False"
         string="Monthly Stock Analysis Report"
         report_type="qweb-html"
         name="popular_reports.report_monthly_stock_analysis_report"
@@ -78,6 +98,7 @@
     <report
         id="stock_analysis_by_month_and_cust"
         model="account.move"
+        menu="False"
         string="Stock Analysis by Month and Customer"
         report_type="qweb-html"
         name="popular_reports.report_stock_analysis_by_month_and_cust"
@@ -88,6 +109,7 @@
     <report
         id="stock_analysis_by_date"
         model="account.move"
+        menu="False"
         string="Stock Analysis by Date"
         report_type="qweb-html"
         name="popular_reports.report_stock_analysis_by_date"
@@ -98,6 +120,7 @@
     <report
         id="purchase_stock_analysis_by_date"
         model="account.move"
+        menu="False"
         string="Purchase Stock Analysis by Date"
         report_type="qweb-html"
         name="popular_reports.report_purchase_stock_analysis_by_date"
@@ -109,6 +132,7 @@
     <report
         id="purchase_listing_by_sup"
         model="account.move"
+        menu="False"
         string="Purchase Listing by Supplier"
         report_type="qweb-html"
         name="popular_reports.report_purchase_listing_by_sup"
@@ -120,6 +144,7 @@
     <report
         id="sales_analysis_report_by_cust"
         model="account.move"
+        menu="False"
         string="Sales Analysis Report by Customer"
         report_type="qweb-html"
         name="popular_reports.report_sales_analysis_report_by_cust"
@@ -130,6 +155,7 @@
     <report
         id="sales_report_by_client"
         model="account.move"
+        menu="False"
         string="Sales Report by Client"
         report_type="qweb-html"
         name="popular_reports.report_sales_report_by_client"
@@ -140,6 +166,7 @@
     <report
         id="purchase_order_report_by_date"
         model="purchase.order"
+        menu="False"
         string="Purchase Order Report by Date"
         report_type="qweb-html"
         name="popular_reports.report_purchase_order_report_by_date"
@@ -150,6 +177,7 @@
     <report
         id="sales_order_report_by_client"
         model="sale.order"
+        menu="False"
         string="Sales Order Report by Client"
         report_type="qweb-html"
         name="popular_reports.report_sales_order_report_by_client"
@@ -160,6 +188,7 @@
     <report
         id="sales_order_report_by_date"
         model="sale.order"
+        menu="False"
         string="Sales Order Report by Date"
         report_type="qweb-html"
         name="popular_reports.report_sales_order_report_by_date"
@@ -170,6 +199,7 @@
     <report
         id="sales_quot_report_by_date"
         model="sale.order"
+        menu="False"
         string="Sales Quotations Report by Date"
         report_type="qweb-html"
         name="popular_reports.report_sales_quot_report_by_date"
@@ -180,6 +210,7 @@
     <report
         id="sales_quot_report_by_client"
         model="sale.order"
+        menu="False"
         string="Sales Quotations Report by Client"
         report_type="qweb-html"
         name="popular_reports.report_sales_quot_report_by_client"
@@ -190,6 +221,7 @@
     <report
         id="sales_quot_report_by_p_code"
         model="sale.order"
+        menu="False"
         string="Sales Quotations Report by Product Code"
         report_type="qweb-html"
         name="popular_reports.report_sales_quot_report_by_p_code"
@@ -201,6 +233,7 @@
     <report
         id="sales_report_by_product_cat"
         model="product.template"
+        menu="False"
         string="Sales Report by Product Category"
         report_type="qweb-html"
         name="popular_reports.report_sales_report_by_product_cat"
@@ -211,6 +244,7 @@
     <report
         id="sales_report_by_product_code"
         model="product.template"
+        menu="False"
         string="Sales Report by Product Code"
         report_type="qweb-html"
         name="popular_reports.report_sales_report_by_product_code"
@@ -221,6 +255,7 @@
     <report
         id="all_balance_listing"
         model="product.template"
+        menu="False"
         string="All Balance Listing"
         report_type="qweb-html"
         name="popular_reports.report_all_balance_listing"
@@ -231,6 +266,7 @@
     <report
         id="stock_valuation_info"
         model="product.template"
+        menu="False"
         string="Stock Valuation Information"
         report_type="qweb-html"
         name="popular_reports.report_stock_valuation_info"
@@ -241,6 +277,7 @@
     <report
         id="purchase_inv_lst_by_inv_no"
         model="account.move"
+        menu="False"
         string="Purchase Invoice Listing by Vendor"
         report_type="qweb-html"
         name="popular_reports.report_purchase_inv_lst_by_inv_no"
@@ -251,6 +288,7 @@
     <report
         id="sales_report_by_month"
         model="account.move"
+        menu="False"
         string="Sales Report by Month"
         report_type="qweb-html"
         name="popular_reports.report_sales_report_by_month"
@@ -261,6 +299,7 @@
     <report
         id="sales_report_by_date"
         model="account.move"
+        menu="False"
         string="Sales Report by Date"
         report_type="qweb-html"
         name="popular_reports.report_sales_report_by_date"
@@ -271,6 +310,7 @@
     <report
         id="daily_sales_report_by_date"
         model="account.move"
+        menu="False"
         string="Daily Sales Report by Date"
         report_type="qweb-html"
         name="popular_reports.report_daily_sales_report_by_date"
@@ -282,6 +322,7 @@
     <report
         id="sales_analysis_by_month_and_cust"
         model="account.move"
+        menu="False"
         string="Sales Analysis Report by Month and Customer"
         report_type="qweb-html"
         name="popular_reports.report_sales_analysis_by_month_and_cust"
@@ -292,6 +333,7 @@
     <report
         id="sales_analysis_by_state"
         model="account.move"
+        menu="False"
         string="Sales Analysis Report by State"
         report_type="qweb-html"
         name="popular_reports.report_sales_analysis_by_state"
@@ -302,6 +344,7 @@
     <report
         id="dmg_sales_rtrn_lst_by_cust_no"
         model="account.move"
+        menu="False"
         string="Damage Sales Return Listing by Customer"
         report_type="qweb-html"
         name="popular_reports.report_dmg_sales_rtrn_lst_by_cust_no"
@@ -312,6 +355,7 @@
     <report
         id="dmg_sales_rtrn_lst_by_product"
         model="account.move"
+        menu="False"
         string="Damage Sales Listing by Produt Code"
         report_type="qweb-html"
         name="popular_reports.report_dmg_sales_rtrn_lst_by_product"
@@ -322,6 +366,7 @@
     <report
         id="cash_receipt_listing_by_cust_no"
         model="account.payment"
+        menu="False"
         string="Cash Receipt Listing by Customer"
         report_type="qweb-html"
         name="popular_reports.report_cash_receipt_listing_by_cust_no"
@@ -332,6 +377,7 @@
     <report
         id="purchase_analysis_report_by_sup"
         model="account.move"
+        menu="False"
         string="Purchase Analysis Report by Supplier"
         report_type="qweb-html"
         name="popular_reports.report_purchase_analysis_report_by_sup"
@@ -342,6 +388,7 @@
     <report
         id="cash_payment_listing_by_lumpsum"
         model="account.payment"
+        menu="False"
         string="Cash Payment Listing by Lumpsum"
         report_type="qweb-html"
         name="popular_reports.report_cash_payment_listing_by_lumpsum"
@@ -352,6 +399,7 @@
     <report
         id="outstanding_inv_report_by_cust"
         model="account.move"
+        menu="False"
         string="Outstanding Invoice Report by Customer"
         report_type="qweb-html"
         name="popular_reports.report_outstanding_inv_report_by_cust"
@@ -363,6 +411,7 @@
     <report
         id="outstanding_bill_report_by_ven"
         model="account.move"
+        menu="False"
         string="Outstanding Bill Report by Vendor"
         report_type="qweb-html"
         name="popular_reports.report_outstanding_bill_report_by_ven"
@@ -3749,6 +3798,145 @@
                                             </th>
                                         </tr>
                                     </t>
+                                </t>
+                            </tbody>
+                            
+                            <tfooter>
+                                <tr>
+                                    <th>
+                                        <span></span>
+                                    </th>
+                                    <th>
+                                        <span></span>
+                                    </th>
+                                    <th colspan="2">
+                                        <span>Grand Total</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/></span>
+                                    </th>
+                                </tr>
+                            </tfooter>
+                        </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+    <template id="report_cash_receipt_listing_by_r_no">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+
+                </head>
+                <body>
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        <span>Cash Receipt Listing by Receipt No
+                                            <t t-if="filter_post_payment=='1'">(Cancelled)</t>
+                                            <t t-elif="filter_post_payment=='2'">(Draft)</t>
+                                            <t t-elif="filter_post_payment=='3'">(Reconciled)</t>
+                                            <t t-if="filter_post_payment=='4'">(Sent)</t>
+                                            <t t-if="filter_post_payment=='5'">(Validated)</t>
+                                        </span>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b><t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b><t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Receipt Date</span>
+                                    </th>
+                                    <th>
+                                        <span>Cash Reciept No.</span>
+                                    </th>
+                                    <th>
+                                        <span>Customer Name</span>
+                                    </th>
+                                    <th>
+                                        <span>Clear Status</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Receipt Amount</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                            <tbody>
+                                <t t-set="ttl" t-value="0"/>
+                                <t t-foreach="docs.sorted(key=lambda x: (x.payment_date,x.display_name),reverse=False)" t-as="table_line">
+                                    <t t-set="ttl" t-value="ttl+table_line.amount"/>
+                                    <tr>
+                                        <td>
+                                            <span t-field="table_line.payment_date"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="table_line.display_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="table_line.partner_id.display_name"/>                    
+                                        </td>
+                                        <td>
+                                            <span t-field="table_line.state"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-field="table_line.amount"/>
+                                        </td>
+                                    </tr>
                                 </t>
                             </tbody>
                             

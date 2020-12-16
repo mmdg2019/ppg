@@ -196,43 +196,49 @@
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_cash_receipt_listing_by_date"
                   action="popular_reports.wizard_act_report_cash_receipt_listing_by_date"
-                  sequence="3"/>
+                  sequence="4"/>
+        
+        <menuitem name="Cash Receipt Listing by Receipt No"
+                  parent="popular_reports.popular_reports_sub_menu_7"
+                  id="popular_reports.menu_report_cash_receipt_listing_by_r_no"
+                  action="popular_reports.wizard_act_report_cash_receipt_listing_by_r_no"
+                  sequence="5"/>
         
         <menuitem name="Damage Sales Return Listing by Product Code"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_product"
                   action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_product"
-                  sequence="5"/>
+                  sequence="6"/>
         
         <menuitem name="Damage Sales Return Listing by Customer"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_cust_no"
                   action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_cust_no"
-                  sequence="6"/>
+                  sequence="7"/>
         
          <menuitem name="Refund Listing by Product Code"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_refund_lst_by_product_code"
                   action="popular_reports.wizard_act_report_refund_lst_by_product_code"
-                  sequence="7"/>
+                  sequence="8"/>
         
         <menuitem name="Refund Listing by Vendor"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_refund_lst_by_vendor"
                   action="popular_reports.wizard_act_report_refund_lst_by_vendor"
-                  sequence="8"/>
+                  sequence="9"/>
         
         <menuitem name="Outstanding Invoice Report by Customer"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_outstanding_inv_report_by_cust"
                   action="popular_reports.wizard_act_report_outstanding_inv_report_by_cust"
-                  sequence="9"/>
+                  sequence="10"/>
         
         <menuitem name="Outstanding Bill Report by Vendor"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_outstanding_bill_report_by_ven"
                   action="popular_reports.wizard_act_report_outstanding_bill_report_by_ven"
-                  sequence="10"/>
+                  sequence="11"/>
         
         <menuitem name="Purchase Order Report by Date"
                   parent="popular_reports.popular_reports_sub_menu_4"
