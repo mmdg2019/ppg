@@ -515,7 +515,7 @@
                             <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name),reverse=False)" t-as="doc">
                             
                             <tbody>
-                                    <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line">
+                                    <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                         <tr>
                                             <td>
                                                 <t t-if="table_line_first">
@@ -2756,6 +2756,9 @@
                                     <th>
                                         <span>Customer Name</span>
                                     </th>
+                                    <th>
+                                        <span>Category</span>
+                                    </th>
                                     <th style="text-align:right;">
                                         <span>Total</span>
                                     </th>
@@ -2766,42 +2769,47 @@
                                     <t t-set="currency_id" t-value="docs.currency_id"/>
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-foreach="user_ids" t-as="cust">
-                                        <t t-set="sub" t-value="0"/>
-                                        <t t-set="sub_ttl" t-value="0"/>
                                         <t t-foreach="dates" t-as="date">
+                                            <t t-set="sub" t-value="0"/>
                                             <t t-set="sub_ttl" t-value="0"/>
-                                            <t t-foreach="docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date)" t-as="table_line" t-if="table_line.partner_id.id==cust.id">
-                                                <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
+                                            <t t-foreach="categories" t-as="category">
+                                                <t t-set="sub_ttl" t-value="0"/>
+                                                <t t-foreach="docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date and x.partner_id.id==cust.id and x.x_studio_category_i == category)" t-as="table_line">
+                                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
+                                                </t>
+                                                <tr t-if="sub_ttl>0">
+                                                    <td>
+                                                        <span t-esc="date"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="cust.display_name"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="category"></span>
+                                                    </td>
+                                                    <td style="text-align:right;">
+                                                        <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                                        <t t-set="sub" t-value="sub + sub_ttl"/>
+                                                    </td>
+                                                </tr>
                                             </t>
-                                            <tr>
-                                                <td>
-                                                    <span t-esc="date"></span>
-                                                </td>
-                                                <td>
-                                                    <span  t-esc="cust.display_name"></span>
-                                                </td>
-                                                <td style="text-align:right;">
-                                                    <span><t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
-                                                    <t t-set="sub" t-value="sub + sub_ttl"/>
-                                                </td>
+                                            <tr t-if="sub>0">
+                                                <th colspan="2">
+                                                </th>
+                                                <th>
+                                                    <span>Sub Total</span>
+                                                </th>
+                                                <th style="text-align:right;">
+                                                    <span><t t-esc="abs(sub)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
+                                                    <t t-set="ttl" t-value="ttl + sub"/>
+                                                </th>
                                             </tr>
                                         </t>
-                                        <tr>
-                                            <th>
-                                            </th>
-                                            <th>
-                                                <span>Sub Total</span>
-                                            </th>
-                                            <th style="text-align:right;">
-                                                <span><t t-esc="abs(sub)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
-                                                <t t-set="ttl" t-value="ttl + sub"/>
-                                            </th>
-                                        </tr>
                                     </t>
                                 </tbody>
                             <tfooter>
                                 <tr> 
-                                    <th>
+                                    <th colspan="2">
                                     </th>
                                     <th>
                                         <span>Grand Total</span>
@@ -2929,14 +2937,14 @@
                                 <t t-set="ttl" t-value="ttl + doc.amount_total"/>
                                 <t t-foreach="doc.invoice_line_ids" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.quantity > 0">
                                     <tr>
-                                        <td t-if="table_line_first">
-                                            <span t-field="doc.name"/>
+                                        <td>
+                                            <span t-if="table_line_first" t-field="doc.name"/>
                                         </td>
-                                        <td t-if="table_line_first">
-                                            <span t-esc="doc.invoice_date"/>
+                                        <td>
+                                            <span t-if="table_line_first" t-esc="doc.invoice_date.strftime('%m/%d/%Y')"/>
                                         </td>
-                                        <td t-if="table_line_first">
-                                            <span t-field="doc.partner_id.display_name"/>
+                                        <td>
+                                            <span t-if="table_line_first" t-field="doc.partner_id.display_name"/>
                                         </td>
 <!--                                         <td>
                                         </td>
@@ -2976,9 +2984,6 @@
                                         </th>
                                         <th style="text-align:right;">
                                             <span t-field="doc.amount_total"/>
-                                        </th>
-                                        <th>
-                                            <span></span>
                                         </th>
                                     </tr>
                             </tbody>
