@@ -62,11 +62,13 @@
                   id="popular_reports.menu_report_sales_analysis_by_month_and_cust"
                   action="popular_reports.wizard_act_report_sales_analysis_by_month_and_cust"
                   sequence="3"/>
-        <menuitem name="Sales Analysis Report by State"
+        
+<!--         <menuitem name="Sales Analysis Report by State"
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_sales_analysis_by_state"
                   action="popular_reports.wizard_act_report_sales_analysis_by_state"
-                  sequence="4"/>
+                  sequence="4"/> -->
+        
         <menuitem name="Sales Report by Client"
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_sales_report_by_client"
@@ -204,11 +206,11 @@
                   action="popular_reports.wizard_act_report_cash_receipt_listing_by_r_no"
                   sequence="5"/>
         
-        <menuitem name="Damage Sales Return Listing by Product Code"
+<!--         <menuitem name="Damage Sales Return Listing by Product Code"
                   parent="popular_reports.popular_reports_sub_menu_7"
                   id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_product"
                   action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_product"
-                  sequence="6"/>
+                  sequence="6"/> -->
         
         <menuitem name="Damage Sales Return Listing by Customer"
                   parent="popular_reports.popular_reports_sub_menu_7"

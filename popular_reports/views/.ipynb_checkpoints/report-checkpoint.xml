@@ -1378,7 +1378,11 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        <span>Sales Report by Client <t t-if="filter_post=='1'">(Cancel)</t><t t-elif="filter_post=='2'">(Draft)</t><t t-elif="filter_post=='3'">(Posted)</t></span>
+                                        <span>Sales Report by Client 
+                                            <t t-if="filter_post=='1'">(Cancel)</t>
+                                            <t t-elif="filter_post=='2'">(Draft)</t>
+                                            <t t-elif="filter_post=='3'">(Posted)</t>
+                                        </span>
                                     </font>
                                 </b>
                                 
@@ -1407,6 +1411,9 @@
                                     </th>
                                     <th>
                                         <span>Invoice Number</span>
+                                    </th>
+                                    <th>
+                                        <span>Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Pay Amount</span>
@@ -1450,10 +1457,7 @@
                                     </t>
                                     <t t-if="sub==1">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
+                                            <th colspan="3">
                                                 <span></span>
                                             </th>
                                             <th>
@@ -1497,10 +1501,13 @@
                                                 <t t-else="">
                                                     <t t-set="sub" t-value="0"/>
                                                 </t>
-                                            </t>                         
+                                            </t>
                                         </td>
                                         <td>
                                             <span t-field="table_line.display_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="table_line.x_studio_category_i"/>
                                         </td>
                                         <td style="text-align:right;">
                                             <span t-esc="table_line.amount_total_signed-table_line.amount_residual_signed" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
@@ -1525,10 +1532,7 @@
                                     <t t-set="sub_ttl_tax_excluded" t-value="sub_ttl_tax_excluded + table_line.amount_untaxed_signed"/>
                                     <t t-if="table_line_last">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
+                                            <th colspan="3">
                                                 <span></span>
                                             </th>
                                             <th>
@@ -1568,10 +1572,7 @@
                                     <t t-set="ttl_tax_excluded" t-value="ttl_tax_excluded + table_line.amount_untaxed_signed"/>
                                 </t>
                                 <tr>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
+                                    <th colspan="3">
                                         <span></span>
                                     </th>
                                     <th>
@@ -1853,7 +1854,7 @@
                             </thead>
                             <t t-if="docs">
                             <tbody>
-                                <t t-foreach="docs.sorted(key=lambda x: x.location_id, reverse=False)" t-as="doc">
+<!--                                 <t t-foreach="docs.sorted(key=lambda x: x.location_id, reverse=False)" t-as="doc">
                                     <t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids">
                                     <tr>
                                         <td>
@@ -1866,10 +1867,27 @@
                                             <span t-field="table_line.product_uom_id"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <span t-field="table_line.quantity"/>
+                                            <span t-esc="table_line.quantity"/>
                                         </td>
                                     </tr>
                                     </t>
+                                </t> -->
+                                <t t-foreach="items" t-as="item">
+                                    
+                                    <tr>
+                                        <td>
+                                            <span t-esc="item['location']"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="item['product_name']"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-esc="item['product_uom']"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="round(item['on_hand'],2)"/>
+                                        </td>
+                                    </tr>
                                 </t>
                             </tbody>
                         </t>
@@ -3090,6 +3108,9 @@
                                         <span>Return No.</span>
                                     </th>
                                     <th>
+                                        <span>Category</span>
+                                    </th>
+                                    <th>
                                         <span>Product</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -3142,6 +3163,11 @@
                                              </t>
                                         </td>
                                         <td>
+                                            <t t-if="table_line_first">
+                                                <span t-field="doc.x_studio_category_i"/>
+                                             </t>
+                                        </td>
+                                        <td>
                                             <span t-field="table_line.product_id"/>
                                         </td>
                                         <td style="text-align:right;">
@@ -3159,19 +3185,7 @@
                                         </td>
                                     </tr>
                                     <tr t-if="table_line_last">
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
+                                            <th colspan="6">
                                                 <span></span>
                                             </th>
                                             <th colspan="2">
@@ -3186,19 +3200,7 @@
                             <t t-if="doc_last">
                                 <tfooter>
                                     <tr>
-                                        <th>
-                                            <span></span>
-                                        </th>
-                                        <th>
-                                            <span></span>
-                                        </th>
-                                        <th>
-                                            <span></span>
-                                        </th>
-                                        <th>
-                                            <span></span>
-                                        </th>
-                                        <th>
+                                        <th colspan="6">
                                             <span></span>
                                         </th>
                                         <th colspan="2">
@@ -4260,6 +4262,9 @@
                                         <span>Invoice Number</span>
                                     </th>
                                     <th>
+                                        <span>Category</span>
+                                    </th>
+                                    <th>
                                         <span>Status</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -4304,7 +4309,7 @@
                                     </t>
                                     <t t-if="sub==1">
                                             <tr>
-                                                <th colspan="5">
+                                                <th colspan="6">
                                                     <span></span>
                                                 </th>
                                                 <th colspan="2">
@@ -4331,6 +4336,9 @@
                                             </td>
                                             <td>
                                                 <span t-field="table_line.display_name"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="table_line.x_studio_category_i"/>
                                             </td>
                                             <td>
                                                 <span t-field="table_line.invoice_payment_state"/>
@@ -4363,7 +4371,7 @@
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_residual_signed"/>
                                     <t t-if="table_line_last">
                                         <tr>
-                                            <th colspan="5">
+                                            <th colspan="6">
                                                 <span></span>
                                             </th>
                                             <th colspan="2">
@@ -4378,7 +4386,7 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <th colspan="5">
+                                    <th colspan="6">
                                         <span></span>
                                     </th>
                                     <th colspan="2">
@@ -5839,10 +5847,7 @@
                                     </t>
                                     <t t-if="sub==1">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
+                                            <th colspan="2">
                                                 <span></span>
                                             </th>
                                             <th>
@@ -5905,10 +5910,7 @@
                                     <t t-set="sub_ttl_discount_amount" t-value="sub_ttl_discount_amount + table_line.x_studio_special_discount_amount"/>
                                     <t t-if="table_line_last">
                                         <tr>
-                                            <th>
-                                                <span></span>
-                                            </th>
-                                            <th>
+                                            <th colspan="2">
                                                 <span></span>
                                             </th>
                                             <th>
@@ -5932,13 +5934,7 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
+                                    <th colspan="2">
                                         <span>Grand Total</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -6282,6 +6278,9 @@
                                         <span>Customer Name</span>
                                     </th>
                                     <th>
+                                        <span>Invoice Number</span>
+                                    </th>
+                                    <th>
                                         <span>Category</span>
                                     </th>
                                     <th>
@@ -6319,7 +6318,7 @@
                                     </t>
                                     <t t-if="sub_date != doc.create_date.strftime('%m/%d/%Y') and sub_ttl > 0">
                                         <tr>
-                                            <th colspan="6">
+                                            <th colspan="7">
                                                 <span></span>
                                             </th>
                                             <th colspan="2">
@@ -6344,11 +6343,14 @@
                                                     <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
                                                 </t>
                                             </td>
-                                            
-                                            
                                             <td>
                                                 <t t-if="table_line_first">
                                                     <span t-field="doc.partner_id.display_name"/>
+                                                </t>                  
+                                            </td>
+                                            <td>
+                                                <t t-if="table_line_first">
+                                                    <span t-field="doc.display_name"/>
                                                 </t>                  
                                             </td>
                                             <td>
@@ -6381,7 +6383,7 @@
                                     </t>
                                     <t t-if="doc_last and sub_ttl > 0">
                                         <tr if="sub_ttl>0">
-                                            <th colspan="6">
+                                            <th colspan="7">
                                                 <span></span>
                                             </th>
                                             <th colspan="2">
@@ -6396,7 +6398,7 @@
                             </tbody>
                             <tfooter>
                                 <tr>
-                                    <th colspan="6">
+                                    <th colspan="7">
                                         <span></span>
                                     </th>
                                     <th colspan="2">
