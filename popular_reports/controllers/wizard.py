@@ -65,9 +65,10 @@ class PopularReport(models.TransientModel):
 
     def get_company(self):
         return self.env.company
-        
+    
+    
+#     Sales Report by Product Code
     def print_report_sales_report_by_product_code(self):
-        
         data = {
             'filter_post':self.filter_post,
             'user_ids': self.user.ids,
@@ -77,8 +78,9 @@ class PopularReport(models.TransientModel):
             'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.sales_report_by_product_code').report_action(self, data=data)
+    
+#     Sales Report by Product Category
     def print_report_sales_report_by_product_cat(self):
-        
         data = {
             'filter_post':self.filter_post,
             'user_ids': self.user.ids,
@@ -88,15 +90,18 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_report_by_product_cat').report_action(self, data=data)
     
+#     Sales Report by Client
     def print_sales_report_by_client(self):
         data = {
             'filter_post':self.filter_post,
+            'product_cats_ids': self.product_cats.ids,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.sales_report_by_client').report_action(self, data=data)
     
+#     All Balance Listing
     def print_report_all_balance_listing(self):
         data = {
             'stock_location': self.stock_location.ids,
@@ -106,6 +111,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.all_balance_listing').report_action(self, data=data)
     
+#     Sales Analysis Report by Customer
     def print_report_sales_analysis_report_by_cust(self):
         data = {
             'filter_post':self.filter_post,
@@ -116,6 +122,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_analysis_report_by_cust').report_action(self, data=data)
     
+#     Sales Analysis Report by Month and Customer
     def print_report_sales_analysis_by_month_and_cust(self):
         data = {
             'filter_post':self.filter_post,
@@ -130,6 +137,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_analysis_by_month_and_cust').report_action(self, data=data)
     
+#     Sales Analysis Report by State
     def print_report_sales_analysis_by_state(self):
         data = {
             'filter_post':self.filter_post,
@@ -148,6 +156,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_report_by_date').report_action(self, data=data)
     
+#     Stock Analysis by Date and Customer
     def print_report_stock_analysis_by_date_and_cust(self):
         data = {
             'user_ids': self.user.ids,
@@ -157,6 +166,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_analysis_by_date_and_cust').report_action(self, data=data)
     
+#     Stock Analysis by Date
     def print_report_stock_analysis_by_date(self):
         data = {
             'product_ids': self.products.ids,
@@ -165,6 +175,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_analysis_by_date').report_action(self, data=data)
     
+#     Stock Analysis by Month and Customer
     def print_report_stock_analysis_by_month_and_cust(self):
         data = {
             's_month':self.s_month,
@@ -177,7 +188,8 @@ class PopularReport(models.TransientModel):
             'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.stock_analysis_by_month_and_cust').report_action(self, data=data)
-    
+
+#     Stock Transfer Information
     def print_report_stock_transfer_info(self):
         data = {
             'filter_post_stock':self.filter_post_stock,
@@ -190,6 +202,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_transfer_info').report_action(self, data=data)
     
+#     Stock Valuation Information
     def print_report_stock_valuation_info(self):
         data = {
             'product_ids': self.products.ids,
@@ -198,6 +211,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_valuation_info').report_action(self, data=data)
     
+#     Monthly Stock Analysis Report
     def print_report_monthly_stock_analysis_report(self):
         data = {
             'product_ids': self.products.ids,
@@ -208,6 +222,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.monthly_stock_analysis_report').report_action(self, data=data)
     
+#     Purchase Analysis Report by Supplier
     def print_report_purchase_analysis_report_by_sup(self):
         data = {
             'filter_post':self.filter_post,
@@ -217,6 +232,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.purchase_analysis_report_by_sup').report_action(self, data=data)
     
+#     Purchase Listing by Supplier
     def print_report_purchase_listing_by_sup(self):
         data = {
             'filter_post':self.filter_post,
@@ -226,6 +242,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.purchase_listing_by_sup').report_action(self, data=data)
     
+#     Purchase Invoice Listing by Vendor
     def print_report_purchase_inv_lst_by_inv_no(self):
         data = {
             'filter_post':self.filter_post,
@@ -235,6 +252,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.purchase_inv_lst_by_inv_no').report_action(self, data=data)
     
+#     Purchase Stock Analysis by Date
     def print_report_purchase_stock_analysis_by_date(self):
         data = {
             'product_ids': self.products.ids,
@@ -243,6 +261,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.purchase_stock_analysis_by_date').report_action(self, data=data)
     
+#     Cash Payment Listing by Lumpsum
     def print_report_cash_payment_listing_by_lumpsum(self):
         data = {
             'filter_post_payment':self.filter_post_payment,
@@ -251,6 +270,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.cash_payment_listing_by_lumpsum').report_action(self, data=data)
     
+#     Cash Receipt Listing by Date
     def print_report_cash_receipt_listing_by_date(self):
         data = {
             'filter_post_payment':self.filter_post_payment,
@@ -259,6 +279,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.cash_receipt_listing_by_date').report_action(self, data=data)
     
+#     Cash Receipt Listing by Receipt No
     def print_report_cash_receipt_listing_by_r_no(self):
         data = {
             'filter_post_payment':self.filter_post_payment,
@@ -267,6 +288,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.cash_receipt_listing_by_r_no').report_action(self, data=data)
     
+#     Cash Receipt Listing by Customer
     def print_report_cash_receipt_listing_by_customer(self):
         data = {
             'filter_post_payment':self.filter_post_payment,
@@ -276,6 +298,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.cash_receipt_listing_by_cust_no').report_action(self, data=data)
     
+#     Daily Sales Repory by Date
     def print_report_daily_sales_report_by_date(self):
         data = {
             'filter_post':self.filter_post,
@@ -284,8 +307,8 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.daily_sales_report_by_date').report_action(self, data=data)
     
+#     Damage Sales Return Listing by Product Code
     def print_report_dmg_sales_rtrn_lst_by_product(self):
-        
         data = {
             'filter_post_credit':self.filter_post_credit,
             'product_ids': self.products.ids,
@@ -294,24 +317,29 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.dmg_sales_rtrn_lst_by_product').report_action(self, data=data)
     
+#     Damage Sales Return Listing by Customer
     def print_report_dmg_sales_rtrn_lst_by_cust_no(self):
         data = {
             'filter_post_credit':self.filter_post_credit,
+            'product_cats_ids': self.product_cats.ids,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.dmg_sales_rtrn_lst_by_cust_no').report_action(self, data=data)
     
+#     Outstanding Invoice Report by Customer
     def print_report_outstanding_inv_report_by_cust(self):
         data = {
             'filter_post':self.filter_post,
+            'product_cats_ids': self.product_cats.ids,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.outstanding_inv_report_by_cust').report_action(self, data=data)
     
+#     Outstanding Bill Report by Vendor
     def print_report_outstanding_bill_report_by_ven(self):
         data = {
             'filter_post':self.filter_post,
@@ -321,6 +349,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.outstanding_bill_report_by_ven').report_action(self, data=data)
     
+#     Sales Order Report by Client
     def print_sales_order_report_by_client(self):
         data = {
             'filter_post_order':self.filter_post_order,
@@ -338,6 +367,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_order_report_by_date').report_action(self, data=data)
     
+#     Sales Quotation Report by Client
     def print_sales_quot_report_by_client(self):
         data = {
             'filter_post_quot':self.filter_post_quot,
@@ -347,6 +377,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_quot_report_by_client').report_action(self, data=data)
     
+#     Sales Quotation Report by Date
     def print_report_sales_quot_report_by_date(self):
         data = {
             'filter_post_quot':self.filter_post_quot,
@@ -355,6 +386,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_quot_report_by_date').report_action(self, data=data)
     
+#     Sales Quotation Report by Product Code
     def print_report_sales_quot_report_by_p_code(self):
         data = {
             'filter_post_quot':self.filter_post_quot,
@@ -366,6 +398,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_quot_report_by_p_code').report_action(self, data=data)
     
+#     Refund Listing by Product Code
     def print_report_refund_lst_by_product_code(self):
         
         data = {
@@ -376,6 +409,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.refund_lst_by_product_code').report_action(self, data=data)
     
+#     Refund Listing by Vendor
     def print_report_refund_lst_by_vendor(self):
         data = {
             'filter_post_credit':self.filter_post_credit,
@@ -385,6 +419,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.refund_lst_by_vendor').report_action(self, data=data)
     
+#     Purchase Order Report by Date
     def print_report_purchase_order_report_by_date(self):
         data = {
             'filter_post_pur_quot':self.filter_post_pur_quot,

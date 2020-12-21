@@ -220,6 +220,9 @@
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
                     </group>
                     <group>
+                        <field name="product_cats" widget="many2many_tags"/>
+                    </group>
+                    <group>
                         <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
                     </group>
                     <group col="4" colspan="4">
@@ -333,6 +336,9 @@
                 <form string="Outstanding Invoice Report by Customer">
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                    </group>
+                    <group>
+                        <field name="product_cats" widget="many2many_tags"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -494,6 +500,9 @@
                 <form string="Sales Report by Client">
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                    </group>
+                    <group>
+                        <field name="product_cats" widget="many2many_tags"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -1126,7 +1135,7 @@
         </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_sales_quot_report_by_client'>
-            <field name="name">Export Sales Quotation Report by Client</field>
+            <field name="name">Export Sales Quotations Report by Client</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
@@ -1135,7 +1144,7 @@
         </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_sales_quot_report_by_date'>
-            <field name="name">Export Sales Quotation Report by Date</field>
+            <field name="name">Export Sales Quotations Report by Date</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
@@ -1143,7 +1152,7 @@
             <field name="target">new</field>
         </record>
         <record model='ir.actions.act_window' id='wizard_act_report_sales_quot_report_by_p_code'>
-            <field name="name">Export Sales Quotation Report by Product Code</field>
+            <field name="name">Export Sales Quotations Report by Product Code</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>

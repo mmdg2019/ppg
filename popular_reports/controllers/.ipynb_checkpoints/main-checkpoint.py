@@ -10,6 +10,7 @@ from odoo import models, fields, api
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
+# Sales Report by Product Code
 class edit_report_sales_report_by_product_code(models.TransientModel):
     _name = "report.popular_reports.report_sales_report_by_product_code"
     
@@ -87,6 +88,7 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
             'product_ids':product_ids
        }
     
+#     Sales Report by Product Category
 class edit_report_sales_report_by_product_cat(models.TransientModel):
     _name = "report.popular_reports.report_sales_report_by_product_cat"
     
@@ -143,13 +145,13 @@ class edit_report_sales_report_by_product_cat(models.TransientModel):
             'user_ids':data['user_ids']
        }
 
+#     Sales Report by Client
 class edit_report_sales_report_by_client(models.TransientModel):
     _name = "report.popular_reports.report_sales_report_by_client"
     
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = None
-        
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
@@ -160,6 +162,17 @@ class edit_report_sales_report_by_client(models.TransientModel):
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
+            docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
+        else:
+            obj = self.env['product.category'].search([],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
         return {
             'filter_post': data['filter_post'],
             'docs': docs,
@@ -167,7 +180,7 @@ class edit_report_sales_report_by_client(models.TransientModel):
             'end_date': data['end_date']
        }
     
-
+# All Balance Listing
 class edit_report_all_balance_listing(models.TransientModel):
     _name = "report.popular_reports.report_all_balance_listing"
     
@@ -187,13 +200,24 @@ class edit_report_all_balance_listing(models.TransientModel):
             docs = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal')])
         else:
             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
+#         docs = self.env['stock.quant'].search([('location_id.id', 'in', data['stock_location'])])
+        products = docs.mapped('quant_ids.product_id')
+        location = docs.mapped('quant_ids.location_id')
+        temp = []
+        for loc in location:
+            for product in products:
+                total_qty = sum(table_line.quantity for doc in docs for table_line in doc.quant_ids.filtered(lambda r: r.product_id == product and  r.location_id == loc))
+                temp.append({'product_name':product.display_name,'on_hand':total_qty, 'product_uom':product.uom_name,'location':loc.display_name})
         return {
             'docs': docs,
             'product_ids': product_ids,
             'start_date': data['start_date'], 
-            'end_date': data['end_date']
+            'end_date': data['end_date'],
+            'products': products,
+            'items': sorted(temp, key = lambda i: (i['location'],i['product_name'])),
        }
     
+#     Sales Report by Date
 class edit_report_sales_report_by_date(models.TransientModel):
     _name = "report.popular_reports.report_sales_report_by_date"
     
@@ -214,6 +238,7 @@ class edit_report_sales_report_by_date(models.TransientModel):
             'end_date': data['end_date']
        }
     
+#     Sales Analysis Report by Customer
 class edit_report_sales_analysis_report_by_cust(models.TransientModel):
     _name = "report.popular_reports.report_sales_analysis_report_by_cust"
     
@@ -272,7 +297,8 @@ class edit_report_sales_analysis_report_by_cust(models.TransientModel):
             'end_date': data['end_date'],
             'filter_post': data['filter_post'],
        }
-
+    
+#     Sales Analysis Report by Month and Customer
 class edit_report_sales_analysis_by_month_and_cust(models.TransientModel):
     _name = "report.popular_reports.report_sales_analysis_by_month_and_cust"
     
@@ -327,6 +353,7 @@ class edit_report_sales_analysis_by_month_and_cust(models.TransientModel):
             'categories':product_cats_ids
         }
 
+#     Sales Analysis Report by State
 class edit_report_sales_analysis_by_state(models.TransientModel):
     _name = "report.popular_reports.report_sales_analysis_by_state"
     
@@ -363,6 +390,7 @@ class edit_report_sales_analysis_by_state(models.TransientModel):
             'state': state
         }
 
+#     Stock Analysis by Date and Customer
 class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
     _name="report.popular_reports.report_stock_analysis_by_date_and_cust"
     _description="Report Editing"
@@ -393,6 +421,7 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
             'cats':product_cats_ids
             }
     
+#     Stock Analysis by Month and Customer
 class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
     _name="report.popular_reports.report_stock_analysis_by_month_and_cust"
     _description="Report Editing"
@@ -440,7 +469,8 @@ class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
             'country': country,
             'state': state
             }
-    
+
+#     Monthly Stock Analysis Report
 class edit_report_monthly_stock_analysis(models.TransientModel):
     _name="report.popular_reports.report_monthly_stock_analysis_report"
     _description="Report Editing"
@@ -467,6 +497,7 @@ class edit_report_monthly_stock_analysis(models.TransientModel):
             'lst':sorted(temp, key = lambda i: i['name'])
             }
     
+#     Stock Analysis by Date
 class edit_report_stock_analysis_by_date(models.TransientModel):
     _name="report.popular_reports.report_stock_analysis_by_date"
     _description="Report Editing"
@@ -515,6 +546,7 @@ class edit_report_stock_analysis_by_date(models.TransientModel):
             'lst':pids,
             }
     
+#     Stock Transfer Information
 class edit_report_stock_transfer_info(models.TransientModel):
     _name = "report.popular_reports.report_stock_transfer_info"
     
@@ -537,6 +569,7 @@ class edit_report_stock_transfer_info(models.TransientModel):
             'end_date': data['end_date']
        }
     
+#     Stock Valuation Information
 class edit_report_stock_valuation_info(models.TransientModel):
     _name = "report.popular_reports.report_stock_valuation_info"
     
@@ -560,7 +593,8 @@ class edit_report_stock_valuation_info(models.TransientModel):
             'docs': docs,
             'product_ids': product_ids
        }
-    
+
+#     Purchase Analysis Report by Supplier
 class edit_report_purchase_analysis_report_by_sup(models.TransientModel):
     _name = "report.popular_reports.report_purchase_analysis_report_by_sup"
     
@@ -584,6 +618,7 @@ class edit_report_purchase_analysis_report_by_sup(models.TransientModel):
             'end_date': data['end_date']
        }
     
+#     Purchase Listing by Supplier
 class edit_report_purchase_listing_by_sup(models.TransientModel):
     _name = "report.popular_reports.report_purchase_listing_by_sup"
     
@@ -608,6 +643,7 @@ class edit_report_purchase_listing_by_sup(models.TransientModel):
             'end_date': data['end_date']
         }
 
+#     Purchase Invoice Listing by Vendor
 class edit_report_purchase_inv_lst_by_inv_no(models.TransientModel):
     _name = "report.popular_reports.report_purchase_inv_lst_by_inv_no"
     
@@ -628,7 +664,8 @@ class edit_report_purchase_inv_lst_by_inv_no(models.TransientModel):
             'filter_post': data['filter_post'],
             'docs': docs
        }
-    
+
+#     Purchase Stock Analysis by Date
 class edit_report_purchase_stock_analysis_by_date(models.TransientModel):
     _name = "report.popular_reports.report_purchase_stock_analysis_by_date"
     
@@ -675,7 +712,8 @@ class edit_report_purchase_stock_analysis_by_date(models.TransientModel):
             'docs':docs,
             'lst':pids
             }
-    
+
+# Cash Payment Listing by Lumpsum
 class edit_report_cash_payment_listing_by_lumpsum(models.TransientModel):
     _name = "report.popular_reports.report_cash_payment_listing_by_lumpsum"
     
@@ -699,6 +737,7 @@ class edit_report_cash_payment_listing_by_lumpsum(models.TransientModel):
             'docs': docs
        }
     
+# Cash Receipt Listing by Customer
 class edit_report_cash_receipt_listing_by_cust_no(models.TransientModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_cust_no"
     
@@ -724,6 +763,7 @@ class edit_report_cash_receipt_listing_by_cust_no(models.TransientModel):
             'docs': docs
        }
 
+# Cash Receipt Listing by Date
 class edit_report_cash_receipt_listing_by_date(models.TransientModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_date"
     
@@ -747,6 +787,7 @@ class edit_report_cash_receipt_listing_by_date(models.TransientModel):
             'docs': docs
        }
     
+#     Cash Receipt Listing by Receipt No
 class edit_report_cash_receipt_listing_by_r_no(models.TransientModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_r_no"
     
@@ -770,6 +811,7 @@ class edit_report_cash_receipt_listing_by_r_no(models.TransientModel):
             'docs': docs
        }
 
+#     Daily Sales Repory by Date
 class edit_report_daily_sales_report_by_date(models.TransientModel):
     _name = "report.popular_reports.report_daily_sales_report_by_date"
     
@@ -787,7 +829,8 @@ class edit_report_daily_sales_report_by_date(models.TransientModel):
         return {
             'docs': docs
        }
-
+    
+#     Damage Sales Return Listing by Product Code
 class edit_report_dmg_sales_rtrn_lst_by_product(models.TransientModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_product"
     
@@ -817,6 +860,7 @@ class edit_report_dmg_sales_rtrn_lst_by_product(models.TransientModel):
             'product_ids':product_ids
        }
     
+#     Damage Sales Return Listing by Customer
 class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.TransientModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_cust_no"
     
@@ -833,11 +877,23 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.TransientModel):
             docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
+            docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
+        else:
+            obj = self.env['product.category'].search([],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
         return {            
             'filter_post_credit': data['filter_post_credit'],
             'docs': docs
        }
-    
+
+#     Refund Listing by Product Code
 class edit_report_refund_lst_by_product_code(models.TransientModel):
     _name = "report.popular_reports.report_refund_lst_by_product_code"
     
@@ -867,6 +923,7 @@ class edit_report_refund_lst_by_product_code(models.TransientModel):
             'product_ids':product_ids
        }
     
+#     Refund Listing by Vendor
 class edit_report_refund_lst_by_vendor(models.TransientModel):
     _name = "report.popular_reports.report_refund_lst_by_vendor"
     
@@ -888,6 +945,7 @@ class edit_report_refund_lst_by_vendor(models.TransientModel):
             'docs': docs
        }
     
+#     Outstanding Invoice Report by Customer
 class edit_report_outstanding_inv_report_by_cust(models.TransientModel):
     _name = "report.popular_reports.report_outstanding_inv_report_by_cust"
     
@@ -904,11 +962,23 @@ class edit_report_outstanding_inv_report_by_cust(models.TransientModel):
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
+            docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
+        else:
+            obj = self.env['product.category'].search([],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
         return {
             'filter_post': data['filter_post'],
             'docs': docs
        }
-
+    
+#     Purchase Order Report by Date
 class edit_report_sales_order_report_by_date(models.TransientModel):
     _name = "report.popular_reports.report_sales_order_report_by_date"
     
@@ -934,6 +1004,7 @@ class edit_report_sales_order_report_by_date(models.TransientModel):
             'end_date': data['end_date']
        }
 
+#     Sales Order Report by Client
 class edit_report_sales_order_report_by_client(models.TransientModel):
     _name = "report.popular_reports.report_sales_order_report_by_client"
     
@@ -960,7 +1031,8 @@ class edit_report_sales_order_report_by_client(models.TransientModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
-    
+
+#     Sales Quotation Report by Date
 class edit_report_sales_quot_report_by_date(models.TransientModel):
     _name = "report.popular_reports.report_sales_quot_report_by_date"
     
@@ -987,7 +1059,8 @@ class edit_report_sales_quot_report_by_date(models.TransientModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
-
+    
+#     Sales Quotation Report by Client
 class edit_report_sales_quot_report_by_client(models.TransientModel):
     _name = "report.popular_reports.report_sales_quot_report_by_client"
     
@@ -1010,13 +1083,15 @@ class edit_report_sales_quot_report_by_client(models.TransientModel):
             
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        
         return {
             'filter_post_quot': data['filter_post_quot'],
             'docs': docs,
             'start_date': data['start_date'], 
-            'end_date': data['end_date']
+            'end_date': data['end_date'],
        }
-
+    
+#     Sales Quotation Report by Product Code
 class edit_report_sales_quot_report_by_p_code(models.TransientModel):
     _name = "report.popular_reports.report_sales_quot_report_by_p_code"
     
@@ -1058,6 +1133,7 @@ class edit_report_sales_quot_report_by_p_code(models.TransientModel):
             'product_cats_ids':product_cats_ids
        }
     
+#     Purchase Order Report by Date
 class edit_report_purchase_order_report_by_date(models.TransientModel):
     _name = "report.popular_reports.report_purchase_order_report_by_date"
     
@@ -1078,7 +1154,8 @@ class edit_report_purchase_order_report_by_date(models.TransientModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
-
+    
+#     Outstanding Bill Report by Vendor
 class edit_report_outstanding_bill_report_by_ven(models.TransientModel):
     _name = "report.popular_reports.report_outstanding_bill_report_by_ven"
     
