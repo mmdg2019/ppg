@@ -188,26 +188,30 @@ class edit_report_all_balance_listing(models.TransientModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         product_ids = []
-        if data['product_ids']:
-            obj = self.env['product.product'].search([('id', 'in', data['product_ids'])])
-            for temp in obj:
-                product_ids.append(temp.display_name)
-        else:
-            obj = self.env['product.product'].search([])
-            for temp in obj:
-                product_ids.append(temp.display_name)
+#         if data['product_ids']:
+#             obj = self.env['product.product'].search([('id', 'in', data['product_ids'])])
+#             for temp in obj:
+#                 product_ids.append(temp.display_name)
+#         else:
+#             obj = self.env['product.product'].search([])
+#             for temp in obj:
+#                 product_ids.append(temp.display_name)
         if data['stock_location']:
             docs = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal')])
         else:
             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
 #         docs = self.env['stock.quant'].search([('location_id.id', 'in', data['stock_location'])])
-        products = docs.mapped('quant_ids.product_id')
         location = docs.mapped('quant_ids.location_id')
+        if data['product_ids']:
+            products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
+        else:
+            products = docs.mapped('quant_ids.product_id')
         temp = []
         for loc in location:
+            total_qty = 0.0
             for product in products:
                 total_qty = sum(table_line.quantity for doc in docs for table_line in doc.quant_ids.filtered(lambda r: r.product_id == product and  r.location_id == loc))
-                temp.append({'product_name':product.display_name,'on_hand':total_qty, 'product_uom':product.uom_name,'location':loc.display_name})
+                temp.append({'product_name':product.display_name,'on_hand':'{0:,.2f}'.format(total_qty), 'product_uom':product.uom_name,'location':loc.display_name})
         return {
             'docs': docs,
             'product_ids': product_ids,
@@ -577,21 +581,42 @@ class edit_report_stock_valuation_info(models.TransientModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         product_ids = []
+#         if data['product_ids']:
+#             obj = self.env['product.product'].search([('id', 'in', data['product_ids'])])
+#             for temp in obj:
+#                 product_ids.append(temp.display_name)
+#         else:
+#             obj = self.env['product.product'].search([])
+#             for temp in obj:
+#                 product_ids.append(temp.display_name)
+
+        
+        temp = []
+        docs = self.env['stock.valuation.layer'].search([('product_id.type', '=', 'product')])
         if data['product_ids']:
-            obj = self.env['product.product'].search([('id', 'in', data['product_ids'])])
-            for temp in obj:
-                product_ids.append(temp.display_name)
+            products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
         else:
-            obj = self.env['product.product'].search([])
-            for temp in obj:
-                product_ids.append(temp.display_name)
-        if data['stock_location']:
-            docs = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal')])
-        else:
-            docs = self.env['stock.location'].search([('usage', '=', 'internal')])
+            products = docs.mapped('product_id')
+        for product in sorted(products, key = lambda i: i.display_name):
+            total_qty = sum(table_line.quantity for doc in docs for table_line in doc.filtered(lambda r: r.product_id == product))
+            total_value = sum(table_line.value for doc in docs for table_line in doc.filtered(lambda r: r.product_id == product))
+            temp.append({'product':product,'qty':total_qty,'value':total_value})
+#         else:
+#             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
+#         products = docs.mapped('quant_ids.product_id')
+#         location = docs.mapped('quant_ids.location_id')
+#         temp = []
+#         for loc in location:
+#             for product in products:
+#                 total_qty = sum(table_line.quantity for doc in docs for table_line in doc.quant_ids.filtered(lambda r: r.product_id == product and  r.location_id == loc))
+#                 temp.append({'product_name':product.display_name,'on_hand':total_qty, 'product_uom':product.uom_name,'location':loc.display_name})
+#         if data['stock_location']:
+#             docs = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal')])
+#         else:
+#             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
         return {
-            'docs': docs,
-            'product_ids': product_ids
+            'docs': temp,
+            'currency_id': docs.currency_id,
        }
 
 #     Purchase Analysis Report by Supplier
@@ -1083,7 +1108,11 @@ class edit_report_sales_quot_report_by_client(models.TransientModel):
             
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-        
+            
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats = product_cats_ids.mapped('display_name')
+            docs = docs.filtered(lambda r: r.x_studio_category in product_cats)
         return {
             'filter_post_quot': data['filter_post_quot'],
             'docs': docs,

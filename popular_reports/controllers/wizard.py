@@ -206,7 +206,7 @@ class PopularReport(models.TransientModel):
     def print_report_stock_valuation_info(self):
         data = {
             'product_ids': self.products.ids,
-            'stock_location': self.stock_location.ids,
+#             'stock_location': self.stock_location.ids,
 #             'product_ids': product_ids,
         }
         return self.env.ref('popular_reports.stock_valuation_info').report_action(self, data=data)
@@ -373,7 +373,8 @@ class PopularReport(models.TransientModel):
             'filter_post_quot':self.filter_post_quot,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
-            'end_date': self.end_date
+            'end_date': self.end_date,            
+            'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.sales_quot_report_by_client').report_action(self, data=data)
     
