@@ -821,9 +821,9 @@
                     <group string="Product">
                         <field name="products" widget="many2many_tags"/>
                     </group>
-                    <group string="Stock Location">
+<!--                     <group string="Stock Location">
                         <field name="stock_location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" widget="many2many_tags"/>
-                    </group>
+                    </group> -->
                <footer>
                    <button name="print_report_stock_valuation_info" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>

@@ -1885,7 +1885,7 @@
                                             <span t-esc="item['product_uom']"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <span t-esc="round(item['on_hand'],2)"/>
+                                            <span t-esc="item['on_hand']"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -1951,13 +1951,13 @@
                             </div>
                         </div>
                         <br/>
-                        <div class="row" style="text-align:center; font-size: 20px;">
+<!--                         <div class="row" style="text-align:center; font-size: 20px;">
                             <div class="col">
                                 <span>
                                     <b>Stock Valuation Report for Location:</b>
                                 </span>
                             </div>
-                        </div>
+                        </div> -->
                         <br/>
                         <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
@@ -1965,18 +1965,15 @@
                                     <th>
                                         <span>Name</span>
                                     </th>
-                                    <th>
-                                        <span>Location</span>
-                                    </th>
                                     <th style="text-align:center;">
                                         <span>UM</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Quantity On Hand</span>
+                                        <span>Quantity</span>
                                     </th>
-                                    <th style="text-align:right;">
+<!--                                     <th style="text-align:right;">
                                         <span>Price</span>
-                                    </th>
+                                    </th> -->
                                     <th style="text-align:right;">
                                         <span>Amount</span>
                                     </th>
@@ -1985,33 +1982,50 @@
                             <t t-if="docs">
                             <tbody>
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-set="total_currency_id" t-value=""/>
-                                <t t-foreach="docs.sorted(key=lambda x: x.location_id,reverse=False)" t-as="doc">
-                                    <t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids">
-                                    <t t-set="total_currency_id" t-value="table_line.currency_id"/>
+<!--                                 <t t-foreach="docs" t-as="table_line"> -->
+<!--                                     <t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids"> -->
+<!--                                     <t t-set="total_currency_id" t-value="table_line.currency_id"/>
 
                                     <tr>
                                         <td>
-                                            <span t-field="table_line.product_id.display_name"/>
+                                            <span t-field="table_line.product_id"/>
                                         </td>
-                                        <td>
-                                            <span t-field="table_line.location_id"/>
-                                        </td>
+                                        <td> -->
+<!--                                             <span t-field="table_line.location_id"/> -->
+<!--                                         </td>
                                         <td style="text-align:center;">
-                                            <span t-field="table_line.product_uom_id"/>
+                                            <span t-field="table_line.uom_id"/>
                                         </td>
                                         <td style="text-align:right;">
                                             <span t-field="table_line.quantity"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <span t-field="table_line.product_id.standard_price"/>
+                                            <span t-field="table_line.value"/>
+                                        </td>
+                                        <td style="text-align:right;"> -->
+<!--                                             <t t-set="ttl" t-value="ttl + (table_line.value * table_line.quantity)"/>
+                                            <span t-esc="(table_line.unit_cost * table_line.quantity)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/> -->
+<!--                                         </td> -->
+<!--                                     </tr> -->
+<!--                                 </t> -->
+<!--                                 </t> -->
+                                <t t-foreach="docs" t-as="item">
+                                    
+                                    <tr>
+                                        <td>
+                                            <span t-esc="item['product'].display_name"/>
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <span t-esc="item['product'].uom_name"/>
                                         </td>
                                         <td style="text-align:right;">
-                                            <t t-set="ttl" t-value="ttl + (table_line.product_id.standard_price * table_line.quantity)"/>
-                                            <span t-esc="(table_line.product_id.standard_price * table_line.quantity)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            <span t-esc="'{0:,.2f}'.format(item['qty'])"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'{0:,.2f}'.format(item['value'])"/>
+                                            <t t-set="ttl" t-value="item['value'] + ttl"/>
                                         </td>
                                     </tr>
-                                </t>
                                 </t>
                             </tbody>
                             <tfooter>
@@ -2019,17 +2033,11 @@
                                     <th>
                                         <span></span>
                                     </th>
-                                    <th>
-                                        <span></span>
-                                    </th>
-                                    <th>
-                                        <span></span>
-                                    </th>
                                     <th colspan="2">
                                         <span>Grand Total</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/></span>
+                                        <span><t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/></span>
                                     </th>
                                 </tr>
                             </tfooter>

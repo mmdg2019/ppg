@@ -206,7 +206,7 @@ class PopularReport(models.TransientModel):
     def print_report_stock_valuation_info(self):
         data = {
             'product_ids': self.products.ids,
-            'stock_location': self.stock_location.ids,
+#             'stock_location': self.stock_location.ids,
 #             'product_ids': product_ids,
         }
         return self.env.ref('popular_reports.stock_valuation_info').report_action(self, data=data)
