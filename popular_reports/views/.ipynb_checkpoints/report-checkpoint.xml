@@ -5814,6 +5814,9 @@
                                     <th>
                                         <span>Invoice Number</span>
                                     </th>
+                                    <th>
+                                        <span>Category</span>
+                                    </th>
                                     <th style="text-align:right;">
                                         <span>Other Charges</span>
                                     </th>
@@ -5858,7 +5861,7 @@
                                             <th colspan="2">
                                                 <span></span>
                                             </th>
-                                            <th>
+                                            <th colspan="2">
                                                 <span>Sub Total</span>
                                             </th>
                                             <th style="text-align:right;">
@@ -5899,6 +5902,9 @@
                                         <td>
                                             <span t-field="table_line.display_name"/>
                                         </td>
+                                        <td>
+                                            <span t-field="table_line.x_studio_category"/>
+                                        </td>
                                         <td style="text-align:right;">
                                             <span t-field="table_line.x_studio_other_charges_1"/>
                                         </td>
@@ -5921,7 +5927,7 @@
                                             <th colspan="2">
                                                 <span></span>
                                             </th>
-                                            <th>
+                                            <th colspan="2">
                                                 <span>Sub Total</span>
                                             </th>
                                             <th style="text-align:right;">
@@ -5942,6 +5948,9 @@
                             </tbody>
                             <tfooter>
                                 <tr>
+                                    <th colspan="2">
+                                        <span></span>
+                                    </th>
                                     <th colspan="2">
                                         <span>Grand Total</span>
                                     </th>

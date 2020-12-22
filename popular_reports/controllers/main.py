@@ -1108,7 +1108,11 @@ class edit_report_sales_quot_report_by_client(models.TransientModel):
             
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-        
+            
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats = product_cats_ids.mapped('display_name')
+            docs = docs.filtered(lambda r: r.x_studio_category in product_cats)
         return {
             'filter_post_quot': data['filter_post_quot'],
             'docs': docs,

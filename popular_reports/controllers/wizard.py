@@ -373,7 +373,8 @@ class PopularReport(models.TransientModel):
             'filter_post_quot':self.filter_post_quot,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
-            'end_date': self.end_date
+            'end_date': self.end_date,            
+            'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.sales_quot_report_by_client').report_action(self, data=data)
     
