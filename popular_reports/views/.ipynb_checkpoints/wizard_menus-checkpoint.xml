@@ -171,11 +171,17 @@
                   action="popular_reports.wizard_act_report_stock_transfer_info"
                   sequence="19"/>
         
+        <menuitem name="Stock Transfer Information Summary"
+                  parent="popular_reports.popular_reports_sub_menu_6"
+                  id="popular_reports.menu_report_stock_transfer_dtl_info"
+                  action="popular_reports.wizard_act_report_stock_transfer_dtl_info"
+                  sequence="20"/>
+        
         <menuitem name="Stock Valuation Information"
                   parent="popular_reports.popular_reports_sub_menu_6"
                   id="popular_reports.menu_report_stock_valuation_info"
                   action="popular_reports.wizard_act_report_stock_valuation_info"
-                  sequence="20"/>
+                  sequence="21"/>
         
         <menuitem name="All Balance Listing"
                   parent="popular_reports.popular_reports_sub_menu_7"
