@@ -647,102 +647,56 @@
                             </div>
                         </div>
                         <br/>
+                        <div t-if="customers" class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <t t-foreach="customers.sorted(key=lambda x: x.display_name,reverse=False)" t-as="customer">
+                                    <span t-if="customer_first">
+                                        <b>Customer From : </b>
+                                        <t t-esc="customer.display_name"/>
+                                    </span>
+                                    <span t-if="customer_last">
+                                        <b>To : </b>
+                                        <t t-esc="customer.display_name"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                        <br/>
                         <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
-<!--                                     <th>
-                                        <span>Shipping Date</span>
-                                    </th>
-                                    <th>
-                                        <span>Invoice No.</span>
-                                    </th> -->
                                     <th>
                                         <span>Product Code</span>
                                     </th>
                                     <th>
                                         <span>From Location</span>
                                     </th>
-<!--                                     <th>
-                                        <span>To Location</span>
-                                    </th> -->
                                     <th style="text-align:right;">
                                         <span>Qty</span>
                                     </th>
                                     <th style="text-align:center;">
                                         <span>UM</span>
                                     </th>
-<!--                                     <th>
-                                        <span>Status</span>
-                                    </th>   -->
                                 </tr>
                             </thead>
-                            <t t-foreach="docs" t-as="temp">
-<!--                                 <t t-esc="item"/> -->
-                                <tr>
-                                    <td>
-                                        <span t-field="temp['product'].display_name"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="temp['location'].display_name"/>
-                                    </td>
-                                    <td style="text-align:right;">
-                                        <span t-esc="'{0:,.2f}'.format(temp['ttl_done'])"/>
-                                    </td>
-                                    <td style="text-align:right;">
-                                        <span t-esc="temp['product'].uom_name"/>
-                                    </td>
-                                    
-<!--                                     <td style="text-align:right;">
-                                        <span t-esc="item['ttl_done']"/>
-                                    </td> -->
-                                </tr>
-                            </t>
-                            <t t-if="docs">
-                            <t t-set="ttl" t-value="0"/>
-<!--                             <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name),reverse=False)" t-as="doc">
                             
-                            <tbody>
-                                    <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
-                                        <tr>
-                                            <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-esc="context_timestamp(doc.scheduled_date).strftime('%m/%d/%Y')"/>
-                                                 </t>
-                                            </td>
-                                            <td>
-                                                <t t-if="table_line_first">
-                                                    <span t-field="doc.display_name"/>
-                                                    
-                                                 </t>
-                                            </td>
-                                            <td>
-                                                <span t-field="table_line.product_id"/>
-                                            </td>
-                                            <td>
-                                                <t t-if="doc.picking_type_code=='incoming'"><span t-field="doc.partner_id.display_name"/></t>
-                                                <t t-else=""><span t-field="table_line.location_id.display_name"/></t>
-                                            </td>
-                                            <td>
-                                                <t t-if="doc.picking_type_code=='outgoing'"><span t-field="doc.partner_id.display_name"/></t>
-                                                <t t-else=""><span t-field="table_line.location_dest_id.display_name"/></t>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span t-field="table_line.product_uom_qty"/>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span t-if="doc.state!='done'"> - </span>
-                                                <span t-if="doc.state=='done'" t-field="table_line.quantity_done"/>
-                                            </td>
-                                            <td style="text-align:center;">
-                                                <span t-field="table_line.product_uom"/>
-                                            </td>
-                                            <td>
-                                                <span t-field="doc.state"/>
-                                            </td>
-                                        </tr>
-                                    </t>
-                            </tbody>
-                            </t> -->
+                            <t t-if="docs">
+                                <t t-foreach="docs" t-as="temp">
+                                    <tr>
+                                        <td>
+                                            <span t-field="temp['product'].display_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="temp['location'].display_name"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'{0:,.2f}'.format(temp['ttl_done'])"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="temp['product'].uom_name"/>
+                                        </td>
+                                    </tr>
+                                </t>
                             </t>
                             <t t-else="">
                                 <tbody>

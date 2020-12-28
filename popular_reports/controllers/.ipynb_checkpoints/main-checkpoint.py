@@ -597,6 +597,7 @@ class edit_report_stock_transfer_dtl_info(models.TransientModel):
         return {
             'filter_post_stock': data['filter_post_stock'],
             'filter_stock_picking_type': data['filter_stock_picking_type'],
+            'customers': customers,
             'docs': sorted(temp, key = lambda i: (i['location'],i['product'].display_name)),
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
