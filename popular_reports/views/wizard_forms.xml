@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <form string="All Balance Listing">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Stock Location">
                         <field name="stock_location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" widget="many2many_tags"/>
@@ -88,7 +88,7 @@
             <field name="arch" type="xml">
                 <form string="Cash Receipt Listing by Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_payment" widget="many2one_tags" string="Status"/>
@@ -130,14 +130,14 @@
             <field name="arch" type="xml">
                 <form string="Sales Analysis Report by Month and Customer">
                     <group>
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4">
-                        <field name="filter_country_id" widget="many2one_tags"/>
-                        <field name="filter_state_id" widget="many2one_tags"/>
+                        <field name="filter_country_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="filter_state_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -170,8 +170,8 @@
                         <field name="product_cats" widget="many2many_tags"/>
                     </group> -->
                     <group col="4" colspan="4">
-                        <field name="filter_country_id" widget="many2one_tags"/>
-                        <field name="filter_state_id" widget="many2one_tags"/>
+                        <field name="filter_country_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="filter_state_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -194,7 +194,7 @@
             <field name="arch" type="xml">
                 <form string="Damage Sales Return Listing by Product Code">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
@@ -217,10 +217,10 @@
             <field name="arch" type="xml">
                 <form string="Damage Sales Return Listing by Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
@@ -243,7 +243,7 @@
             <field name="arch" type="xml">
                 <form string="Monthly Stock Analysis Report">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4" string="Start From:">
                         <field name="s_month" required="1"></field>
@@ -266,7 +266,7 @@
             <field name="arch" type="xml">
                 <form string="Damage Sales Return Listing by Product Code">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
@@ -289,7 +289,7 @@
             <field name="arch" type="xml">
                 <form string="Refund Listing by Vendor">
                     <group string="Vendor">
-                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
@@ -312,7 +312,7 @@
             <field name="arch" type="xml">
                 <form string="Refund Listing by Product Code">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_credit" widget="many2one_tags" string="Status"/>
@@ -335,10 +335,10 @@
             <field name="arch" type="xml">
                 <form string="Outstanding Invoice Report by Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -361,7 +361,7 @@
             <field name="arch" type="xml">
                 <form string="Outstanding Bill Report by Vendor">
                     <group string="Vendor">
-                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -384,7 +384,7 @@
             <field name="arch" type="xml">
                 <form string="Purchase Analysis Report by Supplier">
                     <group string="Vendor">
-                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -407,7 +407,7 @@
             <field name="arch" type="xml">
                 <form string="Purchase Listing by Supplier">
                     <group string="Vendor">
-                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -430,7 +430,7 @@
             <field name="arch" type="xml">
                 <form string="Purchase Invoice Listing by Vendor">
                     <group string="Vendor">
-                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -453,7 +453,7 @@
             <field name="arch" type="xml">
                 <form string="Purchase Stock Analysis by Date">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -473,10 +473,10 @@
             <field name="arch" type="xml">
                 <form string="Sales Analysis Report by Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -499,10 +499,10 @@
             <field name="arch" type="xml">
                 <form string="Sales Report by Client">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -566,7 +566,7 @@
             <field name="arch" type="xml">
                 <form string="Sales Order Report by Client">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_order" widget="many2one_tags" string="Status"/>
@@ -609,10 +609,10 @@
             <field name="arch" type="xml">
                 <form string="Sales Quotations Report by Client">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_quot" widget="many2one_tags" string="Status"/>
@@ -634,13 +634,13 @@
             <field name="arch" type="xml">
                 <form string="Sales Quotations Report by Product Code">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_quot" widget="many2one_tags" string="Status"/>
@@ -663,13 +663,13 @@
             <field name="arch" type="xml">
                 <form string="Sales Report by Product Code">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -691,10 +691,10 @@
             <field name="arch" type="xml">
                 <form string="Sales Report by Product Category">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Product">
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post" widget="many2one_tags" string="Status"/>
@@ -717,7 +717,7 @@
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Date">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -737,10 +737,10 @@
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Date and Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" required="1"/>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" required="1" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Product">
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
@@ -760,14 +760,14 @@
             <field name="arch" type="xml">
                 <form string="Stock Analysis by Month and Customer">
                     <group string="Customer">
-                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4">
-                        <field name="filter_country_id" widget="many2one_tags"/>
-                        <field name="filter_state_id" widget="many2one_tags"/>
+                        <field name="filter_country_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="filter_state_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="product_cats" widget="many2many_tags"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4" string="Start From:">
                         <field name="s_month" required="1"></field>
@@ -788,16 +788,18 @@
         <record model='ir.ui.view' id='wizard_form_report_stock_transfer_info'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
+<!--             <field name="target">current</field> -->
+            
             <field name="arch" type="xml">
                 <form string="Stock Transfer Information">
                     <group>
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" status="Contact"/>
+                        <field name="user" widget="many2many_tags" context="{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}" status="Contact" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="filter_stock_picking_type" widget="many2one_tags" string="Operation Type"/>
+                        <field name="filter_stock_picking_type" widget="many2one_tags" string="Operation Type" />
                     </group>
                     <group>
-                        <field name="filter_post_stock" widget="many2one_tags" string="Status"/>
+                        <field name="filter_post_stock" widget="many2one_tags" string="Status" required="1"/>
                     </group>
 <!--                     <group string="Stock Location" col="4" colspan="4">
                         <field name="location_src" string="From"/>
@@ -816,17 +818,44 @@
             </field>
         </record>
         
+        <record model='ir.ui.view' id='wizard_form_report_stock_transfer_dtl_info'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Transfer Information Summary">
+                    <group>
+                        <field name="user" widget="many2many_tags" context="{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}" status="Contact" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_stock_picking_type" widget="many2one_tags" string="Operation Type"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_stock" widget="many2one_tags" string="Status" required="1"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+                    
+               <footer>
+                   <button name="print_report_stock_transfer_dtl_info" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        
         <record model='ir.ui.view' id='wizard_form_report_stock_valuation_info'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Stock Valuation Information">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
-<!--                     <group string="Stock Location">
+                    <group string="Stock Location">
                         <field name="stock_location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" widget="many2many_tags"/>
-                    </group> -->
+                    </group>
                <footer>
                    <button name="print_report_stock_valuation_info" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
@@ -841,7 +870,7 @@
             <field name="arch" type="xml">
                 <form string="Purchase Order Report by Date">
                     <group string="Vendor">
-                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor"/>
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
                         <field name="filter_post_pur_quot" widget="many2one_tags" string="Status"/>
@@ -1107,6 +1136,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_transfer_info"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_transfer_dtl_info'>
+            <field name="name">Export Stock Transfer Information Summary</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_transfer_dtl_info"/>
             <field name="target">new</field>
         </record>
         

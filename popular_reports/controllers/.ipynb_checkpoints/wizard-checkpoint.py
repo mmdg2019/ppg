@@ -202,12 +202,24 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_transfer_info').report_action(self, data=data)
     
+    #     Stock Transfer Information Summary
+    def print_report_stock_transfer_dtl_info(self):
+        data = {
+            'filter_post_stock':self.filter_post_stock,
+            'filter_stock_picking_type':self.filter_stock_picking_type.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'user_ids': self.user.ids,
+        }
+        return self.env.ref('popular_reports.stock_transfer_dtl_info').report_action(self, data=data)
+    
 #     Stock Valuation Information
     def print_report_stock_valuation_info(self):
         data = {
+            'stock_location': self.stock_location.ids,
             'product_ids': self.products.ids,
-#             'stock_location': self.stock_location.ids,
-#             'product_ids': product_ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
         }
         return self.env.ref('popular_reports.stock_valuation_info').report_action(self, data=data)
     
