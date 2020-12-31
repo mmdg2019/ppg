@@ -591,7 +591,7 @@ class edit_report_stock_transfer_dtl_info(models.TransientModel):
         total_done = 0
         for location in locations:
             for product in products:
-                total_demand = sum(table_line.quantity_done for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_lines.filtered(lambda r: r.product_id == product))
+                total_demand = sum(table_line.product_uom_qty for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_lines.filtered(lambda r: r.product_id == product))
                 total_done = sum(table_line.quantity_done for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_lines.filtered(lambda r: r.product_id == product))
                 temp.append({'location':location, 'product':product, 'ttl_done':total_done, 'ttl_demand':total_demand})
         return {
