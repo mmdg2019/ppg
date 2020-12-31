@@ -672,7 +672,10 @@
                                         <span>From Location</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Qty</span>
+                                        <span>Demand</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Done</span>
                                     </th>
                                     <th style="text-align:center;">
                                         <span>UM</span>
@@ -688,6 +691,9 @@
                                         </td>
                                         <td>
                                             <span t-field="temp['location'].display_name"/>
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <span t-esc="'{0:,.2f}'.format(temp['ttl_demand'])"/>
                                         </td>
                                         <td style="text-align:right;">
                                             <span t-esc="'{0:,.2f}'.format(temp['ttl_done'])"/>
