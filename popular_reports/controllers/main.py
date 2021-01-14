@@ -227,6 +227,12 @@ class edit_report_sales_report_by_date(models.TransientModel):
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            for temp in obj:
+                product_cats_ids.append(temp.name)
+            docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         return {
             'docs': docs,
             'start_date': data['start_date'], 

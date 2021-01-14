@@ -147,9 +147,11 @@ class PopularReport(models.TransientModel):
             'filter_state_id': self.filter_state_id.ids
         }
         return self.env.ref('popular_reports.sales_analysis_by_state').report_action(self, data=data)
-    
+
+#     Sales Report by Date   
     def print_report_sales_report_by_date(self):
         data = {
+            'product_cats_ids': self.product_cats.ids,
             'filter_post':self.filter_post,
             'start_date': self.start_date, 
             'end_date': self.end_date
