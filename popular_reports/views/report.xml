@@ -2292,7 +2292,10 @@
                                         <td>
                                             <span t-field="doc.partner_id.display_name"/>
                                         </td>
-                                        <td colspan="6">
+                                        <td colspan="3">
+                                            <span t-field="doc.x_studio_category_i"/>
+                                        </td>
+                                        <td colspan="3">
                                             <span t-field="doc.narration"/>
                                         </td>
                                         <td style="text-align:center;">
