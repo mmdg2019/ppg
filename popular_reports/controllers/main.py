@@ -410,6 +410,10 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
             custs = self.env['res.partner'].search([])
         product_cats_ids = []
         items = self.env['product.product'].search([],order='display_name asc')
+        if data['product_ids']:
+            items = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+        else:
+            items = self.env['product.product'].search([],order='display_name asc')
         if data['product_cats_ids']:
             pids = []
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
