@@ -164,6 +164,7 @@ class PopularReport(models.TransientModel):
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date,
+            'product_ids': self.products.ids,
             'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.stock_analysis_by_date_and_cust').report_action(self, data=data)
