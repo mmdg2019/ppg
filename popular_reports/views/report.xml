@@ -490,7 +490,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -662,7 +662,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -776,7 +776,7 @@
                             </div>
                         </div>
                         <br/>     
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -931,7 +931,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     
@@ -1037,7 +1037,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     
@@ -1146,7 +1146,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     
@@ -1272,7 +1272,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     
@@ -1401,7 +1401,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -1547,7 +1547,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -1814,7 +1814,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -1982,7 +1982,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -2106,7 +2106,7 @@
                             </div>
                         </div> -->
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -2243,7 +2243,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     <th>
@@ -2545,7 +2545,7 @@
                         </div>
                         <br/>
                         <t t-if="docs">
-                        <table class="table o_report_block_table" style="padding: 0.5em">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>
                                     <th>
@@ -2705,7 +2705,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>
                                     <th>
@@ -2906,7 +2906,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>                                    
                                     <th>
@@ -3043,7 +3043,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     
@@ -3231,7 +3231,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -3420,7 +3420,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -3641,7 +3641,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -3842,7 +3842,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -4043,7 +4043,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -4180,7 +4180,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -4390,7 +4390,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     <th>
@@ -4615,7 +4615,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     <th>
@@ -4832,7 +4832,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -5020,7 +5020,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>
                                     <th t-if='user_ids'>
@@ -5168,7 +5168,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -5320,7 +5320,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>                                    
                                     <th>
@@ -5453,7 +5453,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -5699,7 +5699,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     <th>
@@ -5935,7 +5935,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -6179,7 +6179,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     <th>
@@ -6418,7 +6418,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -6624,7 +6624,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -6820,7 +6820,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
                                     <th>
@@ -7030,7 +7030,7 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>                                
                                     <th>
