@@ -788,6 +788,9 @@
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
                                     </th>
+                                    <th style="text-align:center;">
+                                        <span>Unit of Measure (UoM)</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="docs">
@@ -811,19 +814,22 @@
                                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
                                                             <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
                                                             <t t-set="cat" t-value="doc.x_studio_category_i"/>
-                                                            <t t-set="i_name" t-value="table_line.name"/>
+                                                            <t t-set="i_name" t-value="table_line.product_id"/>
                                                         </t>
                                                     </t>
                                                     <tr t-if="sub_ttl>0">
                                                         <td>
-                                                            <span t-esc="i_name"/>
+                                                            <span t-field="i_name.display_name"/>
                                                         </td>
                                                         <td>
                                                             <span t-esc="cat"/>
                                                         </td>
                                                         <td style="text-align:right;">
                                                             <span t-esc="sub_ttl"/>
-                                                        </td>                          
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <span t-field="i_name.uom_id.display_name"/>
+                                                        </td>
                                                      </tr>
                                                  </t>
                                              </t>
@@ -839,21 +845,24 @@
                                                  </th>
                                              </tr>
                                              <t t-foreach="items.sorted(key=lambda x: x.display_name)" t-as="item">
-                                                <t t-set="sub_ttl" t-value="0"/>
-                                                <t t-set="i_name" t-value=""/>
-                                                <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: x.partner_id.display_name)" t-as="doc">
-                                                    <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
-                                                        <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
-                                                        <t t-set="i_name" t-value="table_line.name"/>
-                                                    </t>
-                                                </t>
-                                                <tr t-if="sub_ttl>0">
+                                                 <t t-set="sub_ttl" t-value="0"/>
+                                                 <t t-set="i_name" t-value=""/>
+                                                 <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: x.partner_id.display_name)" t-as="doc">
+                                                     <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
+                                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
+                                                         <t t-set="i_name" t-value="table_line.product_id"/>
+                                                     </t>
+                                                 </t>
+                                                 <tr t-if="sub_ttl>0">
                                                     <td>
-                                                         <span t-esc="i_name"/>
+                                                         <span t-field="i_name.display_name"/>
                                                      </td>
                                                      <td style="text-align:right;">
                                                          <span t-esc="sub_ttl"/>
-                                                     </td>                          
+                                                     </td>
+                                                     <td style="text-align:center;">
+                                                         <span t-field="i_name.uom_id.display_name"/>
+                                                     </td>
                                                  </tr>
                                              </t>
                                          </t>
@@ -941,22 +950,30 @@
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
                                     </th>
+                                    <th style="text-align:center;">
+                                        <span>Unit of Measure (UoM)</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="lst">
                                  <t t-foreach="lst" t-as="line">
                                      <tbody>
                                          <tr>
-                                            <td>
-                                                <t>
-                                                    <span t-esc="line['name']"/>
-                                                </t>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <t>
-                                                    <span t-esc="line['qty']"/>
-                                                </t>
-                                            </td>                          
+                                             <td>
+                                                 <t>
+                                                     <span t-esc="line['name'].display_name"/>
+                                                 </t>
+                                             </td>
+                                             <td style="text-align:right;">
+                                                 <t>
+                                                     <span t-esc="line['qty']"/>
+                                                 </t>
+                                             </td> 
+                                             <td style="text-align:center;">
+                                                 <t>
+                                                     <span t-esc="line['name'].uom_id.display_name"/>
+                                                 </t>
+                                            </td> 
                                          </tr>
                                      </tbody>
                                  </t>
@@ -1050,6 +1067,9 @@
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
                                     </th>
+                                    <th style="text-align:center;">
+                                        <span>Unit of Measure (UoM)</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="lst">
@@ -1058,7 +1078,7 @@
                                     <tr>
                                         <td>
                                             <t>
-                                                <span t-esc="item['name']"/>
+                                                <span t-field="item['name'].display_name"/>
                                             </t>
                                         </td>
                                         <td>
@@ -1070,7 +1090,12 @@
                                             <t>
                                                 <span t-esc="item['qty']"/>
                                             </t>
-                                        </td>                          
+                                        </td>
+                                        <td style="text-align:center;">
+                                            <t>
+                                                <span t-esc="item['name'].uom_id.display_name"/>
+                                            </t>
+                                        </td>
                                      </tr>
                                  </t>
                                  </tbody>
@@ -1159,6 +1184,9 @@
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
                                     </th>
+                                    <th style="text-align:center;">
+                                        <span>Unit of Measure (UoM)</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="lst">
@@ -1169,7 +1197,7 @@
                                         <tr>
                                             <td>
                                                 <t>
-                                                    <span t-esc="item['name']"/>
+                                                    <span t-esc="item['name'].display_name"/>
                                                 </t>
                                             </td>
                                             <td style="text-align:center;">
@@ -1181,7 +1209,12 @@
                                                 <t>
                                                     <span t-esc="item['qty']"/>
                                                 </t>
-                                            </td>                          
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <t>
+                                                    <span t-esc="item['name'].uom_id.display_name"/>
+                                                </t>
+                                            </td>
                                          </tr>
                                      </t>
                                     <tr>
@@ -1194,7 +1227,9 @@
                                             <t>
                                                 <span t-esc="line['ttl_qty']"/>
                                             </t>
-                                        </th>                          
+                                        </th>
+                                        <th>
+                                        </th>
                                      </tr>
                                 </t>
                            </tbody>

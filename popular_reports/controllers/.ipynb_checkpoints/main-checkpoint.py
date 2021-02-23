@@ -468,9 +468,9 @@ class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
                     cat = doc.x_studio_category_i
                     sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'cat':cat,'name':product.display_name,'qty':sum_qty})
+                temp.append({'id':product.id,'cat':cat,'name':product,'qty':sum_qty})
         return {
-            'lst':sorted(temp, key = lambda i: (i['name'])),
+            'lst':sorted(temp, key = lambda i: (i['name'].display_name)),
             'country': country,
             'state': state
             }
@@ -497,9 +497,9 @@ class edit_report_monthly_stock_analysis(models.TransientModel):
                 for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                     sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'name':product.display_name,'qty':sum_qty})
+                temp.append({'id':product.id,'name':product,'qty':sum_qty})
         return {
-            'lst':sorted(temp, key = lambda i: i['name'])
+            'lst':sorted(temp, key = lambda i: i['name'].display_name)
             }
     
 #     Stock Analysis by Date
@@ -539,13 +539,17 @@ class edit_report_stock_analysis_by_date(models.TransientModel):
                     if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
                         for table_line in doc.invoice_line_ids:
                             if table_line.name == item and table_line.name != "Special Discount" and table_line.name != "Other Charges":
-                                sum_qty+=table_line.quantity
-                                i_name = table_line.name
+                                if table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name:
+                                    sum_qty += table_line.quantity
+                                else:
+                                    sum_qty += table_line.quantity / table_line.product_id.uom_id.factor_inv
+#                                 if table_line.product_id.uom_id == table_line.product_uom_id
+                                i_name = table_line.product_id
                 if i_name != None:
-                    temp.append({'id':id,'name':i_name,'qty':sum_qty,'date':date})
+                    temp.append({'id':id,'name':i_name,'qty':round(sum_qty,2),'date':date})
                     sub_ttl_qty += sum_qty
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'], datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
+                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
         return {
             'docs':docs,
             'lst':pids,
