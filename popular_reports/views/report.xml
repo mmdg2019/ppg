@@ -810,7 +810,7 @@
                                                     <t t-set="sub_ttl" t-value="0"/>
                                                     <t t-set="sub_ttl" t-value="0"/>
                                                     <t t-set="cat" t-value=""/>
-                                                    <t t-foreach="docs.filtered(lambda x:x.partner_id == cust and x.x_studio_category_i == category).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
+                                                    <t t-foreach="docs.filtered(lambda x:x.partner_id.id == cust and x.x_studio_category_i == category).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
                                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
                                                             <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
                                                             <t t-set="cat" t-value="doc.x_studio_category_i"/>

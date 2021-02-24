@@ -19,10 +19,7 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
         docs = None
         product_ids = []
         product_cats_ids = []
-        if data['product_ids']:
-            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
-        else:
-            product_ids = self.env['product.product'].search([],order='display_name asc')
+       
                 
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
@@ -44,50 +41,50 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
             obj = self.env['product.category'].search([],order='display_name asc')
             for temp in obj:
                 product_cats_ids.append(temp.name)
-        dates = list(set([doc.invoice_date for doc in docs]))
+                
+        dates = docs.mapped('invoice_date')
         dates = sorted(dates)
-        user_ids = self.env['res.partner'].search([],order='display_name asc')
+        if data['product_ids']:
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+        else:
+#             product_ids = self.env['product.product'].search([],order='display_name asc')
+            product_ids = docs.mapped('invoice_line_ids.product_id')
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-            user_ids = user_ids.filtered(lambda r: r.id in data['user_ids'])
-        
+        user_ids = docs.mapped('partner_id')
         temp = []
-        temp_dtl = []
-        temp_product_cat = None
         pids = []
-        temp_user = None
         for date in dates:
+            temp_product_cat = None
             for user in user_ids:
                 temp_user = None
                 temp_dtl = []
-                for product_cats_id in product_cats_ids:
-                    temp_product_cat = None
-                    for product in product_ids:
-                        sub_table_line = None
-                        sub_ttl_dis = 0
-                        sub_qty = 0
-                        sub_ttl = 0
-                        for doc in docs.filtered(lambda r: r.partner_id == user and r.x_studio_category_i == product_cats_id and r.invoice_date == date):
-                            for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id == product):
-                                currency_id = doc.currency_id
-                                temp_product_cat = product_cats_id
-                                temp_user = user
-                                sub_qty += table_line.quantity
-                                sub_ttl += table_line.price_subtotal
-                                sub_table_line = table_line
-                        if sub_ttl > 0 :
-                            temp_dtl.append({'product_cat':product_cats_id,'sub_qty':sub_qty, 'sub_ttl': sub_ttl,'sub_table_line':sub_table_line})
+                for product in product_ids:
+                    sub_table_line = None
+                    sub_ttl_dis = 0
+                    sub_qty = 0
+                    sub_ttl = 0
+                    for doc in docs.filtered(lambda r: r.partner_id == user and r.invoice_date == date):
+                        for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id == product):
+                            currency_id = doc.currency_id
+                            temp_user = doc.partner_id
+                            temp_product_cat = doc.x_studio_category_i
+                            sub_qty += table_line.quantity
+                            sub_ttl += table_line.price_subtotal
+                            sub_table_line = table_line
+                    if sub_ttl > 0 :
+                        temp_dtl.append({'product_cat':temp_product_cat,'sub_qty':sub_qty, 'sub_ttl': sub_ttl,'sub_table_line':sub_table_line})
                 if temp_user:
-                    temp.append({'date':date,'user':user,'temp_dtl':sorted(temp_dtl, key = lambda i: (i['product_cat'], i['sub_table_line'].product_id.display_name))})
+                    temp.append({'date':date,'user':temp_user,'temp_dtl':sorted(temp_dtl, key = lambda i: (i['product_cat'], i['sub_table_line'].product_id.display_name))})
         return {
             'currency_id':docs.currency_id,
             'filter_post': data['filter_post'],
-            'docs': temp,
+            'docs': sorted(temp,  key = lambda i:(i['date'],i['user'].display_name)),
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
             'product_ids':product_ids
        }
-    
+
 #     Sales Report by Product Category
 class edit_report_sales_report_by_product_cat(models.TransientModel):
     _name = "report.popular_reports.report_sales_report_by_product_cat"
@@ -404,10 +401,10 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
         pids = None
         if data['user_ids']:
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-            custs = self.env['res.partner'].search([('id', 'in', data['user_ids'])])
+            custs = docs.mapped('partner_id')
         else:
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-            custs = self.env['res.partner'].search([])
+            custs = docs.mapped('partner_id')
         product_cats_ids = []
         items = self.env['product.product'].search([],order='display_name asc')
         if data['product_ids']:
