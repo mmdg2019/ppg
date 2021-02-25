@@ -37,23 +37,15 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
             for temp in obj:
                 product_cats_ids.append(temp.name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
-        else:
-            obj = self.env['product.category'].search([],order='display_name asc')
-            for temp in obj:
-                product_cats_ids.append(temp.name)
                 
-        dates = docs.mapped('invoice_date')
+        dates = set(docs.mapped('invoice_date'))
         dates = sorted(dates)
         if data['product_ids']:
             product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
         else:
-#             product_ids = self.env['product.product'].search([],order='display_name asc')
-            product_ids = docs.mapped('invoice_line_ids.product_id')
-        if data['user_ids']:
-            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-        user_ids = docs.mapped('partner_id')
-        temp = []
-        pids = []
+            product_ids = set(docs.mapped('invoice_line_ids.product_id'))
+        temp=[]
+        user_ids = set(docs.mapped('partner_id'))
         for date in dates:
             temp_product_cat = None
             for user in user_ids:
@@ -74,15 +66,14 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
                             sub_table_line = table_line
                     if sub_ttl > 0 :
                         temp_dtl.append({'product_cat':temp_product_cat,'sub_qty':sub_qty, 'sub_ttl': sub_ttl,'sub_table_line':sub_table_line})
-                if temp_user:
-                    temp.append({'date':date,'user':temp_user,'temp_dtl':sorted(temp_dtl, key = lambda i: (i['product_cat'], i['sub_table_line'].product_id.display_name))})
+                if temp_dtl:
+                    temp.append({'date':date,'user':temp_user,'temp_dtl':sorted(temp_dtl, key = lambda i: ( i['sub_table_line'].product_id.display_name),reverse=False)})
         return {
             'currency_id':docs.currency_id,
             'filter_post': data['filter_post'],
-            'docs': sorted(temp,  key = lambda i:(i['date'],i['user'].display_name)),
+            'docs': sorted(temp,  key = lambda i:(i['date'],i['user'].display_name),reverse=False),
             'start_date': data['start_date'], 
-            'end_date': data['end_date'],
-            'product_ids':product_ids
+            'end_date': data['end_date']
        }
 
 #     Sales Report by Product Category
@@ -189,11 +180,11 @@ class edit_report_all_balance_listing(models.TransientModel):
             docs = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal')])
         else:
             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
-        location = docs.mapped('quant_ids.location_id')
+        location = set(docs.mapped('quant_ids.location_id'))
         if data['product_ids']:
             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
         else:
-            products = docs.mapped('quant_ids.product_id')
+            products = set(docs.mapped('quant_ids.product_id'))
         temp = []
         for loc in location:
             total_qty = 0.0
@@ -401,10 +392,10 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
         pids = None
         if data['user_ids']:
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-            custs = docs.mapped('partner_id')
+            custs = set(docs.mapped('partner_id'))
         else:
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-            custs = docs.mapped('partner_id')
+            custs = set(docs.mapped('partner_id'))
         product_cats_ids = []
         items = self.env['product.product'].search([],order='display_name asc')
         if data['product_ids']:
@@ -593,10 +584,10 @@ class edit_report_stock_transfer_dtl_info(models.TransientModel):
         
         items = []
         temp = []
-        products = docs.mapped('move_lines.product_id')
-        picking_types = docs.mapped('picking_type_id')
-        customers = docs.mapped('partner_id')
-        locations = docs.mapped('location_id')
+        products = set(docs.mapped('move_lines.product_id'))
+        picking_types = set(docs.mapped('picking_type_id'))
+        customers = set(docs.mapped('partner_id'))
+        locations = set(docs.mapped('location_id'))
         
         total_demand = 0
         total_done = 0
@@ -643,11 +634,11 @@ class edit_report_stock_valuation_info(models.TransientModel):
             docs = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal')])
         else:
             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
-        location = docs.mapped('quant_ids.location_id')
+        location = set(docs.mapped('quant_ids.location_id'))
         if data['product_ids']:
             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
         else:
-            products = docs.mapped('quant_ids.product_id')
+            products = set(docs.mapped('quant_ids.product_id'))
         temp = []
         for loc in location:
             total_qty = 0.0
@@ -1153,7 +1144,7 @@ class edit_report_sales_quot_report_by_client(models.TransientModel):
             
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
-            product_cats = product_cats_ids.mapped('display_name')
+            product_cats = set(product_cats_ids.mapped('display_name'))
             docs = docs.filtered(lambda r: r.x_studio_category in product_cats)
         return {
             'filter_post_quot': data['filter_post_quot'],
