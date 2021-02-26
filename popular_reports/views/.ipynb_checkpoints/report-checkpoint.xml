@@ -797,37 +797,44 @@
                                         <t t-set="sub_ttl" t-value="0"/>
                                         <t t-set="i_name" t-value=""/>
                                         <t t-foreach="custs" t-as="cust">
-                                            <tr>
-                                                <th colspan="3" style="text-align:left;">
-                                                    <span t-esc="cust.display_name"/>
-                                                </th>
-                                            </tr>
-                                            <t t-foreach="sorted(items,key=lambda x: x.display_name)" t-as="item">
+                                            <t t-set="sub_lst" t-value="[]"/>
+                                            <t t-foreach="sorted(items, key=lambda x: x.display_name)" t-as="item">
                                                 <t t-foreach="cats" t-as="category">
                                                     <t t-set="sub_ttl" t-value="0"/>
                                                     <t t-set="sub_ttl" t-value="0"/>
                                                     <t t-set="cat" t-value=""/>
                                                     <t t-foreach="docs.filtered(lambda x:x.partner_id.id == cust and x.x_studio_category_i == category).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
                                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
-                                                            <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
+                                                            <t t-if="table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
+                                                            <t t-else="" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity / table_line.product_id.uom_id.factor_inv)"/>
                                                             <t t-set="cat" t-value="doc.x_studio_category_i"/>
                                                             <t t-set="i_name" t-value="table_line.product_id"/></t>
                                                     </t>
-                                                    <tr t-if="sub_ttl>0">
-                                                        <td>
-                                                            <span t-field="i_name.display_name"/>
-                                                        </td>
-                                                        <td>
-                                                            <span t-esc="cat"/>
-                                                        </td>
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="sub_ttl"/>
-                                                        </td>
-                                                        <td style="text-align:center;">
-                                                            <span t-field="i_name.uom_id.display_name"/>
-                                                        </td>
-                                                    </tr>
+                                                    <t t-if="sub_ttl>0">
+                                                        <t t-esc="sub_lst.append({'item':i_name, 'category':cat, 'ttl':sub_ttl})"/>
+                                                    </t>
                                                 </t>
+                                            </t>
+                                            <t t-foreach="sub_lst" t-as="item">
+                                                <tr t-if="item_first">
+                                                    <th colspan="4" style="text-align:left;">
+                                                        <span t-esc="cust.display_name"/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <span t-field="item['item'].display_name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="item['category']"/>
+                                                    </td>
+                                                    <td style="text-align:right;">
+                                                        <span t-esc="round(item['ttl'],2)"/>
+                                                    </td>
+                                                    <td style="text-align:center;">
+                                                        <span t-esc="item['item'].uom_id.display_name"/>
+                                                    </td>
+                                                </tr>
                                             </t>
                                         </t>
                                     </t>
@@ -835,28 +842,36 @@
                                         <t t-set="sub_ttl" t-value="0"/>
                                         <t t-set="i_name" t-value=""/>
                                         <t t-foreach="custs" t-as="cust">
-                                            <tr>
-                                                <th colspan="3" style="text-align:left;">
-                                                    <span t-esc="cust.display_name"/>
-                                                </th>
-                                            </tr>
+                                            
+                                            <t t-set="sub_lst" t-value="[]"/>
                                             <t t-foreach="sorted(items, key=lambda x: x.display_name)" t-as="item">
                                                 <t t-set="sub_ttl" t-value="0"/>
                                                 <t t-set="i_name" t-value=""/>
                                                 <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: x.partner_id.display_name)" t-as="doc">
                                                     <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
-                                                        <t t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
+                                                        <t t-if="table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
+                                                            <t t-else="" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity / table_line.product_id.uom_id.factor_inv)"/>
                                                         <t t-set="i_name" t-value="table_line.product_id"/></t>
                                                 </t>
-                                                <tr t-if="sub_ttl>0">
+                                                <t t-if="sub_ttl>0">
+                                                    <t t-esc="sub_lst.append({'item':i_name,'ttl':sub_ttl})"/>
+                                                </t>
+                                            </t>
+                                            <t t-foreach="sub_lst" t-as="item">
+                                                <tr t-if="item_first">
+                                                    <th colspan="3" style="text-align:left;">
+                                                        <span t-esc="cust.display_name"/>
+                                                    </th>
+                                                </tr>
+                                                <tr>
                                                     <td>
-                                                        <span t-field="i_name.display_name"/>
+                                                        <span t-field="item['item'].display_name"/>
                                                     </td>
                                                     <td style="text-align:right;">
-                                                        <span t-esc="sub_ttl"/>
+                                                        <span t-esc="round(item['ttl'],2)"/>
                                                     </td>
                                                     <td style="text-align:center;">
-                                                        <span t-field="i_name.uom_id.display_name"/>
+                                                        <span t-esc="item['item'].uom_id.display_name"/>
                                                     </td>
                                                 </tr>
                                             </t>
