@@ -392,10 +392,9 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
         pids = None
         if data['user_ids']:
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-            custs = list(set(docs.mapped('partner_id')))
         else:
             docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
-            custs = list(set(docs.mapped('partner_id')))
+            
         product_cats_ids = []
         items = self.env['product.product'].search([],order='display_name asc')
         if data['product_ids']:
@@ -407,10 +406,11 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
             product_cats_ids = sorted([temp.name for temp in obj])
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
+        custs = list(set(docs.mapped('partner_id')))
         return {
             'docs':docs,
             'items':items,
-            'custs':custs,
+            'custs':sorted(custs,key=lambda x: x.display_name),
             'cats':product_cats_ids
             }
     
@@ -454,9 +454,13 @@ class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
             for doc in docs.sorted(lambda r: r.x_studio_category_i,reverse=False):
                 for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                     cat = doc.x_studio_category_i
-                    sum_qty += table_line.quantity
+                    if table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name:
+                        sum_qty += table_line.quantity
+                    else:
+                        sum_qty += table_line.quantity / table_line.product_id.uom_id.factor_inv
+#                     sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'cat':cat,'name':product,'qty':sum_qty})
+                temp.append({'id':product.id,'cat':cat,'name':product,'qty':round(sum_qty,2)})
         return {
             'lst':sorted(temp, key = lambda i: (i['name'].display_name)),
             'country': country,
@@ -483,9 +487,13 @@ class edit_report_monthly_stock_analysis(models.TransientModel):
             sum_qty = 0
             for doc in docs.filtered(lambda r: r.state=='posted'):
                 for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
-                    sum_qty += table_line.quantity
+                    if table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name:
+                        sum_qty += table_line.quantity
+                    else:
+                        sum_qty += table_line.quantity / table_line.product_id.uom_id.factor_inv
+#                     sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'name':product,'qty':sum_qty})
+                temp.append({'id':product.id,'name':product,'qty':round(sum_qty,2)})
         return {
             'lst':sorted(temp, key = lambda i: i['name'].display_name)
             }
