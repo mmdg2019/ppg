@@ -10,6 +10,40 @@
                     <!--                    <div class="app_settings_block" data-string="late_check_in" string="Late Check in" data-key="employee_late_check_in" groups="hr.group_hr_manager">-->
                     <h2>Late Check-in</h2>
                     <div class="row mt16 o_settings_container">
+<!--                         <div class="col-12 col-lg-12 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="check_late_time"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label string="Check Late Time" for="check_late_time"/>
+                                <div class="text-muted">
+                                    Enable check-in late time
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="check_late_time"/>
+                            </div>
+<!--                             <div class="o_setting_right_pane">
+                                <label for="late_check_in_after"/>
+                                <div>
+                                    <div class="content-group mt16">
+                                        <field name="late_check_in_after" colspan="4" nolabel="1" widget="float_time"/>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="o_setting_right_pane">
+                                    <label for="late_check_in_after" string="Late Time"/>
+                                    <div class="text-muted">
+                                        Enable check-in late time
+                                    </div>
+                                    <div class="row mt16" attrs="{'invisible': [('check_late_time', '=', False)]}">
+                                        <label for="late_check_in_after" string="Start calculate late time after" class="col-lg-4 o_light_label"/>
+                                        <field name="late_check_in_after" class="oe_inline" widget="float_time"/>
+                                    </div>
+                                </div>
+                        </div>
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_right_pane">
                                 <label for="deduction_amount"/>
@@ -30,7 +64,7 @@
                                 <div>
                                     <div class="content-group mt16">
                                         <!--                                       <group>-->
-                                        <field name="late_check_in_after" colspan="4" nolabel="1"/>Minutes
+                                        <field name="start_time" colspan="4" nolabel="1"/>Minutes
                                         <!--                                       </group>-->
                                     </div>
 
@@ -50,18 +84,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-                                <label for="start_time"/>
-                                <div class="text-muted">
-                                </div>
-                                <div>
-                                    <div class="content-group mt16">
-                                        <field name="start_time" colspan="4" nolabel="1"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
 
 
@@ -69,7 +92,16 @@
                 </xpath>
             </field>
         </record>
-
+        <record id="inherited_view_attendance_tree_view" model="ir.ui.view">
+            <field name="name">inherited_hr.attendance.tree</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+            <field name="arch" type="xml">
+                <field name="check_out" position="after">
+                    <field name="late_time" widget="float_time"/>
+                </field>
+            </field>
+        </record>
         <!--        <record id="late_check_in_settings_action" model="ir.actions.act_window">-->
         <!--            <field name="name">Late Check-in Configuration</field>-->
         <!--            <field name="res_model">res.config.settings</field>-->

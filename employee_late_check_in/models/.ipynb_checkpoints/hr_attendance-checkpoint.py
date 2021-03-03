@@ -107,20 +107,24 @@ class HrAttendance(models.Model):
         for rec in self:
             rec.late_time = 0.0
             week_day = rec.sudo().check_in.weekday()
-            if rec.employee_id.contract_id:
-                work_schedule = rec.sudo().employee_id.contract_id.resource_calendar_id
-                for schedule in work_schedule.sudo().attendance_ids:
-                    if str(schedule.dayofweek) == str(week_day) and schedule.day_period == 'morning':
-                        work_from = schedule.hour_from
-                        check_in = rec.check_in
-                        check_in_utc = pytz.utc.localize(check_in)
-                        tz = pytz.timezone(self.env.user.tz)
-                        check_in_tz = datetime.strptime(check_in_utc.astimezone(tz).strftime("%H:%M"), "%H:%M")
-                        check_in_time = timedelta(hours=check_in_tz.hour, minutes=check_in_tz.minute).total_seconds() / 3600
-#                         start_tz = now_tz + relativedelta(hour=0, minute=0)  # day start in the employee's timezone
-#                         start_naive = start_tz.astimezone(pytz.utc).replace(tzinfo=None)
-                        if check_in_time > work_from:
-                            rec.sudo().late_time = check_in_time - work_from
+            check_late_time = self.env['ir.config_parameter'].sudo().get_param('check_late_time')
+            late_check_in_after = self.env['ir.config_parameter'].sudo().get_param('late_check_in_after')
+            if check_late_time:
+                if rec.employee_id.contract_id:
+                    work_schedule = rec.sudo().employee_id.contract_id.resource_calendar_id
+                    for schedule in work_schedule.sudo().attendance_ids:
+                        if str(schedule.dayofweek) == str(week_day) and schedule.day_period == 'morning':
+                            work_from = schedule.hour_from
+                            check_in = rec.check_in
+                            check_in_utc = pytz.utc.localize(check_in)
+                            tz = pytz.timezone(self.env.user.tz)
+                            check_in_tz = datetime.strptime(check_in_utc.astimezone(tz).strftime("%H:%M"), "%H:%M")
+                            check_in_time = timedelta(hours=check_in_tz.hour, minutes=check_in_tz.minute).total_seconds() / 3600
+    #                         start_tz = now_tz + relativedelta(hour=0, minute=0)  # day start in the employee's timezone
+    #                         start_naive = start_tz.astimezone(pytz.utc).replace(tzinfo=None)
+                            if check_in_time > work_from:
+                                if check_in_time > late_check_in_after:
+                                    rec.sudo().late_time = check_in_time - work_from
 #                         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(work_from * 60, 60))
 #                         str_time = datetime.now().time()
 #                         user_tz = self.env.user.tz

@@ -31,7 +31,7 @@ class LateCheckinSettings(models.TransientModel):
                                     config_parameter='employee_late_check_in.deduction_amount')
     maximum_minutes = fields.Char(string="Maximum Late Minute",
                                   config_parameter='employee_late_check_in.maximum_minutes')
-    late_check_in_after = fields.Char(string="Late Check-in Starts After",
+    late_check_in_after = fields.Float(string="Late Check-in Starts After",
                                       config_parameter='employee_late_check_in.late_check_in_after')
     unpaid_leave = fields.Boolean(string="Unpaid Leave",
                                       config_parameter='employee_late_check_in.unpaid_leave')
@@ -40,6 +40,8 @@ class LateCheckinSettings(models.TransientModel):
     
     start_time = fields.Char(string="Start Time",
                                   config_parameter='employee_late_check_in.start_time')
+    check_late_time = fields.Boolean(string="Check Late Time",
+                                      config_parameter='employee_late_check_in.check_late_time')
 
     def set_values(self):
         res = super(LateCheckinSettings, self).set_values()
@@ -50,4 +52,5 @@ class LateCheckinSettings(models.TransientModel):
         self.env['ir.config_parameter'].sudo().set_param('deduction_type', self.deduction_type)
         
         self.env['ir.config_parameter'].sudo().set_param('start_time', self.start_time)
+        self.env['ir.config_parameter'].sudo().set_param('check_late_time', self.check_late_time)
         return res
