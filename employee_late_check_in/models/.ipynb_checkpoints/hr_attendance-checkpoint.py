@@ -36,7 +36,6 @@ class HrAttendance(models.Model):
 
     def get_late_minutes(self):
         for rec in self:
-
             rec.late_check_in = 0.0
             week_day = rec.sudo().check_in.weekday()
             if rec.employee_id.contract_id:
