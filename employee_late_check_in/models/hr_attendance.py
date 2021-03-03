@@ -104,10 +104,11 @@ class HrAttendance(models.Model):
 
     def get_late_minutes(self):
         for rec in self:
-            rec.late_time = 0.0
+            late_time = 0.0
+            rec.late_time = late_time
             week_day = rec.sudo().check_in.weekday()
             check_late_time = self.env['ir.config_parameter'].sudo().get_param('check_late_time')
-            late_check_in_after = self.env['ir.config_parameter'].sudo().get_param('late_check_in_after')
+            late_check_in_after = float(self.env['ir.config_parameter'].sudo().get_param('late_check_in_after'))
             if check_late_time:
                 if rec.employee_id.contract_id:
                     work_schedule = rec.sudo().employee_id.contract_id.resource_calendar_id
@@ -122,8 +123,9 @@ class HrAttendance(models.Model):
     #                         start_tz = now_tz + relativedelta(hour=0, minute=0)  # day start in the employee's timezone
     #                         start_naive = start_tz.astimezone(pytz.utc).replace(tzinfo=None)
                             if check_in_time > work_from:
-                                if check_in_time > late_check_in_after:
-                                    rec.sudo().late_time = check_in_time - work_from
+                                late_time = check_in_time - work_from
+                                if late_time > late_check_in_after:
+                                    rec.sudo().late_time = late_time
 #                         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(work_from * 60, 60))
 #                         str_time = datetime.now().time()
 #                         user_tz = self.env.user.tz

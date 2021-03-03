@@ -38,7 +38,7 @@ class LateCheckinSettings(models.TransientModel):
     deduction_type = fields.Selection([('minutes', 'Per Minutes'), ('total', 'Per Total')],
                                   config_parameter='employee_late_check_in.deduction_type', default="minutes")
     
-    start_time = fields.Char(string="Start Time",
+    start_time = fields.Float(string="Start Time",
                                   config_parameter='employee_late_check_in.start_time')
     check_late_time = fields.Boolean(string="Check Late Time",
                                       config_parameter='employee_late_check_in.check_late_time')
