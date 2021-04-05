@@ -805,8 +805,8 @@
                                                     <t t-set="cat" t-value=""/>
                                                     <t t-foreach="docs.filtered(lambda x:x.partner_id.id == cust and x.x_studio_category_i == category).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
                                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
-                                                            <t t-if="table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
-                                                            <t t-else="" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity / table_line.product_id.uom_id.factor_inv)"/>
+                                                            <t t-if="table_line.product_uom_id.display_name != 'Units'" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity * table_line.product_uom_id.factor_inv)"/>
+                                                            <t t-else="" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
                                                             <t t-set="cat" t-value="doc.x_studio_category_i"/>
                                                             <t t-set="i_name" t-value="table_line.product_id"/></t>
                                                     </t>
@@ -829,7 +829,7 @@
                                                         <span t-esc="item['category']"/>
                                                     </td>
                                                     <td style="text-align:right;">
-                                                        <span t-esc="round(item['ttl'],2)"/>
+                                                        <span t-esc="round((item['ttl'] / item['item'].uom_id.factor_inv),2)"/>
                                                     </td>
                                                     <td style="text-align:center;">
                                                         <span t-esc="item['item'].uom_id.display_name"/>
@@ -849,8 +849,8 @@
                                                 <t t-set="i_name" t-value=""/>
                                                 <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: x.partner_id.display_name)" t-as="doc">
                                                     <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
-                                                        <t t-if="table_line.product_id.uom_id.display_name == table_line.product_uom_id.display_name" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
-                                                            <t t-else="" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity / table_line.product_id.uom_id.factor_inv)"/>
+                                                        <t t-if="table_line.product_uom_id.display_name != 'Units'" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity * table_line.product_uom_id.factor_inv)"/>
+                                                        <t t-else="" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
                                                         <t t-set="i_name" t-value="table_line.product_id"/></t>
                                                 </t>
                                                 <t t-if="sub_ttl>0">
@@ -868,7 +868,7 @@
                                                         <span t-field="item['item'].display_name"/>
                                                     </td>
                                                     <td style="text-align:right;">
-                                                        <span t-esc="round(item['ttl'],2)"/>
+                                                        <span t-esc="round((item['ttl']/ item['item'].uom_id.factor_inv),2)"/>
                                                     </td>
                                                     <td style="text-align:center;">
                                                         <span t-esc="item['item'].uom_id.display_name"/>
@@ -1329,6 +1329,9 @@
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
                                     </th>
+                                    <th style="text-align:center;">
+                                        <span>UM</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="lst">
@@ -1339,7 +1342,7 @@
                                             <tr>
                                                 <td>
                                                     <t>
-                                                        <span t-esc="item['name']"/>
+                                                        <span t-esc="item['name'].display_name"/>
                                                     </t>
                                                 </td>
                                                 <td style="text-align:center;">
@@ -1350,6 +1353,11 @@
                                                 <td style="text-align:right;">
                                                     <t>
                                                         <span t-esc="item['qty']"/>
+                                                    </t>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <t>
+                                                        <span t-esc="item['name'].uom_id.display_name"/>
                                                     </t>
                                                 </td>
                                             </tr>
@@ -1364,6 +1372,7 @@
                                                     <span t-esc="line['ttl_qty']"/>
                                                 </t>
                                             </th>
+                                            <th></th>
                                         </tr>
                                     </t>
                                 </tbody>
@@ -1937,13 +1946,13 @@
                                                 <td>
                                                     <span t-esc="table_line['sub_table_line'].product_id.display_name"/>
                                                 </td>
-                                                <td style="text-align:center;">
+                                                <td style="text-align:right;">
                                                     <span t-esc="table_line['sub_qty']"/>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="table_line['sub_table_line'].product_uom_id.display_name"/>
+                                                    <span t-esc="table_line['sub_table_line'].product_id.uom_id.display_name"/>
                                                 </td>
-                                                <td>
+                                                <td style="text-align:right;">
                                                     <span t-esc="table_line['sub_table_line'].price_unit" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
                                                 </td>
                                                 <td style="text-align:right;">
@@ -7198,7 +7207,12 @@
                                                     <span t-field="table_line.product_id"/>
                                                 </td>
                                                 <td style="text-align:right;">
-                                                    <span t-field="table_line.product_uom_qty"/>
+                                                    <t t-if="table_line.product_id.uom_id.display_name != table_line.product_uom.display_name">
+                                                        <span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-esc="table_line.product_uom_qty"/>
+                                                    </t>
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <span t-field="table_line.product_uom"/>
