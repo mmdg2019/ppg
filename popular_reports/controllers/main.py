@@ -483,10 +483,9 @@ class edit_report_monthly_stock_analysis(models.TransientModel):
         temp = []
             
         if data['product_ids']:
-            products = self.env['product.product'].search([('id','in',data['product_ids'])],order='display_name asc')
-            
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
         else:
-            products = self.env['product.product'].search([],order='display_name asc')
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
         for product in products:
             sum_qty = 0
             for doc in docs.filtered(lambda r: r.state=='posted'):
@@ -512,21 +511,12 @@ class edit_report_stock_analysis_by_date(models.TransientModel):
         pids = []
         temp = []
         tmp = []
-        dates = [doc.invoice_date.strftime('%m/%d/%Y') for doc in docs if doc.state=='posted']
-        dates = list(set(dates))
-        dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
+        dates = sorted(list(set([date.strftime('%m/%d/%Y') for date in docs.mapped('invoice_date')])))
         items = []
-        for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
-            for table_line in doc.invoice_line_ids:
-                if data['product_ids']:
-                    if table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges" and table_line.product_id.id in data['product_ids']:
-                        items.append(str(table_line.product_id.display_name))
-                        
-                else:
-                    if table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges":
-                        items.append(str(table_line.product_id.display_name))
-        
-        items = sorted(list(set(items)))                    
+        if data['product_ids']:
+            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        else:
+            items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
         for item in items:    
             temp_dtl = []
             temp = []
@@ -537,21 +527,20 @@ class edit_report_stock_analysis_by_date(models.TransientModel):
                 for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
                     if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
                         for table_line in doc.invoice_line_ids:
-                            if table_line.name == item and table_line.name != "Special Discount" and table_line.name != "Other Charges":
+                            if table_line.product_id.display_name == item.display_name and table_line.name != "Special Discount" and table_line.name != "Other Charges":
                                 if table_line.product_uom_id.display_name != "Units":
                                     sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
                                 else:
                                     sum_qty += table_line.quantity
-#                                 if table_line.product_id.uom_id == table_line.product_uom_id
                                 i_name = table_line.product_id
                 if i_name != None:
                     temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
                     sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
+                pids.append({'c_name':item.display_name,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
         return {
             'docs':docs,
-            'lst':pids,
+            'lst':sorted(pids, key = lambda i: i['c_name']),
             }
     
 #     Stock Transfer Information
