@@ -63,6 +63,7 @@
                   action="popular_reports.wizard_act_report_sales_analysis_by_month_and_cust"
                   sequence="3"/>
         
+        
 <!--         <menuitem name="Sales Analysis Report by State"
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_sales_analysis_by_state"
@@ -88,7 +89,8 @@
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_sales_report_by_product_code"
                   action="popular_reports.wizard_act_report_sales_report_by_product_code"
-                  sequence="8"/>   
+                  sequence="8"/>
+        
         
         <menuitem name="Sales Order Report by Client"
                   parent="popular_reports.popular_reports_sub_menu_3"
@@ -105,17 +107,23 @@
                   parent="popular_reports.popular_reports_sub_menu_3"
                   id="popular_reports.menu_report_sales_quot_report_by_client"
                   action="popular_reports.wizard_act_report_sales_quot_report_by_client"
-                  sequence="3"/>
+                  sequence="4"/>
         <menuitem name="Sales Quotation Report by Date"
                   parent="popular_reports.popular_reports_sub_menu_3"
                   id="popular_reports.menu_report_sales_quot_report_by_date"
                   action="popular_reports.wizard_act_report_sales_quot_report_by_date"
-                  sequence="4"/>
+                  sequence="5"/>
         <menuitem name="Sales Quotation Report by Product Code"
                   parent="popular_reports.popular_reports_sub_menu_3"
                   id="popular_reports.menu_report_sales_quot_report_by_p_code"
                   action="popular_reports.wizard_act_report_sales_quot_report_by_p_code"
+                  sequence="6"/>
+        <menuitem name="Sales Quotation Stock Analysis by Date"
+                  parent="popular_reports.popular_reports_sub_menu_3"
+                  id="popular_reports.menu_report_sales_quot_stock_analysis_by_d"
+                  action="popular_reports.wizard_act_report_sales_quot_stock_analysis_by_d"
                   sequence="7"/>
+        
         
         <menuitem name="Purchase Analysis Report by Supplier"
                   parent="popular_reports.popular_reports_sub_menu_5"

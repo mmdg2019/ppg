@@ -158,6 +158,16 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_report_by_date').report_action(self, data=data)
     
+#     Sales Quotation Stock Analysis by Date
+    def print_report_sales_quot_stock_analysis_by_d(self):
+        data = {
+            'filter_post_quot': self.filter_post_quot,
+            'product_ids': self.products.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.sales_quot_stock_analysis_by_d').report_action(self, data=data)
+    
 #     Stock Analysis by Date and Customer
     def print_report_stock_analysis_by_date_and_cust(self):
         data = {
@@ -374,6 +384,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_order_report_by_client').report_action(self, data=data)
     
+#     Sales Order Report by Date
     def print_report_sales_order_report_by_date(self):
         data = {
             'filter_post_order':self.filter_post_order,
