@@ -171,8 +171,8 @@ class edit_report_sales_report_by_client(models.TransientModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
-    
-# All Balance Listing
+
+#     All Balance Listing
 class edit_report_all_balance_listing(models.TransientModel):
     _name = "report.popular_reports.report_all_balance_listing"
     
@@ -1093,6 +1093,60 @@ class edit_report_sales_order_report_by_client(models.TransientModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
+
+#     Sales Quotation Stock Analysis by Date
+class edit_report_sales_quot_stock_analysis_by_d(models.TransientModel):
+    _name="report.popular_reports.report_sales_quot_stock_analysis_by_d"
+    _description="Report Editing"
+
+    @api.model
+    def _get_report_values(self,docids,data=None):
+        if data['filter_post_quot'] == '1':
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'cancel')])
+        elif data['filter_post_quot'] == '2':
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'done')])
+        elif data['filter_post_quot'] == '3':
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
+        elif data['filter_post_quot'] == '4':
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'sent')])
+        elif data['filter_post_quot'] == '5':
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'sale')])
+        else:
+            docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date'])])
+        pids = []
+        temp = []
+        tmp = []
+        dates = sorted(list(set([date.strftime('%m/%d/%Y') for date in docs.mapped('create_date')])))
+        items = []
+        if data['product_ids']:
+            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        else:
+            items = sorted(list(set(docs.mapped('order_line.product_id'))))
+        for item in items:    
+            temp_dtl = []
+            temp = []
+            sub_ttl_qty=0
+            for date in dates:
+                sum_qty=0
+                i_name = None
+                for doc in docs.sorted(key=lambda x:x.date_order,reverse=False):
+                    if date == doc.create_date.strftime('%m/%d/%Y'):
+                        for table_line in doc.order_line:
+                            if table_line.product_id.display_name == item.display_name and table_line.name != "Special Discount" and table_line.name != "Other Charges":
+                                if table_line.product_uom.display_name != "Units":
+                                    sum_qty += table_line.product_uom_qty * table_line.product_uom.factor_inv
+                                else:
+                                    sum_qty += table_line.product_uom_qty
+                                i_name = table_line.product_id
+                if i_name != None:
+                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
+                    sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
+            if sub_ttl_qty > 0:
+                pids.append({'c_name':item.display_name,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
+        return {
+            'docs':docs,
+            'lst':sorted(pids, key = lambda i: i['c_name']),
+            }
 
 #     Sales Quotation Report by Date
 class edit_report_sales_quot_report_by_date(models.TransientModel):
