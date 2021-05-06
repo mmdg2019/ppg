@@ -1296,3 +1296,29 @@ class edit_report_outstanding_bill_report_by_ven(models.TransientModel):
             'filter_post': data['filter_post'],
             'docs': docs
        }
+
+#     Stock Transfer Operations Report
+class edit_report_stock_trans_oprt(models.TransientModel):
+    _name="report.popular_reports.report_stock_trans_oprt"
+    _description="Report Editing"
+
+    @api.model
+    def _get_report_values(self,docids,data=None):
+        docs = None
+        docs = self.env['stock.move'].search([('date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        products = self.env['product.product'].search([('type', '=', 'product'), ('qty_available', '!=', 0)]).with_context(dict(to_date=datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y'), location= data['stock_location'], company_owned=True,create=False, edit=False),order='display_name asc')
+        scraps = self.env['stock.scrap'].search([('date_done', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('date_done', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        if data['product_ids']:
+            products = products.filtered(lambda r: r.id in data['product_ids'])
+            docs = docs.filtered(lambda r: r.product_id.id in data['product_ids'])
+            scraps = scraps.filtered(lambda r: r.product_id.id in data['product_ids'])
+        if data['filter_post_stock']:
+            docs = docs.filtered(lambda r: r.state == data['filter_post_stock'])
+            scraps = scraps.filtered(lambda r: r.state == data['filter_post_stock'])
+        return {
+            'filter_post_stock': data['filter_post_stock'],
+            'stock_loc': data['stock_location'],
+            'docs': docs,
+            'products': products,
+            'scraps': scraps,
+            }

@@ -258,8 +258,7 @@
            </form>
             </field>
         </record>
-        
-         <record model='ir.ui.view' id='wizard_form_report_monthly_stock_analysis_report'>
+        <record model='ir.ui.view' id='wizard_form_report_monthly_stock_analysis_report'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
@@ -277,6 +276,35 @@
                    </group>
                <footer>
                    <button name="print_report_monthly_stock_analysis_report" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        <record model='ir.ui.view' id='wizard_form_report_stock_trans_oprt'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Transfer Operation Report">
+                    <group string="Stock Location">
+                        <field name="stock_location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" required="1" widget="many2many_tags"/>
+                    </group>
+                    <group string="Product">
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_stock" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group col="4" colspan="4" string="Start From:">
+                        <field name="s_month" required="1"></field>
+                        <field name="s_year" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4" string="End To:">
+                        <field name="e_month" required="1"></field>
+                        <field name="e_year" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_stock_trans_oprt" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
@@ -1027,6 +1055,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_monthly_stock_analysis_report"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_trans_oprt'>
+            <field name="name">Export Stock Transfer Operations Report</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_trans_oprt"/>
             <field name="target">new</field>
         </record>
         
