@@ -247,6 +247,20 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.monthly_stock_analysis_report').report_action(self, data=data)
     
+#     Stock Transfer Operations Report
+    def print_report_stock_trans_oprt(self):
+        data = {
+            'product_ids': self.products.ids,            
+            'stock_location': self.stock_location.ids,
+            'filter_post_stock':self.filter_post_stock,
+#             'filter_stock_picking_type':self.filter_stock_picking_type.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.stock_trans_oprt').report_action(self, data=data)
+    
 #     Purchase Analysis Report by Supplier
     def print_report_purchase_analysis_report_by_sup(self):
         data = {
