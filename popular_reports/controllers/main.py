@@ -11,7 +11,7 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
 # Sales Report by Product Code
-class edit_report_sales_report_by_product_code(models.TransientModel):
+class edit_report_sales_report_by_product_code(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_product_code"
     
     @api.model
@@ -81,7 +81,7 @@ class edit_report_sales_report_by_product_code(models.TransientModel):
        }
 
 #     Sales Report by Product Category
-class edit_report_sales_report_by_product_cat(models.TransientModel):
+class edit_report_sales_report_by_product_cat(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_product_cat"
     
     @api.model
@@ -138,7 +138,7 @@ class edit_report_sales_report_by_product_cat(models.TransientModel):
        }
 
 #     Sales Report by Client
-class edit_report_sales_report_by_client(models.TransientModel):
+class edit_report_sales_report_by_client(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_client"
     
     @api.model
@@ -173,7 +173,7 @@ class edit_report_sales_report_by_client(models.TransientModel):
        }
 
 #     All Balance Listing
-class edit_report_all_balance_listing(models.TransientModel):
+class edit_report_all_balance_listing(models.AbstractModel):
     _name = "report.popular_reports.report_all_balance_listing"
     
     @api.model
@@ -205,7 +205,7 @@ class edit_report_all_balance_listing(models.TransientModel):
        }
     
 #     Sales Report by Date
-class edit_report_sales_report_by_date(models.TransientModel):
+class edit_report_sales_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_date"
     
     @api.model
@@ -232,7 +232,7 @@ class edit_report_sales_report_by_date(models.TransientModel):
        }
     
 #     Sales Analysis Report by Customer
-class edit_report_sales_analysis_report_by_cust(models.TransientModel):
+class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
     _name = "report.popular_reports.report_sales_analysis_report_by_cust"
     
     @api.model
@@ -292,7 +292,7 @@ class edit_report_sales_analysis_report_by_cust(models.TransientModel):
        }
     
 #     Sales Analysis Report by Month and Customer
-class edit_report_sales_analysis_by_month_and_cust(models.TransientModel):
+class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
     _name = "report.popular_reports.report_sales_analysis_by_month_and_cust"
     
     @api.model
@@ -347,7 +347,7 @@ class edit_report_sales_analysis_by_month_and_cust(models.TransientModel):
         }
 
 #     Sales Analysis Report by State
-class edit_report_sales_analysis_by_state(models.TransientModel):
+class edit_report_sales_analysis_by_state(models.AbstractModel):
     _name = "report.popular_reports.report_sales_analysis_by_state"
     
     @api.model
@@ -384,7 +384,7 @@ class edit_report_sales_analysis_by_state(models.TransientModel):
         }
 
 #     Stock Analysis by Date and Customer
-class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
+class edit_report_stock_analysis_by_date_and_cust(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_by_date_and_cust"
     _description="Report Editing"
 
@@ -419,7 +419,7 @@ class edit_report_stock_analysis_by_date_and_cust(models.TransientModel):
             }
     
 #     Stock Analysis by Month and Customer
-class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
+class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_by_month_and_cust"
     _description="Report Editing"
 
@@ -472,7 +472,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.TransientModel):
             }
 
 #     Monthly Stock Analysis Report
-class edit_report_monthly_stock_analysis(models.TransientModel):
+class edit_report_monthly_stock_analysis(models.AbstractModel):
     _name="report.popular_reports.report_monthly_stock_analysis_report"
     _description="Report Editing"
 
@@ -501,7 +501,7 @@ class edit_report_monthly_stock_analysis(models.TransientModel):
             }
     
 #     Stock Analysis by Date
-class edit_report_stock_analysis_by_date(models.TransientModel):
+class edit_report_stock_analysis_by_date(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_by_date"
     _description="Report Editing"
 
@@ -544,7 +544,7 @@ class edit_report_stock_analysis_by_date(models.TransientModel):
             }
     
 #     Stock Transfer Information
-class edit_report_stock_transfer_info(models.TransientModel):
+class edit_report_stock_transfer_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_transfer_info"
     
     @api.model
@@ -567,7 +567,7 @@ class edit_report_stock_transfer_info(models.TransientModel):
        }
     
 #     Stock Transfer Information Summary
-class edit_report_stock_transfer_dtl_info(models.TransientModel):
+class edit_report_stock_transfer_dtl_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_transfer_dtl_info"
     
     @api.model
@@ -607,7 +607,7 @@ class edit_report_stock_transfer_dtl_info(models.TransientModel):
        }
     
 #     Stock Valuation Information
-class edit_report_stock_valuation_info(models.TransientModel):
+class edit_report_stock_valuation_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_valuation_info"
     
     @api.model
@@ -653,7 +653,7 @@ class edit_report_stock_valuation_info(models.TransientModel):
        }
 
 #     Purchase Analysis Report by Supplier
-class edit_report_purchase_analysis_report_by_sup(models.TransientModel):
+class edit_report_purchase_analysis_report_by_sup(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_analysis_report_by_sup"
     
     @api.model
@@ -677,7 +677,7 @@ class edit_report_purchase_analysis_report_by_sup(models.TransientModel):
        }
     
 #     Purchase Listing by Supplier
-class edit_report_purchase_listing_by_sup(models.TransientModel):
+class edit_report_purchase_listing_by_sup(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_listing_by_sup"
     
     @api.model
@@ -702,7 +702,7 @@ class edit_report_purchase_listing_by_sup(models.TransientModel):
         }
 
 #     Purchase Invoice Listing by Vendor
-class edit_report_purchase_inv_lst_by_inv_no(models.TransientModel):
+class edit_report_purchase_inv_lst_by_inv_no(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_inv_lst_by_inv_no"
     
     @api.model
@@ -724,7 +724,7 @@ class edit_report_purchase_inv_lst_by_inv_no(models.TransientModel):
        }
 
 #     Purchase Stock Analysis by Date
-class edit_report_purchase_stock_analysis_by_date(models.TransientModel):
+class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_stock_analysis_by_date"
     
     @api.model
@@ -776,7 +776,7 @@ class edit_report_purchase_stock_analysis_by_date(models.TransientModel):
             }
 
 # Cash Payment Listing by Lumpsum
-class edit_report_cash_payment_listing_by_lumpsum(models.TransientModel):
+class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
     _name = "report.popular_reports.report_cash_payment_listing_by_lumpsum"
     
     @api.model
@@ -800,7 +800,7 @@ class edit_report_cash_payment_listing_by_lumpsum(models.TransientModel):
        }
     
 # Cash Receipt Listing by Customer
-class edit_report_cash_receipt_listing_by_cust_no(models.TransientModel):
+class edit_report_cash_receipt_listing_by_cust_no(models.AbstractModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_cust_no"
     
     @api.model
@@ -826,7 +826,7 @@ class edit_report_cash_receipt_listing_by_cust_no(models.TransientModel):
        }
 
 # Cash Receipt Listing by Date
-class edit_report_cash_receipt_listing_by_date(models.TransientModel):
+class edit_report_cash_receipt_listing_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_date"
     
     @api.model
@@ -850,7 +850,7 @@ class edit_report_cash_receipt_listing_by_date(models.TransientModel):
        }
     
 #     Cash Receipt Listing by Receipt No
-class edit_report_cash_receipt_listing_by_r_no(models.TransientModel):
+class edit_report_cash_receipt_listing_by_r_no(models.AbstractModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_r_no"
     
     @api.model
@@ -874,7 +874,7 @@ class edit_report_cash_receipt_listing_by_r_no(models.TransientModel):
        }
 
 #     Daily Sales Repory by Date
-class edit_report_daily_sales_report_by_date(models.TransientModel):
+class edit_report_daily_sales_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_daily_sales_report_by_date"
     
     @api.model
@@ -893,7 +893,7 @@ class edit_report_daily_sales_report_by_date(models.TransientModel):
        }
     
 #     Damage Sales Return Listing by Product Code
-class edit_report_dmg_sales_rtrn_lst_by_product(models.TransientModel):
+class edit_report_dmg_sales_rtrn_lst_by_product(models.AbstractModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_product"
     
     @api.model
@@ -923,7 +923,7 @@ class edit_report_dmg_sales_rtrn_lst_by_product(models.TransientModel):
        }
     
 #     Damage Sales Return Listing by Customer
-class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.TransientModel):
+class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_cust_no"
     
     @api.model
@@ -956,7 +956,7 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.TransientModel):
        }
 
 #     Refund Listing by Product Code
-class edit_report_refund_lst_by_product_code(models.TransientModel):
+class edit_report_refund_lst_by_product_code(models.AbstractModel):
     _name = "report.popular_reports.report_refund_lst_by_product_code"
     
     @api.model
@@ -986,7 +986,7 @@ class edit_report_refund_lst_by_product_code(models.TransientModel):
        }
     
 #     Refund Listing by Vendor
-class edit_report_refund_lst_by_vendor(models.TransientModel):
+class edit_report_refund_lst_by_vendor(models.AbstractModel):
     _name = "report.popular_reports.report_refund_lst_by_vendor"
     
     @api.model
@@ -1008,7 +1008,7 @@ class edit_report_refund_lst_by_vendor(models.TransientModel):
        }
     
 #     Outstanding Invoice Report by Customer
-class edit_report_outstanding_inv_report_by_cust(models.TransientModel):
+class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
     _name = "report.popular_reports.report_outstanding_inv_report_by_cust"
     
     @api.model
@@ -1041,7 +1041,7 @@ class edit_report_outstanding_inv_report_by_cust(models.TransientModel):
        }
     
 #     Purchase Order Report by Date
-class edit_report_sales_order_report_by_date(models.TransientModel):
+class edit_report_sales_order_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_order_report_by_date"
     
     @api.model
@@ -1067,7 +1067,7 @@ class edit_report_sales_order_report_by_date(models.TransientModel):
        }
 
 #     Sales Order Report by Client
-class edit_report_sales_order_report_by_client(models.TransientModel):
+class edit_report_sales_order_report_by_client(models.AbstractModel):
     _name = "report.popular_reports.report_sales_order_report_by_client"
     
     @api.model
@@ -1095,7 +1095,7 @@ class edit_report_sales_order_report_by_client(models.TransientModel):
        }
 
 #     Sales Quotation Stock Analysis by Date
-class edit_report_sales_quot_stock_analysis_by_d(models.TransientModel):
+class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
     _name="report.popular_reports.report_sales_quot_stock_analysis_by_d"
     _description="Report Editing"
 
@@ -1149,7 +1149,7 @@ class edit_report_sales_quot_stock_analysis_by_d(models.TransientModel):
             }
 
 #     Sales Quotation Report by Date
-class edit_report_sales_quot_report_by_date(models.TransientModel):
+class edit_report_sales_quot_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_quot_report_by_date"
     
     @api.model
@@ -1177,7 +1177,7 @@ class edit_report_sales_quot_report_by_date(models.TransientModel):
        }
     
 #     Sales Quotation Report by Client
-class edit_report_sales_quot_report_by_client(models.TransientModel):
+class edit_report_sales_quot_report_by_client(models.AbstractModel):
     _name = "report.popular_reports.report_sales_quot_report_by_client"
     
     @api.model
@@ -1212,7 +1212,7 @@ class edit_report_sales_quot_report_by_client(models.TransientModel):
        }
     
 #     Sales Quotation Report by Product Code
-class edit_report_sales_quot_report_by_p_code(models.TransientModel):
+class edit_report_sales_quot_report_by_p_code(models.AbstractModel):
     _name = "report.popular_reports.report_sales_quot_report_by_p_code"
     
     @api.model
@@ -1254,7 +1254,7 @@ class edit_report_sales_quot_report_by_p_code(models.TransientModel):
        }
     
 #     Purchase Order Report by Date
-class edit_report_purchase_order_report_by_date(models.TransientModel):
+class edit_report_purchase_order_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_order_report_by_date"
     
     @api.model
@@ -1276,7 +1276,7 @@ class edit_report_purchase_order_report_by_date(models.TransientModel):
        }
     
 #     Outstanding Bill Report by Vendor
-class edit_report_outstanding_bill_report_by_ven(models.TransientModel):
+class edit_report_outstanding_bill_report_by_ven(models.AbstractModel):
     _name = "report.popular_reports.report_outstanding_bill_report_by_ven"
     
     @api.model
@@ -1298,7 +1298,7 @@ class edit_report_outstanding_bill_report_by_ven(models.TransientModel):
        }
 
 #     Stock Transfer Operations Report
-class edit_report_stock_trans_oprt(models.TransientModel):
+class edit_report_stock_trans_oprt(models.AbstractModel):
     _name="report.popular_reports.report_stock_trans_oprt"
     _description="Report Editing"
 
@@ -1321,4 +1321,35 @@ class edit_report_stock_trans_oprt(models.TransientModel):
             'docs': docs,
             'products': products,
             'scraps': scraps,
+            }
+
+#     Stock Focus Report
+class edit_report_stock_focus(models.AbstractModel):
+    _name="report.popular_reports.report_stock_focus"
+    _description="Report Editing"
+
+    @api.model
+    def _get_report_values(self,docids,data=None):
+        product_ids = []
+        p_docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        c_docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['c_start_date']),('invoice_date', '<=',data['c_end_date']),('state', '=', 'posted')])
+        if len(p_docs) > 0 or len(c_docs) > 0:
+            product_ids = p_docs.mapped('invoice_line_ids.product_id.id')
+            product_ids = product_ids+c_docs.mapped('invoice_line_ids.product_id.id')
+            product_ids = list(set(product_ids))
+        products = self.env['product.product'].search([('type', '=', 'product'),('id', 'in', product_ids)]).with_context(dict(to_date=data['c_end_date'], location= data['stock_location']),order='display_name asc')
+        stock_loc = self.env['stock.location'].search([('id', '=', data['stock_location'])],limit=1)
+        ttl_date = datetime.strptime(data['end_date'], '%Y-%m-%d') - datetime.strptime(data['start_date'], '%Y-%m-%d')
+        ttl_date_c = datetime.strptime(data['c_end_date'], '%Y-%m-%d') - datetime.strptime(data['c_start_date'], '%Y-%m-%d')
+        return {
+            'start_date': data['start_date'], 
+            'end_date': data['end_date'],
+            'c_start_date': data['c_start_date'], 
+            'c_end_date': data['c_end_date'],
+            'ttl_date': ttl_date.days,
+            'ttl_date_c': ttl_date_c.days,
+            'stock_loc': stock_loc,
+            'p_docs': p_docs,
+            'products': products,
+            'c_docs': c_docs,
             }

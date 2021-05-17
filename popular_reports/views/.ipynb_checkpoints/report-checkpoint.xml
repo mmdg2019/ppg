@@ -25,6 +25,17 @@
         paperformat="paperformat_popular_report"
     />
     <report
+        id="stock_focus"
+        model="stock.picking"
+        menu="False"
+        string="Stock Focus Report"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_focus"
+        file="popular_reports.report_stock_focus" 
+        print_report_name="Stock Focus Report"
+        paperformat="paperformat_popular_report"
+    />
+    <report
         id="stock_transfer_dtl_info"
         model="stock.picking"
         menu="False"
@@ -495,11 +506,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -544,7 +555,7 @@
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
-                                                        <span t-esc="context_timestamp(doc.scheduled_date).strftime('%m/%d/%Y')"/>
+                                                        <span t-esc="context_timestamp(doc.scheduled_date).strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td>
@@ -660,11 +671,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -788,11 +799,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1198,11 +1209,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1331,11 +1342,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1468,11 +1479,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1618,11 +1629,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1908,11 +1919,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1958,7 +1969,7 @@
                                         <t t-foreach="doc['temp_dtl']" t-as="table_line">
                                             <tr>
                                                 <td>
-                                                    <span t-if="table_line_first" t-esc="doc['date'].strftime('%m/%d/%Y')"/>
+                                                    <span t-if="table_line_first" t-esc="doc['date'].strftime('%d/%m/%Y')"/>
                                                 </td>
                                                 <td>
                                                     <span t-if="table_line_first" t-esc="doc['user'].display_name"/>
@@ -2082,7 +2093,7 @@
                             <div class="col">
                                 <span>
                                     <b>Date : </b>
-                                    <t t-esc="(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                                    <t t-esc="(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -2319,11 +2330,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -2621,11 +2632,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -2785,11 +2796,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -2850,10 +2861,10 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="first_date">
-                                                        <span t-esc="first_date.strftime('%m/%d/%Y')"/>
+                                                        <span t-esc="first_date.strftime('%d/%m/%Y')"/>
                                                         <t t-set="first_date" t-value=""/></t>
                                                     <t t-else="">
-                                                        <span t-esc="temp_date.strftime('%m/%d/%Y')"/>
+                                                        <span t-esc="temp_date.strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td style="text-align:right;">
@@ -2884,7 +2895,7 @@
                                             
                                                 </td>
                                                 <td>
-                                                    <span t-esc="table_line.invoice_date.strftime('%m/%d/%Y')"/>
+                                                    <span t-esc="table_line.invoice_date.strftime('%d/%m/%Y')"/>
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <span>
@@ -3193,7 +3204,7 @@
                                                     <span t-if="table_line_first" t-field="doc.name"/>
                                                 </td>
                                                 <td>
-                                                    <span t-if="table_line_first" t-esc="doc.invoice_date.strftime('%m/%d/%Y')"/>
+                                                    <span t-if="table_line_first" t-esc="doc.invoice_date.strftime('%d/%m/%Y')"/>
                                                 </td>
                                                 <td>
                                                     <span t-if="table_line_first" t-field="doc.partner_id.display_name"/>
@@ -3376,7 +3387,7 @@
                                                 <td>
                                                     <t t-if="filter_post_credit=='2'">
                                                         <t t-if="table_line_first">
-                                                            <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
+                                                            <span t-esc="doc.create_date.strftime('%d/%m/%Y')"/>
                                                         </t>
                                                     </t>
                                                     <t t-else="">
@@ -3562,7 +3573,7 @@
                                                 <td>
                                                     <t t-if="filter_post_credit=='2'">
                                                         <t t-if="table_line_first">
-                                                            <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
+                                                            <span t-esc="doc.create_date.strftime('%d/%m/%Y')"/>
                                                         </t>
                                                     </t>
                                                     <t t-else="">
@@ -3722,11 +3733,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -3924,11 +3935,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -4126,11 +4137,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -4266,11 +4277,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -4475,11 +4486,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -4696,11 +4707,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -4909,11 +4920,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -5100,11 +5111,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -5253,11 +5264,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -5403,11 +5414,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -5545,11 +5556,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -5592,7 +5603,7 @@
                                     <t t-set="sub_ttl" t-value="0"/>
                                     <t t-set="sub_ttl_other_charges" t-value="0"/>
                                     <t t-set="sub_ttl_discount_amount" t-value="0"/>
-                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.date_order.strftime('%m/%d/%Y')),reverse=False)" t-as="table_line">
+                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.date_order.strftime('%d/%m/%Y')),reverse=False)" t-as="table_line">
                                         <t t-if="table_line_first">
                                             <t t-set="sub_name" t-value="table_line.partner_id.display_name"/></t>
                                         <t t-else="">
@@ -5638,7 +5649,7 @@
                                             <t t-set="sub_ttl_discount_amount" t-value="0"/></t>
                                         <tr>
                                             <td>
-                                                <span t-esc="table_line.date_order.strftime('%m/%d/%Y')"/>
+                                                <span t-esc="table_line.date_order.strftime('%d/%m/%Y')"/>
                                             </td>
                                             <td>
                                                 <t t-if="table_line_first">
@@ -5806,11 +5817,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -5852,11 +5863,11 @@
                             </thead>
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <span t-esc="doc.date_order.strftime('%m/%d/%Y')"/>
+                                                <span t-esc="doc.date_order.strftime('%d/%m/%Y')"/>
                                             </td>
                                             <td>
                                                 <span t-field="doc.name"/>
@@ -6043,11 +6054,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -6093,7 +6104,7 @@
                                     <t t-set="sub_ttl" t-value="0"/>
                                     <t t-set="sub_ttl_other_charges" t-value="0"/>
                                     <t t-set="sub_ttl_discount_amount" t-value="0"/>
-                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.create_date.strftime('%m/%d/%Y')),reverse=False)" t-as="table_line">
+                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.create_date.strftime('%d/%m/%Y')),reverse=False)" t-as="table_line">
                                         <t t-if="table_line_first">
                                             <t t-set="sub_name" t-value="table_line.partner_id.display_name"/></t>
                                         <t t-else="">
@@ -6136,7 +6147,7 @@
                                             <t t-set="sub_ttl_discount_amount" t-value="0"/></t>
                                         <tr>
                                             <td>
-                                                <span t-esc="table_line.create_date.strftime('%m/%d/%Y')"/>
+                                                <span t-esc="table_line.create_date.strftime('%d/%m/%Y')"/>
                                             </td>
                                             <td>
                                                 <t t-if="table_line_first">
@@ -6302,11 +6313,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -6348,11 +6359,11 @@
                             </thead>
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: (x.create_date.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.create_date.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
+                                                <span t-esc="doc.create_date.strftime('%d/%m/%Y')"/>
                                             </td>
                                             <td>
                                                 <span t-field="doc.name"/>
@@ -6541,11 +6552,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -6593,11 +6604,11 @@
                                     <t t-set="sub_ttl" t-value="0"/>
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-set="product" t-value="0"/>
-                                    <t t-foreach="docs.sorted(key=lambda x:(x.create_date.strftime('%m/%d/%Y'),x.partner_id.display_name),reverse=False)" t-as="doc">
+                                    <t t-foreach="docs.sorted(key=lambda x:(x.create_date.strftime('%d/%m/%Y'),x.partner_id.display_name),reverse=False)" t-as="doc">
                                         <t t-if="doc_first">
-                                            <t t-set="sub_date" t-value="doc.create_date.strftime('%m/%d/%Y')"/>
+                                            <t t-set="sub_date" t-value="doc.create_date.strftime('%d/%m/%Y')"/>
                                             <t t-set="sub" t-value="0"/></t>
-                                        <t t-if="sub_date != doc.create_date.strftime('%m/%d/%Y') and sub_ttl > 0">
+                                        <t t-if="sub_date != doc.create_date.strftime('%d/%m/%Y') and sub_ttl > 0">
                                             <tr>
                                                 <th colspan="7">
                                                     <span></span>
@@ -6613,7 +6624,7 @@
                                             </tr>
                                             <t t-set="sub_ttl" t-value="0"/>
                                             <t t-set="product" t-value="0"/>
-                                            <t t-set="sub_date" t-value="doc.create_date.strftime('%m/%d/%Y')"/>
+                                            <t t-set="sub_date" t-value="doc.create_date.strftime('%d/%m/%Y')"/>
                                             <t t-set="sub" t-value="1"/></t>
                                         <t t-else="">
                                             <t t-set="sub" t-value="0"/></t>
@@ -6621,7 +6632,7 @@
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
-                                                        <span t-esc="doc.create_date.strftime('%m/%d/%Y')"/>
+                                                        <span t-esc="doc.create_date.strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td>
@@ -7154,11 +7165,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -7200,14 +7211,14 @@
                             </thead>
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
-                                <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%m/%d/%Y'),x.name),reverse=False)" t-as="doc">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
                                     <tbody>
                                         <t t-set="ttl" t-value="ttl + doc.amount_total"/>
                                         <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
-                                                        <span t-esc="doc.date_order.strftime('%m/%d/%Y')"/>
+                                                        <span t-esc="doc.date_order.strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td>
@@ -7355,11 +7366,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -7543,7 +7554,6 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <span t-esc="temp" />
                             <t t-if="products">
                                 <tbody>
                                     <t t-foreach="products" t-as="product">
@@ -7613,6 +7623,183 @@
                                                 <span t-esc="round(ttl,2)" />
                                             </td>
 
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+    <template id="report_stock_focus">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body>
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        <span>
+                                            Stock Focus Report
+<!--                                             <t t-if="filter_post_stock=='cancel'">(Cancelled)</t>
+                                            <t t-elif="filter_post_stock=='done'">(Done)</t>
+                                            <t t-elif="filter_post_stock=='draft'">(Draft)</t>
+                                            <t t-elif="filter_post_stock=='assigned'">(Ready)</t>
+                                            <t t-elif="filter_post_stock=='confirmed'">(Waiting)</t>
+                                            <t t-elif="filter_post_stock=='waiting'">(Waiting Another Operation)</t> -->
+                                        </span>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>`
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Previous Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Current Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(c_start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(c_end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Stock Location Name : </b>
+                                    <span t-field="stock_loc.display_name"/>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <br/>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Item Name</span>
+                                    </th>
+<!--                                     <th style="text-align:center;">
+                                        <span>Unit of Measure (UoM)</span>
+                                    </th> -->
+                                    <th style="text-align:right;">
+                                        <span>Previous</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Current</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Inc/Dec</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>No. of days left</span>
+                                    </th>
+                                    <th style="text-align:right; width:30%;">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="products">
+                                <tbody>
+                                    <t t-foreach="products" t-as="product">
+                                        <tr>
+                                            <td>
+                                                <span t-field="product.display_name"></span>
+                                            </td>
+<!--                                             <td style="text-align:center;">
+                                                <span t-field="product.uom_id"></span>
+                                            </td> -->
+                                            <td style="text-align:right;">
+                                                <t t-set="amt_prev" t-value="0.0"/>
+                                                <t t-foreach="p_docs.filtered(lambda r: product in r.invoice_line_ids.product_id)" t-as="doc">
+                                                    <t t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.id == product.id)" t-as="table_line">
+                                                        <t t-set="amt_prev" t-value="amt_prev + table_line.quantity"/>
+                                                    </t>
+                                                </t>
+                                                <t t-set="amt_prev" t-value="round((amt_prev/ttl_date),2)"/>
+                                                <span t-esc="amt_prev"></span>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <t t-set="amt_cur" t-value="0.0"/>
+                                                <t t-foreach="c_docs.filtered(lambda r: product in r.invoice_line_ids.product_id)" t-as="doc">
+                                                    <t t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.id == product.id)" t-as="table_line">
+                                                        <t t-set="amt_cur" t-value="amt_cur + table_line.quantity"/>
+                                                    </t>
+                                                </t>
+                                                <t t-set="amt_cur" t-value="round((amt_cur/ttl_date_c),2)"/>
+                                                <span t-esc="amt_cur"></span>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="round((amt_cur - amt_prev),2)"></span>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-if="amt_cur > 0" t-esc="round((product.qty_available / amt_cur),2)"></span>
+                                                <span t-else="" t-esc="round(product.qty_available,2)"/>
+<!--                                                 <t t-if="amt_cur > 0">
+                                                    <span t-esc="round((product.qty_available / amt_cur),2)"></span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-esc="round(product.qty_available,2)"></span>
+                                                    
+                                                </t> -->
+                                            </td>
+                                            <td style="text-align:right; width:30%;">
+                                            </td>
                                         </tr>
                                     </t>
                                 </tbody>
