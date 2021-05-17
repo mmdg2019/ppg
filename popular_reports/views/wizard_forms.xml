@@ -281,6 +281,29 @@
            </form>
             </field>
         </record>
+        <record model='ir.ui.view' id='wizard_form_report_stock_focus'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Focus Report">
+                    <group string="Stock Location">
+                        <field name="location_src" string="Location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" required="1" />
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" string="Previous Start Date" required="1"></field>
+                       <field name="end_date" string="Previous End Date" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4">
+                       <field name="c_start_date" string="Current Start Date" required="1"></field>
+                       <field name="c_end_date" string="Current End Date" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_stock_foucs" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
         <record model='ir.ui.view' id='wizard_form_report_stock_trans_oprt'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -1225,6 +1248,14 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_valuation_info"/>
+            <field name="target">new</field>
+        </record>
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_focus'>
+            <field name="name">Export Stock Focus</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_focus"/>
             <field name="target">new</field>
         </record>
         

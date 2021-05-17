@@ -28,7 +28,9 @@ class PopularReport(models.TransientModel):
     PUR_ORDER_LIST = [('invoiced','Fully Billed'),('no','Nothing to Bill'),('to invoice','Waiting to Bills')]
     
     start_date = fields.Date(string='Start Date')
+    c_start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
+    c_end_date = fields.Date(string='End Date')
     warehouse = fields.Many2many('stock.warehouse', string='Warehouse')
     products = fields.Many2many('product.product', string='Product Lists')
     product_cats = fields.Many2many('product.category', string='Product Category')
@@ -235,6 +237,17 @@ class PopularReport(models.TransientModel):
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.stock_valuation_info').report_action(self, data=data)
+
+#     Stock Focus Report
+    def print_report_stock_foucs(self):
+        data = {
+            'stock_location': self.location_src.id,
+            'start_date': self.start_date,
+            'c_start_date': self.c_start_date,
+            'end_date': self.end_date,
+            'c_end_date': self.c_end_date
+        }
+        return self.env.ref('popular_reports.stock_focus').report_action(self, data=data)
     
 #     Monthly Stock Analysis Report
     def print_report_monthly_stock_analysis_report(self):
