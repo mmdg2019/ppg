@@ -45,7 +45,18 @@
         <menuitem name="Other Reports"
                   parent="popular_reports.popular_reports_main_menu"
                   id="popular_reports.popular_reports_sub_menu_7"
+                  sequence="8"/>
+        
+        <menuitem name="Scheduled Reports"
+                  parent="popular_reports.popular_reports_main_menu"
+                  id="popular_reports.popular_reports_sub_menu_8"
                   sequence="7"/>
+        
+        <menuitem name="Stock Transfer Operation Report"
+                  parent="popular_reports.popular_reports_sub_menu_8"
+                  id="popular_reports.menu_report_stock_trans_oprt_view"
+                  action="popular_reports.popular_reports_view"
+                  sequence="21"/>
         
         <menuitem name="Daily Sales Repory by Date"
                   parent="popular_reports.popular_reports_sub_menu_2"
