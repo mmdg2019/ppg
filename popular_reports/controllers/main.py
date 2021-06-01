@@ -932,7 +932,7 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
         if data['filter_post_credit'] == '1':
             docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
         elif data['filter_post_credit'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
+            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')],order='invoice_date asc')
         elif data['filter_post_credit'] == '3':
             docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         else:
@@ -946,10 +946,10 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
             for temp in obj:
                 product_cats_ids.append(temp.name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
-        else:
-            obj = self.env['product.category'].search([],order='display_name asc')
-            for temp in obj:
-                product_cats_ids.append(temp.name)
+#         else:
+#             obj = self.env['product.category'].search([],order='display_name asc')
+#             for temp in obj:
+#                 product_cats_ids.append(temp.name)
         return {            
             'filter_post_credit': data['filter_post_credit'],
             'docs': docs
