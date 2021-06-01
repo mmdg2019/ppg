@@ -3337,10 +3337,7 @@
                                         <span>Customer Name</span>
                                     </th>
                                     <th>
-                                        <t t-if="filter_post_credit=='2'">
-                                            <span>Created Date</span>
-                                        </t>
-                                        <t t-else="">
+                                        <t>
                                             <span>Inv Date</span>
                                         </t>
                                     </th>
@@ -3385,15 +3382,8 @@
                                                     </t>
                                                 </td>
                                                 <td>
-                                                    <t t-if="filter_post_credit=='2'">
-                                                        <t t-if="table_line_first">
-                                                            <span t-esc="doc.create_date.strftime('%d/%m/%Y')"/>
-                                                        </t>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <t t-if="table_line_first">
-                                                            <span t-field="doc.invoice_date"/>
-                                                        </t>
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.invoice_date"/>
                                                     </t>
                                                 </td>
                                                 <td>
