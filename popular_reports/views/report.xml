@@ -3400,7 +3400,9 @@
                                                     <span t-field="table_line.product_id"/>
                                                 </td>
                                                 <td style="text-align:right;">
-                                                    <span t-field="table_line.price_unit"/>
+                                                    <t t-set="price" t-value="table_line.price_unit - (table_line.price_unit * table_line.discount/100)"/>
+                                                    <span t-esc="'%.2f' % price"/>
+                                                    
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <span t-field="table_line.quantity"/>
@@ -3516,14 +3518,14 @@
                                     <th>
                                         <span>Invoice No.</span>
                                     </th>
-                                    <th>
+<!--                                     <th>
                                         <t t-if="filter_post_credit=='2'">
                                             <span>Created Date</span>
-                                        </t>
-                                        <t t-else="">
+                                        </t> -->
+                                        <t>
                                             <span>Inv Date</span>
                                         </t>
-                                    </th>
+<!--                                     </th> -->
                                     <th>
                                         <span>Customer Name</span>
                                     </th>
@@ -3561,16 +3563,16 @@
                                                     </t>
                                                 </td>
                                                 <td>
-                                                    <t t-if="filter_post_credit=='2'">
+<!--                                                     <t t-if="filter_post_credit=='2'">
                                                         <t t-if="table_line_first">
                                                             <span t-esc="doc.create_date.strftime('%d/%m/%Y')"/>
                                                         </t>
                                                     </t>
-                                                    <t t-else="">
+                                                    <t t-else=""> -->
                                                         <t t-if="table_line_first">
                                                             <span t-field="doc.invoice_date"/>
                                                         </t>
-                                                    </t>
+<!--                                                     </t> -->
                                                 </td>
                                                 <td>
                                                     <t t-if="table_line_first">

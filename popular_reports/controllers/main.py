@@ -974,7 +974,7 @@ class edit_report_refund_lst_by_product_code(models.AbstractModel):
         if data['filter_post_credit'] == '1':
             docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
         elif data['filter_post_credit'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
+            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
         elif data['filter_post_credit'] == '3':
             docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         else:
