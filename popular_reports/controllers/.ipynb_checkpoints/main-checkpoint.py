@@ -117,7 +117,8 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
                         if table_line.x_studio_category_i == product_cats_id.name and table_line.partner_id.id == user:
                            sub_ttl = sub_ttl + table_line.amount_total_signed
                     ttl = ttl + sub_ttl
-                    cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
+                    if sub_ttl > 0:
+                        cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
                 if ttl > 0:
                     lst.append({'product_cats_id':product_cats_id.name,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
         else:
