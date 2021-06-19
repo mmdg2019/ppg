@@ -7780,8 +7780,8 @@
                                                 <span t-esc="round((amt_cur - amt_prev),2)"></span>
                                             </td>
                                             <td style="text-align:right;">
-                                                <span t-if="amt_cur > 0" t-esc="round((product.qty_available / amt_cur),2)"></span>
-                                                <span t-else="" t-esc="round(product.qty_available,2)"/>
+                                                <span t-if="amt_cur > 0" t-esc="int((product.qty_available / amt_cur))"></span>
+                                                <span t-else="" t-esc="int(product.qty_available)"/>
 <!--                                                 <t t-if="amt_cur > 0">
                                                     <span t-esc="round((product.qty_available / amt_cur),2)"></span>
                                                 </t>
