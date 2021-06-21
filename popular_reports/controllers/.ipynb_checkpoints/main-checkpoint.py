@@ -1338,7 +1338,7 @@ class edit_report_stock_focus(models.AbstractModel):
             product_ids = p_docs.mapped('invoice_line_ids.product_id.id')
             product_ids = product_ids+c_docs.mapped('invoice_line_ids.product_id.id')
             product_ids = list(set(product_ids))
-        products = self.env['product.product'].search([('type', '=', 'product'),('id', 'in', product_ids)]).with_context(dict(to_date=data['c_end_date'], location= data['stock_location']),order='display_name asc')
+        products = self.env['product.product'].search([('type', '=', 'product'),('id', 'in', product_ids)]).with_context(dict(to_date=datetime.strptime(data['c_end_date'], '%Y-%m-%d') + relativedelta(days = 1), location= data['stock_location']),order='display_name asc')
         stock_loc = self.env['stock.location'].search([('id', '=', data['stock_location'])],limit=1)
         ttl_date = datetime.strptime(data['end_date'], '%Y-%m-%d') - datetime.strptime(data['start_date'], '%Y-%m-%d') + relativedelta(days = 1)
         ttl_date_c = datetime.strptime(data['c_end_date'], '%Y-%m-%d') - datetime.strptime(data['c_start_date'], '%Y-%m-%d') + relativedelta(days = 1)
