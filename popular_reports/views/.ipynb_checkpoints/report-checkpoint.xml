@@ -1386,7 +1386,7 @@
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <t>
-                                                        <span t-esc="item['qty']"/>
+                                                        <span t-esc="'%.2f' % item['qty']"/>
                                                     </t>
                                                 </td>
                                                 <td style="text-align:center;">
@@ -1403,7 +1403,7 @@
                                             </th>
                                             <th style="text-align:right;">
                                                 <t>
-                                                    <span t-esc="line['ttl_qty']"/>
+                                                    <span t-esc="'%.2f' % line['ttl_qty']"/>
                                                 </t>
                                             </th>
                                             <th></th>
@@ -7780,6 +7780,7 @@
                                                 <span t-esc="round((amt_cur - amt_prev),2)"></span>
                                             </td>
                                             <td style="text-align:right;">
+<!--                                                 <span t-esc="product.qty_available"></span> -->
                                                 <span t-if="amt_cur > 0" t-esc="int((product.qty_available / amt_cur))"></span>
                                                 <span t-else="" t-esc="int(product.qty_available)"/>
 <!--                                                 <t t-if="amt_cur > 0">
