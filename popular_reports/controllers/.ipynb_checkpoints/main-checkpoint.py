@@ -195,7 +195,8 @@ class edit_report_all_balance_listing(models.AbstractModel):
             total_qty = 0.0
             for product in products:
                 total_qty = sum(table_line.quantity for doc in docs for table_line in doc.quant_ids.filtered(lambda r: r.product_id == product and  r.location_id == loc))
-                temp.append({'product_name':product.display_name,'on_hand':'{0:,.2f}'.format(total_qty), 'product_uom':product.uom_name,'location':loc.display_name})
+                if total_qty > 0:
+                    temp.append({'product_name':product.display_name,'on_hand':'{0:,.2f}'.format(total_qty), 'product_uom':product.uom_name,'location':loc.display_name})
         return {
             'docs': docs,
             'product_ids': product_ids,

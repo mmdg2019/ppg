@@ -2115,7 +2115,7 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <t t-if="docs">
+                            <t t-if="items">
                                 <tbody>
                                     <!--                                 <t t-foreach="docs.sorted(key=lambda x: x.location_id, reverse=False)" t-as="doc"><t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids"><tr><td><span t-field="table_line.location_id"/></td><td><span t-field="table_line.product_id"/></td><td style="text-align:center;"><span t-field="table_line.product_uom_id"/></td><td style="text-align:right;"><span t-esc="table_line.quantity"/></td></tr></t></t> -->
                                     <t t-foreach="items" t-as="item">
