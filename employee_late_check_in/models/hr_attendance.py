@@ -27,6 +27,11 @@ import pytz
 from odoo import models, fields, api
 import datetime as dd
 
+import ftplib
+import xlsxwriter
+import pandas as pd
+from io import BytesIO
+
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
 
@@ -117,11 +122,14 @@ class HrAttendance(models.Model):
                             work_from = schedule.hour_from
                             check_in = rec.check_in
                             check_in_utc = pytz.utc.localize(check_in)
-                            tz = pytz.timezone(self.env.user.tz)
+                            tz = pytz.timezone(rec.employee_id.tz)
                             check_in_tz = datetime.strptime(check_in_utc.astimezone(tz).strftime("%H:%M"), "%H:%M")
+                            
                             check_in_time = timedelta(hours=check_in_tz.hour, minutes=check_in_tz.minute).total_seconds() / 3600
+#                             raise Warning(str(check_in_time))
     #                         start_tz = now_tz + relativedelta(hour=0, minute=0)  # day start in the employee's timezone
     #                         start_naive = start_tz.astimezone(pytz.utc).replace(tzinfo=None)
+#                             rec.sudo().late_time = 20.12
                             if check_in_time > work_from:
                                 late_time = check_in_time - work_from
                                 if late_time > late_check_in_after:
@@ -141,3 +149,54 @@ class HrAttendance(models.Model):
 #                         t2 = timedelta(hours=start_date.hour, minutes=start_date.minute)
 #                         if check_in_date > start_date:
 #                             rec.sudo().late_time = (t1 - t2).total_seconds() / 3600
+
+#     def handle_binary(self, more_data):
+#         return more_data
+        
+    def add_attendance(self):
+        ftp = ftplib.FTP('185.27.134.11', 'vasts_29323062','asd12345')
+#         ftp.connect('185.27.134.11', 21)
+#         ftp.login('vasts_29323062','asd12345')
+        ftp.cwd("/htdocs")
+        files = ftp.dir()
+        data = []
+        flo = BytesIO()
+        ftp.retrbinary('RETR transaction.xlsx', flo.write)
+        flo.seek(0)
+        df = pd.read_excel(flo)
+        attendence_lines = df.groupby(['First Name','Date']).agg({'Time': ['min', 'max']})
+#         raise Warning(pd.read_excel(flo))
+#         df = pd.read_excel(flo,index_col=0)
+#         raise Warning(attendence_lines)
+        first = True
+        for row in attendence_lines.itertuples():
+            partner_id = self.env['hr.employee.public'].search([('name', '=',row[0][0])], limit=1)
+            if partner_id:
+                user_tz = pytz.timezone(partner_id.tz)
+                
+                check_in = datetime.combine(row[0][1].to_pydatetime(),datetime.strptime(str(row[1]), "%H:%M:%S").time())
+                check_out = datetime.combine(row[0][1].to_pydatetime(),datetime.strptime(str(row[2]), "%H:%M:%S").time())
+#                 raise Warning(zz)
+#                 raise Warning(datetime.now(dd.timezone.utc).astimezone().tzinfo)
+                            
+#                 check_out_utc = pytz.utc.localize(check_out)
+#                 check_in_utc = pytz.utc.localize(check_in)
+#                 raise Warning(str(check_in)+str(check_in_utc))
+#                 local = pytz.timezone(tz)
+#                 if user_tz in pytz.all_timezones:
+#                     old_tz = pytz.timezone('UTC')
+#                     new_tz = pytz.timezone(user_tz)
+#                     check_in = old_tz.localize(check_in).astimezone(new_tz)
+                tz = pytz.timezone(self.env.user.tz)
+                check_in_tz = datetime.strptime(check_in.astimezone(tz).strftime("%H:%M"), "%H:%M")
+                if first:
+                    self.env['hr.attendance'].create({'employee_id': partner_id.id,'check_in': check_in_tz, 'check_out': check_out})
+                    first=False
+#         for __, row in df.iterrows():
+#             partner_id = self.env['hr.employee.public'].search([('name', '=',row.loc['First Name'])], limit=1)
+# #             print(str(row.loc['First Name']) + str(row.loc['Last Name']))
+#             if partner_id:
+        
+#                 check_in = datetime.strptime(str(row.loc['Date']) +" "+ str(row.loc['Time']), "%d/%m/%Y %H:%M")
+#                 self.env['hr.attendance'].create({'employee_id': partner_id.id,'check_in': check_in,'check_out': check_out})
+        
