@@ -168,11 +168,11 @@ class HrAttendance(models.Model):
 #         raise Warning(pd.read_excel(flo))
 #         df = pd.read_excel(flo,index_col=0)
 #         raise Warning(attendence_lines)
-        first = True
+#         first = True
         for row in attendence_lines.itertuples():
             partner_id = self.env['hr.employee.public'].search([('name', '=',row[0][0])], limit=1)
             if partner_id:
-                user_tz = pytz.timezone(partner_id.tz)
+#                 user_tz = pytz.timezone(partner_id.tz)
                 
                 check_in = datetime.combine(row[0][1].to_pydatetime(),datetime.strptime(str(row[1]), "%H:%M:%S").time())
                 check_out = datetime.combine(row[0][1].to_pydatetime(),datetime.strptime(str(row[2]), "%H:%M:%S").time())
@@ -187,11 +187,11 @@ class HrAttendance(models.Model):
 #                     old_tz = pytz.timezone('UTC')
 #                     new_tz = pytz.timezone(user_tz)
 #                     check_in = old_tz.localize(check_in).astimezone(new_tz)
-                tz = pytz.timezone(self.env.user.tz)
-                check_in_tz = datetime.strptime(check_in.astimezone(tz).strftime("%H:%M"), "%H:%M")
-                if first:
-                    self.env['hr.attendance'].create({'employee_id': partner_id.id,'check_in': check_in_tz, 'check_out': check_out})
-                    first=False
+#                 tz = pytz.timezone(self.env.user.tz)
+#                 check_in_tz = datetime.strptime(check_in.astimezone(tz).strftime("%H:%M"), "%H:%M")
+#                 if first:
+                self.env['hr.attendance'].create({'employee_id': partner_id.id,'check_in': check_in, 'check_out': check_out})
+#                     first=False
 #         for __, row in df.iterrows():
 #             partner_id = self.env['hr.employee.public'].search([('name', '=',row.loc['First Name'])], limit=1)
 # #             print(str(row.loc['First Name']) + str(row.loc['Last Name']))
