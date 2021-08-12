@@ -34,37 +34,19 @@
                                 </div>
                             </div> -->
                             <div class="o_setting_right_pane">
-                                    <label for="late_check_in_after" string="Late Time"/>
-                                    <div class="text-muted">
-                                        Enable check-in late time
-                                    </div>
-                                    <div class="row mt16" attrs="{'invisible': [('check_late_time', '=', False)]}">
-                                        <label for="late_check_in_after" string="Start calculate late time after" class="col-lg-4 o_light_label"/>
-                                        <field name="late_check_in_after" class="oe_inline" widget="float_time"/>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-<!--                                 <label for="deduction_amount"/>
+                                <label for="late_check_in_after" string="Late Time"/>
                                 <div class="text-muted">
+                                    Enable check-in late time
                                 </div>
-                                <div>
-                                    <div class="content-group mt16">
-                                        <field name="deduction_amount" colspan="4" nolabel="1"/>/<field name="deduction_type" style="width:100px;"/>
-                                    </div>
-                                </div> -->
-                                <label for="late_check_in_after"/>
-                                <div class="text-muted">
-                                </div>
-                                <div>
-                                    <div class="content-group mt16">
-                                        <field name="start_time" colspan="4" nolabel="1"/>Minutes
-                                    </div>
+                                <div class="row mt16" attrs="{'invisible': [('check_late_time', '=', False)]}">
+                                    <label for="late_check_in_after" string="Start calculate late time after" class="col-lg-4 o_light_label"/>
+                                    <field name="late_check_in_after" class="oe_inline" widget="float_time"/>
+                                    <label for="maximum_minutes" string="Maximum late time" class="col-lg-4 o_light_label"/>
+                                    <field name="maximum_minutes" class="oe_inline" widget="float_time"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-6 o_setting_box">
+<!--                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_right_pane">
                                 <label for="maximum_minutes"/>
                                 <div class="text-muted">
@@ -75,7 +57,28 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+<!--                         <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane"> -->
+<!--                                 <label for="deduction_amount"/>
+                                <div class="text-muted">
+                                </div>
+                                <div>
+                                    <div class="content-group mt16">
+                                        <field name="deduction_amount" colspan="4" nolabel="1"/>/<field name="deduction_type" style="width:100px;"/>
+                                    </div>
+                                </div> -->
+<!--                                 <label for="late_check_in_after"/>
+                                <div class="text-muted">
+                                </div>
+                                <div>
+                                    <div class="content-group mt16">
+                                        <field name="start_time" colspan="4" nolabel="1"/>Minutes
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        
                     </div>
                     <!--                    </div>-->
                 </xpath>
