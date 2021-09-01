@@ -137,6 +137,65 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
             'currency_id':docs.currency_id,
             'user_ids':data['user_ids']
        }
+    
+#     Sales Report by Original Product Category
+class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
+    _name = "report.popular_reports.report_sales_report_by_org_product_cat"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+        else:
+            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        user_ids = None
+        temp = []
+        sub_temp = []
+        lst = []
+        if data['user_ids']:
+            for product_cats_id in product_cats_ids:
+                ttl = 0
+                cutomer = []
+                sub_cust = None
+                for user in data['user_ids']:
+                    sub_ttl = 0
+                    sub_cust = self.env['res.partner'].search([('id', '=', user)])
+#                     for date in dates:
+                    for table_line in docs:
+                        if table_line.x_studio_category_i == product_cats_id.name and table_line.partner_id.id == user:
+                           sub_ttl = sub_ttl + table_line.amount_total_signed
+                    if sub_ttl > 0:
+                        ttl = ttl + sub_ttl
+                        cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
+                if ttl > 0:
+                    lst.append({'product_cats_id':product_cats_id.name,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
+        else:
+            for product_cats_id in product_cats_ids:
+                ttl = 0
+                for doc in docs:
+                    for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.categ_id == product_cats_id):
+#                         if table_line.x_studio_category_i == product_cats_id.name:
+                        ttl = ttl + table_line.price_subtotal
+                if ttl > 0:
+                    lst.append({'product_cats_id':product_cats_id.display_name,'ttl':ttl})
+        return {
+            'filter_post': data['filter_post'],
+            'start_date': data['start_date'], 
+            'end_date': data['end_date'],
+            'lst':sorted(lst, key = lambda i: i['product_cats_id']),
+            'currency_id':docs.currency_id,
+            'user_ids':data['user_ids']
+       }
 
 #     Sales Report by Client
 class edit_report_sales_report_by_client(models.AbstractModel):

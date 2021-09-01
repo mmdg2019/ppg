@@ -92,6 +92,17 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_report_by_product_cat').report_action(self, data=data)
     
+#     Sales Report by Original Product Category
+    def print_report_sales_report_by_org_product_cat(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'product_cats_ids': self.product_cats.ids
+        }
+        return self.env.ref('popular_reports.sales_report_by_org_product_cat').report_action(self, data=data)
+    
 #     Sales Report by Client
     def print_sales_report_by_client(self):
         data = {
