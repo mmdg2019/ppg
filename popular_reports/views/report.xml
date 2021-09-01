@@ -280,6 +280,17 @@
         paperformat="paperformat_popular_report"
     />
     <report
+        id="sales_report_by_org_product_cat"
+        model="product.template"
+        menu="False"
+        string="Sales Report by Original Product Category"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_org_product_cat"
+        file="popular_reports.report_sales_report_by_org_product_cat"
+        print_report_name="Sales Report by Original Product Category"
+        paperformat="paperformat_popular_report"
+    />
+    <report
         id="sales_report_by_product_code"
         model="product.template"
         menu="False"
@@ -5089,6 +5100,159 @@
                                 <b>
                                     <font style="font-size: 24px;">
                                         <span>Sales Report by Product Category
+                                            
+                                            <t t-if="filter_post=='1'">(Cancel)</t>
+                                            <t t-elif="filter_post=='2'">(Draft)</t>
+                                            <t t-elif="filter_post=='3'">(Posted)</t>
+                                        </span>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
+                            <thead>
+                                <tr>
+                                    <th t-if='user_ids'>
+                                        <span>Customer Name</span>
+                                    </th>
+                                    <th>
+                                        <span>Product Category</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Net Amount</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="lst">
+                                <tbody>
+                                    <t t-set="ttl" t-value="0"/>
+                                    <t t-foreach="lst" t-as="product_cats">
+                                        <t t-if='user_ids'>
+                                            <t t-foreach="product_cats['customer']" t-as="customer">
+                                                <tr>
+                                                    <td>
+                                                        <span t-esc="customer['sub_cust'].display_name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="product_cats['product_cats_id']"/>
+                                                    </td>
+                                                    <td style="text-align:right;">
+                                                        <span t-esc="customer['sub_ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr t-if="customer_last">
+                                                    <th>
+                                                        <span></span>
+                                                    </th>
+                                                    <th>
+                                                        <span>Sub Total</span>
+                                                    </th>
+                                                    <th style="text-align:right;">
+                                                        <span>
+                                                            <t t-esc="product_cats['ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                        </span>
+                                                        <t t-set="ttl" t-value="ttl + product_cats['ttl']"/>
+                                                    </th>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <tr>
+                                                <td>
+                                                    <span t-esc="product_cats['product_cats_id']"/>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span t-esc="product_cats['ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                    <t t-set="ttl" t-value="ttl + product_cats['ttl']"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <th  t-if='user_ids'>
+                                            <span></span>
+                                        </th>
+                                        <th>
+                                            <span>Grand Total</span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </tfooter>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+    <template id="report_sales_report_by_org_product_cat">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body>
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        <span>Sales Report by Original Product Category
                                             
                                             <t t-if="filter_post=='1'">(Cancel)</t>
                                             <t t-elif="filter_post=='2'">(Draft)</t>

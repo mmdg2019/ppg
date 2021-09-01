@@ -101,7 +101,11 @@
                   id="popular_reports.menu_report_sales_report_by_product_code"
                   action="popular_reports.wizard_act_report_sales_report_by_product_code"
                   sequence="8"/>
-        
+        <menuitem name="Sales Report by Original Product Category"
+                  parent="popular_reports.popular_reports_sub_menu_2"
+                  id="popular_reports.menu_report_sales_report_by_org_product_cat"
+                  action="popular_reports.wizard_act_report_sales_report_by_org_product_cat"
+                  sequence="9"/>
         
         <menuitem name="Sales Order Report by Client"
                   parent="popular_reports.popular_reports_sub_menu_3"
