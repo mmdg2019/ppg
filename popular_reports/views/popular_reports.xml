@@ -1,40 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-        <record id="popular_reports_tree" model="ir.ui.view">
-            <field name="name">popular_reports.popular_reports.tree</field>
-            <field name="model">popular_reports.popular_reports</field>
-            <field name="arch" type="xml">
-                <tree string="Popular Reports" create="false">
-                    <field name="report_name"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                    <field name="date"/>
-                </tree>
-            </field>
-        </record>
-        <record id="popular_reports_form" model="ir.ui.view">
-                <field name="name">popular_reports.popular_reports.form</field>
-                <field name="model">popular_reports.popular_reports</field>
-                <field name="arch" type="xml">
-                    <form string="Popular Reports" create="false">
-                        <sheet string="popular_reports.popular_reports">
-                            <group col="4">
-                                <field name="date" modifiers="{}"/>
-                                <field name="report_name" modifiers="{}"/>
-                                <field name="report_file" string="Click On Save As Button To Download File" filename="report_name" modifiers="{}"/>
-                                <field name="company_id" can_create="false" can_write="false" modifiers="{}"/>
-                                <separator/>
-                            </group>
-                        </sheet>
-                    </form>
-<!--                     <form string="Popular Reports" create="false">
-                        <field name="report_name"/>
-                        <field name="report_file" string="Click On Save As Button To Download File" filename="report_name"/>
-                        <field name="company_id" groups="base.group_multi_company"/>
-                        <field name="date"/>
-                    </form> -->
-                </field>
-            </record>
+    <record id="popular_reports_tree" model="ir.ui.view">
+        <field name="name">popular_reports.popular_reports.tree</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="arch" type="xml">
+            <tree string="Stock Transfer Operation Reports" create="false">
+                <field name="report_name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="date"/>
+            </tree>
+        </field>
+    </record>
+    <record id="popular_reports_form" model="ir.ui.view">
+        <field name="name">popular_reports.popular_reports.form</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="arch" type="xml">
+            <form string="Stock Transfer Operation Reports" create="false">
+                <sheet string="popular_reports.popular_reports">
+                    <group col="4">
+                        <field name="date" modifiers="{}"/>
+                        <field name="report_name" modifiers="{}"/>
+                        <field name="report_file" string="Click On Save As Button To Download File" filename="report_name" modifiers="{}"/>
+                        <field name="company_id" can_create="false" can_write="false" modifiers="{}"/>
+                        <separator/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="stock_valuation_reports_tree" model="ir.ui.view">
+        <field name="name">popular_reports.stock_valuation_reports.tree</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="arch" type="xml">
+            <tree string="Stock Valuation Reports" create="false">
+                <field name="report_name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="date"/>
+            </tree>
+        </field>
+    </record>
+    <record id="stock_valuation_reports_form" model="ir.ui.view">
+        <field name="name">popular_reports.stock_valuation_reports.form</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="arch" type="xml">
+            <form string="Stock Valuation Reports" create="false">
+                <sheet string="popular_reports.popular_reports">
+                    <group col="4">
+                        <field name="date" modifiers="{}"/>
+                        <field name="report_name" modifiers="{}"/>
+                        <field name="report_file" string="Click On Save As Button To Download File" filename="report_name" modifiers="{}"/>
+                        <field name="company_id" can_create="false" can_write="false" modifiers="{}"/>
+                        <separator/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
 <!-- 
         <record id="view_move_pivot" model="ir.ui.view">
