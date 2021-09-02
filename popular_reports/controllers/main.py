@@ -131,7 +131,7 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
             'filter_post': data['filter_post'],
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
-            'lst':sorted(lst, key = lambda i: i['product_cats_id'].display_name),
+            'lst':sorted(lst, key = lambda i: i['product_cats_id']),
             'currency_id':docs.currency_id,
             'user_ids':data['user_ids']
        }
@@ -168,10 +168,10 @@ class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
                 for user in data['user_ids']:
                     sub_ttl = 0
                     sub_cust = self.env['res.partner'].search([('id', '=', user)])
-#                     for date in dates:
-                    for table_line in docs:
-                        if table_line.x_studio_invoice_category == product_cats_id.display_name and table_line.partner_id.id == user:
-                           sub_ttl = sub_ttl + table_line.amount_total_signed
+                    for doc in docs.filtered(lambda r: r.partner_id.id == user):
+                        for table_line in doc.invoice_line_ids:
+                            if table_line.product_id.categ_id == product_cats_id:
+                                sub_ttl = sub_ttl + table_line.price_subtotal
                     if sub_ttl > 0:
                         ttl = ttl + sub_ttl
                         cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
@@ -181,9 +181,9 @@ class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
             for product_cats_id in product_cats_ids:
                 ttl = 0
                 for doc in docs:
-                    for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.categ_id == product_cats_id):
-#                         if table_line.x_studio_invoice_category == product_cats_id.name:
-                        ttl = ttl + table_line.price_subtotal
+                    for table_line in doc.invoice_line_ids:
+                        if table_line.product_id.categ_id == product_cats_id:
+                            ttl = ttl + table_line.price_subtotal
                 if ttl > 0:
                     lst.append({'product_cats_id':product_cats_id.display_name,'ttl':ttl})
         return {

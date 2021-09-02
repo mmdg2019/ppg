@@ -1140,7 +1140,7 @@
                                             </td>
                                             <td>
                                                 <t>
-                                                    <span t-esc="item['cat']"/>
+                                                    <span t-esc="item['cat'].display_name"/>
                                                 </t>
                                             </td>
                                             <td style="text-align:right;">
@@ -5148,7 +5148,7 @@
                                                         <span t-esc="customer['sub_cust'].display_name"/>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="product_cats['product_cats_id'].display_name"/>
+                                                        <span t-esc="product_cats['product_cats_id']"/>
                                                     </td>
                                                     <td style="text-align:right;">
                                                         <span t-esc="customer['sub_ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
