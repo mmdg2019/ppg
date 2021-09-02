@@ -6746,7 +6746,7 @@
                                         <span>Invoice Number</span>
                                     </th>
                                     <th>
-                                        <span>Invoice Category</span>
+                                        <span>Product Category</span>
                                     </th>
                                     <th>
                                         <span>Product</span>
@@ -6791,6 +6791,7 @@
                                                 <th style="text-align:right;">
                                                     <span>
                                                         <t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                        <t t-set="ttl" t-value="ttl + sub_ttl"/>
                                                     </span>
                                                 </th>
                                             </tr>
@@ -6799,7 +6800,8 @@
                                             <t t-set="sub_date" t-value="doc.create_date.strftime('%d/%m/%Y')"/>
                                             <t t-set="sub" t-value="1"/></t>
                                         <t t-else="">
-                                            <t t-set="sub" t-value="0"/></t>
+                                            <t t-set="sub" t-value="0"/>
+                                        </t>
                                         <t t-foreach="doc.order_line.filtered(lambda x:x.name != &quot;Special Discount&quot; and x.name != &quot;Other Charges&quot; and x.product_id.id in product_ids and x.product_id.categ_id.id in product_cats_ids and x.product_uom_qty > 0)" t-as="table_line">
                                             <tr>
                                                 <td>
@@ -6843,7 +6845,6 @@
                                                 <td style="text-align:right;">
                                                     <span t-field="table_line.price_subtotal"/>
                                                     <t t-set="sub_ttl" t-value="sub_ttl + table_line.price_subtotal"/>
-                                                    <t t-set="ttl" t-value="ttl + sub_ttl"/>
                                                 </td>
                                                 <t t-if="sub==1">
                                                     <t t-set="sub" t-value="0"/></t>
@@ -6860,6 +6861,7 @@
                                                 <th style="text-align:right;">
                                                     <span>
                                                         <t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                        <t t-set="ttl" t-value="ttl + sub_ttl"/>
                                                     </span>
                                                 </th>
                                             </tr>
