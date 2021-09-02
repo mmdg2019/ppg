@@ -53,7 +53,7 @@
         <field name="view_id" eval="False"/>
         <field name="view_mode">tree,form</field>
 <!--         <field name="domain">[('company_id', '=', False),('company_id', '=', user.company_id.id)]</field> -->
-        <field name="domain">[('company_id','in',allowed_company_ids)]</field>
+        <field name="domain">[('company_id','in',allowed_company_ids),('report_name', 'ilike', 'stock transfer')]</field>
     </record>
     <record model='ir.actions.act_window' id='stock_valuation_reports_view'>
         <field name="binding_model_id" eval="False"/>
@@ -81,7 +81,7 @@
         <field name="view_id" eval="False"/>
         <field name="view_mode">tree,form</field>
 <!--         <field name="domain">[('company_id', '=', False),('company_id', '=', user.company_id.id)]</field> -->
-        <field name="domain">[('company_id','in',allowed_company_ids),('report_name', '=', 'Stock Transfer Operation')]</field>
+        <field name="domain">[('company_id','in',allowed_company_ids),('report_name', 'ilike', 'stock valuation')]</field>
     </record>
     <data>
         

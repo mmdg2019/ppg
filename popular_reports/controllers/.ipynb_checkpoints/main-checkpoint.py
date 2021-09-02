@@ -35,7 +35,7 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
                 
         dates = list(set(docs.mapped('invoice_date')))
@@ -114,26 +114,26 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
                     sub_cust = self.env['res.partner'].search([('id', '=', user)])
 #                     for date in dates:
                     for table_line in docs:
-                        if table_line.x_studio_category_i == product_cats_id.name and table_line.partner_id.id == user:
+                        if table_line.x_studio_category_i == product_cats_id.display_name and table_line.partner_id.id == user:
                            sub_ttl = sub_ttl + table_line.amount_total_signed
                     if sub_ttl > 0:
                         ttl = ttl + sub_ttl
                         cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
                 if ttl > 0:
-                    lst.append({'product_cats_id':product_cats_id.name,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
+                    lst.append({'product_cats_id':product_cats_id.display_name,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
         else:
             for product_cats_id in product_cats_ids:
                 ttl = 0
                 for table_line in docs:
-                    if table_line.x_studio_category_i == product_cats_id.name:
+                    if table_line.x_studio_category_i == product_cats_id.display_name:
                         ttl = ttl + table_line.amount_total_signed
                 if ttl > 0:
-                    lst.append({'product_cats_id':product_cats_id.name,'ttl':ttl})
+                    lst.append({'product_cats_id':product_cats_id.display_name,'ttl':ttl})
         return {
             'filter_post': data['filter_post'],
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
-            'lst':lst,
+            'lst':sorted(lst, key = lambda i: i['product_cats_id']),
             'currency_id':docs.currency_id,
             'user_ids':data['user_ids']
        }
@@ -172,13 +172,13 @@ class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
                     sub_cust = self.env['res.partner'].search([('id', '=', user)])
 #                     for date in dates:
                     for table_line in docs:
-                        if table_line.x_studio_category_i == product_cats_id.name and table_line.partner_id.id == user:
+                        if table_line.x_studio_category_i == product_cats_id.display_name and table_line.partner_id.id == user:
                            sub_ttl = sub_ttl + table_line.amount_total_signed
                     if sub_ttl > 0:
                         ttl = ttl + sub_ttl
                         cutomer.append({'sub_cust':sub_cust,'sub_ttl':sub_ttl})
                 if ttl > 0:
-                    lst.append({'product_cats_id':product_cats_id.name,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
+                    lst.append({'product_cats_id':product_cats_id.display_name,'customer':sorted(cutomer, key = lambda i: i['sub_cust'].display_name),'ttl':ttl})
         else:
             for product_cats_id in product_cats_ids:
                 ttl = 0
@@ -219,7 +219,7 @@ class edit_report_sales_report_by_client(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         else:
             obj = self.env['product.category'].search([],order='display_name asc')
@@ -284,7 +284,7 @@ class edit_report_sales_report_by_date(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         return {
             'docs': docs,
@@ -316,12 +316,12 @@ class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         else:
             obj = self.env['product.category'].search([],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
         ttl = 0
         ttl_due = 0
         temp = []
@@ -387,14 +387,14 @@ class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
             state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name
         
         if data['product_cats_ids']:
-            obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
+            obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         else:
             obj = self.env['product.category'].search([],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
            
         dates = list(set([doc.invoice_date.strftime('%b/%Y') for doc in docs]))
         dates.sort(key=lambda date: datetime.strptime(date, "%b/%Y"))
@@ -469,7 +469,7 @@ class edit_report_stock_analysis_by_date_and_cust(models.AbstractModel):
         if data['product_cats_ids']:
             pids = []
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
-            product_cats_ids = sorted([temp.name for temp in obj])
+            product_cats_ids = sorted([temp.display_name for temp in obj])
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         custs = list(set(docs.mapped('partner_id')))
         return {
@@ -510,7 +510,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         temp = []
         for product in products:
@@ -1005,7 +1005,7 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
 #         else:
 #             obj = self.env['product.category'].search([],order='display_name asc')
@@ -1090,7 +1090,7 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
         if data['product_cats_ids']:
             obj = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             for temp in obj:
-                product_cats_ids.append(temp.name)
+                product_cats_ids.append(temp.display_name)
             docs = docs.filtered(lambda r: r.x_studio_category_i in product_cats_ids)
         else:
             obj = self.env['product.category'].search([],order='display_name asc')

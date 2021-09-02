@@ -115,7 +115,7 @@ class popular_reports(models.Model):
 #         xls_file = fp.read()
 #         fp.seek(0)
         workbook.close()
-        report_name = f"Stock Transfer Report ({c_date_f})"
+        report_name = f"Stock Transfer Operation Report ({c_date_f})"
         self.env['popular_reports.popular_reports'].create({'report_file': base64.encodebytes(fp.getvalue()), 'report_name':report_name, 'company_id': company.id, 'date':datetime.strptime(c_date_f, '%m/%Y')})
         fp.close()
 #         return "Success"
