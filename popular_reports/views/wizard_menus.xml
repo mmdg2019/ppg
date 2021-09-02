@@ -56,7 +56,13 @@
                   parent="popular_reports.popular_reports_sub_menu_8"
                   id="popular_reports.menu_report_stock_trans_oprt_view"
                   action="popular_reports.popular_reports_view"
-                  sequence="21"/>
+                  sequence="1"/>
+        
+        <menuitem name="Stock Valuation Report"
+                  parent="popular_reports.popular_reports_sub_menu_8"
+                  id="popular_reports.menu_report_stock_valuation_view"
+                  action="popular_reports.stock_valuation_reports_view"
+                  sequence="2"/>
         
         <menuitem name="Daily Sales Repory by Date"
                   parent="popular_reports.popular_reports_sub_menu_2"

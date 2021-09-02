@@ -826,7 +826,7 @@
                                         <span>Item Name</span>
                                     </th>
                                     <th t-if="cats">
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
@@ -845,14 +845,14 @@
                                             <t t-set="sub_lst" t-value="[]"/>
                                             <t t-foreach="sorted(items, key=lambda x: x.display_name)" t-as="item">
                                                 <t t-foreach="cats" t-as="category">
-                                                    <t t-set="sub_ttl" t-value="0"/>
+                                                    
                                                     <t t-set="sub_ttl" t-value="0"/>
                                                     <t t-set="cat" t-value=""/>
-                                                    <t t-foreach="docs.filtered(lambda x:x.partner_id.id == cust and x.x_studio_category_i == category).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
+                                                    <t t-foreach="docs.filtered(lambda x:x.partner_id == cust and x.x_studio_invoice_category == category).sorted(key=lambda x: (x.partner_id.display_name),reverse=False)" t-as="doc">
                                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.product_id == item)" t-as="table_line">
                                                             <t t-if="table_line.product_uom_id.display_name != 'Units'" t-set="sub_ttl" t-value="sub_ttl + (table_line.quantity * table_line.product_uom_id.factor_inv)"/>
                                                             <t t-else="" t-set="sub_ttl" t-value="sub_ttl + table_line.quantity"/>
-                                                            <t t-set="cat" t-value="doc.x_studio_category_i"/>
+                                                            <t t-set="cat" t-value="doc.x_studio_invoice_category"/>
                                                             <t t-set="i_name" t-value="table_line.product_id"/></t>
                                                     </t>
                                                     <t t-if="sub_ttl>0">
@@ -871,7 +871,7 @@
                                                         <span t-field="item['item'].display_name"/>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="item['category']"/>
+                                                        <span t-esc="item['category'].display_name"/>
                                                     </td>
                                                     <td style="text-align:right;">
                                                         <span t-esc="round((item['ttl'] / item['item'].uom_id.factor_inv),2)"/>
@@ -1119,7 +1119,7 @@
                                         <span>Item Name</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Quantity</span>
@@ -1506,7 +1506,7 @@
                                         <span>Customer Name</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Pay Amount</span>
@@ -1530,7 +1530,7 @@
                                                     <span t-if="table_line_first" t-esc="doc['user'].display_name"></span>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="table_line['product_cat']"></span>
+                                                    <span t-esc="table_line['product_cat'].display_name"></span>
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <span t-esc="table_line['p_amt']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"></span>
@@ -1662,7 +1662,7 @@
                                         <span>Invoice Number</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Pay Amount</span>
@@ -1759,7 +1759,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.x_studio_category_i"/>
+                                                <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td style="text-align:right;">
                                                 <span t-esc="table_line.amount_total_signed-table_line.amount_residual_signed" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
@@ -1949,7 +1949,7 @@
                                         <span>Customer Name</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th>
                                         <span>Product</span>
@@ -2400,7 +2400,7 @@
                                                 <span t-field="doc.partner_id.display_name"/>
                                             </td>
                                             <td colspan="3">
-                                                <span t-field="doc.x_studio_category_i"/>
+                                                <span t-field="doc.x_studio_invoice_category"/>
                                             </td>
                                             <td colspan="3">
                                                 <span t-field="doc.narration"/>
@@ -3044,7 +3044,7 @@
                                         <span>Customer Name</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Total</span>
@@ -3061,7 +3061,7 @@
                                             <t t-set="sub_ttl" t-value="0"/>
                                             <t t-foreach="categories" t-as="category">
                                                 <t t-set="sub_ttl" t-value="0"/>
-                                                <t t-foreach="docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date and x.partner_id.id==cust.id and x.x_studio_category_i == category)" t-as="table_line">
+                                                <t t-foreach="docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date and x.partner_id.id==cust.id and x.x_studio_invoice_category == category)" t-as="table_line">
                                                     <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/></t>
                                                 <tr t-if="sub_ttl>0">
                                                     <td>
@@ -3071,7 +3071,7 @@
                                                         <span t-esc="cust.display_name"></span>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="category"></span>
+                                                        <span t-esc="category.display_name"></span>
                                                     </td>
                                                     <td style="text-align:right;">
                                                         <span>
@@ -3356,7 +3356,7 @@
                                         <span>Return No.</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th>
                                         <span>Product</span>
@@ -3404,7 +3404,7 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="table_line_first">
-                                                        <span t-field="doc.x_studio_category_i"/>
+                                                        <span t-field="doc.x_studio_invoice_category"/>
                                                     </t>
                                                 </td>
                                                 <td>
@@ -4511,7 +4511,7 @@
                                         <span>Invoice Number</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th>
                                         <span>Status</span>
@@ -4582,7 +4582,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.x_studio_category_i"/>
+                                                <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td>
                                                 <span t-field="table_line.invoice_payment_state"/>
@@ -5148,7 +5148,7 @@
                                                         <span t-esc="customer['sub_cust'].display_name"/>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="product_cats['product_cats_id']"/>
+                                                        <span t-esc="product_cats['product_cats_id'].display_name"/>
                                                     </td>
                                                     <td style="text-align:right;">
                                                         <span t-esc="customer['sub_ttl']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
@@ -6235,7 +6235,7 @@
                                         <span>Invoice Number</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Other Charges</span>
@@ -6327,7 +6327,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.x_studio_category"/>
+                                                <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.x_studio_other_charges_1"/>
@@ -6746,7 +6746,7 @@
                                         <span>Invoice Number</span>
                                     </th>
                                     <th>
-                                        <span>Category</span>
+                                        <span>Invoice Category</span>
                                     </th>
                                     <th>
                                         <span>Product</span>
