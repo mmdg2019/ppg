@@ -18,24 +18,18 @@ class popular_reports(models.Model):
     company_id = fields.Many2one('res.company')
     
     def export_report(self, company, stock, c_date = datetime.now()):
-#         data = {'s_month':}
-#         docs = self.env['stock.move'].search([('date', '>=', datetime.now()),('date', '<',datetime.now())])       
-
+        
         docs = self.env['stock.move'].sudo().search([('state', '=','done'), ('date', '>=',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')),('date', '<',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')+ relativedelta(months = 1)), ('company_id', '=', company.id)])
         products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='display_name asc')
         scraps = self.env['stock.scrap'].sudo().search([('state', '=','done'), ('date_done', '>=',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')),('date_done', '<',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y') + relativedelta(months = 1)), ('company_id', '=', company.id)]).with_context(force_company=company.id)
+        
+        
         fp = BytesIO()
 #         workbook = xlwt.Workbook(encoding="UTF-8")
         workbook = xlsxwriter.Workbook(fp)
 #         worksheet = workbook.add_sheet('Sheet1')
         worksheet = workbook.add_worksheet()
-        expenses = (
-            ['Rent', 1000],
-            ['Gas',   100],
-            ['Food',  300],
-            ['Gym',    50],
-        )
-
+    
         # Start from the first cell. Rows and columns are zero indexed.
         row = 0
         cols = ['Item Name','Unit of Measure (UoM)', 'Opening Blance', '(+) Receipt', '(+) Sales Return', '(+) Inventory Adjustment',
@@ -55,7 +49,6 @@ class popular_reports(models.Model):
                 worksheet.merge_range(f'A1:B1', company.display_name)
                 row+=1
                 worksheet.merge_range(f'A2:B2', 'Stock Transfer Operation Report')
-#                 worksheet.write(row, 0, "")
                 row+=1
                 worksheet.write(row, 0, f"Date From : {c_date_f}")
                 worksheet.write(row, 1, f"To : {c_date_f}")
@@ -66,59 +59,41 @@ class popular_reports(models.Model):
                 row+=1
                 for col in range(len(cols)):
                     worksheet.write(row, col, cols[col])
-            else:
-                for scrap in scraps.filtered(lambda x: x.product_id == product):
-                    amt_scrap += scrap.scrap_qty
-                for doc in docs.filtered(lambda x: x.product_id == product and len(x.picking_type_id)>0):
-                    if doc.picking_type_id.display_name.find('Receipt') >= 0:
-                        amt_receipt += doc.product_uom_qty
-                    elif doc.picking_type_id.display_name.find('Sales') >= 0:
-                        amt_sr += doc.product_uom_qty
-                    elif doc.picking_type_id.display_name.find('Purchase') >= 0:
-                        amt_pr += doc.product_uom_qty
-                    elif doc.picking_type_id.display_name.find('Delivery') >= 0:
-                        amt_do + doc.product_uom_qty
-                for doc in docs.filtered(lambda x: x.product_id == product and len(x.picking_type_id) == 0):
-                    if doc.location_dest_id.id == stock.id:
-                        amt_ivn_add += doc.product_uom_qty
-                    else:
-                        amt_ivn_min += doc.product_uom_qty
-                ttl = product.qty_available + amt_receipt + amt_sr + amt_ivn_add - amt_ivn_min - amt_pr - amt_do
-                worksheet.write(row, 0, product.display_name)
-                worksheet.write(row, 1, product.uom_id.display_name)
-                worksheet.write(row, 2, product.qty_available)
-                worksheet.write(row, 3, amt_receipt)
-                worksheet.write(row, 4, amt_sr)
-                worksheet.write(row, 5, amt_ivn_add)
-                worksheet.write(row, 6, amt_ivn_min - amt_scrap)
-                worksheet.write(row, 7, amt_pr)
-                worksheet.write(row, 8, amt_do)
-                worksheet.write(row, 9, amt_scrap)
-                worksheet.write(row, 10, ttl)
+                row+=1
+            for scrap in scraps.filtered(lambda x: x.product_id == product):
+                amt_scrap += scrap.scrap_qty
+            for doc in docs.filtered(lambda x: x.product_id == product and len(x.picking_type_id)>0):
+                if doc.picking_type_id.display_name.find('Receipt') >= 0:
+                    amt_receipt += doc.product_uom_qty
+                elif doc.picking_type_id.display_name.find('Sales') >= 0:
+                    amt_sr += doc.product_uom_qty
+                elif doc.picking_type_id.display_name.find('Purchase') >= 0:
+                    amt_pr += doc.product_uom_qty
+                elif doc.picking_type_id.display_name.find('Delivery') >= 0:
+                    amt_do + doc.product_uom_qty
+            for doc in docs.filtered(lambda x: x.product_id == product and len(x.picking_type_id) == 0):
+                if doc.location_dest_id.id == stock.id:
+                    amt_ivn_add += doc.product_uom_qty
+                else:
+                    amt_ivn_min += doc.product_uom_qty
+            ttl = product.qty_available + amt_receipt + amt_sr + amt_ivn_add - amt_ivn_min - amt_pr - amt_do
+            worksheet.write(row, 0, product.display_name)
+            worksheet.write(row, 1, product.uom_id.display_name)
+            worksheet.write(row, 2, product.qty_available)
+            worksheet.write(row, 3, amt_receipt)
+            worksheet.write(row, 4, amt_sr)
+            worksheet.write(row, 5, amt_ivn_add)
+            worksheet.write(row, 6, amt_ivn_min - amt_scrap)
+            worksheet.write(row, 7, amt_pr)
+            worksheet.write(row, 8, amt_do)
+            worksheet.write(row, 9, amt_scrap)
+            worksheet.write(row, 10, ttl)
             row += 1
-
-#     print(colors[i])
-#             else:
-#                 for col in range
-
-#         for item, cost in (expenses):
-#             worksheet.write(row, col,     item)
-#             worksheet.write(row, col + 1, cost)
-#             row += 1
-
-        # Write a total using a formula.
-#         worksheet.write(row, 0, 'Total')
-#         worksheet.write(row, 1, '=SUM(B1:B4)')
-
-#         workbook.save(fp)
-
-#         xls_file = fp.read()
-#         fp.seek(0)
         workbook.close()
+     
         report_name = f"Stock Transfer Operation Report ({c_date_f})"
         self.env['popular_reports.popular_reports'].create({'report_file': base64.encodebytes(fp.getvalue()), 'report_name':report_name, 'company_id': company.id, 'date':datetime.strptime(c_date_f, '%m/%Y')})
         fp.close()
-#         return "Success"
 
 
 
