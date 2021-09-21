@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    
     <record id="popular_reports_tree" model="ir.ui.view">
-        <field name="name">popular_reports.popular_reports.tree</field>
+        <field name="name">popular_reports.stock_transfer_operation_reports.tree</field>
         <field name="model">popular_reports.popular_reports</field>
         <field name="arch" type="xml">
             <tree string="Stock Transfer Operation Reports" create="false">
@@ -12,14 +13,18 @@
         </field>
     </record>
     <record id="popular_reports_form" model="ir.ui.view">
-        <field name="name">popular_reports.popular_reports.form</field>
-        <field name="model">popular_reports.popular_reports</field>
+        <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <form string="Stock Transfer Operation Reports" create="false">
-                <sheet string="popular_reports.popular_reports">
+                <sheet string="Stock Transfer Operation Reports">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="report_name" required="1" readonly="True" />
+                        </h1>
+                    </div>
                     <group col="4">
-                        <field name="date" modifiers="{}"/>
                         <field name="report_name" modifiers="{}"/>
+                        <field name="date" modifiers="{}"/>
                         <field name="report_file" string="Click On Save As Button To Download File" filename="report_name" modifiers="{}"/>
                         <field name="company_id" can_create="false" can_write="false" modifiers="{}"/>
                         <separator/>
@@ -27,7 +32,18 @@
                 </sheet>
             </form>
         </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="name">popular_reports.stock_transfer_operation_reports.form</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="priority">16</field>
+        <field name="type">form</field>
     </record>
+    
+    
     <record id="stock_valuation_reports_tree" model="ir.ui.view">
         <field name="name">popular_reports.stock_valuation_reports.tree</field>
         <field name="model">popular_reports.popular_reports</field>
@@ -40,14 +56,19 @@
         </field>
     </record>
     <record id="stock_valuation_reports_form" model="ir.ui.view">
-        <field name="name">popular_reports.stock_valuation_reports.form</field>
-        <field name="model">popular_reports.popular_reports</field>
+        <field name="active" eval="True"/>      
         <field name="arch" type="xml">
-            <form string="Stock Valuation Reports" create="false">
-                <sheet string="popular_reports.popular_reports">
+            <form create="false">
+                
+                <sheet string="Stock Valuation Reports">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="report_name" required="1" readonly="True" />
+                        </h1>
+                    </div>
                     <group col="4">
-                        <field name="date" modifiers="{}"/>
                         <field name="report_name" modifiers="{}"/>
+                        <field name="date" modifiers="{}"/>
                         <field name="report_file" string="Click On Save As Button To Download File" filename="report_name" modifiers="{}"/>
                         <field name="company_id" can_create="false" can_write="false" modifiers="{}"/>
                         <separator/>
@@ -55,8 +76,17 @@
                 </sheet>
             </form>
         </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="name">popular_reports.stock_valuation_reports.form</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="priority">16</field>
+        <field name="type">form</field>
+        
     </record>
-
 <!-- 
         <record id="view_move_pivot" model="ir.ui.view">
             <field name="name">stock.move.pivot</field>
@@ -102,4 +132,6 @@
                 </tree>
             </field>
         </record> -->
+    
+    
 </odoo>
