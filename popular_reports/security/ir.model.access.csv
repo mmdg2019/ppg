@@ -1,2 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_popular_reports_popular_reports,popular_reports.popular_reports,model_popular_reports_popular_reports,base.group_user,1,1,1,1
+access_popular_reports.sale_target,popular_reports.sale_target,model_popular_reports_sale_target,base.group_user,1,1,1,1
+access_popular_reports.sale_target.line,popular_reports.sale_target.line,model_popular_reports_sale_target_line,base.group_user,1,1,1,1

@@ -23,6 +23,7 @@
         'views/wizard_forms.xml',
         'views/wizard_menus.xml',
         'views/report.xml',
+        'views/sale_target.xml',
         'security/ir.model.access.csv',
 #         'security/security.xml',
     ],
