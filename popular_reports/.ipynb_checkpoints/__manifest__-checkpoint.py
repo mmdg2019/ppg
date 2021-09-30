@@ -17,7 +17,8 @@
         'account',
         'stock'
     ],
-    'data': [        
+    'data': [
+        'views/action_manager.xml',
         'views/wizard_view.xml',
         'views/popular_reports.xml',
         'views/wizard_forms.xml',

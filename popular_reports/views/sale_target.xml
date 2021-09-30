@@ -10,15 +10,28 @@
                             <field name="complete_name"/>
                         </h1>
                     </div>
+                    <div class="oe_button_box" name="button_box">
+<!--                         <button class="oe_stat_button" icon="fa-cubes" type="action" name="608">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="sale_target_line_ids_count" string="Product List" widget="statinfo"/>
+                                </span>
+                                <span class="o_stat_text">Products</span>
+                            </div>
+                        </button> -->
+                        <button class="oe_stat_button" icon="fa-cubes" type="action" name="%(btn_sale_target_line)d">
+                            <field name="sale_target_line_ids_count" string="Product" widget="statinfo"/>
+                        </button>
+                    </div>
                     <group>
-                        <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" icon="fa-cubes" type="action" name="608">
-                            </button>
-                        </div>
-                        <field name="complete_name" string="Target Date"/>
-                        <field name="start_date" string="Target Date" widget="date"/>
-                        <field name="end_date" string="Target Date" widget="date"/>
-                        <field name="company_id"/>
+                        <group>
+                            <field name="complete_name" string="Name"/>
+                            <field name="start_date" widget="date"/>
+                        </group>
+                        <group>
+                            <field name="company_id" readonly="1"/>
+                            <field name="end_date" widget="date"/>
+                        </group>
                     </group>
                 </sheet>
             </form>
@@ -53,12 +66,11 @@
     <record id="popular_reports.sale_target_line_tree" model="ir.ui.view" context="{'studio': True}">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <tree string="Target Product List Line" editable="top">
-<!--                 <field name="x_name" modifiers="{}"/>
-                <field name="x_product_id"/>
-                <field name="x_studio_uom" string="UoM"/>
-                <field name="x_studio_target_number" string="Target Number"/>
-                <field name="x_studio_sold_counts" string="Sold Counts"/> -->
+            <tree string="Sales Target Product List" editable="top">
+                <field name="product_id"/>
+                <field name="prouct_uom_id" string="UoM"/>
+                <field name="sale_target_number" string="Sales Target Number"/>
+                <field name="ttl_sold_count" string="Total Sold Counts" readonly="1"/>
             </tree>
         </field>
         <field name="field_parent" eval="False"/>
