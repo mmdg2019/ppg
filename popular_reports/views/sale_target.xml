@@ -68,7 +68,7 @@
     <record id="popular_reports.sale_target_line_tree" model="ir.ui.view" context="{'studio': True}">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <tree string="Sales Target Product List" editable="top">
+            <tree string="Sales Target Product List" editable="top" decoration-danger="ttl_sold_count &lt; sale_target_number" decoration-success="ttl_sold_count &gt; sale_target_number">
                 <field name="product_id" no_create="True" no_open="True"/>
                 <field name="prouct_uom_id" string="UoM"/>
                 <field name="sale_target_number" string="Sales Target Number"/>
