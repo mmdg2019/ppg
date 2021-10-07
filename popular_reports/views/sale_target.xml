@@ -74,6 +74,16 @@
                 <field name="sale_target_number" string="Sales Target Number"/>
                 <field name="ttl_sold_count" string="Total Sold Counts" readonly="1"/>
             </tree>
+<!--             <search string="Search Partner"> -->
+<!--                 <field name="ttl_sold_count" filter_domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/> -->
+<!--                 <field name="ttl_sold_count" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/> -->
+<!--                 <group expand="0" name="group_by" string="Group By">
+                    <filter name="ttl_sold_count" string="Below Sales Target" domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/>
+                    <filter name="ttl_sold_count" string="Hit Sales Target" domain="[('ttl_sold_count', '=', 'sale_target_number')]"/>
+                    <filter name="ttl_sold_count" string="Over Sales Target" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/>
+                </group>
+            </search> -->
+<!--             <filter string="Company" name="parent_id" context="{'group_by': 'parent_id'}"></filter> -->
         </field>
         <field name="field_parent" eval="False"/>
         <field name="groups_id" eval="[(6, 0, [])]"/>
@@ -85,6 +95,78 @@
         <field name="priority">16</field>
         <field name="type">tree</field>
     </record>
+    <record id="popular_reports.sale_target_line_search" model="ir.ui.view" context="{'studio': True}">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <data>
+                <search string="Sales Target Line">
+                    <field name="product_id" can_create="true" can_write="true" modifiers="{&quot;required&quot;: true}"/>
+                    <filter domain="[[&quot;sale_target_number&quot;,&quot;&gt;&quot;,&quot;ttl_sold_count&quot;]]" name="studio_filter_ZRoeL" string="Test"/>
+                </search>
+            </data>
+<!--             <search string="Search Partner"> -->
+<!--                 <field name="ttl_sold_count" filter_domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/> -->
+<!--                 <field name="ttl_sold_count" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/> -->
+<!--                 <group expand="0" name="group_by" string="Group By">
+                    <filter name="ttl_sold_count" string="Below Sales Target" domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/>
+                    <filter name="ttl_sold_count" string="Hit Sales Target" domain="[('ttl_sold_count', '=', 'sale_target_number')]"/>
+                    <filter name="ttl_sold_count" string="Over Sales Target" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/>
+                </group>
+            </search> -->
+<!--             <filter string="Company" name="parent_id" context="{'group_by': 'parent_id'}"></filter> -->
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="inherit_id" ref="popular_reports.sale_target_line_tree"/>
+        <field name="mode">primary</field>
+        <field name="model">popular_reports.sale_target.line</field>
+        <field name="name">Default search view for Sales Target Lines</field>
+        <field name="priority">16</field>
+        <field name="type">search</field>
+    </record>
+<!--     <record id="popular_reports.sale_target_line_search" model="ir.ui.view" context="{'studio': True}">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <filter domain="[]" name="studio_filter_ZRoeL" string="Test"/>
+                </xpath>
+            </data>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="inherit_id" ref="popular_reports.sale_target_line_tree"/>
+        <field name="mode">extension</field>
+        <field name="model">popular_reports.sale_target.line</field>
+        <field name="name">Default search view for Sales Target Lines</field>
+        <field name="priority">99</field>
+        <field name="type">search</field>
+    </record> -->
+<!--     <record model="ir.ui.view" id="popular_reports.sale_target_line_search">
+       <field name="name">Sales Target Line Search</field>
+       <field name="model">popular_reports.sale_target.line</field>
+       <field name="arch" type="xml">                            
+
+            <xpath expr="//filter[@name='filter_name_that_you_want_to_remove']" position="replace">
+
+                <filter name="your_new_filter_name" . . . />
+
+            </xpath>
+        </field>
+    </record> -->
+<!--     <record id="action_server_update_sale_target_count" model="ir.actions.server">
+        <field name="name">Res Partner Server Action</field>
+        <field name="model_id" ref="popular_reports.sale_target"/>
+        <field name="state">code</field>
+        <field name="code">
+            raise Warning(record.name)
+        </field>
+    </record>
+    <menuitem name="Update Sales Target Count" id="btn_update_sale_target_count" action="action_server_update_sale_target_count"/> -->
 <!--   <record id="studio_customization.odoo_studio_default__68feaa7d-8008-441c-94c2-f914bfccd79c" model="ir.ui.view" context="{'studio': True}">
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
