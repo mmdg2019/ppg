@@ -19,9 +19,9 @@ class SalesTarget(models.Model):
     name = fields.Char('Name', default="Sales Target Setting & Performance")
     start_date = fields.Date(string='Start Date', required=True)
     end_date = fields.Date(string='End Date', required=True)
-    company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', default=lambda self: self.env.company.id)
+    company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', readonly=True, default=lambda self: self.env.company.id)
 #                                  ,default= _compute_company_id)
-    sale_target_line_ids = fields.One2many('popular_reports.sale_target.line', 'sale_target_id' ,'Product List', auto_join=True, copy=True)
+    sale_target_line_ids = fields.One2many('popular_reports.sale_target.line', 'sale_target_id' ,'Product List', auto_join=True, copy=True, check_company=True)
     sale_target_line_ids_count = fields.Integer(string='Sales Target Line Counts', compute = '_compute_sales_target_line')
     complete_name = fields.Char(
         'Complete Name', compute='_compute_complete_name',
@@ -67,8 +67,8 @@ class SalesTargetLine(models.Model):
     prouct_uom_id = fields.Char(related='product_id.uom_name', string='Product UoM', store=True)
     ttl_sold_count = fields.Float(string='Sold Quantity', store=True)
     sale_target_number = fields.Float(string='Target Quantity', required=True, default = 0.0)
-    company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', default=lambda self: self.env.company.id)
-    sale_target_id = fields.Many2one('popular_reports.sale_target', string='Sales Target Reference', required=True, ondelete='cascade', index=True)
+    company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', required=True, default=lambda self: self.env.company.id)
+    sale_target_id = fields.Many2one('popular_reports.sale_target', string='Sales Target Reference', required=True, ondelete='cascade', index=True, check_company=True)
     state = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target')],'States', default='below')
 
 
