@@ -14,7 +14,8 @@ class SalesTarget(models.Model):
     _description = 'Sales Target'
     _rec_name = 'complete_name'
     _order = 'complete_name'
-    
+    _check_company_auto = True
+        
     name = fields.Char('Name', default="Sales Target Setting & Performance")
     start_date = fields.Date(string='Start Date', required=True)
     end_date = fields.Date(string='End Date', required=True)
@@ -60,16 +61,15 @@ class SalesTargetLine(models.Model):
     _description = 'Sales Target Line'
     _rec_name = 'product_id'
     _order = 'product_id'
-    
-#     date = fields.Date(string='Date')
+    _check_company_auto = True
+        
     product_id = fields.Many2one('product.product', string='Product', required=True)
     prouct_uom_id = fields.Char(related='product_id.uom_name', string='Product UoM', store=True)
     ttl_sold_count = fields.Float(string='Sold Quantity', store=True)
     sale_target_number = fields.Float(string='Target Quantity', required=True, default = 0.0)
     company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', default=lambda self: self.env.company.id)
     sale_target_id = fields.Many2one('popular_reports.sale_target', string='Sales Target Reference', required=True, ondelete='cascade', index=True)
-    
-#     editable = field.Boolean(string="", related='parent_id.can_approve')
+    state = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target')],'States', default='below')
 
 
 #     @api.model_create_multi
@@ -113,8 +113,6 @@ class SalesTargetLine(models.Model):
                 else:
                     res = super(SalesTargetLine, self).write(values)
                     return res
-                
-                
     
     @api.constrains('product_id','ttl_sold_count')
     def _check_date(self):
@@ -126,16 +124,24 @@ class SalesTargetLine(models.Model):
             
     @api.depends('product_id', 'sale_target_id', 'sale_target_number')
     def _compute_ttl_sold_count(self, sale_target=None):
+        
+        # Add sales taarget total sold count manually
         if sale_target:
-            # Add sales taarget total sold count manually
             if len(sale_target.sale_target_line_ids) > 0:
                 for temp in sale_target.sale_target_line_ids:
-#                     raise Warning(123)
                     result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date)])
                     if len(result_invoice_report) > 0:
                         temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
+                        if temp.sale_target_number < temp.ttl_sold_count:
+                            temp.state = 'over'
+                        elif temp.sale_target_number == temp.ttl_sold_count:
+                            temp.state = 'meet'
+                        else:
+                            temp.state = 'below'
+                            
+                            
+        # Add sales target total sold count automatically
         else:
-            # Add sales target total sold count automatically
             for temp in self:
                 if temp.sale_target_id.id:
                     result_sale_target = self.env['popular_reports.sale_target'].search([('id','=',temp.sale_target_id.id)],order='display_name asc', limit=1)
@@ -143,4 +149,5 @@ class SalesTargetLine(models.Model):
                         result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',result_sale_target.start_date),('invoice_date', '<=',result_sale_target.end_date)])
                         if len(result_invoice_report) > 0:
                             temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
-#                     rst_sales_report = self.env['account.invoice.report'].read_group([('product_id','=',temp.product_id.id)], fields=['product_id','quantity'], groupby=['product_id'],lazy=False)
+
+#         rst_sales_report = self.env['account.invoice.report'].read_group([('product_id','=',temp.product_id.id)], fields=['product_id','quantity'], groupby=['product_id'],lazy=False)

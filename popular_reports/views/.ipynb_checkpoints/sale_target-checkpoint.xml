@@ -66,16 +66,6 @@
                 <field name="sale_target_number" string="Sales Target Number"/>
                 <field name="ttl_sold_count" string="Total Sold Counts" readonly="1"/>
             </tree>
-<!--             <search string="Search Partner"> -->
-<!--                 <field name="ttl_sold_count" filter_domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/> -->
-<!--                 <field name="ttl_sold_count" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/> -->
-<!--                 <group expand="0" name="group_by" string="Group By">
-                    <filter name="ttl_sold_count" string="Below Sales Target" domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/>
-                    <filter name="ttl_sold_count" string="Hit Sales Target" domain="[('ttl_sold_count', '=', 'sale_target_number')]"/>
-                    <filter name="ttl_sold_count" string="Over Sales Target" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/>
-                </group>
-            </search> -->
-<!--             <filter string="Company" name="parent_id" context="{'group_by': 'parent_id'}"></filter> -->
         </field>
         <field name="field_parent" eval="False"/>
         <field name="groups_id" eval="[(6, 0, [])]"/>
@@ -87,24 +77,14 @@
         <field name="priority">16</field>
         <field name="type">tree</field>
     </record>
-     <record model="ir.rule" id="popular_reports.sale_target_record_restricted_company_rule">
-        <field name="name">Sales Target Restricted Record: multi-company</field>
-        <field name="model_id" ref="model_popular_reports_sale_target"/>
-        <field name="global" eval="True"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>
-    <record model="ir.rule" id="popular_reports.sale_target_line_record_restricted_company_rule">
-        <field name="name">Sales Target Line Restricted Record: multi-company</field>
-        <field name="model_id" ref="model_popular_reports_sale_target_line"/>
-        <field name="global" eval="True"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>
     <record id="popular_reports.sale_target_line_search" model="ir.ui.view" context="{'studio': True}">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-        <search string="Sales Target Line">
-<!--             <filter domain="[('sale_target_number', '=', ttl_sold_count)]" name="studio_filter_ZRoeL" string="Test"/> -->
-        </search>
+            <search string="Sales Target Line">
+                <filter domain="[('state', '=', 'below')]" name="below_sale_target" string="Below Sales Target"/>
+                <filter domain="[('state', '=', 'meet')]" name="meet_sale_target" string="Meet Sales Target"/>
+                <filter domain="[('state', '=', 'over')]" name="over_sale_target" string="Over Sales Target"/>
+            </search>
         </field>
         <field name="field_parent" eval="False"/>
         <field name="groups_id" eval="[(6, 0, [])]"/>
@@ -115,6 +95,18 @@
         <field name="name">Default search view for popular_reports.sale_target.line</field>
         <field name="priority">16</field>
         <field name="type">search</field>
+    </record>
+    <record model="ir.rule" id="popular_reports.sale_target_record_restricted_company_rule">
+        <field name="name">Sales Target Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_popular_reports_sale_target"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="popular_reports.sale_target_line_record_restricted_company_rule">
+        <field name="name">Sales Target Line Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_popular_reports_sale_target_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 <!--     <record id="popular_reports.sale_target_line_search" model="ir.ui.view" context="{'studio': True}">
         <field name="active" eval="True"/>
