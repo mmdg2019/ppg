@@ -26,7 +26,7 @@
         'views/report.xml',
         'views/sale_target.xml',
         'security/ir.model.access.csv',
-#         'security/security.xml',
+        'security/security.xml',
     ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
