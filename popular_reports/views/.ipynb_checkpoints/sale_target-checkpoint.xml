@@ -11,14 +11,6 @@
                         </h1>
                     </div>
                     <div class="oe_button_box" name="button_box">
-<!--                         <button class="oe_stat_button" icon="fa-cubes" type="action" name="608">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="sale_target_line_ids_count" string="Product List" widget="statinfo"/>
-                                </span>
-                                <span class="o_stat_text">Products</span>
-                            </div>
-                        </button> -->
                         <button class="oe_stat_button" icon="fa-cubes" type="action" name="%(btn_sale_target_line)d">
                             <field name="sale_target_line_ids_count" string="Product" widget="statinfo"/>
                         </button>
@@ -95,34 +87,32 @@
         <field name="priority">16</field>
         <field name="type">tree</field>
     </record>
+     <record model="ir.rule" id="popular_reports.sale_target_record_restricted_company_rule">
+        <field name="name">Sales Target Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_popular_reports_sale_target"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record model="ir.rule" id="popular_reports.sale_target_line_record_restricted_company_rule">
+        <field name="name">Sales Target Line Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_popular_reports_sale_target_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
     <record id="popular_reports.sale_target_line_search" model="ir.ui.view" context="{'studio': True}">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <data>
-                <search string="Sales Target Line">
-                    <field name="product_id" can_create="true" can_write="true" modifiers="{&quot;required&quot;: true}"/>
-                    <filter domain="[[&quot;sale_target_number&quot;,&quot;&gt;&quot;,&quot;ttl_sold_count&quot;]]" name="studio_filter_ZRoeL" string="Test"/>
-                </search>
-            </data>
-<!--             <search string="Search Partner"> -->
-<!--                 <field name="ttl_sold_count" filter_domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/> -->
-<!--                 <field name="ttl_sold_count" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/> -->
-<!--                 <group expand="0" name="group_by" string="Group By">
-                    <filter name="ttl_sold_count" string="Below Sales Target" domain="[('ttl_sold_count', '&lt;', 'sale_target_number')]"/>
-                    <filter name="ttl_sold_count" string="Hit Sales Target" domain="[('ttl_sold_count', '=', 'sale_target_number')]"/>
-                    <filter name="ttl_sold_count" string="Over Sales Target" domain="[('ttl_sold_count', '&gt;', 'sale_target_number')]"/>
-                </group>
-            </search> -->
-<!--             <filter string="Company" name="parent_id" context="{'group_by': 'parent_id'}"></filter> -->
+        <search string="Sales Target Line">
+<!--             <filter domain="[('sale_target_number', '=', ttl_sold_count)]" name="studio_filter_ZRoeL" string="Test"/> -->
+        </search>
         </field>
         <field name="field_parent" eval="False"/>
         <field name="groups_id" eval="[(6, 0, [])]"/>
         <field name="inherit_id" eval="False"/>
         <field name="key" eval="False"/>
-        <field name="inherit_id" ref="popular_reports.sale_target_line_tree"/>
         <field name="mode">primary</field>
         <field name="model">popular_reports.sale_target.line</field>
-        <field name="name">Default search view for Sales Target Lines</field>
+        <field name="name">Default search view for popular_reports.sale_target.line</field>
         <field name="priority">16</field>
         <field name="type">search</field>
     </record>
