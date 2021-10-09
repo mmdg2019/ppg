@@ -63,8 +63,8 @@
             <tree string="Sales Target Product List" editable="top" decoration-danger="ttl_sold_count &lt; sale_target_number" decoration-success="ttl_sold_count &gt; sale_target_number">
                 <field name="product_id" options="{&quot;no_create&quot;:true,&quot;no_open&quot;:true}"/>
                 <field name="prouct_uom_id" string="UoM"/>
-                <field name="sale_target_number" string="Sales Target Number"/>
-                <field name="ttl_sold_count" string="Total Sold Counts" readonly="1"/>
+                <field name="sale_target_number" string="Target Quantity"/>
+                <field name="ttl_sold_count" string="Sold Quantity" readonly="1"/>
             </tree>
         </field>
         <field name="field_parent" eval="False"/>
