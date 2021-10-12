@@ -113,7 +113,7 @@
                                     <t t-if="doc.sale_target_line_ids">
                                         <tbody>
                                             <t t-foreach="doc.sale_target_line_ids" t-as="table_line">
-                                                <t t-if="table_line.ttl_sold_count &lt; table_line.sale_target_number">
+                                                <t t-if="table_line.ttl_sold_count &gt; table_line.sale_target_number">
                                                     <tr style="color:#319c62">
                                                         <td>
                                                             <span t-field="table_line.product_id"></span>
@@ -129,7 +129,7 @@
                                                         </td>
                                                     </tr>
                                                 </t>
-                                                <t t-elif="table_line.ttl_sold_count &gt; table_line.sale_target_number">
+                                                <t t-elif="table_line.ttl_sold_count &lt; table_line.sale_target_number">
                                                     <tr style="color:#C54D49">
                                                         <td>
                                                             <span t-field="table_line.product_id"></span>

@@ -62,14 +62,14 @@ class SalesTargetLine(models.Model):
     _rec_name = 'product_id'
     _order = 'product_id'
     _check_company_auto = True
-        
+                
     product_id = fields.Many2one('product.product', string='Product', required=True)
     prouct_uom_id = fields.Char(related='product_id.uom_name', string='Product UoM', store=True)
     ttl_sold_count = fields.Float(string='Sold Quantity', store=True)
     sale_target_number = fields.Float(string='Target Quantity', required=True, default = 0.0)
     company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', required=True, default=lambda self: self.env.company.id)
     sale_target_id = fields.Many2one('popular_reports.sale_target', string='Sales Target Reference', required=True, ondelete='cascade', index=True, check_company=True)
-    status = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target')],'Status', default='_compute_state', compute='_compute_state')
+    status = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target'),('uncheck', 'Uncheck')],'Status', default='uncheck')
 
 
 #     @api.model_create_multi
@@ -102,17 +102,6 @@ class SalesTargetLine(models.Model):
 #         self.clear_caches()
 #         return products
 
-    @api.depends('product_id','ttl_sold_count')
-    def _compute_state(self):
-        # Check sales target number and total sold quantity to set state
-        for temp in self:
-            if temp.sale_target_number < temp.ttl_sold_count:
-                temp.status = 'over'
-            elif temp.sale_target_number == temp.ttl_sold_count:
-                temp.status = 'meet'
-            else:
-                temp.status = 'below'
-        
 
     def write(self, values):
         
