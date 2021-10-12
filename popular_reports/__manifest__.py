@@ -17,14 +17,17 @@
         'account',
         'stock'
     ],
-    'data': [        
+    'data': [
+        'views/action_manager.xml',
         'views/wizard_view.xml',
-        'views/popular_reports.xml',
         'views/wizard_forms.xml',
         'views/wizard_menus.xml',
-        'views/report.xml',
+        'views/sale_target.xml',
+        'reports/popular_reports.xml',
+        'reports/report.xml',
+        'reports/sale_target.xml',
         'security/ir.model.access.csv',
-#         'security/security.xml',
+        'security/security.xml',
     ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
