@@ -69,7 +69,7 @@ class SalesTargetLine(models.Model):
     sale_target_number = fields.Float(string='Target Quantity', required=True, default = 0.0)
     company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', required=True, default=lambda self: self.env.company.id)
     sale_target_id = fields.Many2one('popular_reports.sale_target', string='Sales Target Reference', required=True, ondelete='cascade', index=True, check_company=True)
-    status = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target')],'Status', default='below')
+    status = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target')],'Status', default='_compute_state', compute='_compute_state')
 
 
 #     @api.model_create_multi
@@ -102,6 +102,18 @@ class SalesTargetLine(models.Model):
 #         self.clear_caches()
 #         return products
 
+    @api.depends('product_id','ttl_sold_count')
+    def _compute_state(self):
+        # Check sales target number and total sold quantity to set state
+        for temp in self:
+            if temp.sale_target_number < temp.ttl_sold_count:
+                temp.status = 'over'
+            elif temp.sale_target_number == temp.ttl_sold_count:
+                temp.status = 'meet'
+            else:
+                temp.status = 'below'
+        
+
     def write(self, values):
         
         # Check date range to allow editing to sales target line
@@ -114,6 +126,24 @@ class SalesTargetLine(models.Model):
                     res = super(SalesTargetLine, self).write(values)
                     return res
     
+#     @api.depends('product_id', 'sale_target_id', 'sale_target_number')
+#     def _compute_state(self):
+        
+        # Add sales taarget total sold count manually
+#         if sale_target:
+#             if len(sale_target.sale_target_line_ids) > 0:
+#                 for temp in sale_target.sale_target_line_ids:
+# #                     raise Warning(sale_target.start_date)
+#                     result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date),('type','in',['out_invoice']),('state','not in',['draft','cancel'])])
+#                     if len(result_invoice_report) > 0:
+#                         temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
+#                         if temp.sale_target_number < temp.ttl_sold_count:
+#                             temp.status = 'over'
+#                         elif temp.sale_target_number == temp.ttl_sold_count:
+#                             temp.status = 'meet'
+#                         else:
+#                             temp.status = 'below'
+                            
     @api.constrains('product_id','ttl_sold_count')
     def _check_date(self):
         for temp in self:
@@ -130,7 +160,7 @@ class SalesTargetLine(models.Model):
             if len(sale_target.sale_target_line_ids) > 0:
                 for temp in sale_target.sale_target_line_ids:
 #                     raise Warning(sale_target.start_date)
-                    result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date),('type','in',['out_invoice']),('status','not in',['draft','cancel'])])
+                    result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date),('type','in',['out_invoice']),('state','not in',['draft','cancel'])])
                     if len(result_invoice_report) > 0:
                         temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
                         if temp.sale_target_number < temp.ttl_sold_count:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--     <record id="popular_reports.sale_target" model="ir.actions.report" context="{'studio': True}">
+    <record id="popular_reports.sale_target" model="ir.actions.report" context="{'studio': True}">
         <field name="attachment" eval="False"/>
         <field name="attachment_use" eval="False"/>
         <field name="binding_model_id" ref="popular_reports.model_popular_reports_sale_target"/>
@@ -9,11 +9,11 @@
         <field name="groups_id" eval="[(6, 0, [])]"/>
         <field name="model">popular_reports.sale_target</field>
         <field name="multi" eval="False"/>
-        <field name="name">Sales Target Performance &amp; Setting</field>
+        <field name="name">Sales Target &amp; Performance</field>
         <field name="paperformat_id" eval="False"/>
         <field name="report_name">popular_reports.report_sale_target</field>
         <field name="report_type">qweb-html</field>
-    </record> -->
+    </record>
 <!--     <report
         id="sale_target"
         model="popular_reports.sale_target"
@@ -61,7 +61,7 @@
                                         <b>
                                             <font style="font-size: 24px;">
                                                 <span>
-                                                    Sales Target Performance &amp; Setting
+                                                    Sales Target &amp; Performance
                                                 </span>
                                             </font>
                                         </b>
