@@ -102,19 +102,6 @@ class SalesTargetLine(models.Model):
 #         self.clear_caches()
 #         return products
 
-
-    def write(self, values):
-        
-        # Check date range to allow editing to sales target line
-        for temp in self:
-            result_sale_target = self.env['popular_reports.sale_target'].search([('id','=',temp.sale_target_id.id)],order='display_name asc', limit=1)
-            if len(result_sale_target) > 0:
-                if not result_sale_target.start_date <= temp.create_date.date() <= result_sale_target.end_date:
-                    raise UserError(f"The sale target list only allow to create or edit whithin the date range {result_sale_target.start_date.strftime('%d/%m/%Y')} and {result_sale_target.end_date.strftime('%d/%m/%Y')}.")
-                else:
-                    res = super(SalesTargetLine, self).write(values)
-                    return res
-    
 #     @api.depends('product_id', 'sale_target_id', 'sale_target_number')
 #     def _compute_state(self):
         
@@ -132,15 +119,35 @@ class SalesTargetLine(models.Model):
 #                             temp.status = 'meet'
 #                         else:
 #                             temp.status = 'below'
-                            
-    @api.constrains('product_id','ttl_sold_count')
-    def _check_date(self):
-        for temp in self:
-            result_sale_target = self.env['popular_reports.sale_target'].search([('id','=',temp.sale_target_id.id)],order='display_name asc', limit=1)
-            if len(result_sale_target) > 0:
-                if not result_sale_target.start_date <= temp.create_date.date() <= result_sale_target.end_date:
-                    raise UserError(f"The sale target list only allow to create or edit whithin the date range {result_sale_target.start_date.strftime('%d/%m/%Y')} and {result_sale_target.end_date.strftime('%d/%m/%Y')}.")
-            
+
+
+
+
+# Check date range to allow editing to sales target line
+
+#     def write(self, values):
+        
+#         # Check date range to allow editing to sales target line
+#         for temp in self:
+#             result_sale_target = self.env['popular_reports.sale_target'].search([('id','=',temp.sale_target_id.id)],order='display_name asc', limit=1)
+#             if len(result_sale_target) > 0:
+#                 if not result_sale_target.start_date <= temp.create_date.date() <= result_sale_target.end_date:
+#                     raise UserError(f"The sale target list only allow to create or edit whithin the date range {result_sale_target.start_date.strftime('%d/%m/%Y')} and {result_sale_target.end_date.strftime('%d/%m/%Y')}.")
+#                 else:
+#                     res = super(SalesTargetLine, self).write(values)
+#                     return res
+                                
+#     @api.constrains('product_id','ttl_sold_count')
+#     def _check_date(self):
+#         # Check date range to allow editing to sales target line
+#         for temp in self:
+#             result_sale_target = self.env['popular_reports.sale_target'].search([('id','=',temp.sale_target_id.id)],order='display_name asc', limit=1)
+#             if len(result_sale_target) > 0:
+#                 if not result_sale_target.start_date <= temp.create_date.date() <= result_sale_target.end_date:
+#                     raise UserError(f"The sale target list only allow to create or edit whithin the date range {result_sale_target.start_date.strftime('%d/%m/%Y')} and {result_sale_target.end_date.strftime('%d/%m/%Y')}.")
+
+                    
+                    
     @api.depends('product_id', 'sale_target_id', 'sale_target_number')
     def _compute_ttl_sold_count(self, sale_target=None):
         

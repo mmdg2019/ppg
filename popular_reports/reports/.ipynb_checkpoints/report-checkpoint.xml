@@ -419,7 +419,7 @@
         report_type="qweb-html"
         name="popular_reports.report_cash_receipt_listing_by_cust_no"
         file="popular_reports.report_cash_receipt_listing_by_cust_no"
-        print_report_name="Cash Receipt Listing by Customer (Approved)"
+        print_report_name="Cash Receipt Listing by Customer"
         paperformat="paperformat_popular_report"
     />
     <report
@@ -3763,6 +3763,9 @@
                                     <th style="text-align:right;">
                                         <span>Amount</span>
                                     </th>
+                                    <th>
+                                        <span>Memo</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="docs">
@@ -3826,6 +3829,9 @@
                                             </td>
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.amount"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="table_line.communication"/>
                                             </td>
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount"/>
