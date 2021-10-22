@@ -81,15 +81,6 @@
                                     </div>
                                 </div>
                                 <br/>
-<!--                                 <div class="row" style="text-align:center; font-size: 20px;">
-                                    <div class="col">
-                                        <span>
-                                            <b>Company Name : </b>
-                                            <span t-field="doc.company_id"/>
-                                        </span>
-                                    </div>
-                                </div>
-                                <br/> -->
                                 <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                                     <thead>
                                         <tr>
@@ -100,20 +91,20 @@
                                                 <span>UoM</span>
                                             </th>
                                             <th style="text-align:right;">
-                                                <span>Target Quantity</span>
+                                                <span>Minimum Target Quantity</span>
+                                            </th>
+                                            <th style="text-align:right;">
+                                                <span>Maximum Target Quantity</span>
                                             </th>
                                             <th style="text-align:right;">
                                                 <span>Sold Quantity</span>
                                             </th>
-<!--                                             <th style="text-align:right;">
-                                                <span>Status</span>
-                                            </th> -->
                                         </tr>
                                     </thead>
                                     <t t-if="doc.sale_target_line_ids">
                                         <tbody>
                                             <t t-foreach="doc.sale_target_line_ids" t-as="table_line">
-                                                <t t-if="table_line.ttl_sold_count &gt; table_line.sale_target_number">
+                                                <t t-if="table_line.ttl_sold_count &gt;&#61; table_line.min_sale_target_number and table_line.ttl_sold_count &lt;&#61; table_line.max_sale_target_number">
                                                     <tr style="color:#319c62">
                                                         <td>
                                                             <span t-field="table_line.product_id"></span>
@@ -122,14 +113,17 @@
                                                             <span t-field="table_line.prouct_uom_id"></span>
                                                         </td>
                                                         <td style="text-align:right;">
-                                                            <span t-field="table_line.sale_target_number"></span>
+                                                            <span t-field="table_line.min_sale_target_number"></span>
+                                                        </td>
+                                                        <td style="text-align:right;">
+                                                            <span t-field="table_line.max_sale_target_number"></span>
                                                         </td>
                                                         <td style="text-align:right;">
                                                             <span t-field="table_line.ttl_sold_count"></span>
                                                         </td>
                                                     </tr>
                                                 </t>
-                                                <t t-elif="table_line.ttl_sold_count &lt; table_line.sale_target_number">
+                                                <t t-else="">
                                                     <tr style="color:#C54D49">
                                                         <td>
                                                             <span t-field="table_line.product_id"></span>
@@ -138,31 +132,16 @@
                                                             <span t-field="table_line.prouct_uom_id"></span>
                                                         </td>
                                                         <td style="text-align:right;">
-                                                            <span t-field="table_line.sale_target_number"></span>
+                                                            <span t-field="table_line.min_sale_target_number"></span>
+                                                        </td>
+                                                        <td style="text-align:right;">
+                                                            <span t-field="table_line.max_sale_target_number"></span>
                                                         </td>
                                                         <td style="text-align:right;">
                                                             <span t-field="table_line.ttl_sold_count"></span>
                                                         </td>
                                                     </tr>
-                                                </t>
-                                                <t t-else="">
-                                                    <tr>
-                                                        <td>
-                                                            <span t-field="table_line.product_id"></span>
-                                                        </td>
-                                                        <td style="text-align:center;">
-                                                            <span t-field="table_line.prouct_uom_id"></span>
-                                                        </td>
-                                                        <td style="text-align:right;">
-                                                            <span t-field="table_line.sale_target_number"></span>
-                                                        </td>
-                                                        <td style="text-align:right;">
-                                                            <span t-field="table_line.ttl_sold_count"></span>
-                                                        </td>
-                                                    </tr>
-                                                </t>
-                                                    
-                                                    
+                                                </t> 
                                             </t>
                                         </tbody>
                                     </t>

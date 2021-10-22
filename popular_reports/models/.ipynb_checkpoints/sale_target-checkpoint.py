@@ -66,10 +66,11 @@ class SalesTargetLine(models.Model):
     product_id = fields.Many2one('product.product', string='Product', required=True)
     prouct_uom_id = fields.Char(related='product_id.uom_name', string='Product UoM', store=True)
     ttl_sold_count = fields.Float(string='Sold Quantity', store=True)
-    sale_target_number = fields.Float(string='Target Quantity', required=True, default = 0.0)
+    min_sale_target_number = fields.Float(string='Minnimum Target Quantity', required=True, default = 0.0)
+    max_sale_target_number = fields.Float(string='Maximum Target Quantity', required=True, default = 0.0)
     company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', required=True, default=lambda self: self.env.company.id)
     sale_target_id = fields.Many2one('popular_reports.sale_target', string='Sales Target Reference', required=True, ondelete='cascade', index=True, check_company=True)
-    status = fields.Selection([ ('over', 'Over Sales Target'),('meet', 'Meet Sales Target'),('below', 'Below Sales Target'),('uncheck', 'Uncheck')],'Status', default='uncheck')
+    status = fields.Selection([ ('over', 'Over Sales Target'),('within', 'within Sales Target'),('below', 'Below Sales Target'),('uncheck', 'Uncheck')],'Status', default='uncheck')
 
 
 #     @api.model_create_multi
@@ -159,12 +160,12 @@ class SalesTargetLine(models.Model):
                     result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date),('type','in',['out_invoice']),('state','not in',['draft','cancel'])])
                     if len(result_invoice_report) > 0:
                         temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
-                        if temp.sale_target_number < temp.ttl_sold_count:
+                        if temp.max_sale_target_number < temp.ttl_sold_count:
                             temp.status = 'over'
-                        elif temp.sale_target_number == temp.ttl_sold_count:
-                            temp.status = 'meet'
-                        else:
+                        elif temp.min_sale_target_number > temp.ttl_sold_count:
                             temp.status = 'below'
+                        else:
+                            temp.status = 'within'
                             
                             
         # Add sales target total sold count automatically
