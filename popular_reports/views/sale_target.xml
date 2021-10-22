@@ -60,10 +60,11 @@
     <record id="popular_reports.sale_target_line_tree" model="ir.ui.view" context="{'studio': True}">
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <tree string="Sales Target Product List" editable="top" decoration-danger="ttl_sold_count &lt; sale_target_number" decoration-success="ttl_sold_count &gt; sale_target_number">
+            <tree string="Sales Target Product List" editable="top" decoration-success="ttl_sold_count &lt;&#61; max_sale_target_number and ttl_sold_count &gt;&#61; min_sale_target_number" decoration-danger="ttl_sold_count &gt; max_sale_target_number or ttl_sold_count &lt; min_sale_target_number">
                 <field name="product_id" options="{&quot;no_create&quot;:true,&quot;no_open&quot;:true}"/>
                 <field name="prouct_uom_id" string="UoM"/>
-                <field name="sale_target_number" string="Target Quantity"/>
+                <field name="min_sale_target_number" string="Minimum Target Quantity"/>
+                <field name="max_sale_target_number" string="Maximum Target Quantity"/>
                 <field name="ttl_sold_count" string="Sold Quantity" readonly="1"/>
             </tree>
         </field>
@@ -82,7 +83,7 @@
         <field name="arch" type="xml">
             <search string="Sales Target Line">
                 <filter domain="[('status', '=', 'below')]" name="below_sale_target" string="Below Sales Target"/>
-                <filter domain="[('status', '=', 'meet')]" name="meet_sale_target" string="Meet Sales Target"/>
+                <filter domain="[('status', '=', 'within')]" name="within_sale_target" string="Within Sales Target"/>
                 <filter domain="[('status', '=', 'over')]" name="over_sale_target" string="Over Sales Target"/>
             </search>
         </field>
