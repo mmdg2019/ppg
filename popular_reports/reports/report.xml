@@ -7174,21 +7174,28 @@
                                         <span>UM</span>
                                     </th>
                                     <th style="text-align:right;">
-                                        <span>Amount</span>
+                                        <span>Total</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Amount Due</span>
                                     </th>
                                 </tr>
                             </thead>
                             <t t-if="docs">
                                 <t t-set="sub_name" t-value=""/>
-                                <t t-set="ttl" t-value="0"/>
                                 <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                 <t t-set="total_currency_id" t-value="docs.currency_id"/>
+                                <t t-set="ttl" t-value="0"/>
                                 <t t-set="sub_ttl" t-value="0"/>
+                                <t t-set="ttl_amt_due" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.display_name),reverse=False)" t-as="doc">
                                     <tbody>
-                                        <t t-set="sub_ttl" t-value="sub_ttl + doc.amount_total_signed"/>
-                                        <t t-set="ttl" t-value="ttl + doc.amount_total_signed"/>
+                                        <t t-set="ttl_amt_due" t-value="ttl_amt_due + doc.amount_residual_signed"/>
+                                        <t t-set="sub_ttl" t-value="0"/>
                                         <t t-foreach="doc.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)" t-as="table_line">
+                                            <t t-set="sub_ttl" t-value="sub_ttl + table_line.price_subtotal"/>
+                                            <t t-set="ttl" t-value="ttl + table_line.price_subtotal"/>
+                                            
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
@@ -7220,6 +7227,11 @@
                                                 <td style="text-align:right;">
                                                     <span t-field="table_line.price_subtotal"/>
                                                 </td>
+                                                <td style="text-align:right;">
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.amount_residual_signed"/>
+                                                    </t>
+                                                </td>
                                             </tr>
                                             <tr t-if="table_line_last">
                                                 <th>
@@ -7242,7 +7254,12 @@
                                                 </th>
                                                 <th style="text-align:right;">
                                                     <span>
-                                                        <t t-esc="abs(doc.amount_total_signed)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                        <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </th>
+                                                <th style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(doc.amount_residual_signed)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </th>
                                             </tr>
@@ -7272,6 +7289,11 @@
                                                 <th style="text-align:right;">
                                                     <span>
                                                         <t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                                    </span>
+                                                </th>
+                                                <th style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(ttl_amt_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
                                                     </span>
                                                 </th>
                                             </tr>
