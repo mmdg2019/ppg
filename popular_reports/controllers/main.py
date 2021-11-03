@@ -687,8 +687,9 @@ class edit_report_stock_valuation_info(models.AbstractModel):
             amt = 0
             for product in products:
                 total_qty = sum(table_line.quantity for doc in docs for table_line in doc.quant_ids.filtered(lambda r: r.product_id == product and  r.location_id == loc))
-                amt = total_qty * product.standard_price
-                temp.append({'product':product,'on_hand':total_qty, 'location':loc.display_name,'amount':amt})
+                if total_qty>0:
+                    amt = total_qty * product.standard_price
+                    temp.append({'product':product,'on_hand':total_qty, 'location':loc.display_name,'amount':amt})
         return {
             'docs': sorted(temp, key = lambda i: (i['location'],i['product'].display_name)),
             'currency_id': docs.quant_ids.currency_id,
