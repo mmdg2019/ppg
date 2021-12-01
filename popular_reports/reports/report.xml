@@ -2109,20 +2109,20 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="font-size: 13px;">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th style="width:10%">
                                         <span>Location</span>
                                     </th>
-                                    <th>
+                                    <th style="width:30%">
                                         <span>Name</span>
+                                    </th>
+                                    <th style="text-align:right;width:10%;">
+                                        <span>Quantity On Hand</span>
                                     </th>
                                     <th style="text-align:center;">
                                         <span>UM</span>
-                                    </th>
-                                    <th style="text-align:right;">
-                                        <span>Quantity On Hand</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -2131,17 +2131,17 @@
                                     <!--                                 <t t-foreach="docs.sorted(key=lambda x: x.location_id, reverse=False)" t-as="doc"><t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids"><tr><td><span t-field="table_line.location_id"/></td><td><span t-field="table_line.product_id"/></td><td style="text-align:center;"><span t-field="table_line.product_uom_id"/></td><td style="text-align:right;"><span t-esc="table_line.quantity"/></td></tr></t></t> -->
                                     <t t-foreach="items" t-as="item">
                                         <tr>
-                                            <td>
+                                            <td style="width:10%">
                                                 <span t-esc="item['location']"/>
                                             </td>
-                                            <td>
+                                            <td style="width:30%">
                                                 <span t-esc="item['product_name']"/>
+                                            </td>
+                                            <td style="text-align:right;width:10%;">
+                                                <span t-esc="item['on_hand']"/>
                                             </td>
                                             <td style="text-align:center;">
                                                 <span t-esc="item['product_uom']"/>
-                                            </td>
-                                            <td style="text-align:right;">
-                                                <span t-esc="item['on_hand']"/>
                                             </td>
                                         </tr>
                                     </t>
