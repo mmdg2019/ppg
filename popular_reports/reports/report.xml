@@ -1349,6 +1349,16 @@
                             </div>
                         </div>
                         <br/>
+                        <t t-if="user_id">
+                            <div class="row" style="text-align:center; font-size: 20px;">
+                                <div class="col">
+                                    <span>
+                                        <b>Vendor Name : </b>
+                                        <span t-field="user_id.display_name"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
                         <div class="row" style="text-align:center; font-size: 20px;">
                             <div class="col">
                                 <span>

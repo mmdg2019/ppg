@@ -52,6 +52,7 @@ class PopularReport(models.TransientModel):
 
     category = fields.Many2many('product.category', 'categ_wiz_rel', 'categ', 'wiz', string='Warehouse')
     user = fields.Many2many('res.partner', string='Customer')
+    user_id = fields.Many2one('res.partner', string='Customer')
     s_month = fields.Selection(MONTH_LIST, string='Month')
     s_year = fields.Selection(YEAR_LIST, string='Year')
     e_month = fields.Selection(MONTH_LIST, string='Month')
@@ -319,6 +320,7 @@ class PopularReport(models.TransientModel):
     def print_report_purchase_stock_analysis_by_date(self):
         data = {
             'product_ids': self.products.ids,
+            'user_id': self.user_id.id,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
