@@ -9,6 +9,7 @@ from odoo.tools import html_escape
 from odoo import models, fields, api
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
+from odoo.exceptions import UserError, ValidationError
 
 # Sales Report by Product Code
 class edit_report_sales_report_by_product_code(models.AbstractModel):
@@ -777,7 +778,11 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
         pids=[]
         temp = []
         tmp = []
-        dates = [doc.invoice_date.strftime('%m/%d/%Y') for doc in docs if doc.state=='posted' ]
+        user_id = None
+        if data['user_id']:
+            docs = docs.filtered(lambda r: r.partner_id.id == data['user_id'])
+            user_id = docs.mapped('partner_id')[0]
+        dates = [doc.invoice_date.strftime('%m/%d/%Y') for doc in docs if doc.state=='posted']
         dates = list(set(dates))
         dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
         items = []
@@ -815,6 +820,7 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
                 pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
         return {
             'docs':docs,
+            'user_id':user_id,
             'lst':pids
             }
 

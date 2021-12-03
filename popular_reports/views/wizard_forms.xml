@@ -528,6 +528,9 @@
                     <group string="Product">
                         <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
+                    <group string="Vendor">
+                        <field name="user_id" widget="many2one_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1, 'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True, 'no_create':1, 'no_create_edit':1}"/>
+                    </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
                        <field name="end_date" required="1"></field>
