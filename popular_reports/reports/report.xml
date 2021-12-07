@@ -999,7 +999,7 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th style="width:30%">
                                         <span>Item Name</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -1014,7 +1014,7 @@
                                 <t t-foreach="lst" t-as="line">
                                     <tbody>
                                         <tr>
-                                            <td>
+                                            <td style="width:30%">
                                                 <t>
                                                     <span t-esc="line['name'].display_name"/>
                                                 </t>
