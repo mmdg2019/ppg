@@ -10,6 +10,7 @@
                 <form string="All Balance Listing">
                     <group string="Product">
                         <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Stock Location">
                         <field name="stock_location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" widget="many2many_tags"/>
