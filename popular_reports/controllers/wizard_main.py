@@ -244,6 +244,8 @@ class edit_report_all_balance_listing(models.AbstractModel):
             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
         else:
             products = list(set(docs.mapped('quant_ids.product_id')))
+        if data['product_cats_ids']:
+            products = [product for product in products if product.categ_id.id in data['product_cats_ids']]
         temp = []
         for loc in location:
             total_qty = 0.0

@@ -120,6 +120,7 @@ class PopularReport(models.TransientModel):
         data = {
             'stock_location': self.stock_location.ids,
             'product_ids': self.products.ids,
+            'product_cats_ids': self.product_cats.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
