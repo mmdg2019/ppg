@@ -2,6 +2,8 @@
 # #############################################################################
 
 import json
+import pytz
+
 from odoo import http
 from odoo.http import content_disposition, request
 from odoo.addons.web.controllers.main import _serialize_exception
@@ -11,9 +13,11 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
+
 # Sales Report by Product Code
 class edit_report_sales_report_by_product_code(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_product_code"
+    _description="Sales Report by Product Code Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -82,6 +86,7 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
 #     Sales Report by Product Category
 class edit_report_sales_report_by_product_cat(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_product_cat"
+    _description="Sales Report by Product Category Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -140,6 +145,7 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
 #     Sales Report by Original Product Category
 class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_org_product_cat"
+    _description="Sales Report by Original Product Category Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -199,6 +205,7 @@ class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
 #     Sales Report by Client
 class edit_report_sales_report_by_client(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_client"
+    _description="Sales Report by Client Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -230,6 +237,7 @@ class edit_report_sales_report_by_client(models.AbstractModel):
 #     All Balance Listing
 class edit_report_all_balance_listing(models.AbstractModel):
     _name = "report.popular_reports.report_all_balance_listing"
+    _description="All Balance Listing Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -265,6 +273,7 @@ class edit_report_all_balance_listing(models.AbstractModel):
 #     Sales Report by Date
 class edit_report_sales_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_report_by_date"
+    _description="Sales Report by Date Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -290,6 +299,7 @@ class edit_report_sales_report_by_date(models.AbstractModel):
 #     Sales Analysis Report by Customer
 class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
     _name = "report.popular_reports.report_sales_analysis_report_by_cust"
+    _description="Sales Analysis Report by Customer Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -346,6 +356,7 @@ class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
 #     Sales Analysis Report by Month and Customer
 class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
     _name = "report.popular_reports.report_sales_analysis_by_month_and_cust"
+    _description="Sales Analysis Report by Month and Customer Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -397,6 +408,7 @@ class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
 #     Sales Analysis Report by State
 class edit_report_sales_analysis_by_state(models.AbstractModel):
     _name = "report.popular_reports.report_sales_analysis_by_state"
+    _description="Sales Analysis Report by State Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -434,7 +446,7 @@ class edit_report_sales_analysis_by_state(models.AbstractModel):
 #     Stock Analysis by Date and Customer
 class edit_report_stock_analysis_by_date_and_cust(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_by_date_and_cust"
-    _description="Report Editing"
+    _description="Stock Analysis by Date and Customer Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
@@ -464,11 +476,81 @@ class edit_report_stock_analysis_by_date_and_cust(models.AbstractModel):
             'custs':sorted(custs,key=lambda x: x.display_name),
             'cats':product_cats_ids
             }
+
+#     Today Stock Analysis Report
+class edit_report_today_stock_analysis(models.AbstractModel):
+    _name="report.popular_reports.report_today_stock_analysis"
+    _description="Today Stock Analysis Report Editing"
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        today_date = datetime.now()
+        user_tz = self.env.user.tz
+        if user_tz in pytz.all_timezones:
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone(user_tz)
+            dt = old_tz.localize(today_date).astimezone(new_tz)
+            today_date = dt
+
+        docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '=', today_date.strftime('%Y-%m-%d'))])
+        pids = []
+        
+        items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
+        
+        if data['product_ids']:
+            items = sorted([product for product in items if product.id in data['product_ids']])
+            
+        invoice_lines = docs.mapped('invoice_line_ids')
+        for item in items:
+            sum_qty = 0
+            for table_line in docs.mapped('invoice_line_ids').filtered(lambda r: r.product_id == item):
+                if table_line.product_uom_id.display_name != "Units":
+                    sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                else:
+                    sum_qty += table_line.quantity
+
+            if sum_qty > 0:
+                pids.append({'item':item, 'ttl_qty':round((sum_qty/item.uom_id.factor_inv),2)})
+#         raise UserError(str(pids))
+        
+#         for temp in docs
+#         tmp = []
+#         dates = sorted(list(set([date.strftime('%m/%d/%Y') for date in docs.mapped('invoice_date')])))
+#         items = []
+#         if data['product_ids']:
+#             items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+#         else:
+#             items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
+#         for item in items:    
+#             temp_dtl = []
+#             temp = []
+#             sub_ttl_qty=0
+#             for date in dates:
+#                 sum_qty=0
+#                 i_name = None
+#                 for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
+#                     if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
+#                         for table_line in doc.invoice_line_ids:
+#                             if table_line.product_id.display_name == item.display_name and table_line.name != "Special Discount" and table_line.name != "Other Charges":
+#                                 if table_line.product_uom_id.display_name != "Units":
+#                                     sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+#                                 else:
+#                                     sum_qty += table_line.quantity
+#                                 i_name = table_line.product_id
+#                 if i_name != None:
+#                     temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
+#                     sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
+#             if sub_ttl_qty > 0:
+#                 pids.append({'c_name':item.display_name,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
+        return {
+            'today_date':today_date,
+            'lst':sorted(pids, key = lambda i: i['item'].display_name),
+            }
     
 #     Stock Analysis by Month and Customer
 class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_by_month_and_cust"
-    _description="Report Editing"
+    _description="Stock Analysis by Month and Customer Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
@@ -519,7 +601,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
 #     Monthly Stock Analysis Report
 class edit_report_monthly_stock_analysis(models.AbstractModel):
     _name="report.popular_reports.report_monthly_stock_analysis_report"
-    _description="Report Editing"
+    _description="Monthly Stock Analysis Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
@@ -548,7 +630,7 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
 #     Stock Analysis by Date
 class edit_report_stock_analysis_by_date(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_by_date"
-    _description="Report Editing"
+    _description="Stock Analysis by Date Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
@@ -591,6 +673,7 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
 #     Stock Transfer Information
 class edit_report_stock_transfer_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_transfer_info"
+    _description="Stock Transfer Information Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -614,6 +697,7 @@ class edit_report_stock_transfer_info(models.AbstractModel):
 #     Stock Transfer Information Summary
 class edit_report_stock_transfer_dtl_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_transfer_dtl_info"
+    _description="Stock Transfer Information Summary Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -654,25 +738,10 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
 #     Stock Valuation Information
 class edit_report_stock_valuation_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_valuation_info"
+    _description="Stock Valuation Information Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
-#         docs = None
-#         product_ids = []        
-#         temp = []
-#         docs = self.env['stock.valuation.layer'].search([('product_id.type', '=', 'product')])
-#         if data['product_ids']:
-#             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
-#         else:
-#             products = docs.mapped('product_id')
-#         for product in sorted(products, key = lambda i: i.display_name):
-#             total_qty = sum(table_line.quantity for doc in docs for table_line in doc.filtered(lambda r: r.product_id == product))
-#             total_value = sum(table_line.value for doc in docs for table_line in doc.filtered(lambda r: r.product_id == product))
-#             temp.append({'product':product,'qty':total_qty,'value':total_value})
-#         return {
-#             'docs': temp,
-#             'currency_id': docs.currency_id,
-#        }
         docs = None
         product_ids = []
         if data['stock_location']:
@@ -701,6 +770,7 @@ class edit_report_stock_valuation_info(models.AbstractModel):
 #     Purchase Analysis Report by Supplier
 class edit_report_purchase_analysis_report_by_sup(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_analysis_report_by_sup"
+    _description="Purchase Analysis Report by Supplier Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -725,6 +795,7 @@ class edit_report_purchase_analysis_report_by_sup(models.AbstractModel):
 #     Purchase Listing by Supplier
 class edit_report_purchase_listing_by_sup(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_listing_by_sup"
+    _description="Purchase Listing by Supplier Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -750,6 +821,7 @@ class edit_report_purchase_listing_by_sup(models.AbstractModel):
 #     Purchase Invoice Listing by Vendor
 class edit_report_purchase_inv_lst_by_inv_no(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_inv_lst_by_inv_no"
+    _description="Purchase Invoice Listing by Vendor Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -772,6 +844,7 @@ class edit_report_purchase_inv_lst_by_inv_no(models.AbstractModel):
 #     Purchase Stock Analysis by Date
 class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_stock_analysis_by_date"
+    _description="Purchase Stock Analysis by Date Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -826,9 +899,10 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
             'lst':pids
             }
 
-# Cash Payment Listing by Lumpsum
+#     Cash Payment Listing by Lumpsum
 class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
     _name = "report.popular_reports.report_cash_payment_listing_by_lumpsum"
+    _description="Cash Payment Listing by Lumpsum Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -850,9 +924,10 @@ class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
             'docs': docs
        }
     
-# Cash Receipt Listing by Customer
+#     Cash Receipt Listing by Customer
 class edit_report_cash_receipt_listing_by_cust_no(models.AbstractModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_cust_no"
+    _description="Cash Receipt Listing by Customer Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -876,9 +951,10 @@ class edit_report_cash_receipt_listing_by_cust_no(models.AbstractModel):
             'docs': docs
        }
 
-# Cash Receipt Listing by Date
+#     Cash Receipt Listing by Date
 class edit_report_cash_receipt_listing_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_date"
+    _description="Cash Receipt Listing by Date Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -903,6 +979,7 @@ class edit_report_cash_receipt_listing_by_date(models.AbstractModel):
 #     Cash Receipt Listing by Receipt No
 class edit_report_cash_receipt_listing_by_r_no(models.AbstractModel):
     _name = "report.popular_reports.report_cash_receipt_listing_by_r_no"
+    _description="Cash Receipt Listing by Receipt No Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -927,6 +1004,7 @@ class edit_report_cash_receipt_listing_by_r_no(models.AbstractModel):
 #     Daily Sales Repory by Date
 class edit_report_daily_sales_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_daily_sales_report_by_date"
+    _description="Daily Sales Repory by Date Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -946,6 +1024,7 @@ class edit_report_daily_sales_report_by_date(models.AbstractModel):
 #     Damage Sales Return Listing by Product Code
 class edit_report_dmg_sales_rtrn_lst_by_product(models.AbstractModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_product"
+    _description="Damage Sales Return Listing by Product Code Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -976,6 +1055,7 @@ class edit_report_dmg_sales_rtrn_lst_by_product(models.AbstractModel):
 #     Damage Sales Return Listing by Customer
 class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_cust_no"
+    _description="Damage Sales Return Listing by Customer Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1002,6 +1082,7 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
 #     Refund Listing by Product Code
 class edit_report_refund_lst_by_product_code(models.AbstractModel):
     _name = "report.popular_reports.report_refund_lst_by_product_code"
+    _description="Refund Listing by Product Code Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1032,6 +1113,7 @@ class edit_report_refund_lst_by_product_code(models.AbstractModel):
 #     Refund Listing by Vendor
 class edit_report_refund_lst_by_vendor(models.AbstractModel):
     _name = "report.popular_reports.report_refund_lst_by_vendor"
+    _description="Refund Listing by Vendor Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1054,6 +1136,7 @@ class edit_report_refund_lst_by_vendor(models.AbstractModel):
 #     Outstanding Invoice Report by Customer
 class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
     _name = "report.popular_reports.report_outstanding_inv_report_by_cust"
+    _description="Outstanding Invoice Report by Customer Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1083,6 +1166,7 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
 #     Purchase Order Report by Date
 class edit_report_sales_order_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_order_report_by_date"
+    _description="Purchase Order Report by Date Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1109,6 +1193,7 @@ class edit_report_sales_order_report_by_date(models.AbstractModel):
 #     Sales Order Report by Client
 class edit_report_sales_order_report_by_client(models.AbstractModel):
     _name = "report.popular_reports.report_sales_order_report_by_client"
+    _description="Sales Order Report by Client Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1137,7 +1222,7 @@ class edit_report_sales_order_report_by_client(models.AbstractModel):
 #     Sales Quotation Stock Analysis by Date
 class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
     _name="report.popular_reports.report_sales_quot_stock_analysis_by_d"
-    _description="Report Editing"
+    _description="Sales Quotation Stock Analysis by Date Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
@@ -1191,6 +1276,7 @@ class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
 #     Sales Quotation Report by Date
 class edit_report_sales_quot_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_quot_report_by_date"
+    _description="Sales Quotation Report by Date Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1219,6 +1305,7 @@ class edit_report_sales_quot_report_by_date(models.AbstractModel):
 #     Sales Quotation Report by Client
 class edit_report_sales_quot_report_by_client(models.AbstractModel):
     _name = "report.popular_reports.report_sales_quot_report_by_client"
+    _description="Sales Quotation Report by Client Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1254,6 +1341,7 @@ class edit_report_sales_quot_report_by_client(models.AbstractModel):
 #     Sales Quotation Report by Product Code
 class edit_report_sales_quot_report_by_p_code(models.AbstractModel):
     _name = "report.popular_reports.report_sales_quot_report_by_p_code"
+    _description="Sales Quotation Report by Product Code Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1296,6 +1384,7 @@ class edit_report_sales_quot_report_by_p_code(models.AbstractModel):
 #     Purchase Order Report by Date
 class edit_report_purchase_order_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_purchase_order_report_by_date"
+    _description="Purchase Order Report by Date Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1318,6 +1407,7 @@ class edit_report_purchase_order_report_by_date(models.AbstractModel):
 #     Outstanding Bill Report by Vendor
 class edit_report_outstanding_bill_report_by_ven(models.AbstractModel):
     _name = "report.popular_reports.report_outstanding_bill_report_by_ven"
+    _description="Outstanding Bill Report by Vendor Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1340,7 +1430,7 @@ class edit_report_outstanding_bill_report_by_ven(models.AbstractModel):
 #     Stock Transfer Operations Report
 class edit_report_stock_trans_oprt(models.AbstractModel):
     _name="report.popular_reports.report_stock_trans_oprt"
-    _description="Report Editing"
+    _description="Stock Transfer Operations Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):
@@ -1366,7 +1456,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
 #     Stock Focus Report
 class edit_report_stock_focus(models.AbstractModel):
     _name="report.popular_reports.report_stock_focus"
-    _description="Report Editing"
+    _description="Stock Focus Report Editing"
 
     @api.model
     def _get_report_values(self,docids,data=None):

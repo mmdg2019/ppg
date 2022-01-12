@@ -203,6 +203,13 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_analysis_by_date').report_action(self, data=data)
     
+#     Today Stock Analysis Report
+    def print_report_today_stock_analysis(self):
+        data = {
+            'product_ids': self.products.ids
+        }
+        return self.env.ref('popular_reports.today_stock_analysis').report_action(self, data=data)
+    
 #     Stock Analysis by Month and Customer
     def print_report_stock_analysis_by_month_and_cust(self):
         data = {
