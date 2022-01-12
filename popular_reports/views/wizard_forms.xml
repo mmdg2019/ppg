@@ -836,6 +836,22 @@
             </field>
         </record>
         
+        <record model='ir.ui.view' id='wizard_form_report_today_stock_analysis'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Today Stock Analysis Report">
+                    <group string="Product">
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                   <footer>
+                       <button name="print_report_today_stock_analysis" type="object" string="Print Report" class="oe_highlight"/>
+                       <button string="Cancel" class="btn btn-default" special="cancel"/>
+                   </footer>
+               </form>
+            </field>
+        </record>
+        
         <record model='ir.ui.view' id='wizard_form_report_stock_analysis_by_date_and_cust'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -1239,6 +1255,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_analysis_by_date"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_today_stock_analysis'>
+            <field name="name">Export Today Stock Analysis Report</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_today_stock_analysis"/>
             <field name="target">new</field>
         </record>
         
