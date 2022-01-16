@@ -1384,6 +1384,9 @@
                                     <th style="text-align:center;">
                                         <span>Unit of Measure (UoM)</span>
                                     </th>
+                                    <th style="text-align:right;">
+                                        <span>Amount</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="lst">
@@ -1405,9 +1408,27 @@
                                                     <span t-esc="line['item'].uom_id.display_name"/>
                                                 </t>
                                             </td>
+                                            <td style="text-align:right;">
+                                                <t>
+                                                    <span t-esc="round(line['ttl_amt'],2)" t-options="{'widget': 'monetary', 'display_currency': env.company.currency_id}"/>
+                                                </t>
+                                            </td>
                                         </tr>
                                     </t>
                                 </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <th colspan="2"></th>
+                                        <th>
+                                            <span>Grand Total</span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <span t-esc="round(sum(temp['ttl_amt'] for temp in lst),2)" t-options="{'widget': 'monetary', 'display_currency': env.company.currency_id}"/>
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </tfooter>
                             </t>
                             <t t-else="">
                                 <tbody>

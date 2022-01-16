@@ -485,6 +485,7 @@ class edit_report_today_stock_analysis(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         today_date = datetime.now()
+#         today_date = datetime.strptime("2022-1-12", '%Y-%m-%d')
         user_tz = self.env.user.tz
         if user_tz in pytz.all_timezones:
             old_tz = pytz.timezone('UTC')
@@ -503,14 +504,18 @@ class edit_report_today_stock_analysis(models.AbstractModel):
         invoice_lines = docs.mapped('invoice_line_ids')
         for item in items:
             sum_qty = 0
+            sum_amt = 0
             for table_line in docs.mapped('invoice_line_ids').filtered(lambda r: r.product_id == item):
                 if table_line.product_uom_id.display_name != "Units":
                     sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
                 else:
                     sum_qty += table_line.quantity
-
+                sum_amt += table_line.price_subtotal
             if sum_qty > 0:
-                pids.append({'item':item, 'ttl_qty':round((sum_qty/item.uom_id.factor_inv),2)})
+                pids.append({'item':item, 'ttl_qty':round((sum_qty/item.uom_id.factor_inv),2), 'ttl_amt':round(sum_amt,2)})
+        total = sum(temp['ttl_amt'] for temp in pids)
+#         raise UserError(total)
+        
 #         raise UserError(str(pids))
         
 #         for temp in docs
