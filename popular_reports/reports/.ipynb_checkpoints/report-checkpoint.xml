@@ -1375,7 +1375,7 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
-                                    <th style="width:30%">
+                                    <th style="width:50%">
                                         <span>Item Name</span>
                                     </th>
                                     <th style="text-align:right;">
@@ -1387,7 +1387,7 @@
                                     <th style="text-align:right;">
                                         <span>Amount</span>
                                     </th>
-                                    <th style="width:20%">
+                                    <th style="width:10%">
                                     </th>
                                 </tr>
                             </thead>
@@ -1395,7 +1395,7 @@
                                 <tbody>
                                     <t t-foreach="lst" t-as="line">
                                         <tr>
-                                            <td style="width:30%">
+                                            <td style="width:50%">
                                                 <t>
                                                     <span t-esc="line['item'].display_name"/>
                                                 </t>
@@ -1415,7 +1415,7 @@
                                                     <span t-esc="round(line['ttl_amt'],2)" t-options="{'widget': 'monetary', 'display_currency': env.company.currency_id}"/>
                                                 </t>
                                             </td>
-                                            <td style="width:20%">
+                                            <td style="width:10%">
                                             </td>
                                         </tr>
                                     </t>
@@ -1431,7 +1431,7 @@
                                                 <span t-esc="round(sum(temp['ttl_amt'] for temp in lst),2)" t-options="{'widget': 'monetary', 'display_currency': env.company.currency_id}"/>
                                             </span>
                                         </th>
-                                        <th style="width:20%"></th>
+                                        <th style="width:10%"></th>
                                     </tr>
                                 </tfooter>
                             </t>
