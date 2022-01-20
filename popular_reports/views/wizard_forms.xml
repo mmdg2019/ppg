@@ -125,6 +125,50 @@
            </form>
             </field>
         </record>
+        <record model='ir.ui.view' id='wizard_form_report_daily_sales_report_by_pdt_cat'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Daily Sales Report by Product Category">
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group>
+                        <field string="Product Category" name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+               <footer>
+                   <button name="print_report_daily_sales_report_by_pdt_cat" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        <record model='ir.ui.view' id='wizard_form_report_daily_sales_report_by_inv_cat'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Daily Sales Report by Invoice Category">
+                    <group>
+                        <field name="filter_post" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group>
+                        <field string="Invoice Category" name="product_cats" widget="many2many_tags" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+               <footer>
+                   <button name="print_report_daily_sales_report_by_inv_cat" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
         <record model='ir.ui.view' id='wizard_form_report_sales_quot_stock_analysis_by_d'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -1060,6 +1104,24 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_daily_sales_report_by_date"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_daily_sales_report_by_pdt_cat'>
+            <field name="name">Export Daily Sales Report by Product Category</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_daily_sales_report_by_pdt_cat"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_daily_sales_report_by_inv_cat'>
+            <field name="name">Export Daily Sales Report by Invoice Category</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_daily_sales_report_by_inv_cat"/>
             <field name="target">new</field>
         </record>
         

@@ -1025,7 +1025,59 @@ class edit_report_daily_sales_report_by_date(models.AbstractModel):
         return {
             'docs': docs
        }
+
+#     Daily Sales Repory by Product Category
+class edit_report_daily_sales_report_by_pdt_cat(models.AbstractModel):
+    _name = "report.popular_reports.report_daily_sales_report_by_pdt_cat"
+    _description="Daily Sales Repory by Product Category Editing"
     
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        product_cats_ids = None
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+            for table_line in docs.mapped('invoice_line_ids'):
+                if not table_line.product_id.display_name in ['Other Charges','Special Discount']:
+                    table_line.product_id
+        return {
+            'docs': docs.sorted(key=lambda x: x.invoice_date,reverse=False),
+            'product_cats_ids':product_cats_ids
+       }
+
+#     Daily Sales Repory by Invoice Category
+class edit_report_daily_sales_report_by_inv_cat(models.AbstractModel):
+    _name = "report.popular_reports.report_daily_sales_report_by_inv_cat"
+    _description="Daily Sales Repory by Invoice Category Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        product_cats_ids = None
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+        return {
+            'docs': docs,
+            'product_cats_ids':product_cats_ids
+       }
 #     Damage Sales Return Listing by Product Code
 class edit_report_dmg_sales_rtrn_lst_by_product(models.AbstractModel):
     _name = "report.popular_reports.report_dmg_sales_rtrn_lst_by_product"

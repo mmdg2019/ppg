@@ -380,6 +380,28 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.daily_sales_report_by_date').report_action(self, data=data)
     
+#     Daily Sales Repory by Product Category
+    def print_report_daily_sales_report_by_pdt_cat(self):
+        data = {
+            'filter_post':self.filter_post,
+            'product_cats_ids': self.product_cats.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.daily_sales_report_by_pdt_cat').report_action(self, data=data)
+    
+
+#     Daily Sales Repory by Invoice Date
+    def print_report_daily_sales_report_by_inv_cat(self):
+        data = {
+            'filter_post':self.filter_post,
+            'product_cats_ids': self.product_cats.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.daily_sales_report_by_inv_cat').report_action(self, data=data)
+    
+
 #     Damage Sales Return Listing by Product Code
     def print_report_dmg_sales_rtrn_lst_by_product(self):
         data = {
