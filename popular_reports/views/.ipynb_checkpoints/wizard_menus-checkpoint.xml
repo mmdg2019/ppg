@@ -87,16 +87,27 @@
                   id="popular_reports.menu_report_daily_sales_report_by_date"
                   action="popular_reports.wizard_act_report_daily_sales_report_by_date"
                   sequence="1"/>
+        <menuitem name="Daily Sales Repory by Invoice Category"
+                  parent="popular_reports.popular_reports_sub_menu_2"
+                  id="popular_reports.menu_report_daily_sales_report_by_inv_cat"
+                  action="popular_reports.wizard_act_report_daily_sales_report_by_inv_cat"
+                  sequence="2"/>
+<!--         <menuitem name="Daily Sales Repory by Product Category"
+                  parent="popular_reports.popular_reports_sub_menu_2"
+                  id="popular_reports.menu_report_daily_sales_report_by_pdt_cat"
+                  action="popular_reports.wizard_act_report_daily_sales_report_by_pdt_cat"
+                  sequence="3"/> -->
+        
         <menuitem name="Sales Analysis Report by Customer"
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_sales_analysis_report_by_cust"
                   action="popular_reports.wizard_act_report_sales_analysis_report_by_cust"
-                  sequence="2"/>
+                  sequence="4"/>
         <menuitem name="Sales Analysis Report by Month and Customer"
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_sales_analysis_by_month_and_cust"
                   action="popular_reports.wizard_act_report_sales_analysis_by_month_and_cust"
-                  sequence="3"/>
+                  sequence="5"/>
         
         
 <!--         <menuitem name="Sales Analysis Report by State"

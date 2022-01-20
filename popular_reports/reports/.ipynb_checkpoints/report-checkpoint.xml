@@ -380,6 +380,31 @@
         print_report_name="Daily Sales Report by Date"
         paperformat="paperformat_popular_report"
     />
+    
+    <report
+        id="daily_sales_report_by_pdt_cat"
+        model="account.move"
+        menu="False"
+        string="Daily Sales Report by Product Category"
+        report_type="qweb-html"
+        name="popular_reports.report_daily_sales_report_by_pdt_cat"
+        file="popular_reports.report_daily_sales_report_by_pdt_cat" 
+        print_report_name="Daily Sales Report by Product Category"
+        paperformat="paperformat_popular_report"
+    />
+    
+    <report
+        id="daily_sales_report_by_inv_cat"
+        model="account.move"
+        menu="False"
+        string="Daily Sales Report by Invoice Category"
+        report_type="qweb-html"
+        name="popular_reports.report_daily_sales_report_by_inv_cat"
+        file="popular_reports.report_daily_sales_report_by_inv_cat" 
+        print_report_name="Daily Sales Report by Invoice Category"
+        paperformat="paperformat_popular_report"
+    />
+    
     <report
         id="sales_analysis_by_month_and_cust"
         model="account.move"
@@ -3127,6 +3152,453 @@
             </html>
         </t>
     </template>
+    <template id="report_daily_sales_report_by_pdt_cat">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body >
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                      Daily Sales Report by Product Category 
+                                        <t t-if="filter_post=='1'">(Cancel)</t>
+                                        <t t-elif="filter_post=='2'">(Draft)</t>
+                                        <t t-elif="filter_post=='3'">(Posted)</t>
+                                        <br/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <div t-if="product_cats_ids" class="row">
+                            <div class="col">
+                                <span>
+                                    <b>Product Category : </b>
+                                </span>
+                                <span>
+                                    <t t-foreach="product_cats_ids" t-as="cat">
+                                        <span t-field="cat.display_name" /> <t t-if="not cat_last">, </t>
+                                    </t>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>No.</span>
+                                    </th>
+                                    <th>
+                                        <span>Date</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Paid</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Unpaid</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Total Sales</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                                <tbody>
+                                    <t t-set="sub" t-value="0"/>
+                                    <t t-set="no" t-value="1"/>
+                                    <t t-set="sub_date" t-value=""/>
+                                    <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+                                    <t t-set="total_currency_id" t-value="docs.currency_id"/>
+                                    <t t-set="sub_ttl" t-value="0"/>
+                                    <t t-set="sub_ttl_due" t-value="0"/>
+                                    <t t-set="ttl" t-value="0"/>
+                                    <t t-set="ttl_due" t-value="0"/>
+                                    <t t-set="temp_date" t-value=""/>
+                                    <t t-set="first_date" t-value=""/>
+                                    <t t-foreach="docs" t-as="table_line">
+                                        <t t-set="ttl" t-value="ttl + table_line.amount_total_signed"/>
+                                        <t t-set="ttl_due" t-value="ttl_due + table_line.amount_residual_signed"/>
+                                        <t t-if="table_line_first">
+                                            <t t-set="sub_date" t-value="table_line.invoice_date"/>
+                                            <t t-set="first_date" t-value="table_line.invoice_date"/></t>
+                                        <t t-else="">
+                                            <t t-if="sub_date != table_line.invoice_date">
+                                                <t t-set="temp_date" t-value="sub_date"/>
+                                                <t t-set="sub_date" t-value="table_line.invoice_date"/>
+                                                <t t-set="sub" t-value="1"/></t>
+                                            <t t-else="">
+                                                <t t-set="sub" t-value="0"/></t>
+                                        </t>
+                                        <t t-if="sub==1">
+                                            <tr>
+                                                <td style="text-align:right;">
+                                                    <span t-esc="no"></span>.
+                                                
+                                                    <span t-set="no" t-value="no + 1"></span>
+                                                </td>
+                                                <td>
+                                                    <t t-if="first_date">
+                                                        <span t-esc="first_date.strftime('%d/%m/%Y')"/>
+                                                        <t t-set="first_date" t-value=""/></t>
+                                                    <t t-else="">
+                                                        <span t-esc="temp_date.strftime('%d/%m/%Y')"/>
+                                                    </t>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+                                            <t t-set="sub_ttl" t-value="0"/>
+                                            <t t-set="sub_ttl_due" t-value="0"/></t>
+                                        <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
+                                        <t t-set="sub_ttl_due" t-value="sub_ttl_due + table_line.amount_residual_signed"/>
+                                        <t t-if="table_line_last">
+                                            <tr>
+                                                <td style="text-align:right;">
+                                                    <span t-esc="no"></span>.
+                                            
+                                                </td>
+                                                <td>
+                                                    <span t-esc="table_line.invoice_date.strftime('%d/%m/%Y')"/>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <th colspan="2">
+                                            <span>Grand Total</span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="abs(ttl-ttl_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="abs(ttl_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </tfooter>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+    <template id="report_daily_sales_report_by_inv_cat">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body >
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                      Daily Sales Report by Invoice Category 
+                                        <t t-if="filter_post=='1'">(Cancel)</t>
+                                        <t t-elif="filter_post=='2'">(Draft)</t>
+                                        <t t-elif="filter_post=='3'">(Posted)</t>
+                                        <br/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <div t-if ="product_cats_ids" class="row">
+                            <div class="col">
+                                <span>
+                                    <b>Invoice Category : </b>
+                                </span>
+                                <span>
+                                    <t t-foreach="product_cats_ids" t-as="cat">
+                                        <span t-field="cat.display_name" /><t t-if="not cat_last">, </t>
+                                    </t>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>No.</span>
+                                    </th>
+                                    <th>
+                                        <span>Date</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Paid</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Unpaid</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Total Sales</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                                <tbody>
+                                    <t t-set="sub" t-value="0"/>
+                                    <t t-set="no" t-value="1"/>
+                                    <t t-set="sub_date" t-value=""/>
+                                    <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+                                    <t t-set="total_currency_id" t-value="docs.currency_id"/>
+                                    <t t-set="sub_ttl" t-value="0"/>
+                                    <t t-set="sub_ttl_due" t-value="0"/>
+                                    <t t-set="ttl" t-value="0"/>
+                                    <t t-set="ttl_due" t-value="0"/>
+                                    <t t-set="temp_date" t-value=""/>
+                                    <t t-set="first_date" t-value=""/>
+                                    <t t-foreach="docs.sorted(key=lambda x: x.invoice_date,reverse=False)" t-as="table_line">
+                                        <t t-set="ttl" t-value="ttl + table_line.amount_total_signed"/>
+                                        <t t-set="ttl_due" t-value="ttl_due + table_line.amount_residual_signed"/>
+                                        <t t-if="table_line_first">
+                                            <t t-set="sub_date" t-value="table_line.invoice_date"/>
+                                            <t t-set="first_date" t-value="table_line.invoice_date"/></t>
+                                        <t t-else="">
+                                            <t t-if="sub_date != table_line.invoice_date">
+                                                <t t-set="temp_date" t-value="sub_date"/>
+                                                <t t-set="sub_date" t-value="table_line.invoice_date"/>
+                                                <t t-set="sub" t-value="1"/></t>
+                                            <t t-else="">
+                                                <t t-set="sub" t-value="0"/></t>
+                                        </t>
+                                        <t t-if="sub==1">
+                                            <tr>
+                                                <td style="text-align:right;">
+                                                    <span t-esc="no"></span>.
+                                                
+                                                    <span t-set="no" t-value="no + 1"></span>
+                                                </td>
+                                                <td>
+                                                    <t t-if="first_date">
+                                                        <span t-esc="first_date.strftime('%d/%m/%Y')"/>
+                                                        <t t-set="first_date" t-value=""/></t>
+                                                    <t t-else="">
+                                                        <span t-esc="temp_date.strftime('%d/%m/%Y')"/>
+                                                    </t>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+                                            <t t-set="sub_ttl" t-value="0"/>
+                                            <t t-set="sub_ttl_due" t-value="0"/></t>
+                                        <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
+                                        <t t-set="sub_ttl_due" t-value="sub_ttl_due + table_line.amount_residual_signed"/>
+                                        <t t-if="table_line_last">
+                                            <tr>
+                                                <td style="text-align:right;">
+                                                    <span t-esc="no"></span>.
+                                            
+                                                </td>
+                                                <td>
+                                                    <span t-esc="table_line.invoice_date.strftime('%d/%m/%Y')"/>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                                <tfooter>
+                                    <tr>
+                                        <th colspan="2">
+                                            <span>Grand Total</span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="abs(ttl-ttl_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="abs(ttl_due)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                        <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="abs(ttl)" t-options="{'widget': 'monetary', 'display_currency': total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </tfooter>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+    
     <template id="report_sales_analysis_by_month_and_cust">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
