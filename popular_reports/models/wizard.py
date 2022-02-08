@@ -41,6 +41,8 @@ class PopularReport(models.TransientModel):
     filter_stock_picking_type = fields.Many2one('stock.picking.type')
     filter_country_id = fields.Many2one('res.country', string="Country",default=145)
     filter_state_id = fields.Many2one('res.country.state', string="State", store=True)
+    checked_amt_due = fields.Boolean(string="Amount Due")
+    no_of_days = fields.Integer(string="No. of Days")
 
     @api.onchange('filter_country_id')
     def set_values_to(self):
@@ -433,6 +435,19 @@ class PopularReport(models.TransientModel):
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.outstanding_inv_report_by_cust').report_action(self, data=data)
+    
+#     Invoice Payment Tracking Report
+    def print_report_inv_payment_tracking(self):
+        data = {
+            'filter_post':self.filter_post,
+            'checked_amt_due':self.checked_amt_due,
+            'no_of_days':self.no_of_days,
+            'product_cats_ids': self.product_cats.ids,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.inv_payment_tracking').report_action(self, data=data)
     
 #     Outstanding Bill Report by Vendor
     def print_report_outstanding_bill_report_by_ven(self):

@@ -1220,6 +1220,41 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
             'docs': docs
        }
     
+#     Invoice Payment Tracking Report
+class edit_report_inv_payment_tracking(models.AbstractModel):
+    _name = "report.popular_reports.report_inv_payment_tracking"
+    _description="Invoice Payment Tracking Report Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+        else:
+            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+        if data['checked_amt_due']:
+            docs = docs.filtered(lambda r: abs(r.amount_residual_signed) > 0)
+        
+        temp_rst = []
+        if data['no_of_days']:
+            for doc in docs.filtered(lambda r: r.invoice_payments_widget != "false"): 
+                for table_line in json.loads(doc.invoice_payments_widget)['content']:
+                    if abs((doc.invoice_date - datetime.strptime(table_line['date'], '%Y-%m-%d').date()).days) >= data['no_of_days']:
+                        temp_rst.append(doc.id)
+            temp_rst = set(temp_rst)
+            docs = docs.filtered(lambda r: r.id in temp_rst)
+        return {
+            'filter_post': data['filter_post'],
+            'no_of_days':data['no_of_days'],
+            'docs': docs
+       }
+    
 #     Purchase Order Report by Date
 class edit_report_sales_order_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_order_report_by_date"

@@ -230,12 +230,6 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Analysis Report by State">
-<!--                     <group>
-                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}"/>
-                    </group>
-                    <group>
-                        <field name="product_cats" widget="many2many_tags"/>
-                    </group> -->
                     <group col="4" colspan="4">
                         <field name="filter_country_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                         <field name="filter_state_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
@@ -467,6 +461,35 @@
                    </group>
                <footer>
                    <button name="print_report_outstanding_inv_report_by_cust" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        
+        <record model='ir.ui.view' id='wizard_form_report_inv_payment_tracking'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Payment Tracking Report">
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field string="Invoice Category" name="product_cats" widget="many2many_tags" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field string="Amount Due" name="checked_amt_due"/>
+                    </group>
+                    <group>
+                        <field name="no_of_days"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_inv_payment_tracking" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
            </form>
@@ -1203,6 +1226,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_outstanding_inv_report_by_cust"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_inv_paymeny_tracking'>
+            <field name="name">Export Invoice Payment Tracking Report</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_inv_payment_tracking"/>
             <field name="target">new</field>
         </record>
         
