@@ -7,6 +7,11 @@ import xlwt
 import base64
 import binascii
 from io import BytesIO, StringIO
+from odoo.exceptions import UserError, ValidationError
+
+# import pdfkit
+# from xhtml2pdf import pisa  
+
 
 class popular_reports(models.Model):
     _name = 'popular_reports.popular_reports'
@@ -155,6 +160,94 @@ class popular_reports(models.Model):
         self.env['popular_reports.popular_reports'].create({'report_file': base64.encodebytes(fp.getvalue()), 'report_name':report_name, 'company_id': company.id, 'date':datetime.strptime(c_date_f, '%m/%Y')})
         fp.close()
 
-
-
+#     Sales Analysis Report by Customer
+    def export_sales_analysis_report_by_cust(self, company, c_date = datetime.now()):
+#         self.ensure_one()
+# #         raise UserError(str(self.env.company))
+#         if company == None:
+#             company=self.env.company
+        docs = None
+        temp_date = datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')
+        end_date = temp_date - relativedelta(hours=1)
+        start_date = temp_date - relativedelta(months = 1)        
+        report_name = f"Sales Analysis Report by Customer (Posted) ({start_date.strftime('%m/%Y')})"
+#         raise UserError(end_date)
+        docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',start_date),('invoice_date', '<=',end_date),('state', '=', 'posted'),('company_id', '=', company.id)])
+#         raise UserError(len(docs))
+        user_ids = sorted(list(set(docs.mapped('partner_id'))),key=lambda x: x.display_name)
+        product_cats_ids = sorted(list(set(docs.mapped('x_studio_invoice_category'))),key=lambda x: x.display_name)
+#         data = {
+#             'filter_post':'3',
+#             'user_ids': None,
+#             'start_date': start_date.strftime('%Y-%m-%d'), 
+#             'end_date': end_date.strftime('%Y-%m-%d'),
+#             'company':company.id,
+#             'product_cats_ids': None
+#         }
     
+#         result,_ = self.env.ref('popular_reports.sales_analysis_report_by_cust').sudo().with_context().render_qweb_pdf(None, dat
+#         order_pdf = base64.b64encode(result).decode('utf-8')
+#         self.env['popular_reports.popular_reports'].create({'report_file': order_pdf, 'report_name':report_name+"(PDF)", 'company_id': company.id, 'date':start_date})
+        
+        
+        
+#         raise UserError(pdf)
+        fp = BytesIO()
+        workbook = xlsxwriter.Workbook(fp)
+        worksheet = workbook.add_worksheet()
+        row = 0
+        cols = ['Customer Name', 'Invoice Category','Pay Amount', 'Amount Due', 'Amount']
+#         for line in temp:
+        if row == 0:
+            worksheet.merge_range(f'A1:E1', company.display_name)
+            row+=1
+
+            worksheet.merge_range(f'A2:E2', 'Sales Analysis Report by Customer (Posted)')
+            row+=1
+
+            worksheet.merge_range(row, 0, row, 1, f"Date From : {start_date.strftime('%d/%m/%Y')}")
+            worksheet.merge_range(row, 3, row, 4, f"To : {end_date.strftime('%d/%m/%Y')}")
+            row+=1
+            for col in range(len(cols)):
+                worksheet.write(row, col, cols[col])
+            row+=1
+        g_ttl = 0
+        g_ttl_due = 0
+        temp = []
+        for user in user_ids:
+            ttl = 0
+            ttl_due = 0
+            temp_dtl = []
+            for product_cat in product_cats_ids:
+#                     raise UserError(product_cat)
+                sub_ttl = 0
+                sub_ttl_due = 0
+                for table_line in docs.filtered(lambda r: r.partner_id.id == user.id and r.x_studio_invoice_category == product_cat):
+                    sub_ttl += table_line.amount_total_signed
+                    sub_ttl_due += table_line.amount_residual_signed
+                if sub_ttl > 0:
+                    ttl += sub_ttl
+                    ttl_due += sub_ttl_due
+                    temp_dtl.append({'product_cat':product_cat.display_name,'amt':sub_ttl,'d_amt':sub_ttl_due,'p_amt':sub_ttl-sub_ttl_due})
+            if ttl > 0:
+                temp.append({'user':user,'temp_dtl':temp_dtl,'ttl':ttl, 'ttl_due': ttl_due, 'ttl_pay':ttl-ttl_due})
+        for temp_dtl in temp:
+            worksheet.write(row, 0, temp_dtl['user'].display_name)
+            for dtl_line in temp_dtl['temp_dtl']:
+                worksheet.write(row, 1, dtl_line['product_cat'])
+                worksheet.write(row, 2, dtl_line['amt'] - dtl_line['d_amt'])
+                worksheet.write(row, 3, dtl_line['d_amt'])
+                worksheet.write(row, 4, dtl_line['amt'])
+                g_ttl += dtl_line['amt']
+                g_ttl_due += dtl_line['d_amt']
+                row += 1
+        worksheet.merge_range(row, 0, row, 1, "Grand Total")     
+#             worksheet.write(row, 0, "Grand Total")
+
+        worksheet.write(row, 2,g_ttl - g_ttl_due)
+        worksheet.write(row, 3,g_ttl_due)
+        worksheet.write(row, 4,g_ttl)
+            
+        workbook.close()
+        self.env['popular_reports.popular_reports'].create({'report_file': base64.encodebytes(fp.getvalue()), 'report_name':report_name+"(Excel)", 'company_id': company.id, 'date':start_date})
+        fp.close()

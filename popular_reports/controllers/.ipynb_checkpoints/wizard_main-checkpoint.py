@@ -303,6 +303,7 @@ class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
     
     @api.model
     def _get_report_values(self, docids, data=None):
+        
         docs = None
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
@@ -313,19 +314,22 @@ class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         
-        user_ids = self.env['res.partner'].search([],order='display_name asc')
+        if 'company' in data:
+             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted'),('company_id', '=', data['company'])])
+        user_ids = sorted(list(set(docs.mapped('partner_id'))),key=lambda x: x.display_name)
+#         raise UserError(data['end_date'])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-            user_ids = user_ids.filtered(lambda r: r.id in data['user_ids'])
-        product_cats_ids = []
+#             user_ids = user_ids.filtered(lambda r: r.id in data['user_ids'])
+            user_ids = [user for user in user_ids if user.id in data['user_ids']]
+        product_cats_ids = sorted(list(set(docs.mapped('x_studio_invoice_category'))),key=lambda x: x.display_name)
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
-            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
-        else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category.id in data['product_cats_ids'])
+            product_cats_ids = [product_cat for product_cat in product_cats_ids if product_cat.id in data['product_cats_ids']]
         ttl = 0
         ttl_due = 0
         temp = []
+#         raise UserError(str(user_ids))
         for user in user_ids:
             ttl = 0
             ttl_due = 0
@@ -344,6 +348,7 @@ class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
                     temp_dtl.append({'product_cat':product_cat,'amt':sub_ttl,'d_amt':sub_ttl_due,'p_amt':sub_ttl-sub_ttl_due})
             if ttl > 0:
                 temp.append({'user':user,'temp_dtl':temp_dtl,'ttl':ttl, 'ttl_due': ttl_due, 'ttl_pay':ttl-ttl_due})
+        
         return {
             'product_cats_ids':product_cats_ids,
             'docs': temp,
