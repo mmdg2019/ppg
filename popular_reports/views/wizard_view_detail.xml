@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="popular_reports.export_sales_analysis_report_by_cust_ss" model="ir.ui.view" context="{'studio': True}">
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <tree string="Sales Analysis Report by Customer" create="false" edit="false">
+                <field name="report_name" modifiers="{}"/>
+                <field name="company_id"/>
+                <field name="date" widget="date"/>
+            </tree>
+        </field>
+        <field name="field_parent" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="inherit_id" eval="False"/>
+        <field name="key" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="model">popular_reports.popular_reports</field>
+        <field name="name">Default tree view for Sales Analysis Report by Customer</field>
+        <field name="priority">16</field>
+        <field name="type">tree</field>
+    </record>
+</odoo>
+
+
+    

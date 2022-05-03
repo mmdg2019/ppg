@@ -23,6 +23,7 @@
         'views/wizard_forms.xml',
         'views/wizard_menus.xml',
         'views/sale_target.xml',
+        'views/wizard_view_detail.xml',
         'reports/popular_reports.xml',
         'reports/report.xml',
         'reports/sale_target.xml',
