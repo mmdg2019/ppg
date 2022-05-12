@@ -2,20 +2,22 @@
 {
     'name': 'Popular Reports',
     'version': '1.0.0.0',
-    'summary': "Reports for popular company",
-    'description': "Current Stock Report for all Products in each Warehouse, Odoo 13,Odoo13",
+    'summary': "Reports for Popular Plastic Group",
+    'description': "Report Collection for Popular Plastic Group",
     'category': 'App',
     'author': 'Bo Bo Oo',
     'maintainer': 'Bo Bo Oo',
     'company': 'Digi Power',
     'website': 'https://www.digipowermm.com',
     'depends': [
-        'base',
-        'stock',
-        'sale',
-        'purchase',
         'account',
-        'stock'
+        'account_accountant',
+        'base',
+        'purchase',
+        'sale',
+        'stock',
+        'website',
+        'website_sale'
     ],
     'data': [
         'views/action_manager.xml',
