@@ -1,11 +1,11 @@
 <odoo>
-    <data>
+<!--     <data>
         <template id="assets_backend" name="xls_assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/export_stockinfo_xls/static/src/js/action_manager.js"/>
             </xpath>
         </template>
-    </data>
+    </data> -->
 <!--     <record model='ir.actions.act_window' id='popular_reports.sale_target_line'>
         <field name="name">Sales Target Line</field>
         <field name="res_model">popular_reports.sale_target.line</field>
