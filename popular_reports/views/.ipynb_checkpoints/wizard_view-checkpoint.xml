@@ -2,7 +2,7 @@
 
 <odoo>
     
-    <record model='ir.actions.act_window' id='wizard_act'>
+    <record model='ir.actions.act_window' id='popular_report_wizard_act'>
         <field name="binding_model_id" eval="False"/>
         <field name="binding_type">action</field>
         <field name="binding_view_types">list,form</field>

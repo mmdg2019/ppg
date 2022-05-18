@@ -15,7 +15,7 @@ except ImportError:
 
 class PopularReport(models.TransientModel):
     _name = "wizard.popular.reports"
-    _description = "Current Stock History"
+    _description = "Popular Reports Wizard"
     MONTH_LIST= [('1','January'), ('2', 'February'), ('3', 'March'), ('4', 'April'), ('5', 'May'), ('6', 'June'), ('7', 'July'), ('8', 'August'), ('9', 'September'), ('10', 'October'), ('11', 'November'),('12', 'December')]
     YEAR_LIST = [(str(i),str(i)) for i in range(2000, 2101)]
     POST_LIST = [('1','Cancel'),('2','Draft'),('3','Posted')]
