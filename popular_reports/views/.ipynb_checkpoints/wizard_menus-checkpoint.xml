@@ -49,7 +49,7 @@
     <menuitem name="Popular Reports"
               parent="popular_reports.popular_reports_main_menu"
               id="popular_reports_sub_menu_1"
-              action="wizard_act"
+              action="popular_report_wizard_act"
               sequence="1"/>
 
     <menuitem name="Sales Invoice Reports"

@@ -28,6 +28,7 @@
         'views/wizard_view_detail.xml',
         'reports/popular_reports.xml',
         'reports/report.xml',
+        'reports/report_template.xml',
         'reports/sale_target.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
