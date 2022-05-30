@@ -106,12 +106,12 @@
             sequence="3"/>
 
 
-    <menuitem name="Daily Sales Repory by Date"
+    <menuitem name="Daily Sales Report by Date"
               parent="popular_reports.popular_reports_sub_menu_2"
               id="popular_reports.menu_report_daily_sales_report_by_date"
               action="popular_reports.wizard_act_report_daily_sales_report_by_date"
               sequence="2"/>
-    <menuitem name="Daily Sales Repory by Invoice Category"
+    <menuitem name="Daily Sales Report by Invoice Category"
               parent="popular_reports.popular_reports_sub_menu_2"
               id="popular_reports.menu_report_daily_sales_report_by_inv_cat"
               action="popular_reports.wizard_act_report_daily_sales_report_by_inv_cat"
@@ -174,17 +174,17 @@
               action="popular_reports.wizard_act_report_sales_order_report_by_date"
               sequence="2"/>
 
-    <menuitem name="Sales Quotation Report by Client"
+    <menuitem name="Sales Quotations Report by Client"
               parent="popular_reports.popular_reports_sub_menu_3"
               id="popular_reports.menu_report_sales_quot_report_by_client"
               action="popular_reports.wizard_act_report_sales_quot_report_by_client"
               sequence="4"/>
-    <menuitem name="Sales Quotation Report by Date"
+    <menuitem name="Sales Quotations Report by Date"
               parent="popular_reports.popular_reports_sub_menu_3"
               id="popular_reports.menu_report_sales_quot_report_by_date"
               action="popular_reports.wizard_act_report_sales_quot_report_by_date"
               sequence="5"/>
-    <menuitem name="Sales Quotation Report by Product Code"
+    <menuitem name="Sales Quotations Report by Product Code"
               parent="popular_reports.popular_reports_sub_menu_3"
               id="popular_reports.menu_report_sales_quot_report_by_p_code"
               action="popular_reports.wizard_act_report_sales_quot_report_by_p_code"
@@ -348,7 +348,7 @@
 
 </odoo>
     
-    <!--         <menuitem name="Daily Sales Repory by Product Category"
+    <!--         <menuitem name="Daily Sales Report by Product Category"
                   parent="popular_reports.popular_reports_sub_menu_2"
                   id="popular_reports.menu_report_daily_sales_report_by_pdt_cat"
                   action="popular_reports.wizard_act_report_daily_sales_report_by_pdt_cat"
