@@ -40,9 +40,8 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
-                
-        dates = list(set(docs.mapped('invoice_date')))
-        dates = sorted(dates)
+
+        dates = sorted(list(set(docs.mapped('invoice_date'))))
         if data['product_ids']:
             product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
         else:
@@ -74,7 +73,7 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
                     if sub_ttl > 0 :
                         temp_dtl.append({'product_cat':temp_product_cat,'sub_qty':round((sub_qty/product.uom_id.factor_inv),2), 'sub_ttl': sub_ttl,'sub_table_line':sub_table_line})
                 if temp_dtl:
-                    temp.append({'date':date,'user':temp_user,'temp_dtl':sorted(temp_dtl, key = lambda i: ( i['sub_table_line'].product_id.display_name),reverse=False)})
+                    temp.append({'date':date,'user':temp_user,'temp_dtl':sorted(temp_dtl, key = lambda i: ( i['sub_table_line'].product_id.default_code),reverse=False)})
         return {
             'currency_id':docs.currency_id,
             'filter_post': data['filter_post'],
@@ -260,14 +259,14 @@ class edit_report_all_balance_listing(models.AbstractModel):
             for product in products:
                 total_qty = sum(table_line.quantity for doc in docs for table_line in doc.quant_ids.filtered(lambda r: r.product_id == product and  r.location_id == loc))
                 if total_qty > 0:
-                    temp.append({'product_name':product.display_name,'on_hand':'{0:,.2f}'.format(total_qty), 'product_uom':product.uom_name,'location':loc.display_name})
+                    temp.append({'product_name':product,'on_hand':'{0:,.2f}'.format(total_qty), 'product_uom':product.uom_name,'location':loc.display_name})
         return {
             'docs': docs,
             'product_ids': product_ids,
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
             'products': products,
-            'items': sorted(temp, key = lambda i: (i['location'],i['product_name'])),
+            'items': sorted(temp, key = lambda i: (i['location'],i['product_name'].default_code)),
        }
     
 #     Sales Report by Date
@@ -490,7 +489,7 @@ class edit_report_today_stock_analysis(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         today_date = datetime.now()
-#         today_date = datetime.strptime("2022-1-12", '%Y-%m-%d')
+        today_date = datetime.strptime("2022-1-12", '%Y-%m-%d')
         user_tz = self.env.user.tz
         if user_tz in pytz.all_timezones:
             old_tz = pytz.timezone('UTC')
@@ -554,7 +553,7 @@ class edit_report_today_stock_analysis(models.AbstractModel):
 #                 pids.append({'c_name':item.display_name,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
         return {
             'today_date':today_date,
-            'lst':sorted(pids, key = lambda i: i['item'].display_name),
+            'lst':sorted(pids, key = lambda i: i['item'].default_code),
             }
     
 #     Stock Analysis by Month and Customer
@@ -603,7 +602,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
             if sum_qty > 0:
                 temp.append({'id':product.id,'cat':cat,'name':product,'qty':round((sum_qty/product.uom_id.factor_inv),2)})
         return {
-            'lst':sorted(temp, key = lambda i: (i['name'].display_name)),
+            'lst':sorted(temp, key = lambda i: (i['name'].default_code)),
             'country': country,
             'state': state
             }
@@ -634,7 +633,7 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
             if sum_qty > 0:
                 temp.append({'id':product.id,'name':product,'qty':round((sum_qty/product.uom_id.factor_inv),2)})
         return {
-            'lst':sorted(temp, key = lambda i: i['name'].display_name)
+            'lst':sorted(temp, key = lambda i: i['name'].default_code)
             }
     
 #     Stock Analysis by Date
@@ -651,7 +650,7 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
         dates = sorted(list(set([date.strftime('%m/%d/%Y') for date in docs.mapped('invoice_date')])))
         items = []
         if data['product_ids']:
-            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='default_code asc')
         else:
             items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
         for item in items:    
@@ -674,10 +673,10 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
                     temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
                     sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item.display_name,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
+                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].default_code, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
         return {
             'docs':docs,
-            'lst':sorted(pids, key = lambda i: i['c_name']),
+            'lst':sorted(pids, key = lambda i: i['c_name'].default_code),
             }
     
 #     Stock Transfer Information
@@ -739,7 +738,7 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
             'filter_post_stock': data['filter_post_stock'],
             'filter_stock_picking_type': data['filter_stock_picking_type'],
             'customers': customers,
-            'docs': sorted(temp, key = lambda i: (i['location'],i['product'].display_name)),
+            'docs': sorted(temp, key = lambda i: (i['location'],i['product'].default_code)),
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
             'items':items
@@ -773,7 +772,7 @@ class edit_report_stock_valuation_info(models.AbstractModel):
                     amt = total_qty * product.standard_price
                     temp.append({'product':product,'on_hand':total_qty, 'location':loc.display_name,'amount':amt})
         return {
-            'docs': sorted(temp, key = lambda i: (i['location'],i['product'].display_name)),
+            'docs': sorted(temp, key = lambda i: (i['location'],i['product'].default_code)),
             'currency_id': docs.quant_ids.currency_id,
        }
 
@@ -871,16 +870,10 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
         dates = list(set(dates))
         dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
         items = []
-        for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
-            for table_line in doc.invoice_line_ids:
-                if data['product_ids']:
-                    if table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges" and table_line.product_id.id in data['product_ids']:
-                        items.append(str(table_line.product_id.display_name))
-                else:
-                    if table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges":
-                        items.append(str(table_line.product_id.display_name))
-        items = list(set(items))
-        items.sort(reverse=False)
+        if data['product_ids']:
+            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='default_code asc')
+        else:
+            items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
         for item in items:    
             temp_dtl = []
             temp = []
@@ -891,7 +884,7 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
                 for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
                     if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
                         for table_line in doc.invoice_line_ids:
-                            if table_line.product_id.display_name == item and table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges":
+                            if table_line.product_id == item and table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges":
                                 if table_line.product_uom_id.display_name != "Units":
                                     sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
                                 else:
@@ -902,11 +895,11 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
                     temp.append({'id':id,'name':i_name,'qty':(sum_qty/i_name.uom_id.factor_inv),'date':date})
                     sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
+                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].default_code, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
         return {
             'docs':docs,
             'user_id':user_id,
-            'lst':pids
+            'lst':sorted(pids, key = lambda i: i['c_name'].default_code)
             }
 
 #     Cash Payment Listing by Lumpsum
@@ -1364,10 +1357,10 @@ class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
                     temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
                     sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item.display_name,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
+                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
         return {
             'docs':docs,
-            'lst':sorted(pids, key = lambda i: i['c_name']),
+            'lst':sorted(pids, key = lambda i: i['c_name'].default_code),
             }
 
 #     Sales Quotation Report by Date
