@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_popular_report" model="report.paperformat">
+        <field name="name">format - Popular Report</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">7</field>
+        <field name="margin_bottom">28</field>
+        <field name="margin_left">1</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">7</field>
+        <field name="dpi">90</field>
+    </record>
+<!--     <report
+        id="stock_transfer_info"
+        model="stock.picking"
+        menu="False"
+        string="Stock Transfer Information"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_transfer_info"
+        file="popular_reports.report_stock_transfer_info" 
+        print_report_name="Stock Transfer Information"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_transfer_info" model="ir.actions.report">
+        <field name="name">Stock Transfer Information</field>
+        <field name="print_report_name"></field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_transfer_info</field>
+        <field name="report_file">popular_reports.report_stock_transfer_info</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_focus"
+        model="stock.picking"
+        menu="False"
+        string="Stock Focus Report"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_focus"
+        file="popular_reports.report_stock_focus" 
+        print_report_name="Stock Focus Report"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_focus" model="ir.actions.report">
+        <field name="name">Stock Focus Report</field>
+        <field name="print_report_name"></field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_focus</field>
+        <field name="report_file">popular_reports.report_stock_focus</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_transfer_dtl_info"
+        model="stock.picking"
+        menu="False"
+        string="Stock Transfer Information Summary"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_transfer_dtl_info"
+        file="popular_reports.report_stock_transfer_dtl_info" 
+        print_report_name="Stock Transfer Information Summary"
+        paperformat="paperformat_popular_report"
+            
+    /> -->
+    <record id="stock_transfer_dtl_info" model="ir.actions.report">
+        <field name="name">Stock Transfer Information Summary</field>
+        <field name="print_report_name"></field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_transfer_dtl_info</field>
+        <field name="report_file">popular_reports.report_stock_transfer_dtl_info</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="cash_receipt_listing_by_date"
+        model="account.payment"
+        menu="False"
+        string="Cash Receipt Listing by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_cash_receipt_listing_by_date"
+        file="popular_reports.report_cash_receipt_listing_by_date" 
+        print_report_name="Cash Receipt Listing by Date"
+        paperformat="paperformat_popular_report" -->
+<!--     /> -->
+    <record id="cash_receipt_listing_by_date" model="ir.actions.report">
+        <field name="name">Cash Receipt Listing by Date</field>
+        <field name="print_report_name"></field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_cash_receipt_listing_by_date</field>
+        <field name="report_file">popular_reports.report_cash_receipt_listing_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="cash_receipt_listing_by_r_no"
+        model="account.payment"
+        menu="False"
+        string="Cash Receipt Listing by Receipt No"
+        report_type="qweb-html"
+        name="popular_reports.report_cash_receipt_listing_by_r_no"
+        file="popular_reports.report_cash_receipt_listing_by_r_no" 
+        print_report_name="Cash Receipt Listing by Receipt No"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="cash_receipt_listing_by_r_no" model="ir.actions.report">
+        <field name="name">Cash Receipt Listing by Receipt No</field>
+        <field name="print_report_name"></field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_cash_receipt_listing_by_r_no</field>
+        <field name="report_file">popular_reports.report_cash_receipt_listing_by_r_no</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="refund_lst_by_vendor"
+        model="account.payment"
+        menu="False"
+        string="Refund Listing by Vendor"
+        report_type="qweb-html"
+        name="popular_reports.report_refund_lst_by_vendor"
+        file="popular_reports.report_refund_lst_by_vendor" 
+        print_report_name="Refund Listing by Vendor"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="refund_lst_by_vendor" model="ir.actions.report">
+        <field name="name">Refund Listing by Vendor</field>
+        <field name="print_report_name"></field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_refund_lst_by_vendor</field>
+        <field name="report_file">popular_reports.report_refund_lst_by_vendor</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="refund_lst_by_product_code"
+        model="account.payment"
+        menu="False"
+        string="Refund Listing by Product Code"
+        report_type="qweb-html"
+        name="popular_reports.report_refund_lst_by_product_code"
+        file="popular_reports.report_refund_lst_by_product_code" 
+        print_report_name="Refund Listing by Product Code"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="refund_lst_by_product_code" model="ir.actions.report">
+        <field name="name">Refund Listing by Product Code</field>
+        <field name="print_report_name"></field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.refund_lst_by_product_code</field>
+        <field name="report_file">popular_reports.refund_lst_by_product_code</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_analysis_by_date_and_cust"
+        model="account.move"
+        menu="False"
+        string="Stock Analysis by Date and Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_analysis_by_date_and_cust"
+        file="popular_reports.report_stock_analysis_by_date_and_cust" 
+        print_report_name="Stock Analysis by Date and Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_analysis_by_date_and_cust" model="ir.actions.report">
+        <field name="name">Stock Analysis by Date and Customer</field>
+        <field name="print_report_name">Stock Analysis by Date and Customer</field>
+        <field name="model"></field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_analysis_by_date_and_cust</field>
+        <field name="report_file">popular_reports.report_stock_analysis_by_date_and_cust</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="monthly_stock_analysis_report"
+        model="account.move"
+        menu="False"
+        string="Monthly Stock Analysis Report"
+        report_type="qweb-html"
+        name="popular_reports.report_monthly_stock_analysis_report"
+        file="popular_reports.report_monthly_stock_analysis_report" 
+        print_report_name="Monthly Stock Analysis Report"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="monthly_stock_analysis_report" model="ir.actions.report">
+        <field name="name">Monthly Stock Analysis Report</field>
+        <field name="print_report_name">Monthly Stock Analysis Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_monthly_stock_analysis_report</field>
+        <field name="report_file">popular_reports.report_monthly_stock_analysis_report</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_analysis_by_month_and_cust"
+        model="account.move"
+        menu="False"
+        string="Stock Analysis by Month and Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_analysis_by_month_and_cust"
+        file="popular_reports.report_stock_analysis_by_month_and_cust" 
+        print_report_name="Stock Analysis by Month and Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_analysis_by_month_and_cust" model="ir.actions.report">
+        <field name="name">Stock Analysis by Month and Customer</field>
+        <field name="print_report_name">Stock Analysis by Month and Customer</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_analysis_by_month_and_cust</field>
+        <field name="report_file">popular_reports.report_stock_analysis_by_month_and_cust</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_analysis_by_date"
+        model="account.move"
+        menu="False"
+        string="Stock Analysis by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_analysis_by_date"
+        file="popular_reports.report_stock_analysis_by_date" 
+        print_report_name="Stock Analysis by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_analysis_by_date" model="ir.actions.report">
+        <field name="name">Stock Analysis by Date</field>
+        <field name="print_report_name">Stock Analysis by Date</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_analysis_by_date</field>
+        <field name="report_file">popular_reports.report_stock_analysis_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="today_stock_analysis"
+        model="account.move"
+        menu="False"
+        string="Today Stock Analysis Report"
+        report_type="qweb-html"
+        name="popular_reports.report_today_stock_analysis"
+        file="popular_reports.report_today_stock_analysis" 
+        print_report_name="Today Stock Analysis Report"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="today_stock_analysis" model="ir.actions.report">
+        <field name="name">Today Stock Analysis Report</field>
+        <field name="print_report_name">Today Stock Analysis Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_today_stock_analysis</field>
+        <field name="report_file">popular_reports.report_today_stock_analysis</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_trans_oprt"
+        model="account.move"
+        menu="False"
+        string="Stock Transfer Operations Report"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_trans_oprt"
+        file="popular_reports.report_stock_trans_oprt" 
+        print_report_name="Stock Transfer Operations Report"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_trans_oprt" model="ir.actions.report">
+        <field name="name">Stock Transfer Operations Report</field>
+        <field name="print_report_name">Stock Transfer Operations Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_trans_oprt</field>
+        <field name="report_file">popular_reports.report_stock_trans_oprt</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_quot_stock_analysis_by_d"
+        model="account.move"
+        menu="False"
+        string="Sales Quotation Stock Analysis by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_quot_stock_analysis_by_d"
+        file="popular_reports.report_sales_quot_stock_analysis_by_d" 
+        print_report_name="Sales Order Stock Analysis by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_quot_stock_analysis_by_d" model="ir.actions.report">
+        <field name="name">Sales Quotation Stock Analysis by Date</field>
+        <field name="print_report_name">Sales Quotation Stock Analysis by Date</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_quot_stock_analysis_by_d</field>
+        <field name="report_file">popular_reports.report_sales_quot_stock_analysis_by_d</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="purchase_stock_analysis_by_date"
+        model="account.move"
+        menu="False"
+        string="Purchase Stock Analysis by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_purchase_stock_analysis_by_date"
+        file="popular_reports.report_purchase_stock_analysis_by_date" 
+        print_report_name="Purchase Stock Analysis by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="purchase_stock_analysis_by_date" model="ir.actions.report">
+        <field name="name">Purchase Stock Analysis by Date</field>
+        <field name="print_report_name">Purchase Stock Analysis by Date</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_purchase_stock_analysis_by_date</field>
+        <field name="report_file">popular_reports.report_purchase_stock_analysis_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="purchase_listing_by_sup"
+        model="account.move"
+        menu="False"
+        string="Purchase Listing by Supplier"
+        report_type="qweb-html"
+        name="popular_reports.report_purchase_listing_by_sup"
+        file="popular_reports.report_purchase_listing_by_sup" 
+        print_report_name="Purchase Listing by Supplier"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="purchase_listing_by_sup" model="ir.actions.report">
+        <field name="name">Purchase Listing by Supplier</field>
+        <field name="print_report_name">Purchase Listing by Supplier</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_purchase_listing_by_sup</field>
+        <field name="report_file">popular_reports.report_purchase_listing_by_sup</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_analysis_report_by_cust"
+        model="account.move"
+        menu="False"
+        string="Sales Analysis Report by Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_analysis_report_by_cust"
+        file="popular_reports.report_sales_analysis_report_by_cust"
+        print_report_name="Sales Analysis Report by Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_analysis_report_by_cust" model="ir.actions.report">
+        <field name="name">Sales Analysis Report by Customer</field>
+        <field name="print_report_name">Sales Analysis Report by Customer</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_analysis_report_by_cust</field>
+        <field name="report_file">popular_reports.report_sales_analysis_report_by_cust</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_report_by_client"
+        model="account.move"
+        menu="False"
+        string="Sales Report by Client"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_client"
+        file="popular_reports.report_sales_report_by_client"
+        print_report_name="Sales Report by Client"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_report_by_client" model="ir.actions.report">
+        <field name="name">Sales Report by Client</field>
+        <field name="print_report_name">Sales Report by Client</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_report_by_client</field>
+        <field name="report_file">popular_reports.report_sales_report_by_client</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="purchase_order_report_by_date"
+        model="purchase.order"
+        menu="False"
+        string="Purchase Order Report by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_purchase_order_report_by_date"
+        file="popular_reports.report_purchase_order_report_by_date"
+        print_report_name="Purchase Order Report by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="purchase_order_report_by_date" model="ir.actions.report">
+        <field name="name">Purchase Order Report by Date</field>
+        <field name="print_report_name">Purchase Order Report by Date</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_purchase_order_report_by_date</field>
+        <field name="report_file">popular_reports.report_purchase_order_report_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_order_report_by_client"
+        model="sale.order"
+        menu="False"
+        string="Sales Order Report by Client"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_order_report_by_client"
+        file="popular_reports.report_sales_order_report_by_client"
+        print_report_name="Sales Order Report by Client"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_order_report_by_client" model="ir.actions.report">
+        <field name="name">Sales Order Report by Client</field>
+        <field name="print_report_name">Sales Order Report by Client</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_order_report_by_client</field>
+        <field name="report_file">popular_reports.report_sales_order_report_by_client</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_order_report_by_date"
+        model="sale.order"
+        menu="False"
+        string="Sales Order Report by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_order_report_by_date"
+        file="popular_reports.report_sales_order_report_by_date" 
+        print_report_name="Sales Order Report by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_order_report_by_date" model="ir.actions.report">
+        <field name="name">Sales Order Report by Date</field>
+        <field name="print_report_name">Sales Order Report by Date</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_order_report_by_date</field>
+        <field name="report_file">popular_reports.report_sales_order_report_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_quot_report_by_date"
+        model="sale.order"
+        menu="False"
+        string="Sales Quotations Report by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_quot_report_by_date"
+        file="popular_reports.report_sales_quot_report_by_date" 
+        print_report_name="Sales Quotations Report by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_quot_report_by_date" model="ir.actions.report">
+        <field name="name">Sales Quotations Report by Date</field>
+        <field name="print_report_name">Sales Quotations Report by Date</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_quot_report_by_date</field>
+        <field name="report_file">popular_reports.report_sales_quot_report_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_quot_report_by_client"
+        model="sale.order"
+        menu="False"
+        string="Sales Quotations Report by Client"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_quot_report_by_client"
+        file="popular_reports.report_sales_quot_report_by_client"
+        print_report_name="Sales Quotations Report by Client"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_quot_report_by_client" model="ir.actions.report">
+        <field name="name">Sales Quotations Report by Client</field>
+        <field name="print_report_name">Sales Quotations Report by Client</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_quot_report_by_client</field>
+        <field name="report_file">popular_reports.report_sales_quot_report_by_client</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_quot_report_by_p_code"
+        model="sale.order"
+        menu="False"
+        string="Sales Quotations Report by Product Code"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_quot_report_by_p_code"
+        file="popular_reports.report_sales_quot_report_by_p_code"
+        print_report_name="Sales Quotations Report by Product Code"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_quot_report_by_p_code" model="ir.actions.report">
+        <field name="name">Sales Quotations Report by Product Code</field>
+        <field name="print_report_name">Sales Quotations Report by Product Code</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_quot_report_by_p_code</field>
+        <field name="report_file">popular_reports.report_sales_quot_report_by_p_code</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_report_by_product_cat"
+        model="product.template"
+        menu="False"
+        string="Sales Report by Product Category"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_product_cat"
+        file="popular_reports.report_sales_report_by_product_cat"
+        print_report_name="Sales Report by Product Category"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_report_by_product_cat" model="ir.actions.report">
+        <field name="name">Sales Report by Product Category</field>
+        <field name="print_report_name">Sales Report by Product Category</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_report_by_product_cat</field>
+        <field name="report_file">popular_reports.report_sales_report_by_product_cat</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_report_by_org_product_cat"
+        model="product.template"
+        menu="False"
+        string="Sales Report by Original Product Category"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_org_product_cat"
+        file="popular_reports.report_sales_report_by_org_product_cat"
+        print_report_name="Sales Report by Original Product Category"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_report_by_org_product_cat" model="ir.actions.report">
+        <field name="name">Sales Report by Original Product Category</field>
+        <field name="print_report_name">Sales Report by Original Product Category</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_report_by_org_product_cat</field>
+        <field name="report_file">popular_reports.report_sales_report_by_org_product_cat</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_report_by_product_code"
+        model="product.template"
+        menu="False"
+        string="Sales Report by Product Code"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_product_code"
+        file="popular_reports.report_sales_report_by_product_code"
+        print_report_name="Sales Report by Product Code"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_report_by_product_code" model="ir.actions.report">
+        <field name="name">Sales Report by Product Code</field>
+        <field name="print_report_name">Sales Report by Product Code</field>
+        <field name="model"></field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_report_by_product_code</field>
+        <field name="report_file">popular_reports.report_sales_report_by_product_code</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="all_balance_listing"
+        model="product.template"
+        menu="False"
+        string="All Balance Listing"
+        report_type="qweb-html"
+        name="popular_reports.report_all_balance_listing"
+        file="popular_reports.report_all_balance_listing"
+        print_report_name="All Balance Listing"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="all_balance_listing" model="ir.actions.report">
+        <field name="name">All Balance Listing</field>
+        <field name="print_report_name">All Balance Listing</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_all_balance_listing</field>
+        <field name="report_file">popular_reports.report_all_balance_listing</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="stock_valuation_info"
+        model="product.template"
+        menu="False"
+        string="Stock Valuation Information"
+        report_type="qweb-html"
+        name="popular_reports.report_stock_valuation_info"
+        file="popular_reports.report_stock_valuation_info"
+        print_report_name="Stock Valuation Information"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="stock_valuation_info" model="ir.actions.report">
+        <field name="name">Stock Valuation Information</field>
+        <field name="print_report_name">Stock Valuation Information</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_valuation_info</field>
+        <field name="report_file">popular_reports.report_stock_valuation_info</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="purchase_inv_lst_by_inv_no"
+        model="account.move"
+        menu="False"
+        string="Purchase Invoice Listing by Vendor"
+        report_type="qweb-html"
+        name="popular_reports.report_purchase_inv_lst_by_inv_no"
+        file="popular_reports.report_purchase_inv_lst_by_inv_no"
+        print_report_name="Purchase Invoice Listing by Vendor" 
+        paperformat="paperformat_popular_report" -->
+<!--     /> -->
+    <record id="purchase_inv_lst_by_inv_no" model="ir.actions.report">
+        <field name="name">Purchase Invoice Listing by Vendor</field>
+        <field name="print_report_name">Purchase Invoice Listing by Vendor</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_purchase_inv_lst_by_inv_no</field>
+        <field name="report_file">popular_reports.report_purchase_inv_lst_by_inv_no</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_report_by_month"
+        model="account.move"
+        menu="False"
+        string="Sales Report by Month"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_month"
+        file="popular_reports.report_sales_report_by_month" 
+        print_report_name="Sales Report by Month"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_report_by_month" model="ir.actions.report">
+        <field name="name">Sales Report by Month</field>
+        <field name="print_report_name">Sales Report by Month</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_report_by_month</field>
+        <field name="report_file">popular_reports.report_sales_report_by_month</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_report_by_date"
+        model="account.move"
+        menu="False"
+        string="Sales Report by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_report_by_date"
+        file="popular_reports.report_sales_report_by_date" 
+        print_report_name="Sales Report by Date"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_report_by_date" model="ir.actions.report">
+        <field name="name">Sales Report by Date</field>
+        <field name="print_report_name">Sales Report by Date</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_report_by_date</field>
+        <field name="report_file">popular_reports.report_sales_report_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="daily_sales_report_by_date"
+        model="account.move"
+        menu="False"
+        string="Daily Sales Report by Date"
+        report_type="qweb-html"
+        name="popular_reports.report_daily_sales_report_by_date"
+        file="popular_reports.report_daily_sales_report_by_date" 
+        print_report_name="Daily Sales Report by Date"
+        paperformat="paperformat_popular_report"
+    />     -->
+    <record id="daily_sales_report_by_date" model="ir.actions.report">
+        <field name="name">Daily Sales Report by Date</field>
+        <field name="print_report_name">Daily Sales Report by Date</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_daily_sales_report_by_date</field>
+        <field name="report_file">popular_reports.report_daily_sales_report_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="daily_sales_report_by_pdt_cat"
+        model="account.move"
+        menu="False"
+        string="Daily Sales Report by Product Category"
+        report_type="qweb-html"
+        name="popular_reports.report_daily_sales_report_by_pdt_cat"
+        file="popular_reports.report_daily_sales_report_by_pdt_cat" 
+        print_report_name="Daily Sales Report by Product Category"
+        paperformat="paperformat_popular_report"
+    />     -->
+    <record id="daily_sales_report_by_pdt_cat" model="ir.actions.report">
+        <field name="name">Daily Sales Report by Product Category</field>
+        <field name="print_report_name">Daily Sales Report by Product Category</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_daily_sales_report_by_pdt_cat</field>
+        <field name="report_file">popular_reports.report_daily_sales_report_by_pdt_cat</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="daily_sales_report_by_inv_cat"
+        model="account.move"
+        menu="False"
+        string="Daily Sales Report by Invoice Category"
+        report_type="qweb-html"
+        name="popular_reports.report_daily_sales_report_by_inv_cat"
+        file="popular_reports.report_daily_sales_report_by_inv_cat" 
+        print_report_name="Daily Sales Report by Invoice Category"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="daily_sales_report_by_inv_cat" model="ir.actions.report">
+        <field name="name">Daily Sales Report by Invoice Category</field>
+        <field name="print_report_name">Daily Sales Report by Invoice Category</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_daily_sales_report_by_inv_cat</field>
+        <field name="report_file">popular_reports.report_daily_sales_report_by_inv_cat</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>    
+<!--     <report
+        id="sales_analysis_by_month_and_cust"
+        model="account.move"
+        menu="False"
+        string="Sales Analysis Report by Month and Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_analysis_by_month_and_cust"
+        file="popular_reports.report_sales_analysis_by_month_and_cust" 
+        print_report_name="Sales Analysis Report by Month and Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_analysis_by_month_and_cust" model="ir.actions.report">
+        <field name="name">Sales Analysis Report by Month and Customer</field>
+        <field name="print_report_name">Sales Analysis Report by Month and Customer</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_analysis_by_month_and_cust</field>
+        <field name="report_file">popular_reports.report_sales_analysis_by_month_and_cust</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="sales_analysis_by_state"
+        model="account.move"
+        menu="False"
+        string="Sales Analysis Report by State"
+        report_type="qweb-html"
+        name="popular_reports.report_sales_analysis_by_state"
+        file="popular_reports.report_sales_analysis_by_state" 
+        print_report_name="Sales Analysis Report by State"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="sales_analysis_by_state" model="ir.actions.report">
+        <field name="name">Sales Analysis Report by State</field>
+        <field name="print_report_name">Sales Analysis Report by State</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_analysis_by_state</field>
+        <field name="report_file">popular_reports.report_sales_analysis_by_state</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="dmg_sales_rtrn_lst_by_cust_no"
+        model="account.move"
+        menu="False"
+        string="Damage Sales Return Listing by Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_dmg_sales_rtrn_lst_by_cust_no"
+        file="popular_reports.report_dmg_sales_rtrn_lst_by_cust_no" 
+        print_report_name="Damage Sales Return Listing by Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="dmg_sales_rtrn_lst_by_cust_no" model="ir.actions.report">
+        <field name="name">Damage Sales Return Listing by Customer</field>
+        <field name="print_report_name">Damage Sales Return Listing by Customer</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_dmg_sales_rtrn_lst_by_cust_no</field>
+        <field name="report_file">popular_reports.report_dmg_sales_rtrn_lst_by_cust_no</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="dmg_sales_rtrn_lst_by_product"
+        model="account.move"
+        menu="False"
+        string="Damage Sales Listing by Produt Code"
+        report_type="qweb-html"
+        name="popular_reports.report_dmg_sales_rtrn_lst_by_product"
+        file="popular_reports.report_dmg_sales_rtrn_lst_by_product" 
+        print_report_name="Damage Sales Listing by Produt Code"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="dmg_sales_rtrn_lst_by_product" model="ir.actions.report">
+        <field name="name">Damage Sales Listing by Produt Code</field>
+        <field name="print_report_name">Damage Sales Listing by Produt Code</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_dmg_sales_rtrn_lst_by_product</field>
+        <field name="report_file">popular_reports.report_dmg_sales_rtrn_lst_by_product</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="cash_receipt_listing_by_cust_no"
+        model="account.payment"
+        menu="False"
+        string="Cash Receipt Listing by Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_cash_receipt_listing_by_cust_no"
+        file="popular_reports.report_cash_receipt_listing_by_cust_no"
+        print_report_name="Cash Receipt Listing by Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="cash_receipt_listing_by_cust_no" model="ir.actions.report">
+        <field name="name">Cash Receipt Listing by Customer</field>
+        <field name="print_report_name">Cash Receipt Listing by Customer</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_cash_receipt_listing_by_cust_no</field>
+        <field name="report_file">popular_reports.report_cash_receipt_listing_by_cust_no</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="purchase_analysis_report_by_sup"
+        model="account.move"
+        menu="False"
+        string="Purchase Analysis Report by Supplier"
+        report_type="qweb-html"
+        name="popular_reports.report_purchase_analysis_report_by_sup"
+        file="popular_reports.report_purchase_analysis_report_by_sup"
+        print_report_name="Purchase Analysis Report by Supplier"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="purchase_analysis_report_by_sup" model="ir.actions.report">
+        <field name="name">Purchase Analysis Report by Supplier</field>
+        <field name="print_report_name">Purchase Analysis Report by Supplier</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_purchase_analysis_report_by_sup</field>
+        <field name="report_file">popular_reports.report_purchase_analysis_report_by_sup</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="cash_payment_listing_by_lumpsum"
+        model="account.payment"
+        menu="False"
+        string="Cash Payment Listing by Lumpsum"
+        report_type="qweb-html"
+        name="popular_reports.report_cash_payment_listing_by_lumpsum"
+        file="popular_reports.report_cash_payment_listing_by_lumpsum"
+        print_report_name="Cash Payment Listing by Lumpsum"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="cash_payment_listing_by_lumpsum" model="ir.actions.report">
+        <field name="name">Cash Payment Listing by Lumpsum</field>
+        <field name="print_report_name">Cash Payment Listing by Lumpsum</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_cash_payment_listing_by_lumpsum</field>
+        <field name="report_file">popular_reports.report_cash_payment_listing_by_lumpsum</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+<!--     <report
+        id="outstanding_inv_report_by_cust"
+        model="account.move"
+        menu="False"
+        string="Outstanding Invoice Report by Customer"
+        report_type="qweb-html"
+        name="popular_reports.report_outstanding_inv_report_by_cust"
+        file="popular_reports.report_outstanding_inv_report_by_cust"
+        print_report_name="Outstanding Invoice Report by Customer"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="outstanding_inv_report_by_cust" model="ir.actions.report">
+        <field name="name">Outstanding Invoice Report by Customer</field>
+        <field name="print_report_name">Outstanding Invoice Report by Customer</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_outstanding_inv_report_by_cust</field>
+        <field name="report_file">popular_reports.report_outstanding_inv_report_by_cust</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>    
+<!--     <report
+        id="inv_payment_tracking"
+        model="account.move"
+        menu="False"
+        string="Invoice Payment Tracking Report"
+        report_type="qweb-html"
+        name="popular_reports.report_inv_payment_tracking"
+        file="popular_reports.report_inv_payment_tracking"
+        print_report_name="Invoice Payment Tracking Report"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="inv_payment_tracking" model="ir.actions.report">
+        <field name="name">Invoice Payment Tracking Report</field>
+        <field name="print_report_name">Invoice Payment Tracking Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_inv_payment_tracking</field>
+        <field name="report_file">popular_reports.report_inv_payment_tracking</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>    
+<!--     <report
+        id="outstanding_bill_report_by_ven"
+        model="account.move"
+        menu="False"
+        string="Outstanding Bill Report by Vendor"
+        report_type="qweb-html"
+        name="popular_reports.report_outstanding_bill_report_by_ven"
+        file="popular_reports.report_outstanding_bill_report_by_ven"
+        print_report_name="Outstanding Bill Report by Vendor"
+        paperformat="paperformat_popular_report"
+    /> -->
+    <record id="outstanding_bill_report_by_ven" model="ir.actions.report">
+        <field name="name">Outstanding Bill Report by Vendor</field>
+        <field name="print_report_name">Outstanding Bill Report by Vendor</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_outstanding_bill_report_by_ven</field>
+        <field name="report_file">popular_reports.report_outstanding_bill_report_by_ven</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+</odoo>
