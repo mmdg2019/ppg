@@ -377,7 +377,7 @@
                                         <t t-set="i_name" t-value=""/>
                                         <t t-foreach="custs" t-as="cust">
                                             <t t-set="sub_lst" t-value="[]"/>
-                                            <t t-foreach="sorted(items, key=lambda x: x.display_name)" t-as="item">
+                                            <t t-foreach="sorted(items, key=lambda x: x.default_code)" t-as="item">
                                                 <t t-foreach="cats" t-as="category">
                                                     
                                                     <t t-set="sub_ttl" t-value="0"/>
@@ -423,7 +423,7 @@
                                         <t t-foreach="custs" t-as="cust">
                                             
                                             <t t-set="sub_lst" t-value="[]"/>
-                                            <t t-foreach="sorted(items, key=lambda x: x.display_name)" t-as="item">
+                                            <t t-foreach="sorted(items, key=lambda x: x.default_code)" t-as="item">
                                                 <t t-set="sub_ttl" t-value="0"/>
                                                 <t t-set="i_name" t-value=""/>
                                                 <t t-foreach="docs.filtered(lambda x:x.partner_id == cust).sorted(key=lambda x: x.partner_id.display_name)" t-as="doc">
@@ -1813,7 +1813,7 @@
                                                 <span t-esc="item['location']"/>
                                             </td>
                                             <td style="width:30%">
-                                                <span t-esc="item['product_name']"/>
+                                                <span t-esc="item['product_name'].display_name"/>
                                             </td>
                                             <td style="text-align:right;width:10%;">
                                                 <span t-esc="item['on_hand']"/>

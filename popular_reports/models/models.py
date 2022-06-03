@@ -56,7 +56,7 @@ class popular_reports(models.Model):
             for col in range(len(cols)):
                 worksheet.write(row, col, cols[col])
             row+=1
-            products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='display_name asc')
+            products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='default_code asc')
             scraps = self.env['stock.scrap'].sudo().search([('state', '=','done'), ('date_done', '>=',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')),('date_done', '<',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y') + relativedelta(months = 1)), ('company_id', '=', company.id)]).with_context(force_company=company.id)
             docs = self.env['stock.move'].sudo().search([('state', '=','done'), ('date', '>=',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')),('date', '<',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')+ relativedelta(months = 1)), ('company_id', '=', company.id)])
             for product in products:
@@ -137,7 +137,7 @@ class popular_reports(models.Model):
             worksheet.write(row, 0, "Location Name:")
             worksheet.write(row, 1, stock.display_name)
             row+=1
-            products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='display_name asc')
+            products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='default_code asc')
             stock_ttl = 0.0
             for product in products.filtered(lambda r: r.qty_available>0):
                 worksheet.write(row, 0, stock.display_name)
