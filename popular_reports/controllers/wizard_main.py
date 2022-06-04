@@ -489,7 +489,7 @@ class edit_report_today_stock_analysis(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         today_date = datetime.now()
-        today_date = datetime.strptime("2022-1-12", '%Y-%m-%d')
+#         today_date = datetime.strptime("2022-1-12", '%Y-%m-%d')
         user_tz = self.env.user.tz
         if user_tz in pytz.all_timezones:
             old_tz = pytz.timezone('UTC')
