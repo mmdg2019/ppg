@@ -1206,7 +1206,7 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-        
+        customers = list(set(docs.mapped('partner_id')))
         product_cats_ids = []
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
@@ -1215,7 +1215,8 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
             product_cats_ids = self.env['product.category'].search([],order='display_name asc')
         return {
             'filter_post': data['filter_post'],
-            'docs': docs
+            'docs': docs,
+            'customers': customers
        }
     
 #     Invoice Payment Tracking Report

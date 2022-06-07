@@ -4588,6 +4588,21 @@
                             </div>
                         </div>
                         <br/>
+                        <div t-if="customers" class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <t t-foreach="sorted(customers,key=lambda x: x.display_name,reverse=False)" t-as="customer">
+                                    <span t-if="customer_first">
+                                        <b>Customer From : </b>
+                                        <t t-esc="customer.display_name"/>
+                                    </span>
+                                    <span t-if="customer_last">
+                                        <b>To : </b>
+                                        <t t-esc="customer.display_name"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                        <br/>
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
