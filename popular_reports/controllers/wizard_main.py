@@ -724,7 +724,11 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
         temp = []
         products = list(set(docs.mapped('move_lines.product_id')))
         picking_types = list(set(docs.mapped('picking_type_id')))
-        customers = list(set(docs.mapped('partner_id')))
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)],order='display_name asc')
+        else:
+            customers = self.env['res.partner'].search([('customer_rank', '>', 0)],order='display_name asc')
         locations = list(set(docs.mapped('location_id')))
         
         total_demand = 0
@@ -1204,9 +1208,14 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-        customers = list(set(docs.mapped('partner_id')))
+#             docs = docs.search([('partner_id', 'in', data['user_ids'])])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)],order='display_name asc')
+        else:
+            customers = self.env['res.partner'].search([('customer_rank', '>', 0)],order='display_name asc')
+
         product_cats_ids = []
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
