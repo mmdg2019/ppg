@@ -282,6 +282,15 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.monthly_stock_analysis_report').report_action(self, data=data)
     
+#     Stock Analysis Report
+    def print_report_stock_analysis_report(self):
+        data = {
+            'product_ids': self.products.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.stock_analysis_report').report_action(self, data=data)
+    
 #     Stock Transfer Operations Report
     def print_report_stock_trans_oprt(self):
         data = {
@@ -320,6 +329,7 @@ class PopularReport(models.TransientModel):
     def print_report_purchase_inv_lst_by_inv_no(self):
         data = {
             'filter_post':self.filter_post,
+            'product_ids': self.products.ids,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
             'end_date': self.end_date
