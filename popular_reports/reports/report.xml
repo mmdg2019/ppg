@@ -48,7 +48,7 @@
     /> -->
     <record id="stock_focus" model="ir.actions.report">
         <field name="name">Stock Focus Report</field>
-        <field name="print_report_name"></field>
+        <field name="print_report_name">>Stock Focus Report</field>
         <field name="model">stock.picking</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_stock_focus</field>
@@ -71,7 +71,7 @@
     /> -->
     <record id="stock_transfer_dtl_info" model="ir.actions.report">
         <field name="name">Stock Transfer Information Summary</field>
-        <field name="print_report_name"></field>
+        <field name="print_report_name">Stock Transfer Information Summary</field>
         <field name="model">stock.picking</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_stock_transfer_dtl_info</field>
@@ -93,7 +93,7 @@
 <!--     /> -->
     <record id="cash_receipt_listing_by_date" model="ir.actions.report">
         <field name="name">Cash Receipt Listing by Date</field>
-        <field name="print_report_name"></field>
+        <field name="print_report_name">Cash Receipt Listing by Date</field>
         <field name="model">account.payment</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_cash_receipt_listing_by_date</field>
@@ -115,7 +115,7 @@
     /> -->
     <record id="cash_receipt_listing_by_r_no" model="ir.actions.report">
         <field name="name">Cash Receipt Listing by Receipt No</field>
-        <field name="print_report_name"></field>
+        <field name="print_report_name">Cash Receipt Listing by Receipt No</field>
         <field name="model">account.payment</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_cash_receipt_listing_by_r_no</field>
@@ -137,7 +137,7 @@
     /> -->
     <record id="refund_lst_by_vendor" model="ir.actions.report">
         <field name="name">Refund Listing by Vendor</field>
-        <field name="print_report_name"></field>
+        <field name="print_report_name">Refund Listing by Vendor</field>
         <field name="model">account.payment</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_refund_lst_by_vendor</field>
@@ -159,7 +159,7 @@
     /> -->
     <record id="refund_lst_by_product_code" model="ir.actions.report">
         <field name="name">Refund Listing by Product Code</field>
-        <field name="print_report_name"></field>
+        <field name="print_report_name">Refund Listing by Product Code</field>
         <field name="model">account.payment</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.refund_lst_by_product_code</field>
@@ -208,6 +208,18 @@
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_monthly_stock_analysis_report</field>
         <field name="report_file">popular_reports.report_monthly_stock_analysis_report</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+    
+    <record id="stock_analysis_report" model="ir.actions.report">
+        <field name="name">Stock Analysis Report</field>
+        <field name="print_report_name">Stock Analysis Report</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_analysis_report</field>
+        <field name="report_file">popular_reports.report_stock_analysis_report</field>
         <field name="binding_type">report</field>
         <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="paperformat_popular_report"/>
