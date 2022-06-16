@@ -635,6 +635,35 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
         return {
             'lst':sorted(temp, key = lambda i: i['name'].default_code)
             }
+
+#     Stock Analysis Report
+class edit_report_monthly_stock_analysis(models.AbstractModel):
+    _name="report.popular_reports.report_stock_analysis_report"
+    _description="Stock Analysis Report Editing"
+
+    @api.model
+    def _get_report_values(self,docids,data=None):
+        docs = None
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        temp = []
+            
+        if data['product_ids']:
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        else:
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        for product in products:
+            sum_qty = 0
+            for doc in docs.filtered(lambda r: r.state=='posted'):
+                for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
+                    if table_line.product_uom_id.display_name != "Units":
+                        sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                    else:
+                        sum_qty += table_line.quantity
+            if sum_qty > 0:
+                temp.append({'id':product.id,'name':product,'qty':round((sum_qty/product.uom_id.factor_inv),2)})
+        return {
+            'lst':sorted(temp, key = lambda i: i['name'].default_code)
+            }
     
 #     Stock Analysis by Date
 class edit_report_stock_analysis_by_date(models.AbstractModel):
@@ -849,8 +878,13 @@ class edit_report_purchase_inv_lst_by_inv_no(models.AbstractModel):
             docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        if data['product_ids']:
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+        else:
+            product_ids = list(set(docs.mapped('invoice_line_ids.product_id')))
         return {
             'filter_post': data['filter_post'],
+            'product_ids': product_ids,
             'docs': docs
        }
 
