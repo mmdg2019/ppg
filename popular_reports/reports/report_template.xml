@@ -3402,7 +3402,7 @@
                                 <t t-foreach="docs.sorted(key=lambda x: x.name,reverse=False)" t-as="doc">
                                     <tbody>
                                         <!--                                 <tr><td><span t-field="doc.name"/></td><td><span t-esc="doc.invoice_date"/></td><td><span t-field="doc.partner_id.display_name"/></td><td colspan="4"><span t-field="doc.narration"/></td><td style="text-align:center;"></td></tr> -->
-                                        <t t-set="ttl" t-value="ttl + doc.amount_total"/>
+                                        
                                         <t t-set="sub_ttl" t-value="0"/>
                                         
                                         <t t-foreach="doc.invoice_line_ids.filtered(lambda x:x.name != &quot;Special Discount&quot; and x.name != &quot;Other Charges&quot; and x.quantity > 0 and x.product_id in product_ids)" t-as="table_line">
@@ -3433,6 +3433,7 @@
                                                 <td style="text-align:right;">
                                                     <span t-field="table_line.price_subtotal"/>
                                                     <t t-set="sub_ttl" t-value="sub_ttl+table_line.price_subtotal"/>
+                                                    <t t-set="ttl" t-value="ttl +table_line.price_subtotal "/>
                                                 </td>
                                             </tr>
                                             <tr t-if="table_line_last">
