@@ -4019,7 +4019,7 @@
                                                 </th>
                                                 <th style="text-align:right;">
                                                     <span>
-                                                        <t t-esc="sub_ttl-sub_ttl_reconciled" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                        <t t-esc="round(sub_ttl-sub_ttl_reconciled,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </th>
                                                  <th colspan="2"></th>
@@ -4064,10 +4064,10 @@
                                                 <span t-esc="inv_reconciled_amt" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <span t-esc="table_line.amount - inv_reconciled_amt" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                <span t-esc="round(table_line.amount - inv_reconciled_amt,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                             </td>
                                             <td style="text-align:center;">
-                                                <t t-if="table_line.amount-inv_reconciled_amt == 0">
+                                                <t t-if="round(table_line.amount-inv_reconciled_amt,2) == 0.0">
                                                     <span>Y</span>
                                                 </t>
                                                 <t t-else="">
@@ -4105,7 +4105,7 @@
                                                 </th>
                                                  <th style="text-align:right;">
                                                     <span>
-                                                        <t t-esc="sub_ttl-sub_ttl_reconciled" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                        <t t-esc="round(sub_ttl-sub_ttl_reconciled,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </th>
                                                  <th colspan="2"></th>
@@ -4136,7 +4136,7 @@
                                         </th>
                                          <th style="text-align:right;">
                                             <span>
-                                                <t t-esc="ttl-ttl_reconciled" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                <t t-esc="round(ttl-ttl_reconciled,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                             </span>
                                         </th>
                                          <th colspan="2"></th>
