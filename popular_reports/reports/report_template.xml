@@ -3957,10 +3957,19 @@
                                         <span>Receipt Date</span>
                                     </th>
                                     <th>
-                                        <span>Clear Status</span>
+                                        <span>Status</span>
                                     </th>
                                     <th style="text-align:right;">
                                         <span>Amount</span>
+                                    </th>
+<!--                                     <th style="text-align:right;">
+                                        <span>Reconciled Amount</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Remaining Amount</span>
+                                    </th> -->
+                                    <th>
+                                        <span>Reconciled Status</span>
                                     </th>
                                     <th>
                                         <span>Memo</span>
@@ -3973,7 +3982,9 @@
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                     <t t-set="sub_ttl" t-value="0"/>
+<!--                                     <t t-set="sub_ttl_reconciled" t-value="0"/> -->
                                     <t t-set="ttl" t-value="0"/>
+<!--                                     <t t-set="ttl_reconciled" t-value="0"/> -->
                                     <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
                                         <t t-set="ttl" t-value="ttl+table_line.amount"/>
                                         <t t-if="table_line_first">
@@ -4001,10 +4012,30 @@
                                                         <t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </th>
+<!--                                                 <th style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="sub_ttl_reconciled" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </th>
+                                                <th style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="round(sub_ttl-sub_ttl_reconciled,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </th> -->
+                                                 <th colspan="2"></th>
                                             </tr>
                                             <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
-                                            <t t-set="sub_ttl" t-value="0"/></t>
+                                            <t t-set="sub_ttl" t-value="0"/>
+<!--                                             <t t-set="sub_ttl_reconciled" t-value="0"/> -->
+                                        </t>
+                                            
                                         <tr>
+<!--                                             <t t-set="inv_reconciled_amt" t-value="0.0"/> -->
+<!--                                             <t t-foreach="table_line.reconciled_invoice_ids" t-as="invoice_line">
+                                                <t t-foreach="json.loads(invoice_line.invoice_payments_widget)['content']" t-as="line" t-if="line['account_payment_id']==table_line.id and line['amount']>0">
+                                                    <t t-set="inv_reconciled_amt" t-value="line['amount'] + inv_reconciled_amt"/>
+                                                </t>
+                                            </t> -->
                                             <td>
                                                 <t t-if="table_line_first">
                                                     <span t-field="table_line.partner_id.display_name"/>
@@ -4029,11 +4060,35 @@
                                             <td style="text-align:right;">
                                                 <span t-field="table_line.amount"/>
                                             </td>
+<!--                                             <td style="text-align:right;">
+                                                <span t-esc="inv_reconciled_amt" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="round(table_line.amount - inv_reconciled_amt,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                            </td> -->
+                                            <td style="text-align:center;">
+                                                
+                                                <t t-if="table_line.move_line_ids">
+<!--                                                     <t t-set="status" t-value="table_line.move_line_ids.mapped('reconciled')"/> -->
+                                                    <t t-if="True in table_line.move_line_ids.mapped('reconciled')">
+                                                        <span>Y</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                    <span>N</span>
+                                                </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>N</span>
+                                                </t>
+                                            </td>
                                             <td>
                                                 <span t-field="table_line.communication"/>
                                             </td>
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount"/>
+<!--                                         <t t-set="sub_ttl_reconciled" t-value="inv_reconciled_amt + sub_ttl_reconciled"/> -->
+<!--                                         <t t-set="ttl_reconciled" t-value="inv_reconciled_amt + ttl_reconciled"/> -->
+                                    
                                         <t t-if="table_line_last">
                                             <tr>
                                                 <th>
@@ -4050,6 +4105,17 @@
                                                         <t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </th>
+<!--                                                 <th style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="sub_ttl_reconciled" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </th>
+                                                 <th style="text-align:right;">
+                                                    <span>
+                                                        <t t-esc="round(sub_ttl-sub_ttl_reconciled,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    </span>
+                                                </th> -->
+                                                 <th colspan="2"></th>
                                             </tr>
                                         </t>
                                     </t>
@@ -4070,6 +4136,17 @@
                                                 <t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
                                             </span>
                                         </th>
+<!--                                         <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="ttl_reconciled" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                            </span>
+                                        </th>
+                                         <th style="text-align:right;">
+                                            <span>
+                                                <t t-esc="round(ttl-ttl_reconciled,2)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                            </span>
+                                        </th> -->
+                                         <th colspan="2"></th>
                                     </tr>
                                 </tfooter>
                             </t>
