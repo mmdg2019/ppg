@@ -34,6 +34,7 @@ class PopularReport(models.TransientModel):
     warehouse = fields.Many2many('stock.warehouse', string='Warehouse')
     products = fields.Many2many('product.product', string='Product Lists')
     product_cats = fields.Many2many('product.category', string='Product Category')
+    product_cat = fields.Many2one('product.category', string='Product Category')
     invoice_no = fields.Many2many('account.move', string='Inovice No.')
     stock_location = fields.Many2many('stock.location', string='Location')
     location_src = fields.Many2one('stock.location')
@@ -70,6 +71,9 @@ class PopularReport(models.TransientModel):
 
     def get_company(self):
         return self.env.company
+    
+    def default_status(self):
+        return 'posted'
     
     
 #     Sales Report by Product Code
@@ -153,6 +157,21 @@ class PopularReport(models.TransientModel):
             'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.sales_analysis_by_month_and_cust').report_action(self, data=data)
+
+#     Sales Analysis Report by Month and Customer with Colors
+    def print_report_sales_anlys_by_mon_and_cust_col(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+            'filter_country_id': self.filter_country_id.ids,            
+            'filter_state_id': self.filter_state_id.ids,
+            'product_cat': self.product_cat.id
+        }
+        return self.env.ref('popular_reports.sales_anlys_by_mon_and_cust_col').report_action(self, data=data)
     
 #     Sales Analysis Report by State
     def print_report_sales_analysis_by_state(self):

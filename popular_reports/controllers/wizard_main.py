@@ -9,7 +9,7 @@ from odoo.http import content_disposition, request
 from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields, api
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
@@ -407,6 +407,76 @@ class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
             'country': country,
             'state': state,
             'categories':product_cats_ids
+        }
+
+#     Sales Analysis Report by Month and Customer with Colors
+class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
+    _name = "report.popular_reports.report_sales_anlys_by_mon_and_cust_col"
+    _description="Sales Analysis Report by Month and Customer with Colors Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+#         raise UserError(123)
+        docs = None
+        dates = None
+        country = None
+        state = None
+        user_ids = None
+        product_cat = None
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('state', '=', 'cancel'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('state', '=', 'draft'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        
+        if data['user_ids']:
+#             docs = docs.search([('partner_id', 'in', data['user_ids'])])
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        else:
+            user_ids = list(set(docs.mapped('partner_id')))
+#             user_ids = self.env['res.partner'].search([],order='display_name asc')
+#         if data['filter_country_id']:
+#             docs = docs.filtered(lambda r: r.partner_id.country_id.id in data['filter_country_id'])
+#             country = self.env['res.country'].search([('id', 'in', data['filter_country_id'])],limit=1).display_name
+#         if data['filter_state_id']:
+#             docs = docs.filtered(lambda r: r.partner_id.state_id.id in data['filter_state_id'])
+#             state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name
+#         raise UserError(str(docs))
+        
+        if data['product_cat']:
+            product_cat = self.env['product.category'].search([('id', '=', data['product_cat'])],order='display_name asc')
+        
+        docs = docs.filtered(lambda r: r.x_studio_invoice_category.id == data['product_cat'])
+#         else:
+#             product_cats_ids = list(set(docs.mapped('x_studio_invoice_category')))
+#             product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+           
+        dates = list(set([doc.invoice_date.strftime('%b/%Y') for doc in docs]))
+        start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        end_date =datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        dt = []
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+#         raise UserError(str())
+#         for n in range(ttl_months):
+#             temp
+#             raise UserError(temp.strftime("%Y-%m-%d"))
+#             dt.append()
+#         dates = [ for ]
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]
+#         raise UserError(str(date_list))
+    
+        dates.sort(key=lambda date: datetime.strptime(date, "%b/%Y"))
+        return {
+            'docs': docs,
+            'user_ids': sorted(user_ids, key=lambda x: x.display_name),
+            'dates': date_list,
+            'country': country,
+            'state': state,
+            'category':product_cat
         }
 
 #     Sales Analysis Report by State
