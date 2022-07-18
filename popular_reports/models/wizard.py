@@ -167,9 +167,7 @@ class PopularReport(models.TransientModel):
             's_year': self.s_year,
             'e_month': self.e_month,
             'e_year': self.e_year,
-            'filter_country_id': self.filter_country_id.ids,            
-            'filter_state_id': self.filter_state_id.ids,
-            'product_cat': self.product_cat.id
+            'product_cats_ids': self.product_cats.ids
         }
         return self.env.ref('popular_reports.sales_anlys_by_mon_and_cust_col').report_action(self, data=data)
     

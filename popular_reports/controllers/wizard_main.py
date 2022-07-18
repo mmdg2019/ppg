@@ -422,7 +422,7 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
         country = None
         state = None
         user_ids = None
-        product_cat = None
+        product_cats_ids = None
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('state', '=', 'cancel'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         elif data['filter_post'] == '2':
@@ -447,10 +447,9 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
 #             state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name
 #         raise UserError(str(docs))
         
-        if data['product_cat']:
-            product_cat = self.env['product.category'].search([('id', '=', data['product_cat'])],order='display_name asc')
-        
-        docs = docs.filtered(lambda r: r.x_studio_invoice_category.id == data['product_cat'])
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category.id in data['product_cats_ids'])
 #         else:
 #             product_cats_ids = list(set(docs.mapped('x_studio_invoice_category')))
 #             product_cats_ids = self.env['product.category'].search([],order='display_name asc')
@@ -476,7 +475,7 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
             'dates': date_list,
             'country': country,
             'state': state,
-            'category':product_cat
+            'category':product_cats_ids
         }
 
 #     Sales Analysis Report by State

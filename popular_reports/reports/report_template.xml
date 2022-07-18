@@ -3380,23 +3380,47 @@
                             </div>
                         </div>
                         <br/>
-                        <div class="row" style="text-align:center; font-size: 20px;">
+                        <div t-if="category" class="row" style="text-align:center; font-size: 20px;">
                             <div class="col">
                                 <span>
                                     <b>Category : </b>
-                                    <span t-field="category.display_name"/>
+                                    <span t-esc="', '.join(category.mapped('name'))"/>
                                 </span>
                             </div>
                         </div>
                         <br/>
-                        <div class="row" style="text-align:center; font-size: 20px;">
+<!--                         <div class="row" style="text-align:center; font-size: 20px;">
                             <div class="col">
                                 <t t-if="country"> <t t-esc="country"/></t>
                                 <t t-if="state">, 
                                     <t t-esc="state"/></t>
                             </div>
                         </div>
-                        <br/>
+                        <br/> -->
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;color:red;">
+                                        <span> (+) Amount > 50% </span>
+                                    </td>
+                                    <td style="text-align:center;color:orange;">
+                                        <span> 20% &lt; (+) Amount &lt; 30%</span>
+                                    </td>
+                                    <td style="text-align:center;color:green;">
+                                        <span> (+) Amount &lt; 20%</span>
+                                    </td>
+                                    <td style="text-align:center;color:purple;">
+                                        <span> (-) Amount &lt; 20%</span>
+                                    </td>
+                                    <td style="text-align:center;color:grey;">
+                                        <span> 20% &lt; (-) Amount &lt; 30%</span>
+                                    </td>
+                                    <td style="text-align:center;color:blue;">
+                                        <span> (-) Amount > 50% </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em">
                             <thead>
                                 <tr>
@@ -3405,7 +3429,7 @@
                                     </th>
 <!--                                     <t t-foreach="" -->
                                     <t t-foreach="dates" t-as="date">
-                                        <th>
+                                        <th style="text-align:right;">
                                             <span t-esc="date.strftime('%b-%Y')"/>
                                         </th>
                                     </t>
@@ -3417,7 +3441,7 @@
                             <t t-if="docs">
                                 <tbody>
                                     <t t-set="currency_id" t-value="docs.currency_id"/>
-                                    <t t-set="g_ttl" t-value="0"/>
+<!--                                     <t t-set="g_ttl" t-value="0"/> -->
                                     <t t-set="first_amt" t-value="0"/>
                                     
                                     <t t-foreach="user_ids" t-as="cust">
@@ -3426,215 +3450,77 @@
                                             <td>
                                                 <span t-esc="cust.display_name"></span>
                                             </td>
+                                            <t t-set="first_amt" t-value="0"/>
+                                            <t t-set="set_first_amt" t-value="False"/>
                                             <t t-foreach="dates" t-as="date">
+                                                <t t-set="ttl_amt" t-value="0"/>
                                                
                                                 <t t-set="ttl_amt" t-value="sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y') and x.partner_id.id==cust.id).mapped('amount_total_signed'))"/>
-                                                <t t-set="ttl" t-value="ttl_amt + ttl"/>
-                                                
-                                                <t t-if="date_first">
+                                                <t t-set="ttl" t-value="ttl_amt + ttl" />
+                                                <t t-if="ttl_amt > 0 and set_first_amt == False">
+                                                    <t t-set="set_first_amt" t-value="True"/>
                                                     <t t-set="first_amt" t-value="ttl_amt"/>
-                                                    <td style="text-align:right;">
-                                                        <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                    </td>
+                                                </t>
+<!--                                                 <t t-else=""> -->
+                                                <t t-if="set_first_amt == True">
+                                                    <t t-if="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; 0.5">
+                                                        <td style="text-align:right;color:red;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                        </td>
+                                                    </t>
+                                                    <t t-elif="0.3 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; 0.2">
+                                                        <td style="text-align:right;color:orange;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+<!--                                                             <span t-esc="round((ttl_amt - first_amt)/first_amt * 100, 0)"/> % -->
+                                                        </td>
+                                                    </t>
+                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &lt; -0.5">
+                                                        <td style="text-align:right;color:blue;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                        </td>
+                                                    </t>
+                                                    <t t-elif="-0.2 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt) * 100, 2) &gt; -0.3">
+                                                        <td style="text-align:right;color:grey;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                        </td>
+                                                    </t>
+                                                    <t t-elif="0 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; -0.2">
+                                                        <td style="text-align:right;color:purple;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                        </td>
+                                                    </t>
+                                                    <t t-elif="0 &lt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &lt; 0.2">
+                                                        <td style="text-align:right;color:green;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                        </td>
+                                                    </t>
+
+                                                    <t t-else="">
+                                                        <td style="text-align:right;">
+                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
+                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                        </td>
+                                                    </t>
                                                 </t>
                                                 <t t-else="">
-                                                    <t t-if="ttl_amt == first_amt">
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    
-<!--                                                     <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.5">
-                                                        <td style="text-align:right;background-color:#FF0000;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="0.3 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.4">
-                                                        <td style="text-align:right;background-color:#FF7F00;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.3">
-                                                        <td style="text-align:right;background-color:#FFFF00;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.2">
-                                                        <td style="text-align:right;background-color:#7FFF00;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.1">
-                                                        <td style="text-align:right;background-color:#029658;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0">
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.1">
-                                                        <td style="text-align:right;background-color:#00FF7F;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.2">
-                                                        <td style="text-align:right;background-color:#00FFFF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.3">
-                                                        <td style="text-align:right;background-color:#007FFF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.4">
-                                                        <td style="text-align:right;background-color:#0000FF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <td style="text-align:right;background-color:#7F00FF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                     -->
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; 0.5">
-                                                        <td style="text-align:right;background-color:#FF0000;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="0.3 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.4">
-                                                        <td style="text-align:right;background-color:#FF7F00;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.3">
-                                                        <td style="text-align:right;background-color:#FFFF00;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.2">
-                                                        <td style="text-align:right;background-color:#7FFF00;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0.1">
-                                                        <td style="text-align:right;background-color:#029658;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= 0">
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.1">
-                                                        <td style="text-align:right;background-color:#00FF7F;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.2">
-                                                        <td style="text-align:right;background-color:#00FFFF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.3">
-                                                        <td style="text-align:right;background-color:#007FFF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt;= -0.4">
-                                                        <td style="text-align:right;background-color:#0000FF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <td style="text-align:right;background-color:#7F00FF;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t>
-<!--                                                     <t t-else="">
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                        </td>
-                                                    </t> -->
-                                                    
-                                                    
-                                                </t>
-                                                
-                                                
-<!--                                                 <t t-if="round((first_amt - ttl_amt)/first_amt, 2) < 0.2">
                                                     <td style="text-align:right;">
-                                                        <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
+                                                        <span t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': currency_id}" /><br/>
                                                     </td>
-                                                </t> -->
+                                                </t>
                                             </t>
                                             <td  style="text-align:right;">
                                                 <span t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                                <t t-set="g_ttl" t-value="g_ttl + ttl"/>
                                             </td>
                                         </tr>
-<!--                                         <t t-foreach="dates" t-as="date">
-                                            <t t-set="sub" t-value="0"/>
-                                            <t t-set="sub_ttl" t-value="0"/>
-                                                <t t-set="sub_ttl" t-value="0"/>
-                                                <t t-foreach="docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date and x.partner_id.id==cust.id)" t-as="table_line">
-                                                    <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/></t>
-                                                <tr t-if="sub_ttl>0">
-                                                    <td>
-                                                        <span t-esc="date"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span t-esc="cust.display_name"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span t-esc="category.display_name"></span>
-                                                    </td>
-                                                    <td style="text-align:right;">
-                                                        <span>
-                                                            <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                                        </span>
-                                                        <t t-set="sub" t-value="sub + sub_ttl"/>
-                                                    </td>
-                                                </tr>
-                                            </t> -->
                                     </t>
-<!--                                             </t> -->
-<!--                                             <tr t-if="sub>0">
-                                                <th colspan="2"></th>
-                                                <th>
-                                                    <span>Sub Total</span>
-                                                </th>
-                                                <th style="text-align:right;">
-                                                    <span>
-                                                        <t t-esc="abs(sub)" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                                    </span>
-                                                    <t t-set="ttl" t-value="ttl + sub"/>
-                                                </th>
-                                            </tr> -->
-                                        
                                 </tbody>
-                                <tfooter>
-                                    <tr>
-                                        <th>
-                                            <span>Grand Total</span>
-                                        </th>
-                                        <t t-foreach="dates" t-as="date">
-                                            <th>
-                                                <span t-esc="sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y')).mapped('amount_total_signed'))" t-options="{'widget': 'monetary', 'display_currency': currency_id}" />
-                                            </th>
-                                        </t>
-                                        <th style="text-align:right;">
-                                            <span>
-                                                <t t-esc="g_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
-                                            </span>
-                                        </th>
-                                    </tr>
-                                    
-                                </tfooter>
-                            </t>
+s                            </t>
                             <t t-else="">
                                 <tbody>
                                     <tr>
@@ -3647,45 +3533,7 @@
                                 </tbody>
                             </t>
                         </table>
-                        <table class="table table-sm o_report_block_table" style="padding: 0.5em">
-                            <tbody>
-                                <tr>
-                                    <td style="text-align:center;background-color:#7F00FF;">
-                                        <span> (-) Amount >= 50% </span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#0000FF;">
-                                        <span> (-) Amount >= 40%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#007FFF;">
-                                        <span> (-) Amount >= 30%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#00FFFF;">
-                                        <span> (-) Amount >= 20%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#00FF7F;">
-                                        <span> (-) Amount >= 10%</span>
-                                    </td>
-                                    <td style="text-align:center;">
-                                        <span> (+) Amount >= 0</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#029658;">
-                                        <span> (+) Amount >= 10%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#7FFF00;">
-                                        <span> (+) Amount >= 20%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#FFFF00;">
-                                        <span> (+) Amount >= 30%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#FF7F00;">
-                                        <span> (+) Amount >= 40%</span>
-                                    </td>
-                                    <td style="text-align:center;background-color:#FF0000;">
-                                        <span> (+) Amount >= 50%</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        
                     </div>
                     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
                     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
