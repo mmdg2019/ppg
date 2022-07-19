@@ -3520,7 +3520,7 @@
                                         </tr>
                                     </t>
                                 </tbody>
-s                            </t>
+                            </t>
                             <t t-else="">
                                 <tbody>
                                     <tr>
