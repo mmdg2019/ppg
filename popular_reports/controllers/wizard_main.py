@@ -606,6 +606,69 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
             'country': country,
             'state': state
             }
+    
+
+# tto
+#     Stock Analysis by Month and Customer with Colors
+class edit_report_stock_anlys_by_mon_and_cust_col(models.AbstractModel):
+    _name = "report.popular_reports.report_stock_anlys_by_mon_and_cust_col"
+    _description="Stock Analysis by Month and Customer with Colors Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None    
+        user_ids = None         
+        temp = None     
+
+        # filter the inovice record/docs by start and end date;
+        docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        
+        # filter the invoice record/docs by customer;        
+        if data['user_ids']:
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.partner_id in user_ids) # from stock_mon_cust  
+
+        # product list
+        products = self.env['product.product'].search([],order='display_name asc')       
+
+        # filter the invoice record/docs by product category;    
+        product_cats_ids = []        
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids) # from stock_an_mon_cust
+
+        # generate user-chosen dates and start/end date;     
+        start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        end_date =datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]       
+
+        # calculate item count for each product and each month
+        temp = []        
+        for product in products:             
+            ttl_qty = 0 
+            ttlbydate = []   
+            for date in date_list: 
+                sum_qty = 0                                     
+                docc = docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y'))
+                for doc in docc.sorted(lambda r: r.x_studio_invoice_category,reverse=False):                 
+                    for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
+                        if table_line.product_uom_id.display_name != "Units":
+                                sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv                       
+                        else:
+                                sum_qty += table_line.quantity                                
+                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor_inv),2)})                   
+                ttl_qty += round((sum_qty/product.uom_id.factor_inv),2)                        
+            if ttl_qty > 0:        
+                temp.append({'id':product.id,'name':product,'qty':ttlbydate, 'total':ttl_qty})
+        return {
+            'lst': sorted(temp, key = lambda i: (i['name'].display_name)), # error in sorting with default_code        
+            'docs': docs,
+            'user_ids': user_ids, #sorted(user_ids, key=lambda x: x.display_name),
+            'dates': date_list,            
+            'category': product_cats_ids            
+        }
+    
 
 #     Monthly Stock Analysis Report
 class edit_report_monthly_stock_analysis(models.AbstractModel):
@@ -636,6 +699,117 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
             'lst':sorted(temp, key = lambda i: i['name'].default_code)
             }
 
+# tto
+#     Stock Analysis by Month with Colors
+class edit_report_stock_analysis_by_month_col(models.AbstractModel):
+    _name="report.popular_reports.report_stock_analysis_by_month_col"
+    _description="Stock Analysis by Month with Colors Editing"
+
+    @api.model
+    def _get_report_values(self,docids,data=None):
+        docs = None
+
+        # filter invoices based on selected date range, type, and state
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        
+        # filter products based on selected product list
+        if data['product_ids']:
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        else:
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        
+        # change selected date range to list of months 
+        start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        end_date =datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]   
+  
+        # calculate item count for each product and each month
+        temp = []        
+        for product in products:             
+            ttl_qty = 0 
+            ttlbydate = []   
+            for date in date_list: 
+                sum_qty = 0              
+                for doc in docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y')):              
+                    for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
+                        if table_line.product_uom_id.display_name != "Units":
+                            sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                        else:
+                            sum_qty += table_line.quantity
+                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor_inv),2)}) 
+                ttl_qty += round((sum_qty/product.uom_id.factor_inv),2)
+            if ttl_qty > 0:
+                temp.append({'id':product.id, 'name':product,'qty':ttlbydate, 'total':ttl_qty})
+        return {
+            'lst': sorted(temp, key = lambda i: i['name'].display_name), # error in sorting with default_code               
+            'dates': date_list
+        }
+    
+    #     Stock Analysis by Month Columns
+class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
+    _name="report.popular_reports.report_stock_analysis_by_month_columns"
+    _description="Stock Analysis by Month Columns"
+
+    @api.model
+    def _get_report_values(self,docids,data=None):
+        docs = None
+        user_ids = None
+        state = None
+        product_cats_ids=[]
+        user_ids = self.env['res.partner'].search([],order='display_name asc')
+        # filter invoices based on selected date range, type, and state
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        
+        # filter products based on selected product list
+        
+        if data['product_ids']:
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        else:
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)        
+            
+        # filter users based on state and filter invoices based on filtered users
+        if data['filter_state_id']:
+            user_ids = user_ids.filtered(lambda r: r.state_id.id in data['filter_state_id'])
+            state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name            
+            docs = docs.filtered(lambda r: r.partner_id in user_ids)
+        
+        # change selected date range to list of months 
+        start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        end_date =datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]   
+  
+        # calculate item count for each product and each month
+        temp = []        
+        for product in products:             
+            ttl_qty = 0 
+            ttlbydate = []   
+            for date in date_list: 
+                sum_qty = 0              
+                for doc in docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y')):
+                    for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
+                        cat = doc.x_studio_invoice_category
+                        if table_line.product_uom_id.display_name != "Units":
+                            sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                        else:
+                            sum_qty += table_line.quantity
+                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor_inv),2)}) 
+                ttl_qty += round((sum_qty/product.uom_id.factor_inv),2)
+            if ttl_qty > 0:
+                temp.append({'id':product.id,'cat':cat,'name':product,'qty':ttlbydate, 'total':ttl_qty})
+        return {
+            'docs':docs,
+            'lst': sorted(temp, key = lambda i: i['name'].display_name), # error in sorting with default_code               
+            'dates': date_list,
+            'product_cats_ids': product_cats_ids,
+            'state': state, 
+        }   
+  
+    
 #     Stock Analysis Report
 class edit_report_monthly_stock_analysis(models.AbstractModel):
     _name="report.popular_reports.report_stock_analysis_report"
@@ -1538,6 +1712,122 @@ class edit_report_purchase_order_report_by_date(models.AbstractModel):
             'end_date': data['end_date']
        }
     
+# tto (old)
+#     Purchase Order Report by Date and Product
+# class edit_report_purchase_order_report_date_prod(models.AbstractModel):
+#     _name = "report.popular_reports.report_purchase_order_report_date_prod"
+#     _description="Purchase Order Report by Date and Product Editing"
+    
+#     @api.model
+#     def _get_report_values(self, docids, data=None):
+#         docs = None
+        
+#         # filter PO based on selected state and date range
+#         if data['filter_post_pur_quot']:
+#             docs = self.env['purchase.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('state', '=',data['filter_post_pur_quot'])])
+#         else:
+#             docs = self.env['purchase.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date'])])
+
+#         # filter PO based on selected vendor 
+#         if data['user_ids']:
+#             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+
+#         # filter products based on selected product list
+#         if data['product_ids']:
+#             products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+#         else:
+#             products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+#         products = [product.id for product in products]
+
+#         return {
+#             'filter_post_pur_quot': data['filter_post_pur_quot'],
+#             'products': products,
+#             'docs': docs,
+#             'start_date': data['start_date'], 
+#             'end_date': data['end_date']
+#        }   
+
+# tto (updated with new requirements)
+#     Purchase Order Report by Date and Product
+class edit_report_purchase_order_report_date_prod(models.AbstractModel):
+    _name = "report.popular_reports.report_purchase_order_report_date_prod"
+    _description="Purchase Order Report by Date and Product Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        
+        # filter PO based on selected state and date range
+        if data['filter_post_pur_quot']:
+            docs = self.env['purchase.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('state', '=',data['filter_post_pur_quot'])])
+        else:
+            docs = self.env['purchase.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date'])])
+
+        # filter PO based on selected vendor (required field) 
+        docs = docs.filtered(lambda r: r.partner_id.id == data['user_id'])
+        user_id = self.env['res.partner'].search([('id', '=', data['user_id'])]) 
+        
+        # filter products based on selected product list and filtered docs        
+        if data['product_ids']:
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        else:
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+        if docs != None:
+            doc_prod_list = sorted(list(set(docs.mapped('order_line.product_id'))))
+            doc_prod_list = [prod.id for prod in doc_prod_list]
+            products = products.filtered(lambda r: r.id in doc_prod_list)   
+
+        # get date list
+        dates = [doc.date_order.strftime('%m/%d/%Y') for doc in docs]
+        dates = list(set(dates))
+        dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y')) 
+
+        # get current date and time
+        now = datetime.now()        
+        user_tz = self.env.user.tz
+        if user_tz in pytz.all_timezones:
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone(user_tz)
+            dt = old_tz.localize(now).astimezone(new_tz)
+            now = dt
+        cdate = now.date().strftime('%d/%m/%Y')
+        ctime = now.time().strftime('%H:%M:%S')
+
+        # compute sub total and grand total for each product
+        lst = []
+        for product in products:
+            datetemp = []
+            grand_ttl_qty = 0
+            for date in dates:
+                temp = []
+                sub_ttl_qty = 0
+                docc = docs.filtered(lambda r: r.date_order.strftime('%m/%d/%Y') == date)
+                for doc in docc.sorted(key=lambda x: x.name,reverse=False): 
+                    ttl_qty = 0
+                    for table_line in doc.order_line.filtered(lambda x: x.product_id.id == product.id):
+                        if table_line.product_id.uom_id.display_name != table_line.product_uom.display_name:
+                            ttl_qty += round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)
+                        else:
+                            ttl_qty += table_line.product_uom_qty                        
+                    if ttl_qty != 0:
+                        temp.append({'po_no':doc.name, 'qty':ttl_qty})
+                        sub_ttl_qty += ttl_qty                   
+                if sub_ttl_qty != 0:
+                    datetemp.append({'date':datetime.strptime(date, '%m/%d/%Y').strftime('%d/%m/%Y'), 'sub_total':sub_ttl_qty, 'qty_per_po': temp})
+                    grand_ttl_qty += sub_ttl_qty
+            if grand_ttl_qty != 0:
+                lst.append({'product':product.display_name, 'grand_total':grand_ttl_qty, 'qty_per_date':datetemp})    
+        return {
+            'lst': sorted(lst, key = lambda i: i['product']),
+            'filter_post_pur_quot': data['filter_post_pur_quot'],
+            'start_date': data['start_date'], 
+            'end_date': data['end_date'],
+            'consignee': user_id.display_name,
+            'printing_date': cdate,
+            'printing_time': ctime
+        } 
+
+  
 #     Outstanding Bill Report by Vendor
 class edit_report_outstanding_bill_report_by_ven(models.AbstractModel):
     _name = "report.popular_reports.report_outstanding_bill_report_by_ven"
@@ -1617,3 +1907,72 @@ class edit_report_stock_focus(models.AbstractModel):
             'products': products,
             'c_docs': c_docs,
             }
+    
+#     balance statement
+class edit_report_balance_statement(models.AbstractModel):
+    _name = "report.popular_reports.report_balance_statement"
+    _description="Balance Statement"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+
+        today_date = datetime.now()                
+        #         today_date = datetime.strptime("2022-1-12", '%Y-%m-%d')
+        user_tz = self.env.user.tz
+        if user_tz in pytz.all_timezones:
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone(user_tz)
+            dt = old_tz.localize(today_date).astimezone(new_tz)
+            today_date = dt        
+        
+        sales_inv = None  
+        purchase_bill = None
+        cash_receipt = None
+        damage_return = None
+        cash_payment = None
+        user_ids = None
+                 
+        sales_inv = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        # for purchase bill
+        purchase_bill = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+#         raise UserError(data['end_date'])
+        #for cash receipt - from cash receipt listing by customer
+        cash_receipt = self.env['account.payment'].search([('payment_type', '=', 'inbound'),('partner_type', '=', 'customer'),('journal_id.name','=','Cash'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+        #for cash payment - from cash payment by lumpsum
+        cash_payment = self.env['account.payment'].search([('payment_type', '=', 'outbound'),('partner_type', '=', 'supplier'),('journal_id.name','=','Cash'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+        #for damage return from vendor refund
+        damage_return = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+
+        if data['user_ids']:            
+            sales_inv = sales_inv.filtered(lambda r: r.partner_id.id == data['user_ids'])     #sales         
+            purchase_bill = purchase_bill.filtered(lambda r: r.partner_id.id == data['user_ids'])   #purchase bill
+            cash_receipt = cash_receipt.filtered(lambda r: r.partner_id.id == data['user_ids'])   #cash receipt
+            cash_payment = cash_payment.filtered(lambda r: r.partner_id.id == data['user_ids'])   #cash payment
+            damage_return = damage_return.filtered(lambda r: r.partner_id.id == data['user_ids'])   #vendor refund
+            user_ids = self.env['res.partner'].search([('id', '=', data['user_ids'])])       
+            
+#         ttl = 0
+#         temp = []
+#         raise UserError(str(user_ids))
+#         for user in user_ids:
+#             ttl = 0
+            
+#             customer = None            
+#             for table_line in sales_inv.filtered(lambda r: r.partner_id.id == user.id):
+#                     customer = table_line.partner_id.display_name
+#                     ttl += table_line.amount_total_signed
+                                        
+#             if ttl > 0:
+#                 temp.append({'user':user,'ttl':ttl})
+                
+        return {
+            'user_ids': user_ids,            
+            'sales_inv': sales_inv,
+            'purchase_bill': purchase_bill,            
+            'cash_receipt': cash_receipt,
+            'cash_payment': cash_payment,
+            'damage_return': damage_return,
+            'today_date':today_date,
+            'start_date': data['start_date'], 
+            'end_date': data['end_date'],            
+       }

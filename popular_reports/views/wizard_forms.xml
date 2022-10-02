@@ -320,6 +320,67 @@
            </form>
             </field>
         </record>
+        
+        
+        <!-- tto -->
+        <record model='ir.ui.view' id='wizard_form_report_stock_analysis_by_month_col'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Analysis by Month with Colors">
+                    <group string="Product">
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group col="4" colspan="4" string="Start From:">
+                        <field name="s_month" required="1"></field>
+                        <field name="s_year" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4" string="End To:">
+                        <field name="e_month" required="1"></field>
+                        <field name="e_year" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_stock_analysis_by_month_col" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        
+        <record model='ir.ui.view' id='wizard_form_report_stock_analysis_by_month_columns'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Analysis by Month Columns">
+                    <group>
+                        <field name="products" widget="many2many_tags" attrs="{'invisible':[('product_cats','!=', [])]}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field string="Invoice Category" name="product_cats" widget="many2many_tags" attrs="{'invisible':[('products', '!=', [])]}" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group col="2" colspan="2">
+                        <field name="filter_country_id" widget="many2one_tags" invisible = "1" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/> 
+                    </group>
+                    <group col="2" colspan="2">                        
+                        <field name="filter_state_id" widget="many2one_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group col="4" colspan="4" string="Start From:">
+                        <field name="s_month" required="1"></field>
+                        <field name="s_year" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4" string="End To:">
+                        <field name="e_month" required="1"></field>
+                        <field name="e_year" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_stock_analysis_by_month_columns" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+
+        
         <record model='ir.ui.view' id='wizard_form_report_stock_analysis_report'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -996,6 +1057,37 @@
             </field>
         </record>
         
+        <!-- tto -->
+        <record model='ir.ui.view' id='wizard_form_report_stock_anlys_by_mon_and_cust_col'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Analysis by Month and Customer with Colors">
+                    <group string="Customer">
+                        <field name="user" widget="many2many_tags" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <!-- Show all categories. -->
+                        <field string="Invoice Category" name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <!-- Code below only shows "All" category. -->
+                        <!-- <field string="Invoice Category" name="product_cats" widget="many2many_tags" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/> -->
+                    </group>
+                    <group col="4" colspan="4" string="Start From:">
+                        <field name="s_month" required="1"></field>
+                        <field name="s_year" required="1"></field>
+                   </group>
+                    <group col="4" colspan="4" string="End To:">
+                        <field name="e_month" required="1"></field>
+                        <field name="e_year" required="1"></field>
+                   </group>
+               <footer>
+                   <button name="print_report_stock_anlys_by_mon_and_cust_col" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
+        
         <record model='ir.ui.view' id='wizard_form_report_stock_transfer_info'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -1094,6 +1186,77 @@
                    <button name="print_report_purchase_order_report_by_date" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
                </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- tto (old) -->
+<!--         <record model='ir.ui.view' id='wizard_form_report_purchase_order_report_date_prod'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Order Report by Date and Product">
+                    <group string="Vendor">
+                        <field name="user" widget="many2many_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_pur_quot" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+               <footer>
+                   <button name="print_report_purchase_order_report_date_prod" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+                </form>
+            </field>
+        </record> -->
+        
+        <!-- tto (updated with new requirements) -->
+        <record model='ir.ui.view' id='wizard_form_report_purchase_order_report_date_prod'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Purchase Order Report by Date and Product">
+                    <group string="Vendor">
+                        <field name="user_id" widget="many2one_tags" domain="[('supplier_rank','&gt;', 0)]" context="{'search_default_supplier': 1,'res_partner_search_mode': 'supplier', 'default_is_company': True, 'default_supplier_rank': 1}" string="Vendor" required="1" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_pur_quot" widget="many2one_tags" string="Status"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+               <footer>
+                   <button name="print_report_purchase_order_report_date_prod" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+                </form>
+            </field>
+        </record>
+        
+<!--         balance statement -->
+        <record model='ir.ui.view' id='wizard_form_report_balance_statement'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Balance Statement">
+                    <group string="Customer">
+                        <field name="user_id" required="1" widget="many2one_tags" context="{'search_default_customer': 1, 'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                    </group>
+                    <footer>
+                        <button name="print_report_balance_statement" type="object" string="Print Report" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-default" special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>
@@ -1230,6 +1393,25 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_monthly_stock_analysis_report"/>
+            <field name="target">new</field>
+        </record>
+        
+        <!-- tto -->
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_analysis_by_month_col'>
+            <field name="name">Export Stock Analysis by Month with Colors</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_analysis_by_month_col"/>
+            <field name="target">new</field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_analysis_by_month_columns'>
+            <field name="name">Export Stock Analysis by Month Columns</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_analysis_by_month_columns"/>
             <field name="target">new</field>
         </record>
         
@@ -1410,6 +1592,15 @@
             <field name="target">new</field>
         </record>
         
+        <!-- tto -->
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_anlys_by_mon_and_cust_col'>
+            <field name="name">Export Stock Analysis by Month and Customer with Colors</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_anlys_by_mon_and_cust_col"/>
+            <field name="target">new</field>
+        </record> 
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_transfer_info'>
             <field name="name">Export Stock Transfer Information</field>
@@ -1495,6 +1686,37 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_purchase_order_report_by_date"/>
+            <field name="target">new</field>
+        </record>
+        
+        <!-- tto (old) -->
+<!--         <record model='ir.actions.act_window' id='wizard_act_report_purchase_order_report_date_prod'>
+            <field name="name">Export Purchase Order Report by Date and Product</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_purchase_order_report_date_prod"/>
+            <field name="target">new</field>
+        </record> -->
+        
+        <!-- tto (updated with new requirements)-->
+        <record model='ir.actions.act_window' id='wizard_act_report_purchase_order_report_date_prod'>
+            <field name="name">Export Purchase Order Report by Date and Product</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_purchase_order_report_date_prod"/>
+            <field name="target">new</field>
+        </record>
+
+        
+<!--         balance statement -->
+        <record model='ir.actions.act_window' id='wizard_act_report_balance_statement'>
+            <field name="name">Balance Statement</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_balance_statement"/>
             <field name="target">new</field>
         </record>
     </data>

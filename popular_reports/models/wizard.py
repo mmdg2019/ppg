@@ -226,6 +226,19 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_analysis_by_month_and_cust').report_action(self, data=data)
 
+#     Stock Analysis by Month and Customer with Colors (tto)
+    def print_report_stock_anlys_by_mon_and_cust_col(self):
+        data = {            
+            'user_ids': self.user.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+            'product_cats_ids': self.product_cats.ids
+        }
+        return self.env.ref('popular_reports.stock_anlys_by_mon_and_cust_col').report_action(self, data=data)
+    
+    
 #     Stock Transfer Information
     def print_report_stock_transfer_info(self):
         data = {
@@ -281,6 +294,32 @@ class PopularReport(models.TransientModel):
             'e_year': self.e_year,
         }
         return self.env.ref('popular_reports.monthly_stock_analysis_report').report_action(self, data=data)
+    
+# tto
+#     Stock Analysis by Month with Colors
+    def print_report_stock_analysis_by_month_col(self):
+        data = {
+            'product_ids': self.products.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.stock_analysis_by_month_col').report_action(self, data=data)
+    
+    #     Stock Analysis by Month Columns
+    def print_report_stock_analysis_by_month_columns(self):
+        data = {
+            'product_ids': self.products.ids,
+            'product_cats_ids': self.product_cats.ids,
+            'filter_state_id': self.filter_state_id.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.stock_analysis_by_month_columns').report_action(self, data=data)
+    
     
 #     Stock Analysis Report
     def print_report_stock_analysis_report(self):
@@ -550,4 +589,38 @@ class PopularReport(models.TransientModel):
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.purchase_order_report_by_date').report_action(self, data=data)
+    
+# tto (old)
+#     Purchase Order Report by Date and Product
+#     def print_report_purchase_order_report_date_prod(self):
+#         data = {
+#             'filter_post_pur_quot':self.filter_post_pur_quot,
+#             'user_ids': self.user.ids,
+#             'product_ids': self.products.ids,
+#             'start_date': self.start_date, 
+#             'end_date': self.end_date
+#         }
+#         return self.env.ref('popular_reports.purchase_order_report_date_prod').report_action(self, data=data)
+
+# tto (updated with new requirements)
+#     Purchase Order Report by Date and Product
+    def print_report_purchase_order_report_date_prod(self):
+        data = {
+            'filter_post_pur_quot':self.filter_post_pur_quot,
+            'user_id': self.user_id.id,            
+            'product_ids': self.products.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.purchase_order_report_date_prod').report_action(self, data=data) 
+
+    
+#     balance statement
+    def print_report_balance_statement(self):
+        data = {
+            'user_ids': self.user_id.id,
+            'start_date':self.start_date,            
+            'end_date': self.end_date,            
+        }
+        return self.env.ref('popular_reports.balance_statement').report_action(self, data=data)
     

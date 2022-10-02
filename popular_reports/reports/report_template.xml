@@ -587,6 +587,347 @@
             </html>
         </t>
     </template>
+    
+    <!-- tto -->
+	<template id="report_stock_analysis_by_month_col">
+		<t t-call="web.html_container">
+			<html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+				<head>
+						<meta charset="utf-8"/>
+						<meta name="viewport" content="initial-scale=1"/>
+						<title>
+								<t t-esc="title or 'Odoo Report'"/>
+						</title>
+						<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+						<link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+						<t t-call-assets="web.report_assets_common" t-js="false"/>
+						<t t-call-assets="web.assets_common" t-css="false"/>
+						<t t-call-assets="web.report_assets_common" t-css="false"/>
+						<t t-if="studio" t-call-assets="web_studio.report_assets"/>
+						<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+						<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+				</head>
+				<body>
+						<div class="container-fluid" id="wrapwrap">
+								<div class="row" style="text-align:center;">
+										<div class="col">
+												<b>
+														<font style="font-size: 30px;">
+																<span t-esc="env.company.name"/>
+														</font>
+												</b>
+										</div>
+								</div>
+								<div class="row" style="text-align:center;">
+										<div class="col">
+												<b>
+														<font style="font-size: 24px;">
+																<span>Stock Analysis by Month with Colors</span>
+														</font>
+												</b>
+										</div>
+								</div>
+								<br/>
+								<div class="row" style="text-align:center; font-size: 20px;">
+										<div class="col">
+												<span>
+														<b>Date From : </b>
+														<t t-esc="datetime.datetime.strptime(s_month+'/'+s_year, '%m/%Y').strftime('%b/%Y')"/>
+												</span>
+												<span>
+														<b>To : </b>
+														<t t-esc="datetime.datetime.strptime(e_month+'/'+e_year, '%m/%Y').strftime('%b/%Y')"/>
+												</span>
+										</div>
+								</div>
+								<br/>
+								<table class="table table-sm o_report_block_table" style="padding: 0.5em">
+									<tbody>
+										<tr>
+											<td style="text-align:center;color:red;">
+												<span> (+) Quantity > 50% </span>
+											</td>
+											<td style="text-align:center;color:orange;">
+												<span> 20% &lt; (+) Quantity &lt; 30%</span>
+											</td>
+											<td style="text-align:center;color:green;">
+												<span> (+) Quantity &lt; 20%</span>
+											</td>
+											<td style="text-align:center;color:purple;">
+												<span> (-) Quantity &lt; 20%</span>
+											</td>
+											<td style="text-align:center;color:grey;">
+												<span> 20% &lt; (-) Quantity &lt; 30%</span>
+											</td>
+											<td style="text-align:center;color:blue;">
+												<span> (-) Quantity > 50% </span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<table class="table table-sm o_report_block_table" style="padding: 0.5em">
+									<thead>
+										<tr style="vertical-align: middle;">
+											<th>
+												<span>Item Name</span>
+											</th>
+											<th style="text-align:center;">
+												<span>Unit of Measure (UoM)</span>
+											</th>
+											<t t-foreach="dates" t-as="date">
+												<th style="text-align:right;">
+													<span t-esc="date.strftime('%b-%Y')"/>
+												</th>
+											</t>
+											<th style="text-align:right;">
+												<span>Total</span>
+											</th>
+										</tr>
+									</thead>
+									<t t-if="lst">
+										<tbody>
+											<t t-foreach="lst" t-as="item">
+												<tr>
+													<td>
+														<t>
+															<span t-field="item['name'].display_name"/>
+														</t>
+													</td>											
+													<td style="text-align:center;">
+														<t>
+															<span t-esc="item['name'].uom_id.display_name"/>
+														</t>
+													</td>
+													<t t-set="first_qty" t-value="0"/>
+													<t t-set="set_first_qty" t-value="False"/>
+													<t t-foreach="item['qty']" t-as="recqty">
+														<t t-if="recqty['qtybydate'] > 0 and set_first_qty == False">
+															<t t-set="set_first_qty" t-value="True"/>
+															<t t-set="first_qty" t-value="recqty['qtybydate']"/>
+														</t>
+														<t t-if="set_first_qty == True">
+															<t t-if="round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; 0.5">
+																<td style="text-align:right;color:red;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+															<t t-elif="0.3 &gt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; 0.2">
+																<td style="text-align:right;color:orange;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+															<t t-elif="round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &lt; -0.5">
+																<td style="text-align:right;color:blue;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+															<t t-elif="-0.2 &gt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; -0.3">
+																<td style="text-align:right;color:grey;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+															<t t-elif="0 &gt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; -0.2">
+																<td style="text-align:right;color:purple;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+															<t t-elif="0 &lt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &lt; 0.2">
+																<td style="text-align:right;color:green;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+															<t t-else="">
+																<td style="text-align:right;">
+																	<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+																	<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+																</td>
+															</t>
+														</t>
+														<t t-else="">
+															<td style="text-align:right;">
+																<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															</td>
+														</t>												
+													</t>
+													<td style="text-align:right;">
+														<span t-esc="'{0:,.2f}'.format(item['total'])" />
+													</td>
+												</tr>
+											</t>
+										</tbody>
+									</t>
+									<t t-else="">
+										<tbody>
+											<tr>
+												<td colspan="100" style="text-align:center; font-size: 20px;">
+													<span>
+														<b>No Results Found.</b>
+													</span>
+												</td>
+											</tr>
+										</tbody>
+									</t>
+								</table>	
+						</div>
+						<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+						<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+						<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+				</body>
+			</html>
+		</t>
+	</template>
+    
+    <template id="report_stock_analysis_by_month_columns">
+		<t t-call="web.html_container">
+			<html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+				<head>
+						<meta charset="utf-8"/>
+						<meta name="viewport" content="initial-scale=1"/>
+						<title>
+								<t t-esc="title or 'Odoo Report'"/>
+						</title>
+						<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+						<link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+						<t t-call-assets="web.report_assets_common" t-js="false"/>
+						<t t-call-assets="web.assets_common" t-css="false"/>
+						<t t-call-assets="web.report_assets_common" t-css="false"/>
+						<t t-if="studio" t-call-assets="web_studio.report_assets"/>
+						<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+						<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+				</head>
+				<body>
+						<div class="container-fluid" id="wrapwrap">
+								<div class="row" style="text-align:center;">
+										<div class="col">
+												<b>
+														<font style="font-size: 30px;">
+																<span t-esc="env.company.name"/>
+														</font>
+												</b>
+										</div>
+								</div>
+								<div class="row" style="text-align:center;">
+										<div class="col">
+												<b>
+														<font style="font-size: 24px;">
+																<span>Stock Analysis by Month Columns</span>
+														</font>
+												</b>
+										</div>
+								</div>
+								<br/>
+                                <div class="row" style="text-align:center; font-size: 20px;">
+                                        <div class="col">
+                                                <span>
+                                                        <t t-if="state">
+                                                                <b>State : </b>
+                                                                <t t-esc="state"/>                                        
+                                                        </t>                                    
+                                                </span>
+                                        </div>
+                                </div>
+                                <br/>
+                                <div class="row" style="text-align:center; font-size: 20px;">
+                                        <div class="col">
+                                                <span>
+                                                        <t t-if="product_cats_ids">
+                                                            <b>Invoice Category : </b>
+                                                            <t t-foreach="product_cats_ids" t-as="cat">
+                                                                    <span t-esc="cat.display_name" /><t t-if="not cat_last">, </t>
+                                                            </t>
+                                                        </t>                                    
+                                                </span>
+                                        </div>
+                                </div>
+                                <br/>
+								<div class="row" style="text-align:center; font-size: 20px;">
+										<div class="col">
+												<span>
+														<b>Date From : </b>
+														<t t-esc="datetime.datetime.strptime(s_month+'/'+s_year, '%m/%Y').strftime('%b/%Y')"/>
+												</span>
+												<span>
+														<b>To : </b>
+														<t t-esc="datetime.datetime.strptime(e_month+'/'+e_year, '%m/%Y').strftime('%b/%Y')"/>
+												</span>
+										</div>
+								</div>
+								<br/>
+								<table class="table table-sm o_report_block_table" style="padding: 0.5em">
+									<thead>
+										<tr style="vertical-align: middle;">
+											<th>
+												<span>Item Name</span>
+											</th>
+											<th style="text-align:center;">
+												<span>Unit of Measure (UoM)</span>
+											</th>
+											<t t-foreach="dates" t-as="date">
+												<th style="text-align:right;">
+													<span t-esc="date.strftime('%b-%Y')"/>
+												</th>
+											</t>
+											<th style="text-align:right;">
+												<span>Total</span>
+											</th>
+										</tr>
+									</thead>
+									<t t-if="lst">
+										<tbody>
+											<t t-foreach="lst" t-as="item">
+												<tr>
+													<td>
+														<t>
+															<span t-field="item['name'].display_name"/>
+														</t>
+													</td>											
+													<td style="text-align:center;">
+														<t>
+															<span t-esc="item['name'].uom_id.display_name"/>
+														</t>
+													</td>
+													<t t-foreach="item['qty']" t-as="recqty">
+                                                        <td style="text-align:right;">
+                                                            <t>
+                                                                <span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+                                                            </t>
+                                                        </td>
+													</t>
+													<td style="text-align:right;">
+														<span t-esc="'{0:,.2f}'.format(item['total'])" />
+													</td>
+												</tr>
+											</t>
+										</tbody>
+									</t>
+									<t t-else="">
+										<tbody>
+											<tr>
+												<td colspan="100" style="text-align:center; font-size: 20px;">
+													<span>
+														<b>No Results Found.</b>
+													</span>
+												</td>
+											</tr>
+										</tbody>
+									</t>
+								</table>	
+						</div>
+						<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+						<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+						<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+				</body>
+			</html>
+		</t>
+	</template>
+
+    
     <template id="report_stock_analysis_report">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
@@ -820,6 +1161,222 @@
             </html>
         </t>
     </template>
+    
+    <!-- tto -->
+	<template id="report_stock_anlys_by_mon_and_cust_col">
+		<t t-call="web.html_container">
+			<html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+				<head>
+					<meta charset="utf-8"/>
+					<meta name="viewport" content="initial-scale=1"/>
+					<title>
+						<t t-esc="title or 'Odoo Report'"/>
+					</title>
+					<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+					<link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+					<t t-call-assets="web.report_assets_common" t-js="false"/>
+					<t t-call-assets="web.assets_common" t-css="false"/>
+					<t t-call-assets="web.report_assets_common" t-css="false"/>
+					<t t-if="studio" t-call-assets="web_studio.report_assets"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+				</head>
+				<body >
+					<div class="container-fluid" id="wrapwrap">
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 30px;">
+										<span t-esc="env.company.name"/>
+									</font>
+								</b>
+							</div>
+						</div>
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 24px;">
+										Stock Analysis by Month and Customer with Colors								
+										<br/>
+									</font>
+								</b>
+							</div>
+						</div>
+						<br/>
+						<div class="row" style="text-align:center; font-size: 20px;">
+							<div class="col">
+								<span>
+									<b>Date From : </b>
+									<t t-esc="datetime.datetime.strptime(s_month+'/'+s_year, '%m/%Y').strftime('%b/%Y')"/>
+								</span>
+								<span>
+									<b>To : </b>
+									<t t-esc="datetime.datetime.strptime(e_month+'/'+e_year, '%m/%Y').strftime('%b/%Y')"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+                        <div t-if="user_ids" class="row" style="text-align:center; font-size: 20px;">
+							<div class="col">
+								<span>
+									<b>Customer : </b>
+									<span t-esc="', '.join(user_ids.mapped('display_name'))"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+						<div t-if="category" class="row" style="text-align:center; font-size: 20px;">
+							<div class="col">
+								<span>
+									<b>Category : </b>
+									<span t-esc="', '.join(category.mapped('name'))"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+						<table class="table table-sm o_report_block_table" style="padding: 0.5em">
+							<tbody>
+								<tr>
+									<td style="text-align:center;color:red;">
+										<span> (+) Quantity > 50% </span>
+									</td>
+									<td style="text-align:center;color:orange;">
+										<span> 20% &lt; (+) Quantity &lt; 30%</span>
+									</td>
+									<td style="text-align:center;color:green;">
+										<span> (+) Quantity &lt; 20%</span>
+									</td>
+									<td style="text-align:center;color:purple;">
+										<span> (-) Quantity &lt; 20%</span>
+									</td>
+									<td style="text-align:center;color:grey;">
+										<span> 20% &lt; (-) Quantity &lt; 30%</span>
+									</td>
+									<td style="text-align:center;color:blue;">
+										<span> (-) Quantity > 50% </span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="table table-sm o_report_block_table" style="padding: 0.5em">
+							<thead>
+								<tr>
+									<th>
+										<span>Item Name</span>
+									</th>
+									<th style="text-align:center;">
+										<span>Unit of Measure (UoM)</span>
+									</th>
+									<t t-foreach="dates" t-as="date">
+										<th style="text-align:right;">
+											<span t-esc="date.strftime('%b-%Y')"/>
+										</th>
+									</t>
+									<th style="text-align:right;">
+										<span>Total</span>
+									</th>
+								</tr>
+							</thead>
+							<t t-if="lst">
+								<tbody>
+									<t t-foreach="lst" t-as="item">
+										<tr>
+											<td>
+												<t>
+													<span t-field="item['name'].display_name"/>
+												</t>
+											</td>											
+											<td style="text-align:center;">
+												<t>
+													<span t-esc="item['name'].uom_id.display_name"/>
+												</t>
+											</td>
+											<t t-set="first_qty" t-value="0"/>
+											<t t-set="set_first_qty" t-value="False"/>
+											<t t-foreach="item['qty']" t-as="recqty">
+												<t t-if="recqty['qtybydate'] > 0 and set_first_qty == False">
+													<t t-set="set_first_qty" t-value="True"/>
+													<t t-set="first_qty" t-value="recqty['qtybydate']"/>
+												</t>
+												<t t-if="set_first_qty == True">
+													<t t-if="round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; 0.5">
+														<td style="text-align:right;color:red;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+													<t t-elif="0.3 &gt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; 0.2">
+														<td style="text-align:right;color:orange;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+													<t t-elif="round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &lt; -0.5">
+														<td style="text-align:right;color:blue;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+													<t t-elif="-0.2 &gt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; -0.3">
+														<td style="text-align:right;color:grey;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+													<t t-elif="0 &gt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &gt; -0.2">
+														<td style="text-align:right;color:purple;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+													<t t-elif="0 &lt; round((recqty['qtybydate'] - first_qty)/(first_qty or not first_qty), 2) &lt; 0.2">
+														<td style="text-align:right;color:green;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+													<t t-else="">
+														<td style="text-align:right;">
+															<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+															<span t-esc="int(((recqty['qtybydate'] - first_qty)/first_qty) * 100)"/> %
+														</td>
+													</t>
+												</t>
+												<t t-else="">
+													<td style="text-align:right;">
+														<span t-esc="'{0:,.2f}'.format(recqty['qtybydate'])"/><br/>
+													</td>
+												</t>												
+											</t>
+											<td style="text-align:right;">
+												<span t-esc="'{0:,.2f}'.format(item['total'])" />
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</t>
+							<t t-else="">
+								<tbody>
+									<tr>
+										<td colspan="100" style="text-align:center; font-size: 20px;">
+											<span>
+												<b>No Results Found.</b>
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</t>
+						</table>							
+					</div>
+					<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+					<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+					<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+				</body>
+			</html>
+		</t>
+	</template>    
+    
+    
     <template id="report_stock_analysis_by_date">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
@@ -8071,6 +8628,327 @@
             </html>
         </t>
     </template>
+    
+    <!-- tto (old) -->
+<!--     <template id="report_purchase_order_report_date_prod">
+		<t t-call="web.html_container">
+			<html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+				<head>
+					<meta charset="utf-8"/>
+					<meta name="viewport" content="initial-scale=1"/>
+					<title>
+						<t t-esc="title or 'Odoo Report'"/>
+					</title>
+					<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+					<link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+					<t t-call-assets="web.report_assets_common" t-js="false"/>
+					<t t-call-assets="web.assets_common" t-css="false"/>
+					<t t-call-assets="web.report_assets_common" t-css="false"/>
+					<t t-if="studio" t-call-assets="web_studio.report_assets"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+				</head>
+				<body>
+					<div class="container-fluid" id="wrapwrap">
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 30px;">
+										<span t-esc="env.company.name"/>
+									</font>
+								</b>
+							</div>
+						</div>
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 24px;">
+										<span>Purchase Order Report by Date and Product																					
+											<t t-if="filter_post_pur_quot=='cancel'">(Cancelled)</t>
+											<t t-elif="filter_post_pur_quot=='done'">(Locked)</t>
+											<t t-elif="filter_post_pur_quot=='draft'">(RFQ)</t>
+											<t t-elif="filter_post_pur_quot=='purchase'">(Purchase Order)</t>
+											<t t-elif="filter_post_pur_quot=='sent'">(RFQ Sent)</t>
+											<t t-elif="filter_post_pur_quot=='to approve'">(To Approve)</t>
+										</span>
+									</font>
+								</b>
+							</div>
+						</div>
+						<br/>
+						<div class="row" style="text-align:center; font-size: 20px;">
+							<div class="col">
+								<span>
+									<b>Date From : </b>
+									<t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+								</span>
+								<span>
+									<b>To : </b>
+									<t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+						<table class="table table-sm o_report_block_table" style="padding: 0.5em;">
+							<thead>
+								<tr>
+									<th>
+										<span>Order Date</span>
+									</th>
+									<th>
+										<span>PO Number</span>
+									</th>
+									<th>
+										<span>Vendor</span>
+									</th>																	
+									<th>
+										<span>Product Name</span>
+									</th>
+									<th style="text-align:right;">
+										<span>Quantity</span>
+									</th>
+									<th style="text-align:center;">
+										<span>UoM</span>
+									</th>
+								</tr>
+							</thead>
+							<t t-if="docs">
+								<t t-foreach="docs.sorted(key=lambda x: (x.date_order,x.name),reverse=False)" t-as="doc">
+									<tbody>
+											<t t-foreach="doc.order_line.filtered(lambda x: x.product_id.id in products and x.name != &quot;Special Discount&quot; and x.name != &quot;Other Charges&quot;)" t-as="table_line">
+												<tr>
+													<td>
+														<t t-if="table_line_first">
+															<span t-esc="doc.date_order.strftime('%d/%m/%Y')"/>
+														</t>
+													</td>
+													<td>
+														<t t-if="table_line_first">
+															<span t-field="doc.name"/>
+														</t>
+													</td>
+													<td>
+														<t t-if="table_line_first">
+															<span t-field="doc.partner_id.display_name"/>
+														</t>
+													</td>
+													<td>
+															<span t-field="table_line.product_id"/>
+													</td>
+													<td style="text-align:right;">
+															<t t-if="table_line.product_id.uom_id.display_name != table_line.product_uom.display_name">
+																<span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/>
+															</t>
+															<t t-else="">
+																<span t-esc="table_line.product_uom_qty"/>
+															</t>
+													</td>
+													<td style="text-align:center;">
+															<span t-field="table_line.product_uom"/>
+													</td>												 
+												</tr>
+											</t>
+									</tbody>
+								</t>								
+							</t>
+							<t t-else="">
+								<tbody>
+									<tr>
+										<td colspan="100" style="text-align:center; font-size: 20px;">
+											<span>
+												<b>No Results Found.</b>
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</t>
+						</table>
+					</div>
+					<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+					<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+					<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+				</body>
+			</html>
+		</t>
+	</template> -->
+    
+    <!-- tto (updated with new requirements)-->
+	<template id="report_purchase_order_report_date_prod">
+		<t t-call="web.html_container">
+			<html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+				<head>
+					<meta charset="utf-8"/>
+					<meta name="viewport" content="initial-scale=1"/>
+					<title>
+						<t t-esc="title or 'Odoo Report'"/>
+					</title>
+					<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+					<link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+					<t t-call-assets="web.report_assets_common" t-js="false"/>
+					<t t-call-assets="web.assets_common" t-css="false"/>
+					<t t-call-assets="web.report_assets_common" t-css="false"/>
+					<t t-if="studio" t-call-assets="web_studio.report_assets"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+				</head>
+				<body>
+					<div class="container-fluid" id="wrapwrap">
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 20px;">
+										<span t-esc="env.company.name"/>
+									</font>
+								</b>
+							</div>
+						</div>
+						<br/>
+            <t t-if='lst'>
+              <t t-foreach="lst" t-as="prod">
+                <div class="row" style="text-align:center; line-height: 30px;">
+                  <div class="col">
+                    <b>
+                      <font style="font-size: 20px;">
+                        <span>Product Quantity Listing Date Between 									
+                          <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                          And 
+                          <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                        </span>
+                      </font>
+                    </b>
+                  </div>
+                </div>
+<!--                 <br/> -->
+                <div class="row" style="text-align:center; line-height: 30px;">
+                  <div class="col">                    
+                    <font style="font-size: 20px;">
+                      <span><b>Consignee :</b>
+                        <t t-esc="consignee"/>    
+                      </span>
+                    </font>                  
+                  </div>
+                </div>
+<!--                 <br/> -->
+                <div class="row" style="text-align:center; line-height: 30px;">
+                  <div class="col">                    
+                    <font style="font-size: 20px;">
+                      <span><b>Product :</b>
+                        <t t-esc="prod['product']"/>    
+                      </span>
+                    </font>                    
+                  </div>
+                </div>
+<!--                 <br/> -->
+                <div class="row" style="text-align:center; line-height: 30px;">
+                  <div class="col">                    
+                      <font style="font-size: 20px;">
+                        <span><b>Date :</b> 
+                          <t t-esc="printing_date"/>  
+                          <span style ="margin-left: 20px;"><b>Time :</b></span>
+                          <t t-esc="printing_time"/>                          
+                        </span>
+                      </font>                    
+                  </div>
+                </div>
+<!--                 <br/> -->
+                <div class="row" style="text-align:center;">
+                  <div class="col">                    
+                    <font style="font-size: 20px;">
+                      <span><b>Status :</b>																				
+                        <t t-if="filter_post_pur_quot=='cancel'">Cancelled</t>
+                        <t t-elif="filter_post_pur_quot=='done'">Locked</t>
+                        <t t-elif="filter_post_pur_quot=='draft'">RFQ</t>
+                        <t t-elif="filter_post_pur_quot=='purchase'">Purchase Order</t>
+                        <t t-elif="filter_post_pur_quot=='sent'">RFQ Sent</t>
+                        <t t-elif="filter_post_pur_quot=='to approve'">To Approve</t>
+                        <t t-else="">All</t>
+                      </span>
+                    </font>                    
+                  </div>
+                </div>
+                <br/>
+                <table class="table table-sm o_report_block_table" style="padding: 0.5em; width: 75%; margin: auto;">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left;">
+                        <span>Date</span>
+                      </th>
+                      <th style="text-align:center;">
+                        <span>PO Number</span>
+                      </th>                      
+                      <th style="text-align:right;">
+                        <span>Quantity</span>
+                      </th>                     
+                    </tr>
+                  </thead>
+									<tbody>
+										<tr>
+											<t t-foreach="prod['qty_per_date']" t-as="item">
+												<tr>
+													<td style="text-align:left;">													
+															<span t-esc="item['date']"/>													
+													</td>
+													<td style="text-align:center;">
+														<t t-foreach="item['qty_per_po']" t-as="po">																													
+																<span t-esc="po['po_no']"/>
+															<br/>
+														</t>
+													</td>
+													<td style="text-align:right;">
+														<t t-foreach="item['qty_per_po']" t-as="po">																					
+																<span t-esc="'{0:,.2f}'.format(po['qty'])"/>
+															<br/>
+														</t>
+													</td>
+												</tr>
+												<tr style="background-color: #f2f2f2;">
+													<td colspan="2" style="text-align:left;">
+														<span>Sub Total</span>
+													</td>
+													<td style="text-align:right;">
+														<span t-esc="'{0:,.2f}'.format(item['sub_total'])"/>
+                                                        <br/>
+													</td>
+												</tr>
+											</t>
+										</tr>
+										<tr style="border-bottom:1px solid black;">
+											<th colspan="2" style="text-align:left; border-top:1px solid black;">
+												<span>Grand Total</span>
+											</th>
+											<th style="text-align:right; border-top:1px solid black;">
+												<span t-esc="'{0:,.2f}'.format(prod['grand_total'])"/>
+                                                <br/>
+											</th>
+										</tr>
+									</tbody>
+								</table>
+								<br/><br/><br/>	
+							</t>							
+						</t>	
+						<t t-else="">
+              <table class="table table-sm o_report_block_table" style="padding: 0.5em;">
+                <tbody>
+                  <tr>
+                    <td colspan="100" style="text-align:center; font-size: 20px;">
+                      <span>
+                        <b>No Results Found.</b>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+							</table>
+            </t>					
+					</div>
+					<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+					<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+					<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+				</body>
+			</html>
+		</t>
+	</template>
+
+    
     <template id="report_sales_quot_stock_analysis_by_d">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
@@ -8527,7 +9405,7 @@
                                                 <t t-foreach="p_docs.filtered(lambda r: product in r.invoice_line_ids.product_id)" t-as="doc">
                                                     <t t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.id == product.id)" t-as="table_line">
                                                         <t t-set="amt_prev" t-value="amt_prev + table_line.quantity"/>
-                                                    </t>
+                                      x              </t>
                                                 </t>
                                                 <t t-set="amt_prev" t-value="round((amt_prev/ttl_date),2)"/>
                                                 <span t-esc="amt_prev"></span>
@@ -8582,5 +9460,258 @@
                 </body>
             </html>
         </t>
+    </template>    
+<!--     balance statement -->
+    <template id="report_balance_statement">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body >
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:left; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    Date : 
+                                    <t t-esc="today_date.strftime('%d/%m/%Y')"/>
+                                </span>                                
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:left; font-size: 20px;"> 
+                            <div class="col">
+                                <span>
+                                    Time : 
+                                    <t t-esc="today_date.strftime('%H:%M:%S')"/>
+                                </span>                                
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;"> 
+                            <div class="col">
+                                <font style="font-size: 40px;">
+                                      Balance Statement                                                                 
+                                <br/>
+                                </font>                                
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;"> 
+                            <div class="col">                                
+                                Consignee  :                                 
+<!--                                 <span t-esc="', '.join(user_ids.mapped('name'))"/> -->
+                                    <span t-field="user_ids.display_name"/>                                     
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center; font-size: 20px;"> 
+                            <div class="col">
+                                Start Date :
+                                <span t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                <br/>  
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center; font-size: 20px;"> 
+                            <div class="col">
+                                End Date :
+                                <span t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                            </div>
+                        </div>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 20px;">
+                            <thead>
+                                <tr>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
+                                        Sales      
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left;">
+                                        <t t-set="sales_ttl" t-value="0"/>
+                                        <t t-if="sales_inv">
+                                            <t t-set="currency_id" t-value="sales_inv.currency_id"/>
+                                            <t t-foreach="user_ids" t-as="user">
+                                                <t t-set="sales_ttl" t-value="abs(sum(sales_inv.filtered(lambda x: x.partner_id.id == user.id).mapped('amount_total_signed')))"/>                                               
+<!--                                                 <span t-esc = "sales_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>                                                -->
+                                                <span t-esc = "sales_ttl" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <span>
+                                                <t t-esc="'{:.2f}'.format(sales_ttl)"/>
+                                            </span>
+                                        </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
+                                        Cash Payment 
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left;">
+                                        <t t-set="payment_ttl" t-value="0"/>
+                                        <t t-set="currency_id" t-value="cash_payment.currency_id"/>
+                                        <t t-if="cash_payment">
+                                            <t t-foreach="user_ids" t-as="user">
+                                                <t t-set="payment_ttl" t-value="abs(sum(cash_payment.filtered(lambda x: x.partner_id.id == user.id).mapped('amount')))"/>                                                
+<!--                                                 <span t-esc="payment_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/> -->
+                                                <span t-esc = "payment_ttl" t-options="{'widget': 'float', 'precision': 2}"/>
+                                            </t>
+                                        </t>
+                                        <t t-else="">
+                                            <span>
+                                                <t t-esc="'{:.2f}'.format(payment_ttl)"/>
+                                            </span>
+                                        </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
+                                    Purchase 
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left;">
+                                    <t t-set="purchase_ttl" t-value="0"/>
+                                    <t t-if="purchase_bill">
+                                        <t t-set="currency_id" t-value="purchase_bill.currency_id"/>
+                                        <t t-foreach="user_ids" t-as="user">
+                                            <t t-set="purchase_ttl" t-value="abs(sum(purchase_bill.filtered(lambda x: x.partner_id.id == user.id).mapped('amount_total_signed')))"/>
+<!--                                             <span t-esc="purchase_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>                                             -->
+                                            <span t-esc = "purchase_ttl" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <span>
+                                            <t t-esc="'{:.2f}'.format(purchase_ttl)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
+                                    Cash Receipt 
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left;">
+                                    <t t-set="receipt_ttl" t-value="0"/>                                    
+                                    <t t-if="cash_receipt">
+                                        <t t-set="currency_id" t-value="cash_receipt.currency_id"/>
+                                        <t t-foreach="user_ids" t-as="user">
+                                            <t t-set="receipt_ttl" t-value="abs(sum(cash_receipt.filtered(lambda x: x.partner_id.id == user.id).mapped('amount')))"/>
+<!--                                             <span t-esc="receipt_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>                                             -->
+                                            <span t-esc = "receipt_ttl" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <span>
+                                            <t t-esc="'{:.2f}'.format(receipt_ttl)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
+                                    Damage Return 
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left;">
+                                    <t t-set="return_ttl" t-value="0"/>
+                                    <t t-if="damage_return"> 
+                                        <t t-set="currency_id" t-value="damage_return.currency_id"/>
+                                        <t t-foreach="user_ids" t-as="user">
+                                            <t t-set="return_ttl" t-value="abs(sum(damage_return.filtered(lambda x: x.partner_id.id == user.id).mapped('amount_total_signed')))"/>
+<!--                                             <span t-esc="return_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>                                             -->
+                                            <span t-esc = "return_ttl" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <span>
+                                            <t t-esc="'{:.2f}'.format(return_ttl)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <br/>
+                            <tr>
+                                <br/>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
+                                    Payable 
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left; border-top: 1px solid black; border-bottom: 1px solid black;">
+                                    <t t-set="payable" t-value="0"/>
+                                    <t t-set="payable" t-value="(purchase_ttl + receipt_ttl) - (sales_ttl + payment_ttl + return_ttl)"/>
+<!--                                     <t t-set="payable" t-value="(sales_ttl + payment_ttl + return_ttl) - (purchase_ttl + receipt_ttl)"/> -->
+                                    <t t-if = "payable == 0">
+                                        <span t-esc="'{:.2f}'.format(payable)"/>
+                                    </t>
+                                    <t t-else = "">
+<!--                                         <span t-esc="payable" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>   -->
+                                        <span t-esc = "payable" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
     </template>
+
+
 </odoo>
