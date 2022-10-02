@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+<report 
+            id="action_report_cost_sheet2" 
+            model="cost.sheet.two" 
+            string="Cost Sheet Two"
+            report_type="qweb-html"
+            name="sheet_new_two.report_cost_sheet2"
+            file="sheet_new_two.report_cost_sheet2"
+            print_report_name="'Cost Sheet - %s' % (object.name)"
+        />
+    
+
+<report 
+            id="action_report_cost_sheet_pdf" 
+            model="cost.sheet.two" 
+            string="Cost Sheet Two"
+            report_type="qweb-pdf"
+            name="sheet_new_two.report_cost_sheet2"
+            file="sheet_new_two.report_cost_sheet2"
+            print_report_name="'Cost Sheet - %s' % (object.name)"
+            menu="False"
+        />
+    
+
+<!-- <record id="report_qweb_paperformat_dcr_2" model="report.paperformat">
+        <field name="name">cost sheet2 paperformat</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_right">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_top">10</field>
+        <field name="margin_left">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="dpi">110</field>
+        <field name="header_spacing">0</field>          
+    </record>
+    
+<record id="action_report_cost_sheet_pdf_2" model="ir.actions.report">
+        <field name="paperformat_id" ref="report_qweb_paperformat_dcr_2" />
+    </record> -->
+    
+</odoo>
