@@ -230,6 +230,19 @@
               id="popular_reports.menu_report_monthly_stock_analysis_report"
               action="popular_reports.wizard_act_report_monthly_stock_analysis_report"
               sequence="7"/>
+                  
+    <!-- tto -->
+    <menuitem name="Stock Analysis by Month with Colors"
+              parent="popular_reports.popular_reports_sub_menu_6"
+              id="popular_reports.menu_report_stock_analysis_by_month_col"
+              action="popular_reports.wizard_act_report_stock_analysis_by_month_col"
+              sequence="19"/>
+    
+    <menuitem name="Stock Analysis by Month Columns"
+              parent="popular_reports.popular_reports_sub_menu_6"
+              id="popular_reports.menu_report_stock_analysis_by_month_columns"
+              action="popular_reports.wizard_act_report_stock_analysis_by_month_columns"
+              sequence="19"/>
     
     <menuitem name="Stock Analysis Report"
               parent="popular_reports.popular_reports_sub_menu_6"
@@ -259,31 +272,39 @@
               id="popular_reports.menu_report_stock_analysis_by_month_and_cust"
               action="popular_reports.wizard_act_report_stock_analysis_by_month_and_cust"
               sequence="18"/>
+    
+    <!-- tto; change subsequent seq. no. up to 24 -->
+    <menuitem name="Stock Analysis by Month and Customer with Colors"
+              parent="popular_reports.popular_reports_sub_menu_6"
+              id="popular_reports.menu_report_stock_anlys_by_mon_and_cust_col"
+              action="popular_reports.wizard_act_report_stock_anlys_by_mon_and_cust_col"
+              sequence="19"/>
+    
     <menuitem name="Stock Transfer Information"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_transfer_info"
               action="popular_reports.wizard_act_report_stock_transfer_info"
-              sequence="19"/>
+              sequence="20"/>
     <menuitem name="Stock Transfer Information Summary"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_transfer_dtl_info"
               action="popular_reports.wizard_act_report_stock_transfer_dtl_info"
-              sequence="20"/>
+              sequence="21"/>
     <menuitem name="Stock Transfer Operation Report"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_trans_oprt"
               action="popular_reports.wizard_act_report_stock_trans_oprt"
-              sequence="21"/>
+              sequence="22"/>
     <menuitem name="Stock Valuation Information"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_valuation_info"
               action="popular_reports.wizard_act_report_stock_valuation_info"
-              sequence="22"/>
+              sequence="23"/>
     <menuitem name="Stock Focus Report"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_focus"
               action="popular_reports.wizard_act_report_stock_focus"
-              sequence="23"/>
+              sequence="24"/>
 
     <menuitem name="All Balance Listing"
               parent="popular_reports.popular_reports_sub_menu_7"
@@ -349,6 +370,13 @@
               id="popular_reports.menu_report_inv_paymeny_tracking"
               action="popular_reports.wizard_act_report_inv_paymeny_tracking"
               sequence="12"/>
+    
+<!--     balance statement -->
+    <menuitem name="Balance Statement"
+              parent="popular_reports.popular_reports_sub_menu_7"
+              id="popular_reports.menu_report_balance_statement"
+              action="popular_reports.wizard_act_report_balance_statement"
+              sequence="13"/>
 
 
     <menuitem name="Purchase Order Report by Date"
@@ -356,6 +384,20 @@
               id="popular_reports.menu_report_purchase_order_report_by_date"
               action="popular_reports.wizard_act_report_purchase_order_report_by_date"
               sequence="1"/>
+    
+    <!-- tto (old)-->
+<!--     <menuitem name="Purchase Order Report by Date and Product"
+              parent="popular_reports.popular_reports_sub_menu_4"
+              id="popular_reports.menu_report_purchase_order_report_date_prod"
+              action="popular_reports.wizard_act_report_purchase_order_report_date_prod"
+              sequence="2"/> -->
+    
+    <!-- tto (updated with new requirements)-->
+    <menuitem name="Purchase Order Report by Date and Product"
+              parent="popular_reports.popular_reports_sub_menu_4"
+              id="popular_reports.menu_report_purchase_order_report_date_prod"
+              action="popular_reports.wizard_act_report_purchase_order_report_date_prod"
+              sequence="2"/>
 
 </odoo>
     

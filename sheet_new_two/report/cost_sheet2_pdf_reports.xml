@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+		
+<template id="report_cost_sheet2">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <h2 style="text-align:center">
+					<span >Popular Plastic</span>
+                    </h2>
+                    <table style="width:100%;border: none;">
+                    	<tr style="border: none;">
+                            <td style="width:10%;text-align : left;">Printing Date:</td >
+                            <td style="width:22%;text-align : left;"><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/></td>
+                            <td style="width:40%;text-align : center"><strong></strong></td>
+                            <td style="width:22%;text-align : right;">Printing Time:</td>
+                            <td style="width:8%;text-align : left;"><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M:%S')"/></td>
+                        </tr>
+                    </table >
+                    <br />
+                    <table style="width:100%;border: 1px solid black;border-spacing: 8px;">
+                    	<tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Partner</strong></td >
+                            <td style="width:20%;padding: 8px;text-align : left;"><span t-field="o.partner_id.name"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong></strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Product</strong></td >
+                            <td style="width:20%;padding: 8px;text-align : left;"><span t-field="o.product_id"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>CostSheet</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : left;"><span t-field="o.name"/></td>
+                        </tr>
+                        
+                        <tr style="border: none;">
+                            <td style="width:15%;padding: 8px;text-align : left;vertical-align: top;"><strong>Raws</strong></td>
+                            <td style="width:35%;padding: 8px;text-align : left;"><t t-esc="', '.join(map(lambda x: x.name, o.raw_ids))"/> </td >
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong></strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span/></td>
+                        </tr >
+                        
+                        <tr style="border: none;">
+                            <td style="width:15%;padding: 8px;text-align : left;vertical-align: top;"><strong></strong></td>
+                            <td style="width:35%;padding: 8px;text-align : left;"><span/></td >
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Date</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-field="o.date"/></td>
+                        </tr >
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Material Cost</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.material_cost"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Main Plastic</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.pop"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Labour/Overhead</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.labcost"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Main Label</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.new1"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Total</strong></td>
+                          	<td style = "width:20%;padding: 8px;text-align : right;border-bottom: 1pt solid black;border-top: 1pt solid black;"><span t-esc="'%.2f'% o.total"/></td >
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Main Box</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.new2"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Product per LB</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.plb"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Main String</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.new3"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Unit Cost</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.unitcost"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Main Other</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.new4"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Quantity</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.qty"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>PPI Total</strong></td>
+                            <td style = "padding: 8px;border-bottom: 1pt solid black;border-top: 1pt solid black;text-align : right;"><span t-esc="'%.2f'% o.ppitotal"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Amount</strong></td>
+                            <td style = "width:20%;padding: 8px;text-align : right;border-bottom: 1pt solid black;border-top: 1pt solid black;"><span t-esc="'%.2f'% o.amount"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Original Price</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.originp"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Plastic Bag</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.bag"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Discount (%)</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.discount"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Label</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.label"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Selling Price</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.sellprice"/></td>
+                        </tr>
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Others</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.other"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Profit Total</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.prototal"/></td>
+                        </tr>
+                        
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Meter</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.meter"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Profit Each</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.proeach"/></td>
+                        </tr>
+                        
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Metal</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.metal"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong></strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"></td>
+                        </tr>
+                        
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Box</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.metal"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong></strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"></td>
+                        </tr>
+                        
+                        <tr style="border: none;">
+                            <td style="width:30%;padding: 8px;text-align : left;"><strong>Diesel</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.diesel"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong>Factory Selling Price</strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span t-esc="'%.2f'% o.fselprice"/></td>
+                        </tr>
+                        
+                        <tr style="border: none;">
+                            <td style="width:30%;text-align : left;padding: 8px;"><strong>Sub Factory Total Cost</strong></td>
+                            <td style = "width:20%;padding: 8px;text-align : right;border-top: 1pt solid black;"><span t-esc="'%.2f'% o.facttotal"/></td>
+                            <td style="width:30%;padding: 8px;text-align : left ;padding-left: 50px;"><strong></strong></td>
+                            <td style="width:20%;padding: 8px;text-align : right;"><span/></td>
+                        </tr>
+                        
+                    </table>
+             
+                </div>
+            </t>
+    </t>
+</template>
+</odoo>
