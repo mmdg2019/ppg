@@ -9624,7 +9624,7 @@
                                                 <t t-foreach="p_docs.filtered(lambda r: product in r.invoice_line_ids.product_id)" t-as="doc">
                                                     <t t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.id == product.id)" t-as="table_line">
                                                         <t t-set="amt_prev" t-value="amt_prev + table_line.quantity"/>
-                                      x              </t>
+                                                    </t>
                                                 </t>
                                                 <t t-set="amt_prev" t-value="round((amt_prev/ttl_date),2)"/>
                                                 <span t-esc="amt_prev"></span>
