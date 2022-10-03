@@ -887,6 +887,17 @@
         <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
+    <record id="sales_anlys_by_mon_and_cust_col" model="ir.actions.report">
+        <field name="name">Sales Analysis Report by Month and Customer with Colors</field>
+        <field name="print_report_name">Sales Analysis Report by Month and Customer with Colors</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_sales_anlys_by_mon_and_cust_col</field>
+        <field name="report_file">popular_reports.report_sales_anlys_by_mon_and_cust_col</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
 <!--     <report
         id="sales_analysis_by_state"
         model="account.move"
