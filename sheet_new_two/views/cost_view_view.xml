@@ -12,74 +12,77 @@
                         <field name="status" widget="statusbar" statusbar_visible="active,expired"/>
                 </header>
 		        <sheet>
-		        <div class="oe_button_box" name="button_box">
+                    <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" icon="fa-th"
                                 name="action_manufacturing_list">
                             <field name="manu_count" string="ManufactruingOrders" widget="statinfo"/>
                         </button>
-                </div>
+                    </div>
 		        
 		        	<div class="oe_title">
                         <h1>
                              <field name="name"/>
                         </h1>
                     </div>
-		        <group>
-		            <group>
-		            	<field name="partner_id" attrs="{'readonly':[('status','=',('expired'))]}" options="{'no_create': True}"/>	
-		                <field name="product_id" attrs="{'readonly':[('status','=','expired')]}" options="{'no_create': True}"/>
-                        <field name="bom_id" attrs="{'readonly':[('status','=','expired')]}" options="{'no_create': True}"/>
-		                <field name="raw_ids" widget="many2many_tags" attrs="{'readonly':[('status','=','expired')]}" options="{'no_create': True}"/>
-                        <field name="avg_sale" attrs="{'readonly':[('status','=','expired')]}" />
-		                <field name="material_cost" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="labcost" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="total" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="plb" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="unitcost" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="qty" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="amount" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="bag" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="label" attrs="{'readonly':[('status','=','expired')]}"/> 
-                        <field name="metal" attrs="{'readonly':[('status','=','expired')]}"/> 
-                        <field name="box" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="other" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="meter" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="diesel" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="facttotal" attrs="{'readonly':[('status','=','expired')]}"/>  
-		            </group>
-		            
-		            <group>
-                        <field name="date" attrs="{'readonly':[('status','=','expired')]}"/>
-		                <field name="start_date" attrs="{'readonly':[('status','=','expired')],'invisible':[('avg_sale', '=', False)]}"/>
-                        <field name="end_date" attrs="{'readonly':[('status','=','expired')],'invisible':[('avg_sale', '=', False)]}"/>
-		                <field name="pop" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="new1" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="new2" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="new3" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="new4" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="ppitotal" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="originp" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="discount" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="sellprice" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="prototal" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="proeach" attrs="{'readonly':[('status','=','expired')]}"/> 
-		                <field name="fselprice" attrs="{'readonly':[('status','=','expired')]}"/> 
-		            </group>
-		        </group>
-		        <notebook>
+                    <group>
+                        <group>
+                            <field name="partner_id" attrs="{'readonly':[('status','=',('expired'))]}" options="{'no_create': True}"/>	
+                            <field name="product_id" attrs="{'readonly':[('status','=','expired')]}" options="{'no_create': True}"/>
+                            <field name="product_uom" groups="uom.group_uom" options="{'no_open':True,'no_create':True,'no_create_edit':True}"/>
+                            <field name="bom_id" attrs="{'readonly':[('status','=','expired')]}" options="{'no_create': True}"/>
+                            <field name="raw_ids" widget="many2many_tags" attrs="{'readonly':[('status','=','expired')]}" options="{'no_create': True}"/>
+                            <field name="avg_sale" attrs="{'readonly':[('status','=','expired')]}" />
+                            <field name="material_cost" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="labcost" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="total" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="plb" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="unitcost" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="qty" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="amount" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="bag" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="label" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="metal" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="box" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="other" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="meter" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="diesel" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="facttotal" attrs="{'readonly':[('status','=','expired')]}"/>  
+                        </group>
+                        
+                        <group>
+                            <field name="date" attrs="{'readonly':[('status','=','expired')]}"/>
+                            <field name="start_date" attrs="{'readonly':[('status','=','expired')],'invisible':[('avg_sale', '=', False)]}"/>
+                            <field name="end_date" attrs="{'readonly':[('status','=','expired')],'invisible':[('avg_sale', '=', False)]}"/>
+                            <field name="pop" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="new1" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="new2" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="new3" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="new4" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="ppitotal" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="originp" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="discount" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="sellprice" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="prototal" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="proeach" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="fselprice" attrs="{'readonly':[('status','=','expired')]}"/> 
+                        </group>
+                    </group>
+                    <notebook>
                         <page string="Lines">
-                            <field name="costsheet_lines">
-                                <tree string="CostSheet Lines" editable="False">
-                                    <field name="product_id"/>
-                                    <field name="category_id"/>
-                                    <field name="total"/>
-                                    <field name="qty"/>
-                                    <field name="avg"/>
+                            <field name="costsheet_lines" >
+                                <tree string="CostSheet Lines" create="false" delete="false" editable="false">
+                                    <field name="product_id" readonly="True"/>
+                                    <field name="category_id" readonly="True"/>
+                                    <field name="total_amt" readonly="True"/>
+                                    <field name="total_qty" readonly="True"/>
+                                    <field name="total" readonly="True"/>
+                                    <field name="qty" readonly="True"/>
+                                    <field name="product_uom" groups="uom.group_uom" readonly="True"/>
+                                    <field name="cost" readonly="True"/>
                                 </tree>
                             </field>
-                        </page>
-                        
-                </notebook>
+                        </page>                        
+                    </notebook>
 		        </sheet>
             </form>
         </field>
