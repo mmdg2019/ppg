@@ -71,14 +71,14 @@
                         <page string="Lines">
                             <field name="costsheet_lines" >
                                 <tree string="CostSheet Lines" create="false" delete="false" editable="false">
-                                    <field name="product_id" readonly="True"/>
-                                    <field name="category_id" readonly="True"/>
-                                    <field name="total_amt" readonly="True"/>
-                                    <field name="total_qty" readonly="True"/>
-                                    <field name="total" readonly="True"/>
-                                    <field name="qty" readonly="True"/>
-                                    <field name="product_uom" groups="uom.group_uom" readonly="True"/>
-                                    <field name="cost" readonly="True"/>
+                                    <field name="product_id" readonly="True" force_save="1"/>
+                                    <field name="category_id" readonly="True" force_save="1"/>
+                                    <field name="total_amt" readonly="True" force_save="1"/>
+                                    <field name="total_qty" readonly="True" force_save="1"/>
+                                    <field name="total" readonly="True" force_save="1"/>
+                                    <field name="qty" readonly="True" force_save="1"/>
+                                    <field name="product_uom" groups="uom.group_uom" readonly="True" force_save="1"/>
+                                    <field name="cost" readonly="True" force_save="1"/>
                                 </tree>
                             </field>
                         </page>                        
