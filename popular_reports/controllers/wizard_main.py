@@ -1999,6 +1999,7 @@ class edit_report_balance_statement(models.AbstractModel):
         cash_receipt = None
         damage_return = None
         cash_payment = None
+        sales_return = None
         user_ids = None
                  
         sales_inv = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
@@ -2011,6 +2012,8 @@ class edit_report_balance_statement(models.AbstractModel):
         cash_payment = self.env['account.payment'].search([('payment_type', '=', 'outbound'),('partner_type', '=', 'supplier'),('journal_id.name','=','Cash'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
         #for damage return from vendor refund
         damage_return = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+        #sales return from customer credit notes
+        sales_return = self.env['account.move'].search([('type','=','out_refund'),('invoice_date','>=',data['start_date']),('invoice_date','<=',data['end_date']),('state','=','posted')],order='invoice_date asc')
 
         if data['user_ids']:            
             sales_inv = sales_inv.filtered(lambda r: r.partner_id.id == data['user_ids'])     #sales         
@@ -2018,6 +2021,7 @@ class edit_report_balance_statement(models.AbstractModel):
             cash_receipt = cash_receipt.filtered(lambda r: r.partner_id.id == data['user_ids'])   #cash receipt
             cash_payment = cash_payment.filtered(lambda r: r.partner_id.id == data['user_ids'])   #cash payment
             damage_return = damage_return.filtered(lambda r: r.partner_id.id == data['user_ids'])   #vendor refund
+            sales_return = sales_return.filtered(lambda r: r.partner_id.id == data['user_ids']) #customer credit notes
             user_ids = self.env['res.partner'].search([('id', '=', data['user_ids'])])       
             
 #         ttl = 0
@@ -2041,6 +2045,7 @@ class edit_report_balance_statement(models.AbstractModel):
             'cash_receipt': cash_receipt,
             'cash_payment': cash_payment,
             'damage_return': damage_return,
+            'sales_return': sales_return,
             'today_date':today_date,
             'start_date': data['start_date'], 
             'end_date': data['end_date'],            
