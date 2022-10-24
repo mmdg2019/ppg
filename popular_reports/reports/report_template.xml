@@ -9784,6 +9784,34 @@
                             <tr>
                                 <td style="text-align:right;">
                                     <span>
+                                        Sales Return 
+                                    </span>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span>
+                                     :
+                                    </span>
+                                </td>
+                                <td style="text-align:left;">
+                                    <t t-set="sales_ret_ttl" t-value="0"/>
+                                    <t t-if="sales_return"> 
+                                        <t t-set="currency_id" t-value="sales_return.currency_id"/>
+                                        <!-- <t t-foreach="user4_ids" t-as="user4">                             -->
+                                        <t t-foreach="user_ids" t-as="user">
+                                            <t t-set="sales_ret_ttl" t-value="abs(sum(sales_return.filtered(lambda x: x.partner_id.id == user.id).mapped('amount_total_signed')))"/>                                            
+                                            <span t-esc = "sales_ret_ttl" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <span>
+                                            <t t-esc="'{:.2f}'.format(sales_ret_ttl)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <span>
                                         Cash Payment 
                                     </span>
                                 </td>
@@ -9910,8 +9938,9 @@
                                 </td>
                                 <td style="text-align:left; border-top: 1px solid black; border-bottom: 1px solid black;">
                                     <t t-set="payable" t-value="0"/>
-                                    <t t-set="payable" t-value="(purchase_ttl + receipt_ttl) - (sales_ttl + payment_ttl + return_ttl)"/>
-<!--                                     <t t-set="payable" t-value="(sales_ttl + payment_ttl + return_ttl) - (purchase_ttl + receipt_ttl)"/> -->
+                                    <t t-set="payable" t-value="(purchase_ttl + receipt_ttl)-((sales_ttl - sales_ret_ttl) + payment_ttl + return_ttl)"/>
+                                    <!-- <t t-set="payable" t-value="(purchase_ttl + receipt_ttl) - (sales_ttl + payment_ttl + return_ttl)"/> -->
+                                    <!-- <t t-set="payable" t-value="(sales_ttl + payment_ttl + return_ttl) - (purchase_ttl + receipt_ttl)"/> -->
                                     <t t-if = "payable == 0">
                                         <span t-esc="'{:.2f}'.format(payable)"/>
                                     </t>

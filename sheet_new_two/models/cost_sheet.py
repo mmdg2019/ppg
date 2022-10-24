@@ -5,7 +5,7 @@ import datetime
 import pytz
 import io
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from odoo.http import request
 from odoo.tools import date_utils
 import pandas as pd
@@ -32,10 +32,8 @@ class MrpBom(models.Model):
 class MrpProduction(models.Model):
     
     
-    _inherit = 'mrp.production'
-    
-    
-    
+    _inherit = 'mrp.production'   
+        
     
     costsheet_id = fields.Many2one('cost.sheet.two', string = 'CostSheet',store =True)
     
@@ -61,7 +59,7 @@ class CostSheetTwo(models.Model):
     _name = 'cost.sheet.two'
     
     _description = 'Cost Sheet Two'   
-    
+   
     status = fields.Selection([('active', 'Active'), ('expired', 'Expired')], 'Status', default='active')
     
     name = fields.Char(string ="Name",readonly=True,)
@@ -73,7 +71,9 @@ class CostSheetTwo(models.Model):
     avg_sale = fields.Boolean(string = "Average Sales Price",)
     
     product_id = fields.Many2one('product.product', string="Product")
-    
+
+    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', related='product_id.uom_id', readonly=True)
+       
     bom_id = fields.Many2one('mrp.bom', string="BOM")
     
     raw_ids = fields.Many2many('product.product', string="Raw Components")
@@ -140,7 +140,6 @@ class CostSheetTwo(models.Model):
     
     manu_count = fields.Integer(string ='Manufacturing',compute ='_compute_manu_count')
     
-    
     @api.model
     def create(self , vals):
         vals['name'] = self.env['ir.sequence'].next_by_code('cost.sheet.sequence') or '/'
@@ -159,6 +158,18 @@ class CostSheetTwo(models.Model):
                 product = self.env['product.supplierinfo'].search([('product_tmpl_id', '=',rec.product_id.product_tmpl_id.id),('name', '=', rec.partner_id.id)]) 
                 if product:
                     product.write({'x_studio_purchase_original_price': rec.fselprice,})
+                    notification = {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                        'title': _('Info'),
+                        'message': 'Updated the purchase price successfully!',
+                        'sticky': False,
+                        }
+                    }
+                    return notification
+                else:
+                    raise UserError("No vendor pricelist for that product!")
                     
     
     @api.onchange('product_id')
@@ -191,152 +202,171 @@ class CostSheetTwo(models.Model):
 #             return {'domain': {'raw_ids': [('id', 'in', raws)]}}
         
         
-    @api.onchange('bom_id','start_date','end_date')
-    def onchangeline(self):
+    @api.onchange('avg_sale', 'bom_id','start_date','end_date')
+    def onchangeline(self):        
         data_values = [(5,0,0)]
-        values = []
-        boms = self.env['mrp.bom'].search([('id','=',self.bom_id.id)]) 
+        values = []        
+        self.material_cost = self.labcost = self.bag = self.label = self.meter = self.metal = self.box = self.diesel = self.other = self.pop = self.new1 = self.new2 = self.new3 = self.new4 = 0.0
+        boms = self.env['mrp.bom'].search([('id','=',self.bom_id.id)])        
         start_date = self.start_date
         end_date = self.end_date
-        if start_date and end_date:
-            rawmaterialavg = labouravg= plasticavg = labelavg = meteravg = metalavg = boxavg = dieselavg = otheravg = mainavg = mainlabelavg = mainboxavg = mainstringavg = mainotheravg = rawqty = labourqty = plasticqty = labelqty = meterqty = metalqty = boxqty = dieselqty = otherqty = mainqty = mainlabelqty = mainboxqty = mainstringqty = mainotherqty = 0.0
-            invoices = self.env['account.move'].search([('type', '=', 'out_invoice'),'&', ('invoice_date','>=',start_date),('invoice_date','<=',end_date)])
-            for line in boms.bom_line_ids:
-                total = quantity =0.0
-                for inv in invoices.invoice_line_ids:
-                    if line.product_id.id==inv.product_id.id  :
-                        total += inv.price_subtotal
-                        quantity+=inv.quantity
-                    
-                if total == 0 :
-                    total = line.product_id.standard_price
-                    quantity = line.product_qty
-                    rawavg =  line.product_id.standard_price *line.product_qty
+        if start_date and end_date and self.avg_sale:
+            if not boms:
+                raise UserError("Please choose the BoM first!")
+            else:
+                rawmaterialavg = labouravg= plasticavg = labelavg = meteravg = metalavg = boxavg = dieselavg = otheravg = mainavg = mainlabelavg = mainboxavg = mainstringavg = mainotheravg = rawqty = labourqty = plasticqty = labelqty = meterqty = metalqty = boxqty = dieselqty = otherqty = mainqty = mainlabelqty = mainboxqty = mainstringqty = mainotherqty = 0.0
+                invoices = self.env['account.move'].search([('type', '=', 'out_invoice'),'&', ('invoice_date','>=',start_date),('invoice_date','<=',end_date)])
+                for line in boms.bom_line_ids:
+                    ttl_amt = ttl_qty = 0.0
+                    for inv in invoices.invoice_line_ids:
+                        if line.product_id.id==inv.product_id.id:                            
+                            ttl_amt += inv.price_subtotal
+                            ttl_qty += inv.quantity
+                        
+                    if ttl_amt == 0:
+                        total = line.product_id.standard_price
+                        ttl_amt = 0.0
+                        ttl_qty = 0.0
 
-                else:
-                    total = total
-                    quantity = quantity
-                    rawavg = (total / quantity)  *  line.product_qty
+                    else: # find the avg. sale price
+                        total = round(ttl_amt / ttl_qty, 2)
 
-                line_vals = {
-                                'product_id': line.product_id.id,
-                                'category_id': line.product_id.categ_id.id,
-                                'total': total,
-                                'qty': quantity,
-                                'avg': rawavg,
-                            }
-                if line_vals.get("category_id")==3334:
-                    rawmaterialavg += line_vals.get("avg")
-                    rawqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3320:
-                    labouravg += line_vals.get("avg")
-                    labourqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3327:
-                    plasticavg += line_vals.get("avg")
-                    plasticqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3321:
-                    labelavg += line_vals.get("avg")
-                    labelqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3324:
-                    meteravg += line_vals.get("avg")
-                    meterqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3323:
-                    metalavg += line_vals.get("avg")
-                    metalqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3322:
-                    boxavg += line_vals.get("avg")
-                    boxqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3325:
-                    dieselavg += line_vals.get("avg")
-                    dieselqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3326:
-                    otheravg += line_vals.get("avg")
-                    otherqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3328:
-                    mainavg += line_vals.get("avg")
-                    mainqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3329:
-                    mainlabelavg += line_vals.get("avg")
-                    mainlabelqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3330:
-                    mainboxavg += line_vals.get("avg")
-                    mainboxqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3331:
-                    mainstringavg += line_vals.get("avg")
-                    mainstringqty += line_vals.get("qty")
-                elif line_vals.get("category_id")==3332:
-                    mainotheravg += line_vals.get("avg")
-                    mainotherqty += line_vals.get("qty")
+                    line_vals = {
+                                    'product_id': line.product_id.id,
+                                    'category_id': line.product_id.categ_id.id,
+                                    'total_amt': ttl_amt, # total sale prices within the selected date range (or) 0 for default case
+                                    'total_qty': ttl_qty, # total quantities within the selected date range (or) 0 for default case
+                                    'total': total, # avg. sale price within the selected date range or standard sale price (default)
+                                    'qty': line.product_qty,
+                                    'cost': total * line.product_qty
+                                }
                     
-                data_values.append((0, 0, line_vals))
-            
-            self.material_cost = rawmaterialavg/rawqty
-            self.labcost = labouravg/labourqty
-            self.bag = plasticavg/plasticqty
-            self.label = labelavg/labelqty
-            self.meter = meteravg/meterqty
-            self.metal = metalavg/metalqty
-            self.box = boxavg/boxqty
-            self.diesel = dieselavg/dieselqty
-            self.other = otheravg/otherqty
-            self.pop = mainavg/mainqty
-            self.new1 = mainlabelavg/mainlabelqty
-            self.new2 = mainboxavg/mainboxqty
-            self.new3 = mainstringavg/mainstringqty
-            self.new4 = mainotheravg/mainotherqty
-            self.update({'costsheet_lines': data_values})
-            
-            
-        
-            
-        else:
-            rawtotal = rawquantity = labourtotal = labourquantity = plastictotal = plasticquantity =labeltotal = labelquantity = metertotal = meterquantity =metaltotal = metalquantity =  dieseltotal = dieselquantity = othertotal = otherquantity= maintotal= maillabeltotal= mainboxtotal=mainstringtotal= mainothertotal = mainquantity=maillabelquantity= mainboxquantity= mainstringquantity= mainotherquantity= boxtotal = boxquantity = totoalrawavg =0.0
-            for line in boms.bom_line_ids:
+                    if line_vals.get("category_id")==3334:
+                        rawmaterialavg += line_vals.get("cost")
+                        rawqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3320:
+                        labouravg += line_vals.get("cost")
+                        # labourqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3327:
+                        plasticavg += line_vals.get("cost")
+                        # plasticqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3321:
+                        labelavg += line_vals.get("cost")
+                        # labelqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3324:
+                        meteravg += line_vals.get("cost")
+                        # meterqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3323:
+                        metalavg += line_vals.get("cost")
+                        # metalqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3322:
+                        boxavg += line_vals.get("cost")
+                        # boxqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3325:
+                        dieselavg += line_vals.get("cost")
+                        # dieselqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3326:
+                        otheravg += line_vals.get("cost")
+                        # otherqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3328:
+                        mainavg += line_vals.get("cost")
+                        # mainqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3329:
+                        mainlabelavg += line_vals.get("cost")
+                        # mainlabelqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3330:
+                        mainboxavg += line_vals.get("cost")
+                        # mainboxqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3331:
+                        mainstringavg += line_vals.get("cost")
+                        # mainstringqty += line_vals.get("qty")
+                    elif line_vals.get("category_id")==3332:
+                        mainotheravg += line_vals.get("cost")
+                        # mainotherqty += line_vals.get("qty")
+                        
+                    data_values.append((0, 0, line_vals))
+                self.update({'costsheet_lines': data_values})        
                 
+                if rawqty != 0:
+                    self.material_cost = rawmaterialavg/rawqty
+                self.labcost = labouravg
+                self.bag = plasticavg
+                self.label = labelavg
+                self.meter = meteravg
+                self.metal = metalavg
+                self.box = boxavg
+                self.diesel = dieselavg
+                self.other = otheravg
+                self.pop = mainavg
+                self.new1 = mainlabelavg
+                self.new2 = mainboxavg
+                self.new3 = mainstringavg
+                self.new4 = mainotheravg        
+                   
+        else: # default case
+            data_values = [(5,0,0)]
+            rawtotal = rawquantity = labourtotal = labourquantity = plastictotal = plasticquantity = labeltotal = labelquantity = metertotal = meterquantity = metaltotal = metalquantity =  boxtotal = boxquantity = dieseltotal = dieselquantity = othertotal = otherquantity = maintotal = mainlabeltotal = mainboxtotal = mainstringtotal= mainothertotal = mainquantity = mainlabelquantity = mainboxquantity = mainstringquantity = mainotherquantity = totoalrawavg = 0.0
+            for line in boms.bom_line_ids:
+                default_cost = line.product_id.standard_price * line.product_qty
+                default_qty = line.product_qty           
                 if line.product_id.categ_id.id == 3334: 
-                     rawtotal +=  line.product_id.standard_price *line.product_qty
+                    rawtotal +=  default_cost
+                    rawquantity += default_qty
                 elif line.product_id.categ_id.id == 3320: 
-                     labourtotal +=  line.product_id.standard_price *line.product_qty
+                    labourtotal +=  default_cost
+                    # labourquantity += default_qty
                 elif line.product_id.categ_id.id == 3327: 
-                     plastictotal +=  line.product_id.standard_price *line.product_qty
+                    plastictotal +=  default_cost
+                    # plasticquantity += default_qty
                 elif line.product_id.categ_id.id == 3321:
-                    labeltotal += line.product_id.standard_price *line.product_qty
+                    labeltotal += default_cost
+                    # labelquantity += default_qty
                 elif line.product_id.categ_id.id == 3324:
-                    metertotal += line.product_id.standard_price *line.product_qty
+                    metertotal += default_cost
+                    # meterquantity += default_qty
                 elif line.product_id.categ_id.id == 3323:
-                    metaltotal += line.product_id.standard_price *line.product_qty
+                    metaltotal += default_cost
+                    # metalquantity += default_qty
                 elif line.product_id.categ_id.id == 3322:
-                    boxtotal += line.product_id.standard_price *line.product_qty
+                    boxtotal += default_cost
+                    # boxquantity += default_qty
                 elif line.product_id.categ_id.id == 3325:
-                    dieseltotal += line.product_id.standard_price *line.product_qty
+                    dieseltotal += default_cost
+                    # dieselquantity += default_qty
                 elif line.product_id.categ_id.id == 3326:
-                    othertotal += line.product_id.standard_price *line.product_qty
+                    othertotal += default_cost
+                    # otherquantity += default_qty
                 elif line.product_id.categ_id.id == 3328:
-                    maintotal += line.product_id.standard_price *line.product_qty
+                    maintotal += default_cost
+                    # mainquantity += default_qty
                 elif line.product_id.categ_id.id == 3329:
-                    maillabeltotal += line.product_id.standard_price *line.product_qty
+                    mainlabeltotal += default_cost
+                    # mainlabelquantity += default_qty
                 elif line.product_id.categ_id.id == 3330:
-                    mainboxtotal += line.product_id.standard_price *line.product_qty
+                    mainboxtotal += default_cost
+                    # mainboxquantity += default_qty
                 elif line.product_id.categ_id.id == 3331:
-                    mainstringtotal += line.product_id.standard_price *line.product_qty
+                    mainstringtotal += default_cost
+                    # mainstringquantity += default_qty
                 elif line.product_id.categ_id.id == 3332:
-                    mainothertotal += line.product_id.standard_price *line.product_qty
+                    mainothertotal += default_cost
+                    # mainotherquantity += default_qty
                     
                 line_vals = {
                     'product_id': line.product_id.id,
                     'category_id': line.product_id.categ_id.id,
+                    'total_amt': 0.0,
+                    'total_qty': 0.0,
                     'total': line.product_id.standard_price,
-                    'qty': line.product_qty,
-                    'avg': line.product_id.standard_price *line.product_qty
-                    
-                    
+                    'qty': default_qty,
+                    'cost': default_cost 
                 }
                 
-                data_values.append((0, 0, line_vals))
-                
+                data_values.append((0, 0, line_vals))                
             self.update({'costsheet_lines': data_values})
-                
-            self.material_cost = rawtotal
+            
+            if rawquantity != 0:   
+                self.material_cost = rawtotal/rawquantity
             self.labcost = labourtotal
             self.bag = plastictotal
             self.label = labeltotal
@@ -346,11 +376,10 @@ class CostSheetTwo(models.Model):
             self.diesel = dieseltotal
             self.other = othertotal
             self.pop = maintotal
-            self.new1 = maillabeltotal
+            self.new1 = mainlabeltotal
             self.new2 = mainboxtotal
             self.new3 = mainstringtotal
-            self.new4 = mainothertotal
-                        
+            self.new4 = mainothertotal                  
                         
                         
         
@@ -374,30 +403,30 @@ class CostSheetTwo(models.Model):
     @api.depends('amount','bag','label','other','meter','diesel','metal')
     def _compute_factorytotal(self):
         for rec in self:
-            rec.facttotal = rec.amount + rec.bag +rec.label+rec.other+rec.meter+rec.diesel+rec.metal+rec.box
+            rec.facttotal = rec.amount + rec.bag + rec.label + rec.other + rec.meter + rec.diesel + rec.metal + rec.box
             
             
     @api.depends('pop','new1','new2','new3','new4')
     def _compute_pptotal(self):
         for rec in self:
-            rec.ppitotal = rec.pop + rec.new1 +rec.new2+rec.new3+rec.new4
+            rec.ppitotal = rec.pop + rec.new1 + rec.new2 + rec.new3 + rec.new4
             
     @api.depends('originp','discount',)
     def _compute_sellprice(self):
         for rec in self:
             rec.sellprice = rec.originp - (rec.originp *(rec.discount/100))
             
-    @api.depends('sellprice','facttotal',)
+    @api.depends('sellprice','facttotal','ppitotal')
     def _compute_prototal(self):
         for rec in self:
-            rec.prototal = rec.sellprice - rec.facttotal
+            rec.prototal = rec.sellprice - (rec.facttotal + rec.ppitotal)
             
     @api.depends('prototal',)
     def _compute_proeach(self):
         for rec in self:
             rec.proeach = rec.prototal/2
             
-    @api.depends('prototal','facttotal')
+    @api.depends('proeach','facttotal')
     def _compute_factorysale(self):
         for rec in self:
             rec.fselprice = rec.proeach + rec.facttotal
@@ -428,18 +457,24 @@ class CostSheetTwo(models.Model):
 class CostSheetLine(models.Model):
     
     _name = 'cost.sheet.line'
-    
+      
     cosheet_id = fields.Many2one('cost.sheet.two', string="CostSheetLine")
     
     product_id = fields.Many2one('product.product', string="Product")
-    
+
+    product_uom_id = fields.Many2one('uom.uom', string='UoM', related='product_id.uom_id')
+       
     category_id = fields.Many2one('product.category', string="Category")
     
-    total  = fields.Float(string ='Total')
+    total  = fields.Float(string ='Total', help="Standard sale price (default case) or avg. sale price for the selected date range!")
     
-    qty = fields.Float(string ='Qty')
+    qty = fields.Float(string ='Quantity')
     
-    avg = fields.Float(string ='Average')
+    cost = fields.Float(string ='Cost', help="Cost = Total * Quantity")
+    
+    total_amt = fields.Float(string="Total Amount", default=0.0, help="Total sales amount within the selected date range (0 for default)!")
+
+    total_qty = fields.Float(string="Total Quantity", default=0.0, help="Total sales quantity within the selected date range (0 for default)!")
     
     
     @api.model
@@ -451,13 +486,13 @@ class CostSheetLine(models.Model):
         res = super(CostSheetLine, self).write(vals)
         return res
             
-    
-    
-    
+
 
         
         
 
+            
+            
             
             
             
