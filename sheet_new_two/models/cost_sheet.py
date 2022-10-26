@@ -72,7 +72,7 @@ class CostSheetTwo(models.Model):
     
     product_id = fields.Many2one('product.product', string="Product")
 
-    product_uom = fields.Many2one(related='product_id.uom_id', string='Unit of Measure', readonly=True)
+    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', related='product_id.uom_id', readonly=True)
        
     bom_id = fields.Many2one('mrp.bom', string="BOM")
     
@@ -416,10 +416,10 @@ class CostSheetTwo(models.Model):
         for rec in self:
             rec.sellprice = rec.originp - (rec.originp *(rec.discount/100))
             
-    @api.depends('sellprice','facttotal',)
+    @api.depends('sellprice','facttotal','ppitotal')
     def _compute_prototal(self):
         for rec in self:
-            rec.prototal = rec.sellprice - rec.facttotal
+            rec.prototal = rec.sellprice - (rec.facttotal + rec.ppitotal)
             
     @api.depends('prototal',)
     def _compute_proeach(self):
@@ -462,7 +462,7 @@ class CostSheetLine(models.Model):
     
     product_id = fields.Many2one('product.product', string="Product")
 
-    product_uom = fields.Many2one(related='product_id.uom_id', string='UoM')
+    product_uom_id = fields.Many2one('uom.uom', string='UoM', related='product_id.uom_id')
        
     category_id = fields.Many2one('product.category', string="Category")
     
