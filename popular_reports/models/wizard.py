@@ -185,6 +185,7 @@ class PopularReport(models.TransientModel):
 #     Sales Report by Date   
     def print_report_sales_report_by_date(self):
         data = {
+            'user_ids': self.user.ids,
             'product_cats_ids': self.product_cats.ids,
             'filter_post':self.filter_post,
             'start_date': self.start_date, 
@@ -538,6 +539,7 @@ class PopularReport(models.TransientModel):
 #     Sales Order Report by Date
     def print_report_sales_order_report_by_date(self):
         data = {
+            'user_ids': self.user.ids,
             'filter_post_order':self.filter_post_order,
             'start_date': self.start_date, 
             'end_date': self.end_date
