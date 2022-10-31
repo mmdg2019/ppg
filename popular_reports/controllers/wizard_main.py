@@ -289,6 +289,8 @@ class edit_report_sales_report_by_date(models.AbstractModel):
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
             'docs': docs,
             'start_date': data['start_date'], 
@@ -1540,10 +1542,10 @@ class edit_report_inv_payment_tracking(models.AbstractModel):
             'docs': docs
        }
     
-#     Purchase Order Report by Date
+#     Sales Order Report by Date
 class edit_report_sales_order_report_by_date(models.AbstractModel):
     _name = "report.popular_reports.report_sales_order_report_by_date"
-    _description="Purchase Order Report by Date Editing"
+    _description="Sales Order Report by Date Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1559,6 +1561,8 @@ class edit_report_sales_order_report_by_date(models.AbstractModel):
             docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('invoice_status', '=', 'upselling'),('state', 'not in', ('draft', 'sent', 'cancel'))])
         else:
             docs = self.env['sale.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('state', 'not in', ('draft', 'sent', 'cancel'))])
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
             
         return {
             'filter_post_order': data['filter_post_order'],
