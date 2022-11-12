@@ -65,6 +65,7 @@
                             <field name="prototal" attrs="{'readonly':[('status','=','expired')]}"/> 
                             <field name="proeach" attrs="{'readonly':[('status','=','expired')]}"/> 
                             <field name="fselprice" attrs="{'readonly':[('status','=','expired')]}"/> 
+                            <field name="company_id" options="{'no_open':True,'no_create':True,'no_create_edit':True}"/>
                         </group>
                     </group>
                     <notebook>

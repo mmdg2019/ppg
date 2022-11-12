@@ -59,6 +59,8 @@ class CostSheetTwo(models.Model):
     _name = 'cost.sheet.two'
     
     _description = 'Cost Sheet Two'   
+
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.company.id)
    
     status = fields.Selection([('active', 'Active'), ('expired', 'Expired')], 'Status', default='active')
     
@@ -479,6 +481,8 @@ class CostSheetLine(models.Model):
     _name = 'cost.sheet.line'
       
     cosheet_id = fields.Many2one('cost.sheet.two', string="CostSheetLine")
+
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.company.id)
     
     product_id = fields.Many2one('product.product', string="Product")
 
