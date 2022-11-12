@@ -874,7 +874,8 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
                 temp.append({'id':product.id,'cat':cat,'name':product,'qty':ttlbydate, 'total':ttl_qty})
         return {
             'docs':docs,
-            'lst': sorted(temp, key = lambda i: i['name'].display_name), # error in sorting with default_code               
+            # 'lst': sorted(temp, key = lambda i: i['name'].display_name), # error in sorting with default_code
+            'lst': sorted(temp, key = lambda i: i['name'].default_code),               
             'dates': date_list,
             'product_cats_ids': product_cats_ids,
             'state': state, 
