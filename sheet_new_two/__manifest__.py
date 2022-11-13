@@ -12,7 +12,7 @@ Cost Sheet Customization
     'depends': ['base', 'mrp', 'product',],
     'data': [
         'security/ir.model.access.csv',
-        
+        'security/security.xml',
         'views/ir_sequence_view.xml',
         'views/cost_view_view.xml',
         'report/reports.xml',

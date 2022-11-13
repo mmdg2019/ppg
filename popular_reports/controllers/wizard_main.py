@@ -692,7 +692,7 @@ class edit_report_stock_anlys_by_mon_and_cust_col(models.AbstractModel):
         temp = None     
 
         # filter the inovice record/docs by start and end date;
-        docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         
         # filter the invoice record/docs by customer;        
         if data['user_ids']:
@@ -874,7 +874,8 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
                 temp.append({'id':product.id,'cat':cat,'name':product,'qty':ttlbydate, 'total':ttl_qty})
         return {
             'docs':docs,
-            'lst': sorted(temp, key = lambda i: i['name'].display_name), # error in sorting with default_code               
+            # 'lst': sorted(temp, key = lambda i: i['name'].display_name), # error in sorting with default_code
+            'lst': sorted(temp, key = lambda i: i['name'].default_code),               
             'dates': date_list,
             'product_cats_ids': product_cats_ids,
             'state': state, 

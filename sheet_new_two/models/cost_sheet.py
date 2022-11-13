@@ -59,6 +59,8 @@ class CostSheetTwo(models.Model):
     _name = 'cost.sheet.two'
     
     _description = 'Cost Sheet Two'   
+
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.company.id)
    
     status = fields.Selection([('active', 'Active'), ('expired', 'Expired')], 'Status', default='active')
     
@@ -72,7 +74,7 @@ class CostSheetTwo(models.Model):
     
     product_id = fields.Many2one('product.product', string="Product")
 
-    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', related='product_id.uom_id', readonly=True)
+    product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', string='Unit of Measure')
        
     bom_id = fields.Many2one('mrp.bom', string="BOM")
     
@@ -84,11 +86,11 @@ class CostSheetTwo(models.Model):
     
     total = fields.Float(string ='Total',compute='_compute_total',store = True)
     
-    plb = fields.Float(string ='Product per LB',default = 1)
+    plb = fields.Float(string ='Product per LB', default = lambda self: self._onchange_default_plb())
     
     unitcost = fields.Float(string ='Unit Cost',compute='_compute_unit_cost',store =True)
     
-    qty = fields.Integer(string ='Quantity',default =1)
+    qty = fields.Integer(string ='Quantity', default = lambda self: self._onchange_default_qty())
     
     amount = fields.Float(string ='Amount', compute ='_compute_amount',store =True)
     
@@ -139,6 +141,25 @@ class CostSheetTwo(models.Model):
     fselprice = fields.Float(string ='Factory Selling Price',compute ='_compute_factorysale',store =True)
     
     manu_count = fields.Integer(string ='Manufacturing',compute ='_compute_manu_count')
+
+    
+    @api.onchange('product_id')
+    def _onchange_default_plb(self):        
+        prd_weight = self.product_id.product_tmpl_id.weight
+        if prd_weight and prd_weight > 0:
+            self.plb = prd_weight
+        else:
+            self.plb = 1            
+
+    @api.onchange('product_uom_id')
+    def _onchange_default_qty(self):        
+        uom_name = self.product_uom_id.name 
+        if uom_name == 'Dozens':
+            self.qty = 12
+        elif uom_name == 'PKG':
+            self.qty = 10
+        else:
+            self.qty = 1
     
     @api.model
     def create(self , vals):
@@ -392,7 +413,8 @@ class CostSheetTwo(models.Model):
     @api.depends('total','plb')
     def _compute_unit_cost(self):
         for rec in self:
-            rec.unitcost = rec.total / rec.plb
+            if rec.plb != 0:
+                rec.unitcost = rec.total / rec.plb
             
     @api.depends('unitcost','qty')
     def _compute_amount(self):
@@ -459,10 +481,12 @@ class CostSheetLine(models.Model):
     _name = 'cost.sheet.line'
       
     cosheet_id = fields.Many2one('cost.sheet.two', string="CostSheetLine")
+
+    company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.company.id)
     
     product_id = fields.Many2one('product.product', string="Product")
 
-    product_uom_id = fields.Many2one('uom.uom', string='UoM', related='product_id.uom_id')
+    product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', string='UoM')
        
     category_id = fields.Many2one('product.category', string="Category")
     

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="sheet_new_two.cost_sheet_two_record_restricted_company_rule" model="ir.rule">
+        <field name="name">Cost Sheet Two Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_cost_sheet_two"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="sheet_new_two.cost_sheet_line_record_restricted_company_rule" model="ir.rule">
+        <field name="name">Cost Sheet Line Restricted Record: multi-company</field>
+        <field name="model_id" ref="model_cost_sheet_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>
