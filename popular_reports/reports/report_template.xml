@@ -9942,7 +9942,7 @@
                                     <t t-set="payable" t-value="0"/>
                                     <t t-set="pay" t-value="0"/>
                                     <t t-set="payable" t-value="(purchase_ttl + receipt_ttl)-((sales_ttl - sales_ret_ttl) + payment_ttl + return_ttl)"/>
-                                    <t t-set="pay" t-value="'{:.2f}'.format(pay)"/>
+                                    <t t-set="pay" t-value="'{:.2f}'.format(payable)"/>
                                     <t t-if = "pay == -0.00">                                    
                                         <span t-esc="abs(pay)"/>
                                     </t>                                    
