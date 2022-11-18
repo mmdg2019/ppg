@@ -9939,13 +9939,13 @@
                                     </span>
                                 </td>
                                 <td style="text-align:left; border-top: 1px solid black; border-bottom: 1px solid black;">
-                                    <t t-set="payable" t-value="0"/>
-                                    <t t-set="pay" t-value="0"/>
-                                    <t t-set="payable" t-value="(purchase_ttl + receipt_ttl)-((sales_ttl - sales_ret_ttl) + payment_ttl + return_ttl)"/>
-                                    <t t-set="pay" t-value="'{:.2f}'.format(payable)"/>
-                                    <t t-if = "pay == -0.00">                                    
-                                        <span t-esc="abs(pay)"/>
-                                    </t>                                    
+                                    <t t-set="payable" t-value="0"/>                                    
+                                    <t t-set="payable" t-value="round((purchase_ttl + receipt_ttl)-((sales_ttl - sales_ret_ttl) + payment_ttl + return_ttl),2)"/>
+                                    
+                                    <t t-if = "payable == 0">                                    
+                                        <span t-esc="'{:.2f}'.format(abs(payable))"/>                                                                                
+                                    </t> 
+                                                                                                 
                                     <t t-else = "">
                                         <span t-esc = "payable" t-options="{'widget': 'float', 'precision': 2}"/>
                                     </t>
