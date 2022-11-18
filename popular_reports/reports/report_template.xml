@@ -9940,13 +9940,13 @@
                                 </td>
                                 <td style="text-align:left; border-top: 1px solid black; border-bottom: 1px solid black;">
                                     <t t-set="payable" t-value="0"/>
+                                    <t t-set="pay" t-value="0"/>
                                     <t t-set="payable" t-value="(purchase_ttl + receipt_ttl)-((sales_ttl - sales_ret_ttl) + payment_ttl + return_ttl)"/>
-                                    
-                                    <t t-if = "payable == -0.00">                                    
-                                        <span t-esc="'{:.2f}'.format(abs(payable))"/>
-                                    </t>
+                                    <t t-set="pay" t-value="'{:.2f}'.format(pay)"/>
+                                    <t t-if = "pay == -0.00">                                    
+                                        <span t-esc="abs(pay)"/>
+                                    </t>                                    
                                     <t t-else = "">
-<!--                                         <span t-esc="payable" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>   -->
                                         <span t-esc = "payable" t-options="{'widget': 'float', 'precision': 2}"/>
                                     </t>
                                 </td>
