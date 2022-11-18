@@ -9942,12 +9942,7 @@
                                     <t t-set="payable" t-value="0"/>
                                     <t t-set="payable" t-value="(purchase_ttl + receipt_ttl)-((sales_ttl - sales_ret_ttl) + payment_ttl + return_ttl)"/>
                                     
-                                    <!-- <t t-set="payable" t-value="(purchase_ttl + receipt_ttl) - (sales_ttl + payment_ttl + return_ttl)"/> -->
-                                    <!-- <t t-set="payable" t-value="(sales_ttl + payment_ttl + return_ttl) - (purchase_ttl + receipt_ttl)"/> -->
-                                    <!-- <t t-if = "payable == 0">
-                                        <span t-esc="'{:.2f}'.format(payable)"/>
-                                    </t> -->
-                                    <t t-if = "payable == -0">                                    
+                                    <t t-if = "payable == -0.00">                                    
                                         <span t-esc="'{:.2f}'.format(abs(payable))"/>
                                     </t>
                                     <t t-else = "">
