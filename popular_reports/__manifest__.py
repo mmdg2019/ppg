@@ -32,6 +32,7 @@
         'reports/sale_target.xml',
         'security/ir.model.access.csv',
         'security/security.xml',
+        'reports/transfer_main_group_report.xml',
     ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
