@@ -17,8 +17,8 @@
                 <div class="col-6">
                     <img t-if="doc.company_id.x_studio_print_slip_header_image" class="img-fluid" t-att-src="image_data_uri(doc.company_id.x_studio_print_slip_header_image)" alt="Logo"/>
                 </div>
-                <div class="col-6 text-right">
-                    <span t-field="doc.partner_id.contact_address"/>
+                <div class="col-6" style="font-size: 25px; text-align:center;vertical-align: middle;margin-top:60px;">
+                    <b><span t-field="doc.partner_id.name"/></b>
                 </div>
             </div>
             <hr width="100%" align="center" style="border: 2px solid #000"/>
