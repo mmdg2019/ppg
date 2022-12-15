@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                string="Main Group Purchase Order Slip"
+                id="action_print_main_group_purchase_order_slip"
+                model="purchase.order"
+                report_type="qweb-html"
+                name="popular_reports.report_main_group_purchase_slip"
+                file="popular_reports.report_main_group_purchase_slip"
+                print_report_name="'Main Group Purchase Order Slip'"
+            />
+
+	<template id="report_main_group_purchase_order_slip_document">
+        <div class="page h5">
+            <div class="row" style="margin-top:20px">
+                <div class="col-6">
+                    <img t-if="doc.company_id.x_studio_print_slip_header_image" class="img-fluid" t-att-src="image_data_uri(doc.company_id.x_studio_print_slip_header_image)" alt="Logo"/>
+                </div>
+                <div class="col-6" style="font-size: 60px; text-align:center;vertical-align: middle;margin-top:90px;">
+                    <span t-field="doc.partner_id"/>
+                    <br/>
+                    <span t-field="doc.partner_id.phone"/>
+                </div>
+            </div>
+            <hr width="100%" align="center" style="border: 2px solid #000" />
+            <div class="row">
+                <div class="col-6" style="margin-top:40px">
+                    <span t-field="doc.name" class="h3" style="margin-top:40px"/>
+                </div>
+            </div>
+            <div class="row mt32 mb32">
+                <div class="col-auto" name="div_expt_date">
+                    <strong>Confirmation Date:</strong>
+                    <p t-field="doc.date_order"/>
+                </div>
+            </div>
+            <table class="table table-sm" name="invoice_line_table">
+                <thead>
+                    <tr>
+                        <th name="th_sm_product">
+                            <strong>Product</strong>
+                        </th>
+                        <th name="th_sm_package" class="text-center">
+                            <strong>Package</strong>
+                        </th>
+                        <th name="th_sm_quantity" class="text-center">
+                            <strong>No. of Package</strong>
+                        </th>
+                        <th name="th_sm_package" class="text-center">
+                            <strong>Quantity</strong>
+                        </th>
+                        <th class="text-center">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="lines" t-value="doc.order_line.filtered(lambda x: x.product_uom_qty)"/>
+                    <tr t-foreach="lines" t-as="table_line" t-if="table_line.product_id.name != &quot;Special Discount&quot; and table_line.product_id.name != &quot;Other Charges&quot; and table_line.product_uom_qty &gt; 0">
+                        <td>
+                            <span t-field="table_line.product_id.name"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="table_line.x_studio_product_packaging"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-field="table_line.x_studio_no_of_package"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="table_line.product_qty" class="h3"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-field="table_line.product_uom"/>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row mt32 mb32">
+                <div t-if="doc.notes" class="col-auto" name="div_origin">
+                    <strong>Notes:</strong>
+                    <p t-field="doc.notes"/>
+                </div>
+            </div>
+        </div>
+        
+    </template>
+
+    <template id="report_main_group_purchase_slip">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="web.basic_layout">
+                <t t-call="popular_reports.report_main_group_purchase_order_slip_document"/>
+                <p style="page-break-after: always;"/>
+            </t>
+        </t>
+    </template>
+
+    </data>
+</odoo>
