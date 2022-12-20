@@ -8772,10 +8772,12 @@
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <t t-if="table_line.product_id.uom_id.display_name != table_line.product_uom.display_name">
-                                                        <span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/>
+                                                        <!-- <span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/> -->
+                                                        <span t-esc="(table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv" t-options="{'widget': 'float', 'precision': 2}"/>
                                                     </t>
                                                     <t t-else="">
-                                                        <span t-esc="round(table_line.product_uom_qty, 2)"/>
+                                                        <!-- <span t-esc="round(table_line.product_uom_qty, 2)"/> -->
+                                                        <span t-esc="table_line.product_uom_qty" t-options="{'widget': 'float', 'precision': 2}"/>
                                                     </t>
                                                 </td>
                                                 <td style="text-align:center;">
