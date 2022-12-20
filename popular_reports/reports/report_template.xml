@@ -8775,7 +8775,7 @@
                                                         <span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/>
                                                     </t>
                                                     <t t-else="">
-                                                        <span t-esc="table_line.product_uom_qty"/>
+                                                        <span t-esc="round(table_line.product_uom_qty, 2)"/>
                                                     </t>
                                                 </td>
                                                 <td style="text-align:center;">
@@ -8819,6 +8819,7 @@
                                             <span>Grand Total</span>
                                         </th>
                                         <th style="text-align:right;">
+                                            <!-- <b><span t-esc="ttl"  t-options="{'widget': 'float', 'precision': 2}"/></b> -->
                                             <span t-esc="ttl"  t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
                                         </th>
                                         <th>
