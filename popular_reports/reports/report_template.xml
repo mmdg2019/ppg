@@ -266,7 +266,7 @@
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
-                                                        <span t-esc="context_timestamp(doc.scheduled_date).strftime('%d/%m/%Y')"/>
+                                                        <span t-esc="context_timestamp(doc.scheduled_date).strftime('%m/%d/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td>

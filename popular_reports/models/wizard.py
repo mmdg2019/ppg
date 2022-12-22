@@ -325,10 +325,10 @@ class PopularReport(models.TransientModel):
                     y_offset += 1
                     if ind == 1:
                         if len(lines) != 1:
-                            sheet.merge_range(y_offset, 0, y_offset + len(lines) - 1, 0, doc.scheduled_date.strftime('%d/%m/%Y'), default_style1)
+                            sheet.merge_range(y_offset, 0, y_offset + len(lines) - 1, 0, doc.scheduled_date.strftime('%m/%d/%Y'), default_style1)
                             sheet.merge_range(y_offset, 1, y_offset + len(lines) - 1, 1, doc.display_name, default_style1)
                         else:
-                            sheet.write(y_offset, 0, doc.scheduled_date.strftime('%d/%m/%Y'), default_style)
+                            sheet.write(y_offset, 0, doc.scheduled_date.strftime('%m/%d/%Y'), default_style)
                             sheet.write(y_offset, 1, doc.display_name, default_style)
                         ind += 1
                     sheet.write(y_offset, 2, table_line.product_id.name_get()[0][1], default_style)
@@ -354,7 +354,7 @@ class PopularReport(models.TransientModel):
     def print_xlsx_report_factory_stock_transfer(self):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        report_name = 'Factory Stock Transfer Report.xlsx'
+        report_name = 'Factory Stock Transfer Report(' + self.start_date.strftime('%m/%d/%Y') + '-' + self.end_date.strftime('%m/%d/%Y') + ').xlsx'
         sheet = workbook.add_worksheet('Sheet1')
         self._write_excel_data_factory_stock_transfer_report(workbook, sheet)
 
