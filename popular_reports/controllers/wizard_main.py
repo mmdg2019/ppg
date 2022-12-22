@@ -977,6 +977,31 @@ class edit_report_stock_transfer_info(models.AbstractModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
+
+# tto
+#     Factory Stock Transfer
+class edit_report_factory_stock_transfer(models.AbstractModel):
+    _name = "report.popular_reports.report_factory_stock_transfer"
+    _description="Factory Stock Transfer Report Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['filter_post_stock']:
+            docs = self.env['stock.picking'].search([('scheduled_date', '>=',data['start_date']),('scheduled_date', '<=',data['end_date']),('state', '=', data['filter_post_stock'])])
+        else:
+            docs = self.env['stock.picking'].search([('scheduled_date', '>=',data['start_date']),('scheduled_date', '<=',data['end_date'])])
+        if data['filter_stock_picking_type']:
+            docs = docs.filtered(lambda r: r.picking_type_id.id in data['filter_stock_picking_type'])
+        if data['user_ids']: 
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        return {
+            'filter_post_stock': data['filter_post_stock'],
+            'filter_stock_picking_type': data['filter_stock_picking_type'],
+            'docs': docs,
+            'start_date': data['start_date'], 
+            'end_date': data['end_date']
+       }
     
 #     Stock Transfer Information Summary
 class edit_report_stock_transfer_dtl_info(models.AbstractModel):

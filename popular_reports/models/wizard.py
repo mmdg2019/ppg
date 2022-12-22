@@ -6,6 +6,7 @@ from datetime import date, datetime
 import pytz
 import json
 import io
+import base64
 from odoo import api, fields, models, _
 from odoo.tools import date_utils
 try:
@@ -68,6 +69,7 @@ class PopularReport(models.TransientModel):
     filter_post_quot = fields.Selection(POST_QUOT_LIST, string='Status')
     filter_post_pur_quot = fields.Selection(PUR_QUOT_LIST, string='Status')
     filter_post_pur_order = fields.Selection(PUR_ORDER_LIST, string='Status')
+    excel_file = fields.Binary('Excel File')
 
     def get_company(self):
         return self.env.company
@@ -269,7 +271,109 @@ class PopularReport(models.TransientModel):
             'user_ids': self.user.ids,
         }
         return self.env.ref('popular_reports.stock_transfer_info').report_action(self, data=data)
+
+# tto
+#     Factory Stock Transfer
+    def print_report_factory_stock_transfer(self):
+        data = {
+            'filter_post_stock':self.filter_post_stock,
+            'filter_stock_picking_type':self.filter_stock_picking_type.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'user_ids': self.user.ids,
+        }
+        return self.env.ref('popular_reports.factory_stock_transfer').report_action(self, data=data)
+
+    # set excel sheet styles
+    def get_style(self, workbook):
+        table_header = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'vcenter', 'bold': True, 'text_wrap': True, 'border': 1})
+        default_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'vcenter', 'border': 1})
+        default_style1 = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'valign': 'top', 'border': 1})
+        float_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'num_format': '#,##0.00', 'align': 'vcenter', 'border': 1})
+        return table_header, default_style, default_style1, float_style
     
+    # write data
+    def _write_excel_data_factory_stock_transfer_report(self, workbook, sheet):
+        table_header, default_style, default_style1, float_style = self.get_style(workbook)
+
+        # set column width
+        col_width = [15, 15, 40, 15, 15, 15, 15, 8, 20]
+        for col, width in enumerate(col_width):
+            sheet.set_column(col, col, width)
+     
+        # set title
+        y_offset = 0     
+        titles = ['Shipping Date', 'Invoice No.', 'Product Code', 'From Location', 'To Location', 'Demand', 'Done', 'UM', 'Status']
+        for i, title in enumerate(titles):
+            sheet.write(y_offset, i, title, table_header)
+
+        # set table data
+        docs = None
+        if self.filter_post_stock:
+            docs = self.env['stock.picking'].search([('scheduled_date', '>=', self.start_date), ('scheduled_date', '<=', self.end_date), ('state', '=', self.filter_post_stock)])
+        else:
+            docs = self.env['stock.picking'].search([('scheduled_date', '>=', self.start_date), ('scheduled_date', '<=', self.end_date)])
+        if self.filter_stock_picking_type:
+            docs = docs.filtered(lambda r: r.picking_type_id.id in self.filter_stock_picking_type.ids)
+        if self.user: 
+            docs = docs.filtered(lambda r: r.partner_id.id in self.user.ids)
+        if docs:
+            for doc in docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name), reverse=False):                
+                ind = 1
+                lines = doc.move_lines.filtered(lambda x: x.product_uom_qty and x.name != "Special Discount" and x.name != "Other Charges" and x.product_uom_qty > 0)
+                for table_line in lines:
+                    y_offset += 1
+                    if ind == 1:
+                        if len(lines) != 1:
+                            sheet.merge_range(y_offset, 0, y_offset + len(lines) - 1, 0, doc.scheduled_date.strftime('%d/%m/%Y'), default_style1)
+                            sheet.merge_range(y_offset, 1, y_offset + len(lines) - 1, 1, doc.display_name, default_style1)
+                        else:
+                            sheet.write(y_offset, 0, doc.scheduled_date.strftime('%d/%m/%Y'), default_style)
+                            sheet.write(y_offset, 1, doc.display_name, default_style)
+                        ind += 1
+                    sheet.write(y_offset, 2, table_line.product_id.name_get()[0][1], default_style)
+                    if doc.picking_type_code == 'incoming':
+                        sheet.write(y_offset, 3, doc.partner_id.display_name, default_style)
+                    else:
+                        sheet.write(y_offset, 3, table_line.location_id.display_name, default_style)
+                    if doc.picking_type_code == 'outgoing':
+                        sheet.write(y_offset, 4, doc.partner_id.display_name, default_style)
+                    else:
+                        sheet.write(y_offset, 4, table_line.location_dest_id.display_name, default_style)
+                    sheet.write(y_offset, 5, table_line.product_uom_qty, float_style)
+                    if doc.state == 'done':
+                        sheet.write(y_offset, 6, table_line.quantity_done, float_style)
+                    else:
+                        sheet.write(y_offset, 6, '-', default_style)
+                    sheet.write(y_offset, 7, table_line.product_uom.display_name, default_style)
+                    status = dict(self.env['stock.picking'].fields_get(allfields=['state'])['state']['selection'])[doc.state]
+                    sheet.write(y_offset, 8, status, default_style)
+        else:
+            sheet.merge_range(y_offset + 1, 0, y_offset + 1, 8, "No Results Found.", default_style)
+
+    def print_xlsx_report_factory_stock_transfer(self):
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        report_name = 'Factory Stock Transfer Report.xlsx'
+        sheet = workbook.add_worksheet('Sheet1')
+        self._write_excel_data_factory_stock_transfer_report(workbook, sheet)
+
+        workbook.close()
+        output.seek(0)
+        generated_file = output.read()
+        output.close()
+        excel_file = base64.encodestring(generated_file)
+        self.write({'excel_file': excel_file})
+
+        if self.excel_file:
+            active_id = self.ids[0]
+            return {
+                'type': 'ir.actions.act_url',
+                'url': 'web/content/?model=wizard.popular.reports&download=true&field=excel_file&id=%s&filename=%s' % (
+                    active_id, report_name),
+                'target': 'new',
+            }
+
     #     Stock Transfer Information Summary
     def print_report_stock_transfer_dtl_info(self):
         data = {
