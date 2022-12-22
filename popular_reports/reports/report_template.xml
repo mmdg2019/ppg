@@ -218,11 +218,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
                                 </span>
                             </div>
                         </div>

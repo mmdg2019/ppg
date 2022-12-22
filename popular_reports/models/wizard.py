@@ -288,13 +288,16 @@ class PopularReport(models.TransientModel):
     def get_style(self, workbook):
         table_header = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'vcenter', 'bold': True, 'text_wrap': True, 'border': 1})
         default_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'vcenter', 'border': 1})
-        default_style1 = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'valign': 'top', 'border': 1})
+        default_style1 = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'valign': 'top', 'align': 'right', 'border': 1})
+        default_style2 = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'valign': 'top', 'border': 1})
+        default_style3 = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'right', 'border': 1})
+        default_style3.set_align('vcenter')
         float_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'num_format': '#,##0.00', 'align': 'vcenter', 'border': 1})
-        return table_header, default_style, default_style1, float_style
+        return table_header, default_style, default_style1, default_style2, default_style3, float_style
     
     # write data
     def _write_excel_data_factory_stock_transfer_report(self, workbook, sheet):
-        table_header, default_style, default_style1, float_style = self.get_style(workbook)
+        table_header, default_style, default_style1, default_style2, default_style3, float_style = self.get_style(workbook)
 
         # set column width
         col_width = [15, 15, 40, 15, 15, 15, 15, 8, 20]
@@ -326,9 +329,9 @@ class PopularReport(models.TransientModel):
                     if ind == 1:
                         if len(lines) != 1:
                             sheet.merge_range(y_offset, 0, y_offset + len(lines) - 1, 0, doc.scheduled_date.strftime('%m/%d/%Y'), default_style1)
-                            sheet.merge_range(y_offset, 1, y_offset + len(lines) - 1, 1, doc.display_name, default_style1)
+                            sheet.merge_range(y_offset, 1, y_offset + len(lines) - 1, 1, doc.display_name, default_style2)
                         else:
-                            sheet.write(y_offset, 0, doc.scheduled_date.strftime('%m/%d/%Y'), default_style)
+                            sheet.write(y_offset, 0, doc.scheduled_date.strftime('%m/%d/%Y'), default_style3)
                             sheet.write(y_offset, 1, doc.display_name, default_style)
                         ind += 1
                     sheet.write(y_offset, 2, table_line.product_id.name_get()[0][1], default_style)
@@ -344,7 +347,7 @@ class PopularReport(models.TransientModel):
                     if doc.state == 'done':
                         sheet.write(y_offset, 6, table_line.quantity_done, float_style)
                     else:
-                        sheet.write(y_offset, 6, '-', default_style)
+                        sheet.write(y_offset, 6, '-', default_style3)
                     sheet.write(y_offset, 7, table_line.product_uom.display_name, default_style)
                     status = dict(self.env['stock.picking'].fields_get(allfields=['state'])['state']['selection'])[doc.state]
                     sheet.write(y_offset, 8, status, default_style)
@@ -354,7 +357,7 @@ class PopularReport(models.TransientModel):
     def print_xlsx_report_factory_stock_transfer(self):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        report_name = 'Factory Stock Transfer Report(' + self.start_date.strftime('%m/%d/%Y') + '-' + self.end_date.strftime('%m/%d/%Y') + ').xlsx'
+        report_name = 'Factory Stock Transfer Report (' + self.start_date.strftime('%d.%m.%Y') + '-' + self.end_date.strftime('%d.%m.%Y') + ').xlsx'
         sheet = workbook.add_worksheet('Sheet1')
         self._write_excel_data_factory_stock_transfer_report(workbook, sheet)
 
