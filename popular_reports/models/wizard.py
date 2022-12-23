@@ -768,7 +768,7 @@ class PopularReport(models.TransientModel):
         # smonth_name = self.start_date.strftime("%b")
         # emonth_name = self.end_date.strftime("%b")
         # report_name = 'Factory Purchase Order Report (' + smonth_name + '-' + emonth_name + ').xlsx'
-        report_name = 'Factory Purchase Order Report (' + self.start_date.strftime('%m.%d.%Y') + '-' + self.end_date.strftime('%m.%d.%Y') + ').xlsx'
+        report_name = 'Factory Purchase Order Report (' + self.start_date.strftime('%d.%m.%Y') + '-' + self.end_date.strftime('%d.%m.%Y') + ').xlsx'
         sheet = workbook.add_worksheet("Factory Purchase Order Report")
 
         titles = ['Order Date', 'PO Number', 'Vendor Name', 'Product Name', 'Quantity', 'UM', 'Status']
@@ -790,7 +790,7 @@ class PopularReport(models.TransientModel):
             docs = docs.filtered(lambda r: r.partner_id.id in self.user.ids)
         if docs:
             y_offset = 1
-            for doc in docs.sorted(key=lambda x: (x.date_order.strftime('%m/%d/%Y'),x.name),reverse=False):
+            for doc in docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False):
                 ind = 1                
                 for table_line in doc.order_line:
                     length = len(doc.order_line)
@@ -799,13 +799,13 @@ class PopularReport(models.TransientModel):
                     
                         if ind == 1:
                             if length != 1:
-                                sheet.merge_range(y_offset, 0, y_offset + length - 1, 0, doc.date_order.strftime('%d/%m/%Y'), default_style2)
+                                sheet.merge_range(y_offset, 0, y_offset + length - 1, 0, doc.date_order.strftime('%m/%d/%Y'), default_style2)
                                 sheet.merge_range(y_offset, 1, y_offset + length - 1, 1, doc.name, default_style2)
                                 sheet.merge_range(y_offset, 2, y_offset + length - 1, 2, doc.partner_id.display_name, default_style2)
                                 sheet.merge_range(y_offset, 6, y_offset + length - 1, 6, doc.state, default_style2)
                                 ind += 1
                             else:
-                                sheet.write(y_offset, 0, doc.date_order.strftime('%d/%m/%Y'), default_style)
+                                sheet.write(y_offset, 0, doc.date_order.strftime('%m/%d/%Y'), default_style)
                                 sheet.write(y_offset, 1, doc.name, default_style)
                                 sheet.write(y_offset, 2, doc.partner_id.display_name, default_style)
                                 sheet.write(y_offset, 6, doc.state, default_style)
