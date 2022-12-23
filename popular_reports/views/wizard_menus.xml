@@ -273,7 +273,7 @@
               action="popular_reports.wizard_act_report_stock_analysis_by_month_and_cust"
               sequence="18"/>
     
-    <!-- tto; change subsequent seq. no. up to 24 -->
+    <!-- tto; change subsequent seq. no. up to 23 -->
     <menuitem name="Stock Analysis by Month and Customer with Colors"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_anlys_by_mon_and_cust_col"
@@ -305,6 +305,12 @@
               id="popular_reports.menu_report_stock_focus"
               action="popular_reports.wizard_act_report_stock_focus"
               sequence="23"/>
+    <!-- tto -->
+    <menuitem name="Factory Stock Transfer Report"
+              parent="popular_reports.popular_reports_sub_menu_6"
+              id="popular_reports.menu_report_factory_stock_transfer"
+              action="popular_reports.wizard_act_report_factory_stock_transfer"
+              sequence="24"/>
 
     <menuitem name="All Balance Listing"
               parent="popular_reports.popular_reports_sub_menu_7"
@@ -398,6 +404,13 @@
               id="popular_reports.menu_report_purchase_order_report_date_prod"
               action="popular_reports.wizard_act_report_purchase_order_report_date_prod"
               sequence="2"/>
+
+    <!-- factory purchase order report -->
+    <menuitem name="Factory Purchase Order Report"
+              parent="popular_reports.popular_reports_sub_menu_4"
+              id="popular_reports.menu_report_factory_purchase_order_report"
+              action="popular_reports.wizard_act_report_factory_purchase_order_report"
+              sequence="3"/>
 
 </odoo>
     

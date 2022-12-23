@@ -165,6 +165,173 @@
             </html>
         </t>
     </template>
+
+    <!-- tto -->
+	<template id="report_factory_stock_transfer">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body>
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        <span> Factory Stock Transfer Report
+                                                
+                                            <t t-if="filter_post_stock=='cancel'">(Cancelled)</t>
+                                            <t t-elif="filter_post_stock=='done'">(Done)</t>
+                                            <t t-elif="filter_post_stock=='draft'">(Draft)</t>
+                                            <t t-elif="filter_post_stock=='assigned'">(Ready)</t>
+                                            <t t-elif="filter_post_stock=='confirmed'">(Waiting)</t>
+                                            <t t-elif="filter_post_stock=='waiting'">(Waiting Another Operation)</t>
+                                        </span>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Shipping Date</span>
+                                    </th>
+                                    <th>
+                                        <span>Invoice No.</span>
+                                    </th>
+                                    <th>
+                                        <span>Product Code</span>
+                                    </th>
+                                    <th>
+                                        <span>From Location</span>
+                                    </th>
+                                    <th>
+                                        <span>To Location</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Demand</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Done</span>
+                                    </th>
+                                    <th style="text-align:center;">
+                                        <span>UM</span>
+                                    </th>
+                                    <th>
+                                        <span>Status</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                                <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name), reverse=False)" t-as="doc">
+                                    <tbody>
+                                        <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
+                                            <tr>
+                                                <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-esc="context_timestamp(doc.scheduled_date).strftime('%m/%d/%Y')"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.display_name"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-field="table_line.product_id"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="doc.picking_type_code=='incoming'">
+                                                        <span t-field="doc.partner_id.display_name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-field="table_line.location_id.display_name"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="doc.picking_type_code=='outgoing'">
+                                                        <span t-field="doc.partner_id.display_name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-field="table_line.location_dest_id.display_name"/>
+                                                    </t>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span t-field="table_line.product_uom_qty"/>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span t-if="doc.state!='done'"> - </span>
+                                                    <span t-if="doc.state=='done'" t-field="table_line.quantity_done"/>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <span t-field="table_line.product_uom"/>
+                                                </td>
+                                                <td>
+                                                    <span t-field="doc.state"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+	</template>
+
     <template id="report_stock_transfer_dtl_info">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
@@ -9169,6 +9336,212 @@
 			</html>
 		</t>
 	</template>
+
+    <!-- factory purchase order report -->
+    <template id="report_factory_purchase_order_report">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body>
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        <span>Factory Purchase Order Report
+                                            
+                                            <t t-if="filter_post_pur_order=='cancel'">(Cancelled)</t>
+                                            <t t-elif="filter_post_pur_order=='done'">(Locked)</t>
+                                            <t t-elif="filter_post_pur_order=='draft'">(RFQ)</t>
+                                            <t t-elif="filter_post_pur_order=='purchase'">(Purchase Order)</t>
+                                            <t t-elif="filter_post_pur_order=='sent'">(RFQ Sent)</t>
+                                            <t t-elif="filter_post_pur_order=='to approve'">(To Approve)</t>
+                                        </span>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/>
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span>Order Date</span>
+                                    </th>
+                                    <th>
+                                        <span>PO Number</span>
+                                    </th>
+                                    <th>
+                                        <span>Vendor Name</span>
+                                    </th>
+                                    <!-- <th>
+                                        <span>Drop Ship Address</span>
+                                    </th> -->
+                                    <th>
+                                        <span>Product Name</span>
+                                    </th>
+                                    <th>
+                                        <span>Quantity</span>
+                                    </th>
+                                    <th style="text-align:center;">
+                                        <span>UM</span>
+                                    </th>
+                                    <!-- <th style="text-align:right;">
+                                        <span>Price</span>
+                                    </th>
+                                    <th style="text-align:right;">
+                                        <span>Net Amount</span>
+                                    </th> -->
+                                    <th>
+                                        <span>Status</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                                <t t-set="ttl" t-value="0"/>
+                                <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
+                                    <tbody>
+                                        <t t-set="ttl" t-value="ttl + doc.amount_total"/>
+                                        <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
+                                            <tr>
+                                                <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-esc="doc.date_order.strftime('%m/%d/%Y')"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.name"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.partner_id.display_name"/>
+                                                    </t>
+                                                </td>
+                                                <!-- <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.dest_address_id"/>
+                                                    </t>
+                                                </td> -->
+                                                <td>
+                                                    <span t-field="table_line.product_id"/>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <t t-if="table_line.product_id.uom_id.display_name != table_line.product_uom.display_name">
+                                                        <!-- <span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/> -->
+                                                        <!-- kkm adding thousand separator -->
+                                                        <span t-esc="(table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-esc="table_line.product_uom_qty" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                    </t>
+                                                </td>
+                                                <td style="text-align:center;">
+                                                    <span t-field="table_line.product_uom"/>
+                                                </td>
+                                                <!-- <td style="text-align:right;">
+                                                    <span t-field="table_line.price_unit"/>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <span t-field="table_line.price_subtotal"/>
+                                                </td> -->
+                                                <td>
+                                                    <t t-if="table_line_first">
+                                                        <span t-field="doc.state"/>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <!-- <th colspan="5">
+                                                <span></span>
+                                            </th>
+                                            <th colspan="3">
+                                                <span>Total:</span>
+                                            </th>
+                                            <th style="text-align:right;">
+                                                <span t-field="doc.amount_total"/>
+                                            </th>
+                                            <th>
+                                                <span></span>
+                                            </th> -->
+                                        </tr>
+                                    </tbody>
+                                </t>
+                                <tfooter>
+                                    <tr>
+                                        <!-- <th colspan="5">
+                                            <span></span>
+                                        </th> -->
+                                        <!-- <th colspan="3">
+                                            <span>Grand Total</span>
+                                        </th> -->
+                                        <!-- <th style="text-align:right;">
+                                            <span t-esc="ttl"  t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                        </th> -->
+                                        <!-- <th>
+                                            <span></span>
+                                        </th> -->
+                                    </tr>
+                                </tfooter>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
 
     
     <template id="report_sales_quot_stock_analysis_by_d">
