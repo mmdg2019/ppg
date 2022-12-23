@@ -526,6 +526,18 @@
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
     
+    <!-- kkm factory purchase order report -->
+    <record id="factory_purchase_order_report" model="ir.actions.report">
+        <field name="name">Factory Purchase Order Report</field>
+        <field name="print_report_name">Factory Purchase Order Report</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_factory_purchase_order_report</field>
+        <field name="report_file">popular_reports.report_factory_purchase_order_report</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
     
 <!--     <report
         id="sales_order_report_by_client"

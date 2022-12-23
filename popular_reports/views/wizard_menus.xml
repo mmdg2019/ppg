@@ -405,6 +405,13 @@
               action="popular_reports.wizard_act_report_purchase_order_report_date_prod"
               sequence="2"/>
 
+    <!-- factory purchase order report -->
+    <menuitem name="Factory Purchase Order Report"
+              parent="popular_reports.popular_reports_sub_menu_4"
+              id="popular_reports.menu_report_factory_purchase_order_report"
+              action="popular_reports.wizard_act_report_factory_purchase_order_report"
+              sequence="3"/>
+
 </odoo>
     
     <!--         <menuitem name="Daily Sales Report by Product Category"

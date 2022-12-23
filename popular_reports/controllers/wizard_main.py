@@ -1810,6 +1810,29 @@ class edit_report_purchase_order_report_by_date(models.AbstractModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
+
+# factory purchase order report
+class edit_report_factory_purchase_order_report(models.AbstractModel):
+    _name = "report.popular_reports.report_factory_purchase_order_report"
+    _description="Factory Purchase Order Report"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        if data['filter_post_pur_quot']:
+            docs = self.env['purchase.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date']),('state', '=',data['filter_post_pur_quot'])])
+        else:
+            docs = self.env['purchase.order'].search([('date_order', '>=',data['start_date']),('date_order', '<=',data['end_date'])])
+            
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+        
+        return {
+            'filter_post_pur_quot': data['filter_post_pur_quot'],
+            'docs': docs,
+            'start_date': data['start_date'], 
+            'end_date': data['end_date']
+       }
     
 # tto (old)
 #     Purchase Order Report by Date and Product
