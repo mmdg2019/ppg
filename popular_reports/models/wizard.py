@@ -2,7 +2,9 @@
 #############################################################################
 
 import time
+from calendar import monthrange
 from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 import pytz
 import json
 import io
@@ -609,6 +611,108 @@ class PopularReport(models.TransientModel):
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.outstanding_inv_report_by_cust').report_action(self, data=data)
+
+#     Outstanding Invoice Report by Month
+    def print_report_outstanding_inv_report_by_month(self):
+        data = {
+            'user_ids': self.user.ids,
+            'product_cats_ids': self.product_cats.ids,
+            'filter_post': self.filter_post,
+            's_month': self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.outstanding_inv_report_by_month').report_action(self, data=data)
+
+    # write data
+    def _write_excel_data_outstanding_inv_report_by_month(self, workbook, sheet):
+        table_header = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'right', 'bold': True, 'text_wrap': True, 'border': 1})
+        table_header.set_align('vcenter')
+        default_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'vcenter', 'border': 1})
+        float_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'num_format': '"K" #,##0.00', 'align': 'vcenter', 'border': 1})
+
+        # calculate date range
+        start_date = date(year=int(self.s_year), month=int(self.s_month), day=1)
+        end_date = date(year=int(self.e_year), month=int(self.e_month), day=monthrange(int(self.e_year), int(self.e_month))[1])
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month + 1)
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]          
+        
+        # set column width
+        sheet.set_column(0, 0, 15)
+
+        # set title
+        y_offset = 0     
+        for i, d in enumerate(date_list):            
+            j = i + 1
+            sheet.set_column(j, j, 15)
+            sheet.write(y_offset, j, d.strftime('%b %Y'), table_header)
+        sheet.set_column(j+1, j+1, 20)
+        sheet.write(y_offset, j + 1, 'Total', table_header)
+
+        # set table data
+        docs = None
+        customers = None
+        
+        # filter invoices based on the selected state, date, and type
+        if self.filter_post == '1':
+            docs = self.env['account.move'].search([('state', '=', 'cancel'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+        elif self.filter_post == '2':
+            docs = self.env['account.move'].search([('state', '=', 'draft'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+        elif self.filter_post == '3':
+            docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+
+        # filter invoices based on the selected product category        
+        if self.product_cats:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', self.product_cats.ids)])
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+        
+        # filter invoices based on the selected customers
+        if self.user:
+            docs = docs.filtered(lambda r: r.partner_id.id in self.user.ids)
+            customers = self.env['res.partner'].search([('id', 'in', self.user.ids), ('customer_rank', '>', 0)], order='display_name asc')
+        else:
+            uids = docs.mapped('partner_id.id')
+            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')
+
+        if docs:
+            for customer in customers:
+                y_offset += 1
+                sheet.write(y_offset, 0, customer.display_name, default_style)
+                sub_ttl = 0
+                for i, d in enumerate(date_list):
+                    j = i + 1
+                    ttl_amt = sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == d.strftime('%b/%Y') and x.partner_id.id == customer.id).mapped('amount_residual_signed'))
+                    sheet.write(y_offset, j, ttl_amt, float_style)
+                    sub_ttl += ttl_amt
+                sheet.write(y_offset, j + 1, sub_ttl, float_style)
+        else:
+            sheet.write(y_offset + 1, 0, "No Results Found.", default_style)
+
+    def print_xlsx_report_outstanding_inv_report_by_month(self):
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})        
+        report_name = 'Outstanding Invoice Report by Month.xlsx'
+        sheet = workbook.add_worksheet('Sheet1')
+        self._write_excel_data_outstanding_inv_report_by_month(workbook, sheet)
+
+        workbook.close()
+        output.seek(0)
+        generated_file = output.read()
+        output.close()
+        excel_file = base64.encodestring(generated_file)
+        self.write({'excel_file': excel_file})
+
+        if self.excel_file:
+            active_id = self.ids[0]
+            return {
+                'type': 'ir.actions.act_url',
+                'url': 'web/content/?model=wizard.popular.reports&download=true&field=excel_file&id=%s&filename=%s' % (
+                    active_id, report_name),
+                'target': 'new',
+            }
     
 #     Invoice Payment Tracking Report
     def print_report_inv_payment_tracking(self):
