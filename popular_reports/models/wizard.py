@@ -630,7 +630,7 @@ class PopularReport(models.TransientModel):
         table_header = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'right', 'bold': True, 'text_wrap': True, 'border': 1})
         table_header.set_align('vcenter')
         default_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'align': 'vcenter', 'border': 1})
-        float_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'num_format': '"K" #,##0.00', 'align': 'vcenter', 'border': 1})
+        # float_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'num_format': '"K" #,##0.00', 'align': 'vcenter', 'border': 1})
 
         # calculate date range
         start_date = date(year=int(self.s_year), month=int(self.s_month), day=1)
@@ -678,16 +678,18 @@ class PopularReport(models.TransientModel):
             customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')
 
         if docs:
+            currency_format = '#,##0.00 ' + '"' + docs.currency_id.symbol + '"'
+            float_style = workbook.add_format({'font_name': 'Calibri', 'font_size': 11, 'num_format': currency_format, 'align': 'vcenter', 'border': 1})
             for customer in customers:
-                y_offset += 1
-                sheet.write(y_offset, 0, customer.display_name, default_style)
-                sub_ttl = 0
-                for i, d in enumerate(date_list):
-                    j = i + 1
-                    ttl_amt = sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == d.strftime('%b/%Y') and x.partner_id.id == customer.id).mapped('amount_residual_signed'))
-                    sheet.write(y_offset, j, ttl_amt, float_style)
-                    sub_ttl += ttl_amt
-                sheet.write(y_offset, j + 1, sub_ttl, float_style)
+                sub_ttl = sum(docs.filtered(lambda x: x.partner_id.id == customer.id).mapped('amount_residual_signed'))
+                if sub_ttl > 0:
+                    y_offset += 1
+                    sheet.write(y_offset, 0, customer.display_name, default_style)
+                    for i, d in enumerate(date_list):
+                        j = i + 1
+                        ttl_amt = sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == d.strftime('%b/%Y') and x.partner_id.id == customer.id).mapped('amount_residual_signed'))
+                        sheet.write(y_offset, j, ttl_amt, float_style)
+                    sheet.write(y_offset, j + 1, sub_ttl, float_style)
         else:
             sheet.write(y_offset + 1, 0, "No Results Found.", default_style)
 

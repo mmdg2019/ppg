@@ -5995,27 +5995,28 @@
                             </thead>
                             <t t-if="docs">
                                 <tbody>
-                                    <t t-foreach="customers" t-as="customer">	
-                                        <tr>
-                                            <td>
-                                                <span t-esc="customer.display_name"/>
-                                            </td>
-                                            <t t-set="sub_ttl" t-value="0"/>
-                                            <t t-foreach="date_list" t-as="date">
-                                                <t t-set="ttl_amt" t-value="sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y') and x.partner_id.id == customer.id).mapped('amount_residual_signed'))"/>
-                                                <t t-set="sub_ttl" t-value="sub_ttl + ttl_amt"/>
+                                    <t t-foreach="customers" t-as="customer">
+                                        <t t-set="sub_ttl" t-value="sum(docs.filtered(lambda x: x.partner_id.id == customer.id).mapped('amount_residual_signed'))"/>
+                                        <t t-if="sub_ttl > 0">	
+                                            <tr>
+                                                <td>
+                                                    <span t-esc="customer.display_name"/>
+                                                </td>
+                                                <t t-foreach="date_list" t-as="date">
+                                                    <t t-set="ttl_amt" t-value="sum(docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y') and x.partner_id.id == customer.id).mapped('amount_residual_signed'))"/>
+                                                    <td style="text-align:right;">
+                                                        <span>
+                                                            <t t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                                        </span>
+                                                    </td>	
+                                                </t>
                                                 <td style="text-align:right;">
                                                     <span>
-                                                        <t t-esc="ttl_amt" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+                                                        <t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
                                                     </span>
-                                                </td>	
-                                            </t>
-                                            <td style="text-align:right;">
-                                                <span>
-                                                    <t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
-                                                </span>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        </t>
                                     </t>
                                 </tbody>
                             </t>
