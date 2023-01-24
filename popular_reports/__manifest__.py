@@ -1,7 +1,7 @@
 
 {
     'name': 'Popular Reports',
-    'version': '1.0.0.0',
+    'version': '1.0.0.1',
     'summary': "Reports for Popular Plastic Group",
     'description': "Report Collection for Popular Plastic Group",
     'category': 'App',
