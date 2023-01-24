@@ -365,6 +365,12 @@
               action="popular_reports.wizard_act_report_outstanding_inv_report_by_cust"
               sequence="10"/>
 
+    <menuitem name="Outstanding Invoice Report by Month"
+              parent="popular_reports.popular_reports_sub_menu_7"
+              id="popular_reports.menu_report_outstanding_inv_report_by_month"
+              action="popular_reports.wizard_act_report_outstanding_inv_report_by_month"
+              sequence="14"/>
+
     <menuitem name="Outstanding Bill Report by Vendor"
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_outstanding_bill_report_by_ven"

@@ -9,6 +9,7 @@ from odoo.http import content_disposition, request
 from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields, api
+from calendar import monthrange
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
@@ -1531,6 +1532,55 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
             'filter_post': data['filter_post'],
             'docs': docs,
             'customers': customers
+       }
+
+#     Outstanding Invoice Report by Month
+class edit_report_outstanding_inv_report_by_month(models.AbstractModel):
+    _name = "report.popular_reports.report_outstanding_inv_report_by_month"
+    _description = "Outstanding Invoice Report by Month Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        customers = None
+        category = None
+
+        # format the selected date range to list of months
+        start_date = date(year=int(data['s_year']), month=int(data['s_month']), day=1)
+        end_date = date(year=int(data['e_year']), month=int(data['e_month']), day=monthrange(int(data['e_year']), int(data['e_month']))[1])
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month + 1)
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)] 
+
+        # filter invoices based on the selected state, date, and type
+        if data['filter_post'] == '1':
+            docs = self.env['account.move'].search([('state', '=', 'cancel'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+        elif data['filter_post'] == '2':
+            docs = self.env['account.move'].search([('state', '=', 'draft'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+        elif data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+        else:
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+
+        # filter invoices based on the selected product category
+        if data['product_cats_ids']:
+            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in category)
+            
+        # filter invoices based on the selected customers
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+        else:
+            uids = docs.mapped('partner_id.id')
+            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')         
+
+        return {
+            'filter_post': data['filter_post'],
+            'user_ids': data['user_ids'],
+            'docs': docs,
+            'customers': customers,
+            'category': category,
+            'date_list': date_list
        }
     
 #     Invoice Payment Tracking Report
