@@ -20,6 +20,8 @@
         'website_sale'
     ],
     'data': [
+        'security/ir.model.access.csv',
+        'security/security.xml',
         'views/action_manager.xml',
         'views/wizard_view.xml',
         'views/wizard_forms.xml',
@@ -30,8 +32,6 @@
         'reports/report.xml',
         'reports/report_template.xml',
         'reports/sale_target.xml',
-        'security/ir.model.access.csv',
-        'security/security.xml',
         'reports/transfer_main_group_report.xml',
         'reports/main_group_purchase_order_slip.xml',
     ],
