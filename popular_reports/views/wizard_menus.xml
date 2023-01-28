@@ -369,6 +369,7 @@
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_outstanding_inv_report_by_month"
               action="popular_reports.wizard_act_report_outstanding_inv_report_by_month"
+              groups="popular_reports.group_credit_permission"
               sequence="14"/>
 
     <menuitem name="Outstanding Bill Report by Vendor"
