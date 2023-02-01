@@ -1,17 +1,11 @@
-from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
-from datetime import datetime, date, timedelta
-import json
-import datetime
-import pytz
-import io
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
-from odoo.http import request
-from odoo.tools import date_utils
-import pandas as pd
+from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
 
 class SaleOrder(models.Model):
-
     _inherit = 'sale.order'  
     
 
@@ -25,4 +19,11 @@ class SaleOrder(models.Model):
     check_user=fields.Boolean(string='user', compute='_compute_user_check')  
 
     
-        
+    def action_confirm(self):
+        due_invoice_count = self.env['account.move'].search_count([
+            ('type', '=', 'out_invoice'), 
+            ('partner_id', '=', self.partner_id.id),
+            ('invoice_due_state', '=', 'third_due')])        
+        if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+            raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+        return super(SaleOrder, self).action_confirm()  
