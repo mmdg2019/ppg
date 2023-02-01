@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- create new user group for payment terms  and partner creation permission  -->
+    <record id="group_partner_creation_permission" model="res.groups">
+        <field name="name">Partner Creation Permission</field>
+    </record>
+</odoo>
