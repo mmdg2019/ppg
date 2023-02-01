@@ -10,19 +10,19 @@ from odoo.http import request
 from odoo.tools import date_utils
 import pandas as pd
 
-class AccountMove(models.Model):
+class SaleOrder(models.Model):
 
-    _inherit = 'account.move'
+    _inherit = 'sale.order'  
+    
 
     @api.depends('user_id')
     def _compute_user_check(self):
         if self.env.user.has_group('account_ext.group_partner_creation_permission'): 
-            if self.state == 'draft':
-                self.check_user = True
-            else:
-                self.check_user = False
+            self.check_user = True            
         else:
-            self.check_user = False        
+            self.check_user = False       
+       
+    check_user=fields.Boolean(string='user', compute='_compute_user_check')  
+
     
-    check_user=fields.Boolean(string='user', compute='_compute_user_check')   
         

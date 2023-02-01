@@ -10,12 +10,13 @@
 
 General Ledger Report Customization
     """,      
-    'depends': ['base', 'account_reports', 'account'],    
+    'depends': ['base', 'account_reports', 'account','sale'],    
     'data': [
         # 'security/ir.model.access.csv',
         'security/security.xml',        
         'views/res_partner_view.xml',
         'views/account_move_view.xml',
+        'views/sale_order_view.xml',
     ],    
     'installable': True,
     'auto_install': False,
