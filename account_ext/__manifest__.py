@@ -4,17 +4,16 @@
     'version': '1.0.0',
     'author': 'DIGI POWER',
     'license': 'AGPL-3',
-    'category': 'Accounting/Accounting',
+    'category': 'Account Reports',
     'website': 'https://www.digipowermm.com/',
     'description': """
 
-Account Customization
+General Ledger Report Customization
     """,      
     'depends': ['base', 'account_reports', 'account','sale'],    
     'data': [
         # 'security/ir.model.access.csv',
         'security/security.xml',        
-        'data/scheduler_update_invoice_due_state_data.xml',
         'views/res_partner_view.xml',
         'views/account_move_view.xml',
         'views/sale_order_view.xml',
