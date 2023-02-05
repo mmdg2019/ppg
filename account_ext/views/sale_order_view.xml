@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="so_payment_terms_view_form_account_ext" model="ir.ui.view">
+        <field name="name">so.payment.terms.view.form.inherit</field>
+        <field name="model">sale.order</field>        
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml"> 
+            <xpath expr="//field[@name='payment_term_id']" position="replace">
+                <field name="payment_term_id" options="{'no_open':True,'no_create': True}" attrs="{'readonly': True}" force_save= 'True'/>                                     
+            </xpath>            
+        </field>
+    </record>
+
+    <record id="so_payment_terms_view_form_permission" model="ir.ui.view">
+        <field name="name">so.payment.terms.view.form.permission.inherit</field>
+        <field name="model">sale.order</field>        
+        <field name="inherit_id" ref="account_ext.so_payment_terms_view_form_account_ext"/>
+        <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="check_user" invisible='1'/>
+            </xpath>                        
+            <xpath expr="//field[@name='payment_term_id']" position="attributes"> 
+                <attribute name="attrs">{'readonly':[('check_user', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <!-- <attribute name="options">{'no_create_edit': [('check_user', '=', False)], 'no_create': [('check_user', '=', False)]}</attribute> -->
+                <attribute name="options" />                
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+            

@@ -10,7 +10,7 @@
                     <field name="show_payment_terms"/>
                 </xpath>
             </field>
-        </record>
+        </record>      
     </data>
 </odoo>
 
