@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Account Customization',
-    'version': '1.0.3',
+    'version': '14.0.1.0.0',
     'author': 'DIGI POWER',
-    'license': 'AGPL-3',
     'category': 'Accounting/Accounting',
     'website': 'https://www.digipowermm.com/',
     'description': """
 
 Account Customization
     """,      
-    'depends': ['base', 'account_reports', 'account','sale'],    
+    'depends': ['base', 'account_reports', 'account', 'sale'],    
     'data': [
         # 'security/ir.model.access.csv',
         'security/security.xml',      
