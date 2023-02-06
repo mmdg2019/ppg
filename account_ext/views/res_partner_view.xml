@@ -13,7 +13,7 @@
                     <attribute name="edit">false</attribute>
                 </xpath>
                 <xpath expr="//field[@name='vat']" position="after">
-                    <field name="show_payment_terms"/>
+                    <field name="show_payment_terms" string="Show Payment Term"/>
                 </xpath>
             </field>
         </record>

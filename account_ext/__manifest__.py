@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Account Customization',
-    'version': '1.1.3',
+    'version': '2.1.3',
     'author': 'DIGI POWER',
     'license': 'AGPL-3',
     'category': 'Accounting/Accounting',
