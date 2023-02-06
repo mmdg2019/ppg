@@ -479,6 +479,7 @@ class CostSheetTwo(models.Model):
 class CostSheetLine(models.Model):
     
     _name = 'cost.sheet.line'
+    _description = 'Cost Sheet Line'
       
     cosheet_id = fields.Many2one('cost.sheet.two', string="CostSheetLine")
 
