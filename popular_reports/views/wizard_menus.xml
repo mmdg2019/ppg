@@ -365,31 +365,37 @@
               action="popular_reports.wizard_act_report_outstanding_inv_report_by_cust"
               sequence="10"/>
 
+    <menuitem name="Outstanding Invoice Report by Due Status"
+              parent="popular_reports.popular_reports_sub_menu_7"
+              id="popular_reports.menu_report_outstanding_inv_report_by_due"
+              action="popular_reports.wizard_act_report_outstanding_inv_report_by_due"
+              sequence="11"/>  
+
     <menuitem name="Outstanding Invoice Report by Month"
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_outstanding_inv_report_by_month"
               action="popular_reports.wizard_act_report_outstanding_inv_report_by_month"
               groups="popular_reports.group_credit_permission"
-              sequence="14"/>
+              sequence="12"/>
 
     <menuitem name="Outstanding Bill Report by Vendor"
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_outstanding_bill_report_by_ven"
               action="popular_reports.wizard_act_report_outstanding_bill_report_by_ven"
-              sequence="11"/>
+              sequence="13"/>
 
     <menuitem name="Invoice Payment Tracking Report"
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_inv_paymeny_tracking"
               action="popular_reports.wizard_act_report_inv_paymeny_tracking"
-              sequence="12"/>
+              sequence="14"/>
     
 <!--     balance statement -->
     <menuitem name="Balance Statement"
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_balance_statement"
               action="popular_reports.wizard_act_report_balance_statement"
-              sequence="13"/>
+              sequence="15"/>
 
 
     <menuitem name="Purchase Order Report by Date"

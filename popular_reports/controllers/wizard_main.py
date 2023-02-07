@@ -1534,6 +1534,41 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
             'customers': customers
        }
 
+#     Outstanding Invoice Report by Due Status
+class edit_report_outstanding_inv_report_by_due(models.AbstractModel):
+    _name = "report.popular_reports.report_outstanding_inv_report_by_due"
+    _description="Outstanding Invoice Report by Due Status Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+
+        if data['filter_post'] == '3':
+            docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', data['start_date']), ('invoice_date', '<=', data['end_date']), ('state', '=', 'posted')])
+        
+        product_cats_ids = []
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='display_name asc')
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+        else:
+            product_cats_ids = self.env['product.category'].search([], order='display_name asc')
+
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+        else:
+            uids = docs.mapped('partner_id.id')
+            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')      
+        
+        return {
+            'filter_post': data['filter_post'],
+            'docs': docs,
+            'user_ids': data['user_ids'],
+            'customers': customers,
+            'start_date': data['start_date'],
+            'end_date': data['end_date']
+       }
+
 #     Outstanding Invoice Report by Month
 class edit_report_outstanding_inv_report_by_month(models.AbstractModel):
     _name = "report.popular_reports.report_outstanding_inv_report_by_month"
