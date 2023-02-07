@@ -35,6 +35,11 @@
                 <xpath expr="//field[@name='currency_id']" position="after">
                     <field name="invoice_date_due"/>
                     <field name="invoice_due_state" invisible="1"/>
+                    <field name="due_factor"
+                        attrs="
+                        {'invisible': ['|', ('invoice_payment_term_id', '=', False), ('type', '!=', 'out_invoice')],
+                        'readonly': [('state', '!=', 'draft')]}
+                        "/>
                 </xpath>
                 <xpath expr="//field[@name='invoice_payment_term_id']" position="replace">
                     <field name="invoice_payment_term_id" placeholder="Terms" 

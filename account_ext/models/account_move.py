@@ -28,23 +28,20 @@ class AccountMove(models.Model):
         ('second_due', 'Second Due'),
         ('third_due', 'Third Due')], 
         string='Due Status', readonly=True)
+    due_factor = fields.Integer('Due Computation Factor (Days)')
 
     # calculate invoice due dates
     def calculate_invoice_due_date(self, date_ref):      
         for line in self.invoice_payment_term_id.line_ids:
             inv_due_date = fields.Date.from_string(date_ref)
-            if line.option == 'day_after_invoice_date':
-                inv_due_date += relativedelta(days=line.days)
-                if line.day_of_the_month > 0:
-                    months_delta = (line.day_of_the_month < inv_due_date.day) and 1 or 0
-                    inv_due_date += relativedelta(day=line.day_of_the_month, months=months_delta)
-            elif line.option == 'after_invoice_month':
-                next_first_date = inv_due_date + relativedelta(day=1, months=1)  # Getting 1st of next month
-                inv_due_date = next_first_date + relativedelta(days=line.days - 1)
+            if line.option in ['day_after_invoice_date', 'after_invoice_month']:
+                duration = self.due_factor and self.due_factor or 0
+                inv_due_date += relativedelta(days=duration)                
             elif line.option == 'day_following_month':
                 inv_due_date += relativedelta(day=line.days, months=1)
             elif line.option == 'day_current_month':
-                inv_due_date += relativedelta(day=line.days, months=0)
+                next_first_date = inv_due_date + relativedelta(day=1, months=1)  # Getting 1st of next month
+                inv_due_date = next_first_date + relativedelta(day=line.days, months=0)
         return inv_due_date
 
     # update invoice due state
@@ -67,20 +64,10 @@ class AccountMove(models.Model):
 
     # update invoice due state scheduler; runs once a day
     def _cron_update_invoice_due_state(self):
-        # set invoice_due_state ("No Due") for paid invoices or those with draft/cancel state or no-payment-terms 
-        no_due_invoices = self.search([            
-            ('type', '=', 'out_invoice'), 
-            ('create_date', '>=', datetime(2023, 2, 1)), 
-            '|', '|', ('state', 'in', ('draft', 'cancel')), ('invoice_payment_state', '=', 'paid'), ('invoice_payment_term_id', '=', False)])
-        no_due_invoices.write({'invoice_due_state': 'no_due'})
-
-        # set invoice_due_state for other invoices
-        other_invoices = self.search([
-            ('type', '=', 'out_invoice'), 
-            ('create_date', '>=', datetime(2023, 2, 1)),
-            ('state', 'not in', ('draft', 'cancel')), 
-            ('invoice_payment_state', '!=', 'paid'),
-            ('invoice_payment_term_id', '!=', False)])
-        for invoice in other_invoices:
-            invoice.update_invoice_due_state()       
+        invoices = self.search([
+            ('type', '=', 'out_invoice'),
+            ('create_date', '>=', datetime(2023, 2, 1))
+        ])
+        for inv in invoices:
+            inv.update_invoice_due_state()  
     
