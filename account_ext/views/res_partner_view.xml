@@ -6,18 +6,18 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <!-- <xpath expr="//form" position="attributes">
+                <xpath expr="//form" position="attributes">
                     <attribute name="create">false</attribute>
                 </xpath>
                 <xpath expr="//form" position="attributes">
                     <attribute name="edit">false</attribute>
-                </xpath> -->
+                </xpath>
                 <xpath expr="//field[@name='vat']" position="after">
                     <field name="show_payment_terms"/>
                 </xpath>
             </field>
         </record>
-        <!-- <record id="res_partner_view_form_permission" model="ir.ui.view">
+        <record id="res_partner_view_form_permission" model="ir.ui.view">
             <field name="name">res.partner.view.form.permission</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="res_partner_view_form_account_ext"/>
@@ -30,8 +30,8 @@
                     <attribute name="edit">true</attribute>
                 </xpath>
             </field>
-        </record> -->
-        <!-- <record id="res_partner_kanban_view_account_ext" model="ir.ui.view">
+        </record>
+        <record id="res_partner_kanban_view_account_ext" model="ir.ui.view">
             <field name="name">res.partner.kanban.view.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.res_partner_kanban_view"/>
@@ -40,8 +40,8 @@
                     <attribute name="create">false</attribute>
                 </xpath>
             </field>
-        </record> -->
-        <!-- <record id="res_partner_kanban_view_permission" model="ir.ui.view">
+        </record>
+        <record id="res_partner_kanban_view_permission" model="ir.ui.view">
             <field name="name">res.partner.kanban.view.permission</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account_ext.res_partner_kanban_view_account_ext"/>
@@ -51,8 +51,8 @@
                     <attribute name="create">true</attribute>
                 </xpath>
             </field>
-        </record>  -->
-        <!-- <record id="res_partner_tree_view_account_ext" model="ir.ui.view">
+        </record> 
+        <record id="res_partner_tree_view_account_ext" model="ir.ui.view">
             <field name="name">res.partner.tree.view.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
@@ -61,8 +61,8 @@
                     <attribute name="create">false</attribute>
                 </xpath>
             </field>
-        </record> -->
-        <!-- <record id="res_partner_tree_view_permission" model="ir.ui.view">
+        </record>
+        <record id="res_partner_tree_view_permission" model="ir.ui.view">
             <field name="name">res.partner.tree.view.form.permission</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account_ext.res_partner_tree_view_account_ext"/>
@@ -72,7 +72,7 @@
                     <attribute name="create">true</attribute>
                 </xpath>
             </field>
-        </record>       -->
+        </record>      
     </data>
 </odoo>
 
