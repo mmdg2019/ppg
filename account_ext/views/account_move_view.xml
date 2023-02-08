@@ -7,10 +7,7 @@
                 <field name="model_id" ref="account_ext.model_account_move"/>
                 <field name="binding_model_id" ref="account_ext.model_account_move"/>
                 <field name="state">code</field>
-                <field name="code">
-                    for record in records:
-                        record.update_invoice_due_state()
-                </field>
+                <field name="code">action = model.update_invoice_due_state()</field>
         </record>  
         <record id="view_invoice_tree_account_ext" model="ir.ui.view">
             <field name="name">account.invoice.tree.inherit</field>

@@ -31,12 +31,12 @@ class AccountMove(models.Model):
     due_factor = fields.Integer('Due Computation Factor (Days)')
 
     # calculate invoice due dates
-    def calculate_invoice_due_date(self, date_ref):      
-        for line in self.invoice_payment_term_id.line_ids:
+    def calculate_invoice_due_date(self, data, date_ref):      
+        for line in data.invoice_payment_term_id.line_ids:
             inv_due_date = fields.Date.from_string(date_ref)
             if line.option in ['day_after_invoice_date', 'after_invoice_month']:
-                duration = self.due_factor and self.due_factor or 0
-                inv_due_date += relativedelta(days=duration)                
+                duration = data.due_factor and data.due_factor or 0
+                inv_due_date += relativedelta(days=duration)            
             elif line.option == 'day_following_month':
                 inv_due_date += relativedelta(day=line.days, months=1)
             elif line.option == 'day_current_month':
@@ -46,28 +46,24 @@ class AccountMove(models.Model):
 
     # update invoice due state
     def update_invoice_due_state(self):
-        if self.type == 'out_invoice' and self.state not in ('draft', 'cancel') and self.invoice_payment_state != 'paid' and self.invoice_payment_term_id:    
-            today = fields.Date.context_today(self)
-            if today <= self.invoice_date_due:
-                self.invoice_due_state = 'no_due'
+        domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1))]
+        if self._context.get('active_ids'):
+            domain += [('id', 'in', self._context.get('active_ids'))]
+        invoices = self.search(domain) 
+        for invoice in invoices:
+            if invoice.type == 'out_invoice' and invoice.state not in ('draft', 'cancel') and invoice.invoice_payment_state != 'paid' and invoice.invoice_payment_term_id:    
+                today = fields.Date.context_today(self)
+                if today <= invoice.invoice_date_due:
+                    invoice.invoice_due_state = 'no_due'
+                else:
+                    second_due_date = self.calculate_invoice_due_date(invoice, invoice.invoice_date_due)
+                    third_due_date = self.calculate_invoice_due_date(invoice, second_due_date)
+                    if today > invoice.invoice_date_due and today <= second_due_date:
+                        invoice.invoice_due_state = 'first_due'
+                    elif today > second_due_date and today <= third_due_date:
+                        invoice.invoice_due_state = 'second_due'
+                    elif today > third_due_date:
+                        invoice.invoice_due_state = 'third_due'
             else:
-                second_due_date = self.calculate_invoice_due_date(self.invoice_date_due)
-                third_due_date = self.calculate_invoice_due_date(second_due_date)
-                if today > self.invoice_date_due and today <= second_due_date:
-                    self.invoice_due_state = 'first_due'
-                elif today > second_due_date and today <= third_due_date:
-                    self.invoice_due_state = 'second_due'
-                elif today > third_due_date:
-                    self.invoice_due_state = 'third_due'
-        else:
-            self.invoice_due_state = 'no_due'
-
-    # update invoice due state scheduler; runs once a day
-    def _cron_update_invoice_due_state(self):
-        invoices = self.search([
-            ('type', '=', 'out_invoice'),
-            ('create_date', '>=', datetime(2023, 2, 1))
-        ])
-        for inv in invoices:
-            inv.update_invoice_due_state()  
+                invoice.invoice_due_state = 'no_due'
     
