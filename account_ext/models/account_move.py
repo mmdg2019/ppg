@@ -29,14 +29,13 @@ class AccountMove(models.Model):
         ('second_due', 'Second Due'),
         ('third_due', 'Third Due')], 
         string='Due Status', readonly=True)
-    due_factor = fields.Integer('Due Computation Factor (Days)')
 
     # calculate invoice due dates
     def calculate_invoice_due_date(self, data, date_ref):      
         for line in data.invoice_payment_term_id.line_ids:
             inv_due_date = fields.Date.from_string(date_ref)
             if line.option in ['day_after_invoice_date', 'after_invoice_month']:
-                duration = data.due_factor and data.due_factor or 0
+                duration = data.invoice_payment_term_id.due_factor and data.invoice_payment_term_id.due_factor or 0
                 inv_due_date += relativedelta(days=duration)            
             elif line.option == 'day_following_month':
                 inv_due_date += relativedelta(day=line.days, months=1)
