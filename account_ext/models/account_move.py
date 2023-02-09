@@ -4,6 +4,7 @@
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
+from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
 
 
 class AccountMove(models.Model):
@@ -66,4 +67,14 @@ class AccountMove(models.Model):
                         invoice.invoice_due_state = 'third_due'
             else:
                 invoice.invoice_due_state = 'no_due'
+
+    # add permission for posting overdue invoices
+    def action_post(self):          
+        due_invoice_count = self.search_count([
+            ('type', '=', 'out_invoice'), 
+            ('partner_id', '=', self.partner_id.id),
+            ('invoice_due_state', '=', 'third_due')])
+        if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+            raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+        return super(AccountMove, self).action_post()
     
