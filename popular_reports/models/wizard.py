@@ -611,6 +611,17 @@ class PopularReport(models.TransientModel):
             'end_date': self.end_date
         }
         return self.env.ref('popular_reports.outstanding_inv_report_by_cust').report_action(self, data=data)
+    
+#     Outstanding Invoice Report by Due Status
+    def print_report_outstanding_inv_report_by_due(self):
+        data = {
+            'filter_post': self.filter_post,
+            'product_cats_ids': self.product_cats.ids,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.outstanding_inv_report_by_due').report_action(self, data=data)
 
 #     Outstanding Invoice Report by Month
     def print_report_outstanding_inv_report_by_month(self):

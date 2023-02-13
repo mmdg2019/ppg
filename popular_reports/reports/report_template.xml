@@ -5903,6 +5903,371 @@
         </t>
     </template>
 
+    <template id="report_outstanding_inv_report_by_due">
+		<t t-call="web.html_container">
+			<html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+				<head>
+					<meta charset="utf-8"/>
+					<meta name="viewport" content="initial-scale=1"/>
+					<title>
+						<t t-esc="title or 'Odoo Report'"/>
+					</title>
+					<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+					<link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+					<t t-call-assets="web.report_assets_common" t-js="false"/>
+					<t t-call-assets="web.assets_common" t-css="false"/>
+					<t t-call-assets="web.report_assets_common" t-css="false"/>
+					<t t-if="studio" t-call-assets="web_studio.report_assets"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+					<t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+				</head>
+				<body>
+					<div class="container-fluid" id="wrapwrap">
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 30px;">
+										<span t-esc="env.company.name"/>
+									</font>
+								</b>
+							</div>
+						</div>
+						<div class="row" style="text-align:center;">
+							<div class="col">
+								<b>
+									<font style="font-size: 24px;">
+										<span>Outstanding Invoice Report by Due Status												
+											<t t-if="filter_post=='3'">(Posted)</t>
+										</span>
+									</font>
+								</b>
+							</div>
+						</div>
+						<br/>
+						<div class="row" style="text-align:center; font-size: 20px;">
+							<div class="col">
+								<span>
+									<b>Date From : </b>
+									<t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+								</span>
+								<span>
+									<b>To : </b>
+									<t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+						<div t-if="user_ids" class="row" style="text-align:center; font-size: 20px;">
+							<div class="col">
+								<span>
+									<b>Customer : </b>
+									<span t-esc="', '.join(customers.mapped('display_name'))"/>
+								</span>
+							</div>
+						</div>
+						<br/>
+						<table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+							<thead>
+								<tr>
+									<th>
+										<span>Invoice/Bill Date</span>
+									</th>
+									<th>
+										<span>Client Name</span>
+									</th>
+									<th>
+										<span>Invoice Number</span>
+									</th>
+									<th>
+										<span>Invoice Category</span>
+									</th>
+									<th>
+										<span>Status</span>
+									</th>
+									<th style="text-align:right;">
+										<span>Payment Receipt</span>
+									</th>
+									<th style="text-align:right;">
+										<span>Damage</span>
+									</th>
+									<th style="text-align:right;">
+										<span>Amount</span>
+									</th>
+									<th style="text-align:right;">
+										<span>Balance</span>
+									</th>
+									<th>
+										<span>Due Status</span>
+									</th>
+								</tr>
+							</thead>
+							<t t-if="docs">
+								<tbody>
+									<t t-set="sub" t-value="0"/>
+									<t t-set="sub_name" t-value=""/>
+									<t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+									<t t-set="sub_ttl" t-value="0"/>
+									<t t-set="sub_ttl_due" t-value="0"/>
+									<t t-set="sub_ttl_other_charges" t-value="0"/>
+									<t t-set="sub_ttl_discount_amount" t-value="0"/>
+									<t t-set="sub_ttl_tax_excluded" t-value="0"/>
+									<t t-set="ttl" t-value="0"/>
+									<t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name, x.invoice_date, x.display_name), reverse=False)" t-as="table_line"  t-if="table_line.amount_residual_signed > 0">
+										<t t-if="table_line_first">
+											<t t-set="sub_name" t-value="table_line.partner_id.display_name"/></t>
+										<t t-else="">
+											<t t-if="sub_name != table_line.partner_id.display_name">
+												<t t-set="sub_name" t-value="table_line.partner_id.display_name"/>
+												<t t-set="sub" t-value="1"/>
+											</t>
+											<t t-else="">
+												<t t-set="sub" t-value="0"/>
+											</t>
+										</t>
+										<t t-if="sub==1 and sub_ttl>0">
+											<tr>
+												<th colspan="6">
+													<span></span>
+												</th>
+												<th colspan="2">
+													<span>Sub Total</span>
+												</th>
+												<th style="text-align:right;">
+													<span>
+														<t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+													</span>
+												</th>
+											</tr>
+											<t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
+											<t t-set="sub_ttl" t-value="0"/>
+											<t t-set="sub_ttl_due" t-value="0"/>
+											<t t-set="sub_ttl_other_charges" t-value="0"/>
+											<t t-set="sub_ttl_discount_amount" t-value="0"/>
+											<t t-set="sub_ttl_tax_excluded" t-value="0"/>
+										</t>
+										<t t-if="table_line.invoice_due_state == 'first_due'">
+											<tr style="color:orange;">
+												<td>
+													<span t-field="table_line.invoice_date"/>
+												</td>
+												<td>
+													<span t-field="table_line.partner_id.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.x_studio_invoice_category"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_payment_state"/>
+												</td>
+												<t t-set="ttl_credit" t-value="0"/>
+												<t t-set="ttl_payment" t-value="0"/>
+												<t t-if="table_line.invoice_payments_widget != 'false'">
+													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_credit" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_payment" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_total_signed"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_residual_signed"/>
+													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_due_state"/>
+												</td>
+											</tr>
+										</t>
+										<t t-elif="table_line.invoice_due_state == 'second_due'">
+											<tr style="color:orange; font-weight: bold;">
+												<td>
+													<span t-field="table_line.invoice_date"/>
+												</td>
+												<td>
+													<span t-field="table_line.partner_id.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.x_studio_invoice_category"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_payment_state"/>
+												</td>
+												<t t-set="ttl_credit" t-value="0"/>
+												<t t-set="ttl_payment" t-value="0"/>
+												<t t-if="table_line.invoice_payments_widget != 'false'">
+													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_credit" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_payment" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_total_signed"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_residual_signed"/>
+													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_due_state"/>
+												</td>
+											</tr>
+										</t>
+										<t t-elif="table_line.invoice_due_state == 'third_due'">
+											<tr style="color:red;">
+												<td>
+													<span t-field="table_line.invoice_date"/>
+												</td>
+												<td>
+													<span t-field="table_line.partner_id.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.x_studio_invoice_category"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_payment_state"/>
+												</td>
+												<t t-set="ttl_credit" t-value="0"/>
+												<t t-set="ttl_payment" t-value="0"/>
+												<t t-if="table_line.invoice_payments_widget != 'false'">
+													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_credit" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_payment" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_total_signed"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_residual_signed"/>
+													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_due_state"/>
+												</td>
+											</tr>
+										</t>
+										<t t-else="">
+											<tr>
+												<td>
+													<span t-field="table_line.invoice_date"/>
+												</td>
+												<td>
+													<span t-field="table_line.partner_id.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.display_name"/>
+												</td>
+												<td>
+													<span t-field="table_line.x_studio_invoice_category"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_payment_state"/>
+												</td>
+												<t t-set="ttl_credit" t-value="0"/>
+												<t t-set="ttl_payment" t-value="0"/>
+												<t t-if="table_line.invoice_payments_widget != 'false'">
+													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_credit" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span  t-esc="ttl_payment" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_total_signed"/>
+												</td>
+												<td style="text-align:right;">
+													<span t-field="table_line.amount_residual_signed"/>
+													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
+												</td>
+												<td>
+													<span t-field="table_line.invoice_due_state"/>
+												</td>
+											</tr>
+										</t>
+										<t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_residual_signed"/>
+									</t>
+									<t t-if="sub_ttl>0">
+										<tr>
+											<th colspan="6">
+												<span></span>
+											</th>
+											<th colspan="2">
+												<span>Sub Total</span>
+											</th>
+											<th style="text-align:right;">
+												<span>
+													<t t-esc="sub_ttl" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+												</span>
+											</th>
+										</tr>
+									</t>
+								</tbody>
+								<tfooter>
+									<tr>
+										<th colspan="6">
+											<span></span>
+										</th>
+										<th colspan="2">
+											<span>Grand Total</span>
+										</th>
+										<th style="text-align:right;">
+											<span>
+												<t t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': docs.currency_id}"/>
+											</span>
+										</th>
+									</tr>
+								</tfooter>
+							</t>
+							<t t-else="">
+								<tbody>
+									<tr>
+										<td colspan="100" style="text-align:center; font-size: 20px;">
+											<span>
+												<b>No Results Found.</b>
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</t>
+						</table>
+					</div>
+					<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+					<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+					<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+				</body>
+			</html>
+		</t>
+	</template>
+
     <template id="report_outstanding_inv_report_by_month">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">

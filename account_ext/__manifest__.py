@@ -18,6 +18,7 @@ Account Customization
         'views/res_partner_view.xml',
         'views/account_move_view.xml',
         'views/sale_order_view.xml',
+        'views/account_payment_term_views.xml'
     ],    
     'installable': True,
     'auto_install': False,
