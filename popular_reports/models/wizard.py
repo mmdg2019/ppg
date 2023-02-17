@@ -29,7 +29,8 @@ class PopularReport(models.TransientModel):
     POST_QUOT_LIST = [('1','Cancelled'),('2','Locked'),('3','Quotation'),('4','Quotation Sent'),('5','Sales Order')]
     PUR_QUOT_LIST = [('cancel','Cancelled'),('done','Locked'),('draft','RFQ'),('purchase','Purchase Order'),('sent','RFQ Sent'),('to approve','To Approve')]
     PUR_ORDER_LIST = [('invoiced','Fully Billed'),('no','Nothing to Bill'),('to invoice','Waiting to Bills')]
-    
+    DUE_STATUS_LIST = [('no_due', 'No Due'),('first_due', 'First Due'),('second_due', 'Second Due'),('third_due', 'Third Due')]
+
     start_date = fields.Date(string='Start Date')
     c_start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
@@ -72,6 +73,7 @@ class PopularReport(models.TransientModel):
     filter_post_pur_quot = fields.Selection(PUR_QUOT_LIST, string='Status')
     filter_post_pur_order = fields.Selection(PUR_ORDER_LIST, string='Status')
     excel_file = fields.Binary('Excel File')
+    invoice_due_status = fields.Selection(DUE_STATUS_LIST, string='Due Status')
 
     def get_company(self):
         return self.env.company
@@ -616,6 +618,7 @@ class PopularReport(models.TransientModel):
     def print_report_outstanding_inv_report_by_due(self):
         data = {
             'filter_post': self.filter_post,
+            'invoice_due_status': self.invoice_due_status,
             'product_cats_ids': self.product_cats.ids,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 

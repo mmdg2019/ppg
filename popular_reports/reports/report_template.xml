@@ -5938,6 +5938,10 @@
 									<font style="font-size: 24px;">
 										<span>Outstanding Invoice Report by Due Status												
 											<t t-if="filter_post=='3'">(Posted)</t>
+                                            <t t-if="invoice_due_status=='no_due'">(No Due)</t>
+                                            <t t-if="invoice_due_status=='first_due'">(First Due)</t>
+                                            <t t-if="invoice_due_status=='second_due'">(Second Due)</t>
+                                            <t t-if="invoice_due_status=='third_due'">(Third Due)</t>
 										</span>
 									</font>
 								</b>
@@ -5996,9 +6000,11 @@
 									<th style="text-align:right;">
 										<span>Balance</span>
 									</th>
-									<th>
-										<span>Due Status</span>
-									</th>
+                                    <t t-if="invoice_due_status==False">
+                                        <th>
+                                            <span>Due Status</span>
+                                        </th>
+                                    </t>
 								</tr>
 							</thead>
 							<t t-if="docs">
@@ -6082,9 +6088,11 @@
 													<span t-field="table_line.amount_residual_signed"/>
 													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
 												</td>
-												<td>
-													<span t-field="table_line.invoice_due_state"/>
-												</td>
+                                                <t t-if="invoice_due_status==False">
+                                                    <td>
+                                                        <span t-field="table_line.invoice_due_state"/>
+                                                    </td>
+                                                </t>
 											</tr>
 										</t>
 										<t t-elif="table_line.invoice_due_state == 'second_due'">
@@ -6124,9 +6132,11 @@
 													<span t-field="table_line.amount_residual_signed"/>
 													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
 												</td>
-												<td>
-													<span t-field="table_line.invoice_due_state"/>
-												</td>
+                                                <t t-if="invoice_due_status==False">
+                                                    <td>
+                                                        <span t-field="table_line.invoice_due_state"/>
+                                                    </td>
+                                                </t>
 											</tr>
 										</t>
 										<t t-elif="table_line.invoice_due_state == 'third_due'">
@@ -6166,9 +6176,11 @@
 													<span t-field="table_line.amount_residual_signed"/>
 													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
 												</td>
-												<td>
-													<span t-field="table_line.invoice_due_state"/>
-												</td>
+                                                <t t-if="invoice_due_status==False">
+                                                    <td>
+                                                        <span t-field="table_line.invoice_due_state"/>
+                                                    </td>
+                                                </t>
 											</tr>
 										</t>
 										<t t-else="">
@@ -6208,9 +6220,11 @@
 													<span t-field="table_line.amount_residual_signed"/>
 													<t t-set="ttl" t-value="ttl + table_line.amount_residual_signed"/>
 												</td>
-												<td>
-													<span t-field="table_line.invoice_due_state"/>
-												</td>
+                                                <t t-if="invoice_due_status==False">
+                                                    <td>
+                                                        <span t-field="table_line.invoice_due_state"/>
+                                                    </td>
+                                                </t>
 											</tr>
 										</t>
 										<t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_residual_signed"/>
