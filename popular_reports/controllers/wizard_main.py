@@ -1546,6 +1546,15 @@ class edit_report_outstanding_inv_report_by_due(models.AbstractModel):
         if data['filter_post'] == '3':
             docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', data['start_date']), ('invoice_date', '<=', data['end_date']), ('state', '=', 'posted')])
         
+        if data['invoice_due_status'] == 'no_due':
+            docs = docs.filtered(lambda r: r.invoice_due_state == 'no_due')
+        elif data['invoice_due_status'] == 'first_due':
+            docs = docs.filtered(lambda r: r.invoice_due_state == 'first_due')
+        elif data['invoice_due_status'] == 'second_due':
+            docs = docs.filtered(lambda r: r.invoice_due_state == 'second_due')
+        elif data['invoice_due_status'] == 'third_due':
+            docs = docs.filtered(lambda r: r.invoice_due_state == 'third_due')
+
         product_cats_ids = []
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='display_name asc')
@@ -1559,9 +1568,10 @@ class edit_report_outstanding_inv_report_by_due(models.AbstractModel):
         else:
             uids = docs.mapped('partner_id.id')
             customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')      
-        
+
         return {
             'filter_post': data['filter_post'],
+            'invoice_due_status': data['invoice_due_status'],
             'docs': docs,
             'user_ids': data['user_ids'],
             'customers': customers,

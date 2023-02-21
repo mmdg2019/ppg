@@ -587,8 +587,9 @@
                     <group>
                         <field string="Invoice Category" name="product_cats" widget="many2many_tags" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
-                    <group>
+                    <group col="4" colspan="4">
                         <field name="filter_post" widget="many2one_tags" string="Status" readonly="1"/>
+                        <field name="invoice_due_status" widget="many2one_tags" string="Due Status"/>
                     </group>
                     <group col="4" colspan="4">
                        <field name="start_date" required="1"></field>
