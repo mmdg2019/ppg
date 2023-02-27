@@ -9,6 +9,17 @@
                 <field name="state">code</field>
                 <field name="code">action = model.update_invoice_due_state()</field>
         </record>  
+        <record id="action_recompute_due_date_preferred_inv_date_case" model="ir.actions.server">
+            <field name="name">Recompute Due Date (in the case of Preferred Invoice Date)</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="account_ext.model_account_move"/>
+            <field name="binding_model_id" ref="account_ext.model_account_move"/>
+            <field name="state">code</field>
+            <field name="code">
+                for record in records:
+                    record._recompute_due_date_for_preferred_invoice_date()
+            </field>
+        </record>
         <record id="view_invoice_tree_account_ext" model="ir.ui.view">
             <field name="name">account.invoice.tree.inherit</field>
             <field name="model">account.move</field>

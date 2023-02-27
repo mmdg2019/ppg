@@ -75,5 +75,12 @@ class AccountMove(models.Model):
             ('invoice_due_state', '=', 'third_due')])
         if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
             raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
-        return super(AccountMove, self).action_post()
-    
+        return super(AccountMove, self).action_post()    
+  
+    # recompute due date in case the preferred invoice date was set on SO
+    def _recompute_due_date_for_preferred_invoice_date(self):
+        if self.type == 'out_invoice' and self.state == 'draft' and self.invoice_origin:
+            sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin), ('company_id', '=', self.company_id.id)], limit=1)
+            if sale_order.x_studio_pre_invoice_date:
+                self.with_context(check_move_validity=False)._onchange_invoice_date()
+                
