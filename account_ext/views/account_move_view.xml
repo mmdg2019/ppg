@@ -16,8 +16,24 @@
             <field name="binding_model_id" ref="account_ext.model_account_move"/>
             <field name="state">code</field>
             <field name="code">
-                for record in records:
-                    record._recompute_due_date_for_preferred_invoice_date()
+                if records:
+                    for record in records:
+                        record._recompute_due_date_for_preferred_invoice_date()
+            </field>
+        </record>
+        <record id="action_reset_to_draft" model="ir.actions.server">
+            <field name="name">Reset to Draft</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="account_ext.model_account_move"/>
+            <field name="binding_model_id" ref="account_ext.model_account_move"/>
+            <field name="binding_view_types">list</field>
+            <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    for record in records:
+                        if not record.restrict_mode_hash_table and record.state != 'draft':
+                            record.button_draft()
             </field>
         </record>
         <record id="view_invoice_tree_account_ext" model="ir.ui.view">
