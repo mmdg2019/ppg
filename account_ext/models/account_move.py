@@ -46,24 +46,29 @@ class AccountMove(models.Model):
 
     # update invoice due state
     def update_invoice_due_state(self):
-        domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1))]
+        today = fields.Date.context_today(self)
+        domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)), 
+                  ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
+                  ('invoice_date_due', '<', today)]
+        # domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1))]
         if self._context.get('active_ids'):
             domain += [('id', 'in', self._context.get('active_ids'))]
         invoices = self.search(domain) 
+        invoices = invoices.filtered(lambda r: r.invoice_payment_state != 'paid' or (r.invoice_payment_state == 'paid' and r.invoice_due_state != 'no_due'))        
         for invoice in invoices:
-            if invoice.type == 'out_invoice' and invoice.state not in ('draft', 'cancel') and invoice.invoice_payment_state != 'paid' and invoice.invoice_payment_term_id:    
-                today = fields.Date.context_today(self)
-                if today <= invoice.invoice_date_due:
-                    invoice.invoice_due_state = 'no_due'
-                else:
-                    second_due_date = self.calculate_invoice_due_date(invoice, invoice.invoice_date_due)
-                    third_due_date = self.calculate_invoice_due_date(invoice, second_due_date)
-                    if today > invoice.invoice_date_due and today <= second_due_date:
+            if invoice.invoice_payment_state != 'paid':    
+                second_due_date = self.calculate_invoice_due_date(invoice, invoice.invoice_date_due)
+                if today > invoice.invoice_date_due and today <= second_due_date:
+                    if invoice.invoice_due_state != 'first_due':
                         invoice.invoice_due_state = 'first_due'
-                    elif today > second_due_date and today <= third_due_date:
-                        invoice.invoice_due_state = 'second_due'
+                else:
+                    third_due_date = self.calculate_invoice_due_date(invoice, second_due_date)
+                    if today > second_due_date and today <= third_due_date:
+                        if invoice.invoice_due_state != 'second_due':
+                            invoice.invoice_due_state = 'second_due'
                     elif today > third_due_date:
-                        invoice.invoice_due_state = 'third_due'
+                        if invoice.invoice_due_state != 'third_due':
+                            invoice.invoice_due_state = 'third_due'
             else:
                 invoice.invoice_due_state = 'no_due'
 
