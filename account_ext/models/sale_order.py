@@ -27,5 +27,26 @@ class SaleOrder(models.Model):
             raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).action_confirm()
 
+    @api.model
+    def create(self, vals):
+        if vals.get('partner_id'):
+            pid = self.env['res.partner'].browse(vals['partner_id'])
+            due_invoice_count = self.env['account.move'].search_count([
+                ('type', '=', 'out_invoice'), 
+                ('partner_id', '=', pid.id),
+                ('invoice_due_state', '=', 'third_due')])
+            if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+                raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+        return super(SaleOrder, self).create(vals)
+
+    def write(self, values):
+        if values.get('partner_id'):
+            pid = self.env['res.partner'].browse(values['partner_id'])
+            due_invoice_count = self.env['account.move'].search_count([
+                ('type', '=', 'out_invoice'), 
+                ('partner_id', '=', pid.id),
+                ('invoice_due_state', '=', 'third_due')])
+            if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+                raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+        return super(SaleOrder, self).write(values)
     
-        
