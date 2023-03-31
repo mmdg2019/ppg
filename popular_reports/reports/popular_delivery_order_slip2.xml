@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <report
+                string="Popular Delivery Order Slip 2"
+                id="action_print_popular_delivery_order_slip_report"
+                model="stock.picking"
+                report_type="qweb-html"
+                name="popular_reports.report_popular_delivery_order_slip"
+                file="popular_reports.report_popular_delivery_order_slip"
+                print_report_name="'Popular Delivery Order Slip 2'"
+            />
+        <!-- Translatable template -->
+        <template id="report_popular_delivery_order_slip_document">
+            <div class="page h5">
+                <div class="row" style="margin-top:20px">
+                    <div class="col-12">
+                        <img t-if="doc.company_id.x_studio_print_slip_header_image" class="img-fluid" t-att-src="image_data_uri(doc.company_id.x_studio_print_slip_header_image)" alt="Logo"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="font-size:30px;text-align:center;">
+                        <span t-if='doc.picking_type_id.sequence_code == "OUT"'>
+                            <p>DELIVERY ORDER</p>
+                        </span>
+                    </div>
+                </div>
+                <hr width="100%" align="center" style="border: 2px solid #000"/>
+                <div class="row">
+                    <div class="col-6" style="margin-top:40px">
+                        <span t-field="doc.name" class="h3" style="margin-top:40px"/>
+                    </div>
+                    <div class="col-6">
+                        <span t-field="doc.partner_id.contact_address"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <span/>
+                    </div>
+                    <div class="col-6">
+                        <span t-field="doc.partner_id.phone"/>
+                    </div>
+                </div>
+                <div class="row mt32 mb32">
+                    <div t-if="doc.origin" class="col-auto" name="div_origin">
+                        <strong>Order:</strong>
+                        <p t-field="doc.origin"/>
+                    </div>
+                    <div t-if="doc.state" class="col-auto" name="div_sched_date">
+                        <strong>Shipping Date:</strong>
+                        <t t-if="doc.state == 'done'">
+                            <p t-field="doc.scheduled_date"/>
+                        </t>
+                        <t t-if="doc.state != 'done'">
+                            <p t-field="doc.scheduled_date"/>
+                        </t>
+                    </div>
+                    <div class="row justify-content-end" t-if="doc.sudo().sale_id.client_order_ref">
+                        <div class="col-auto">
+                            <strong>Customer Reference:</strong>
+                            <p t-field="doc.sudo().sale_id.client_order_ref"/>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-sm" t-if="doc.state!='done'" name="stock_move_table">
+                    <thead>
+                        <tr>
+                            <th name="th_sm_product">
+                            <strong>Product</strong>
+                            </th>
+                            <th name="th_sm_quantity" class="text-center">
+                            <strong>Quantity</strong>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="lines" t-value="doc.move_lines.filtered(lambda x: x.product_uom_qty)"/>
+                        <tr t-foreach="lines" t-as="move">
+                            <td>
+                                <span t-field="move.product_id.name"/>
+                                <t t-if="move.product_id.packaging_ids">
+                                (
+                                <span t-if="move.product_id.packaging_ids[0].qty>0" t-esc="int(move.product_uom_qty / move.product_id.packaging_ids[0].qty)"/>
+                                <span t-else="" t-esc="int(move.product_uom_qty)"/>
+                                <span t-esc="move.product_id.packaging_ids[0].display_name"/>)
+
+                                </t>
+                                <p t-if="move.description_picking != move.product_id.name">
+                                    <span t-field="move.description_picking"/>
+                                </p>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="move.product_uom_qty" class="h3"/>
+                                <span t-field="move.product_uom"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-sm mt48" t-if="doc.move_line_ids and doc.state=='done'" name="stock_move_line_table">
+                    <t t-set="has_serial_number" t-value="doc.move_line_ids.mapped('lot_id')"/>
+                    <thead>
+                        <tr>
+                            <th name="th_sml_product">
+                            <strong>Product</strong>
+                            </th>
+                            <th name="lot_serial" t-if="has_serial_number" groups="stock.group_lot_on_delivery_slip">
+                            Lot/Serial Number
+                            </th>
+                            <th name="th_sml_quantity" class="text-center">
+                            <strong>Quantity</strong>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.move_line_ids" t-as="move_line">
+                            <td>
+                                <span t-field="move_line.product_id.name"/>
+                                <t t-if="move_line.product_id.packaging_ids">
+                                    (
+                                    <span t-if="move_line.product_id.packaging_ids[0].qty>0" t-esc="int(move_line.qty_done / move_line.product_id.packaging_ids[0].qty)"/>
+                                    <span t-else="" t-esc="int(move_line.qty_done)"/>
+                                    <span t-esc="move_line.product_id.packaging_ids[0].display_name"/>)
+
+                                </t>
+                                <p t-if="move_line.move_id.description_picking != move_line.product_id.name">
+                                    <span t-field="move_line.move_id.description_picking"/>
+                                </p>
+                            </td>
+                            <td t-if="has_serial_number and move_line.lot_name" groups="stock.group_lot_on_delivery_slip">
+                                <span t-field="move_line.lot_name"/>
+                            </td>
+                            <td t-elif="has_serial_number" groups="stock.group_lot_on_delivery_slip">
+                                <span t-field="move_line.lot_id.name"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="move_line.qty_done" class="h3"/>
+                                <span t-field="move_line.product_uom_id"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                </div>
+
+                <div class="row mt32 mb32">
+                    <div t-if="doc.note" class="col-auto" name="div_origin">
+                        <strong>Notes:</strong>
+                        <p t-field="doc.note"/>
+                    </div>
+                </div>
+                <p>
+                    <t t-if="doc.backorder_ids and doc.backorder_ids.filtered(lambda x: x.state not in ('done', 'cancel'))">
+                        All items couldn't be shipped, the remaining ones will be shipped as soon as they become available.
+                    </t>
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <span t-field="doc.sale_id.note"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <span>
+                            <b>Delivery Order Of:</b>
+                            <span t-field="doc.x_studio_delivery_order_of.name"/>
+                        </span>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="row" style="font-size: 30px;margin-bottom:10px;">
+                        <div class="col-4 text-center">
+                            <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                        </div>
+                        <div class="col-4 text-center">
+                            <span>
+                                <p> </p>
+                            </span>
+                        </div>
+                        <div class="col-4 text-center">
+                            <span>
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%H:%M:%S')"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </template>
+        <template id="report_popular_delivery_order_slip">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <t t-call="popular_reports.report_popular_delivery_order_slip_document"/>
+                    <p style="page-break-after: always;"/>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

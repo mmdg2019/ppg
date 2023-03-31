@@ -34,6 +34,7 @@
         'reports/sale_target.xml',
         'reports/transfer_main_group_report.xml',
         'reports/main_group_purchase_order_slip.xml',
+        'reports/popular_delivery_order_slip2.xml',
     ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
