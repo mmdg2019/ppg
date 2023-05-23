@@ -1232,6 +1232,9 @@ class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
             docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
             docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date'])])
+        # add customer filter to report
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
             'filter_post_payment': data['filter_post_payment'],
             'docs': docs
