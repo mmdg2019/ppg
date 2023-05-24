@@ -20,8 +20,9 @@
         'website_sale'
     ],
     'data': [
-        'security/ir.model.access.csv',
         'security/security.xml',
+        'security/stock_entry_security.xml',
+        'security/ir.model.access.csv',
         'views/action_manager.xml',
         'views/wizard_view.xml',
         'views/wizard_forms.xml',

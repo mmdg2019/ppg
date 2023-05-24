@@ -517,6 +517,7 @@ class PopularReport(models.TransientModel):
 #     Cash Payment Listing by Lumpsum
     def print_report_cash_payment_listing_by_lumpsum(self):
         data = {
+            'user_ids': self.user.ids, 
             'filter_post_payment':self.filter_post_payment,
             'start_date': self.start_date, 
             'end_date': self.end_date
