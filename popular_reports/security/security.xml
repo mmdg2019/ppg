@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <!-- group with credit permission (can access outstanding invoice report by month) -->
-    <record id="group_credit_permission" model="res.groups">
-        <field name="name">Credit Permission</field>
-    </record>
     
 <!--     <record id="popular_reports_group_system_edit_all_views" model="popular_reports.popular_reports">
         <field name="name">Administration Settings: Manage all views</field>
