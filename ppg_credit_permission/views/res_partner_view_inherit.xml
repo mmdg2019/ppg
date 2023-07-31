@@ -1,0 +1,25 @@
+<odoo>
+  <data>
+      <record id="res_partner_view_form_credit_access" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit.credit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="show_credit_due_access" groups="ppg_credit_permission.group_credit_manager"/>
+            </xpath>
+        </field>
+      </record>
+      <record id="res_partner_tree_view_credit_access" model="ir.ui.view">
+          <field name="name">res.partner.tree.view.inherit.credit</field>
+          <field name="model">res.partner</field>
+          <field name="inherit_id" ref="base.view_partner_tree"/>
+          <field name="arch" type="xml">
+              <xpath expr="//field[@name='phone']" position="before">
+
+                  <field name="show_credit_due_access" groups="ppg_credit_permission.group_credit_manager"/>
+              </xpath>
+          </field>
+      </record>
+  </data>
+</odoo>
