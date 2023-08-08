@@ -26,7 +26,7 @@ class SaleOrder(models.Model):
             ('invoice_due_state', '=', 'third_due')])
         for record in self:
             if not record.partner_id.show_credit_due_access:
-                if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+                if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).action_confirm()
 
@@ -39,7 +39,7 @@ class SaleOrder(models.Model):
                 ('partner_id', '=', pid.id),
                 ('invoice_due_state', '=', 'third_due')])
             if not pid.show_credit_due_access:
-                if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+                if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).create(vals)
 
@@ -51,7 +51,7 @@ class SaleOrder(models.Model):
                 ('partner_id', '=', pid.id),
                 ('invoice_due_state', '=', 'third_due')])
             if not pid.show_credit_due_access:
-                if due_invoice_count > 0 and not self.env.user.has_group('popular_reports.group_credit_permission'):
+                if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).write(values)
     

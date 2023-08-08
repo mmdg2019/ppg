@@ -10,7 +10,7 @@
 
 Account Customization
     """,      
-    'depends': ['base', 'account_reports', 'account','sale'],    
+    'depends': ['base', 'account_reports', 'account','sale', 'ppg_credit_permission'],    
     'data': [
         # 'security/ir.model.access.csv',
         'security/security.xml',      
