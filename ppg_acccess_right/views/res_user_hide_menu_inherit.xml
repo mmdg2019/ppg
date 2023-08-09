@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record id="view_users_hide_menu_form_inherit" model="ir.ui.view">
+	    <field name="name">res.users.hide.menu.form.inherit</field>
+	    <field name="model">res.users</field>
+	    <field name="type">form</field>
+	    <field name="inherit_id" ref="hide_any_menu.view_users_hide_menu_form"/>
+	    <field name="arch" type="xml">
+            <xpath expr="//notebook/page[3]" position="replace">
+
+                <page string="Hide Specific Menu" name="hide_menu" groups="ppg_acccess_right.group_hide_menu_permission">
+                    <group colspan="4">
+                        <field name="menu_ids" nolabel="1"/>
+                    </group>
+                </page>
+                  
+            </xpath>
+            <xpath expr="//notebook/page[4]" position="replace">
+
+                <page string="Hide Specific Report" name="hide_menu" groups="ppg_acccess_right.group_hide_report_permission">
+                    <group colspan="4">
+	                    <field name="report_ids" nolabel="1">
+	                        <tree>
+	                            <field name="name"/>
+	                            <field name="model"/>
+	                            <field name="report_name"/>
+	                            <field name="report_type"/>
+	                        </tree>
+	                    </field>
+	                </group>
+                </page>
+                  
+            </xpath>
+	    </field>
+	</record>
+</odoo>
