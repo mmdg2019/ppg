@@ -17,7 +17,8 @@
         'sale',
         'stock',
         'website',
-        'website_sale'
+        'website_sale',
+        'ppg_credit_permission'
     ],
     'data': [
         'security/security.xml',
