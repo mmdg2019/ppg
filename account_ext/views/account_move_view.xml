@@ -7,7 +7,7 @@
                 <field name="model_id" ref="account_ext.model_account_move"/>
                 <field name="binding_model_id" ref="account_ext.model_account_move"/>
                 <field name="state">code</field>
-                <field name="code">action = model.update_invoice_due_state()</field>
+                <field name="code">action = model.update_invoice_due_state_action()</field>
         </record>  
         <record id="action_recompute_due_date_preferred_inv_date_case" model="ir.actions.server">
             <field name="name">Recompute Due Date (in the case of Preferred Invoice Date)</field>
