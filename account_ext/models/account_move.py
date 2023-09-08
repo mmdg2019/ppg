@@ -101,6 +101,7 @@ class AccountMove(models.Model):
                         if invoice.invoice_due_state != 'second_due':
                             invoice.invoice_due_state = 'second_due'
                     elif today > third_due_date:
+                        invoice.partner_id.so_block_customer = True
                         if invoice.invoice_due_state != 'third_due':
                             invoice.invoice_due_state = 'third_due'
 
@@ -128,6 +129,7 @@ class AccountMove(models.Model):
                             if invoice.invoice_due_state != 'second_due':
                                 invoice.invoice_due_state = 'second_due'
                         elif today > third_due_date:
+                            invoice.partner_id.so_block_customer = True
                             if invoice.invoice_due_state != 'third_due':
                                 invoice.invoice_due_state = 'third_due'
                 else:
@@ -135,13 +137,13 @@ class AccountMove(models.Model):
 
     # add permission for posting overdue invoices
     def action_post(self):          
-        due_invoice_count = self.search_count([
-            ('type', '=', 'out_invoice'), 
-            ('partner_id', '=', self.partner_id.id),
-            ('invoice_due_state', '=', 'third_due')])
+        # due_invoice_count = self.search_count([
+        #     ('type', '=', 'out_invoice'), 
+        #     ('partner_id', '=', self.partner_id.id),
+        #     ('invoice_due_state', '=', 'third_due')])
         for record in self:
             if not record.partner_id.show_credit_due_access:
-                if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                if record.partner_id.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(AccountMove, self).action_post()    
   
