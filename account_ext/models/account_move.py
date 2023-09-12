@@ -101,6 +101,7 @@ class AccountMove(models.Model):
                         if invoice.invoice_due_state != 'second_due':
                             invoice.invoice_due_state = 'second_due'
                     elif today > third_due_date:
+                        invoice.partner_id.so_block_customer = True
                         if invoice.invoice_due_state != 'third_due':
                             invoice.invoice_due_state = 'third_due'
 
@@ -128,6 +129,7 @@ class AccountMove(models.Model):
                             if invoice.invoice_due_state != 'second_due':
                                 invoice.invoice_due_state = 'second_due'
                         elif today > third_due_date:
+                            invoice.partner_id.so_block_customer = True
                             if invoice.invoice_due_state != 'third_due':
                                 invoice.invoice_due_state = 'third_due'
                 else:
@@ -135,13 +137,13 @@ class AccountMove(models.Model):
 
     # add permission for posting overdue invoices
     def action_post(self):          
-        due_invoice_count = self.search_count([
-            ('type', '=', 'out_invoice'), 
-            ('partner_id', '=', self.partner_id.id),
-            ('invoice_due_state', '=', 'third_due')])
+        # due_invoice_count = self.search_count([
+        #     ('type', '=', 'out_invoice'), 
+        #     ('partner_id', '=', self.partner_id.id),
+        #     ('invoice_due_state', '=', 'third_due')])
         for record in self:
             if not record.partner_id.show_credit_due_access:
-                if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                if record.partner_id.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(AccountMove, self).action_post()    
   
@@ -151,4 +153,19 @@ class AccountMove(models.Model):
             sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin), ('company_id', '=', self.company_id.id)], limit=1)
             if sale_order.x_studio_pre_invoice_date:
                 self.with_context(check_move_validity=False)._onchange_invoice_date()
-                
+
+    # set due state to 'No Due' as soon as an invoice is set to paid
+    @api.depends(
+    'line_ids.debit',
+    'line_ids.credit',
+    'line_ids.currency_id',
+    'line_ids.amount_currency',
+    'line_ids.amount_residual',
+    'line_ids.amount_residual_currency',
+    'line_ids.payment_id.state')
+    def _compute_amount(self):
+        res = super(AccountMove, self)._compute_amount()
+        for move in self:
+            if move.type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.invoice_payment_state == 'paid' and move.invoice_due_state != 'no_due':
+                move.invoice_due_state = 'no_due'
+        return res

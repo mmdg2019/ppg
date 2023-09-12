@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="show_credit_due_access" groups="ppg_credit_permission.group_credit_manager"/>
+                <field name="so_block_customer" groups="ppg_credit_permission.group_credit_manager"/>
             </xpath>
         </field>
       </record>
@@ -16,8 +17,8 @@
           <field name="inherit_id" ref="base.view_partner_tree"/>
           <field name="arch" type="xml">
               <xpath expr="//field[@name='phone']" position="before">
-
-                  <field name="show_credit_due_access" groups="ppg_credit_permission.group_credit_manager"/>
+                   <field name="so_block_customer"  optional="show"/>
+                    <field name="show_credit_due_access" groups="ppg_credit_permission.group_credit_manager"/>
               </xpath>
           </field>
       </record>
