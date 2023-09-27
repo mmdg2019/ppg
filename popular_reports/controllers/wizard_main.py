@@ -2201,3 +2201,80 @@ class edit_report_balance_statement(models.AbstractModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date'],            
        }
+
+#     Manufacturing Order Product Quantity Listing by Date
+class edit_report_mo_prod_qty_listing_by_date(models.AbstractModel):
+    _name = "report.popular_reports.report_mo_prod_qty_listing_by_date"
+    _description="Manufacturing Order Product Quantity Listing by Date Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        mo_docs = None
+        products = None
+        lst = []
+
+        # filter MO based on the selected date range and state
+        domain = [('date_planned_start', '>=', data['start_date']), ('date_planned_start', '<=', data['end_date'])]
+        if data['status']:
+            domain += [('state', '=', data['status'])]
+        mo_docs = self.env['mrp.production'].search(domain)
+
+        # get current date and time
+        now = datetime.now()
+        user_tz = self.env.user.tz
+        if user_tz in pytz.all_timezones:
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone(user_tz)
+            dt = old_tz.localize(now).astimezone(new_tz)
+            now = dt
+        cdate = now.date().strftime('%d/%m/%Y')
+        ctime = now.time().strftime('%H:%M:%S')
+        
+        if mo_docs:
+            # extract the finished product list of the selected MOs
+            doc_prod_list = sorted(list(set(mo_docs.mapped('finished_move_line_ids.product_id'))))
+            if doc_prod_list:
+                pids = [prod.id for prod in doc_prod_list]
+                if data['product_ids']:
+                    products = self.env['product.product'].search([('id', 'in', data['product_ids']), ('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='display_name asc')
+                else:
+                    products = self.env['product.product'].search([('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='display_name asc')
+        
+                if products:
+                    # get date list
+                    dates = [doc.date_planned_start.strftime('%d/%m/%Y') for doc in mo_docs]
+                    dates = list(set(dates))
+                    dates.sort(key = lambda date: datetime.strptime(date, '%d/%m/%Y'))
+
+                    # compute sub total and grand total for each product
+                    for product in products:
+                        datetemp = []
+                        grand_ttl_qty = 0
+                        for date in dates:
+                            temp = []
+                            sub_ttl_qty = 0
+                            docc = mo_docs.filtered(lambda r: r.date_planned_start.strftime('%d/%m/%Y') == date)
+                            for doc in docc.sorted(key=lambda x: x.name, reverse=False):
+                                ttl_qty = 0
+                                for table_line in doc.finished_move_line_ids.filtered(lambda x: x.product_id.id == product.id):
+                                    if table_line.product_id.uom_id.display_name != table_line.product_uom_id.display_name:
+                                        ttl_qty += round((table_line.qty_done * table_line.product_id.uom_id.factor_inv) / table_line.product_uom_id.factor_inv, 2)
+                                    else:
+                                        ttl_qty += table_line.qty_done
+                                if ttl_qty != 0:
+                                    temp.append({'mo_no': doc.name, 'qty': ttl_qty})
+                                    sub_ttl_qty += ttl_qty
+                            if sub_ttl_qty != 0:
+                                datetemp.append({'date': date, 'sub_total': sub_ttl_qty, 'qty_per_mo': temp})
+                                grand_ttl_qty += sub_ttl_qty
+                        if grand_ttl_qty != 0:
+                            lst.append({'product': product.display_name, 'grand_total': grand_ttl_qty, 'qty_per_date': datetemp})
+
+        return {
+            'lst': sorted(lst, key = lambda i: i['product']),
+            'status': data['status'],
+            'start_date': data['start_date'],
+            'end_date': data['end_date'],
+            'printing_date': cdate,
+            'printing_time': ctime
+        }

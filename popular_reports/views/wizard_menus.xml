@@ -77,6 +77,11 @@
               id="popular_reports.popular_reports_sub_menu_6"
               sequence="6"/>
 
+    <menuitem name="MRP Reports"
+              parent="popular_reports.popular_reports_main_menu"
+              id="popular_reports.popular_reports_sub_menu_9"
+              sequence="7"/>
+
     <menuitem name="Other Reports"
               parent="popular_reports.popular_reports_main_menu"
               id="popular_reports.popular_reports_sub_menu_7"
@@ -85,7 +90,7 @@
     <menuitem name="Scheduled Reports"
               parent="popular_reports.popular_reports_main_menu"
               id="popular_reports.popular_reports_sub_menu_8"
-              sequence="7"/>
+              sequence="9"/>
 
     <menuitem name="Sales Analysis Report by Customer"
               parent="popular_reports.popular_reports_sub_menu_8"
@@ -424,6 +429,12 @@
               id="popular_reports.menu_report_factory_purchase_order_report"
               action="popular_reports.wizard_act_report_factory_purchase_order_report"
               sequence="3"/>
+
+    <menuitem name="Manufacturing Order Product Quantity Listing by Date"
+              parent="popular_reports.popular_reports_sub_menu_9"
+              id="popular_reports.menu_report_mo_prod_qty_listing_by_date"
+              action="popular_reports.wizard_act_report_mo_prod_qty_listing_by_date"
+              sequence="1"/>
 
 </odoo>
     
