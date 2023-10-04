@@ -289,6 +289,18 @@ class PopularReport(models.TransientModel):
             'user_ids': self.user.ids,
         }
         return self.env.ref('popular_reports.factory_stock_transfer').report_action(self, data=data)
+    
+    #     Stock Transfer Product Quantity Listing by Date
+    def print_report_stock_trans_prod_qty_list_by_date(self):
+        data = {
+            'product_ids': self.products.ids,
+            'filter_post_stock': self.filter_post_stock,
+            'filter_stock_picking_type': self.filter_stock_picking_type.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'user_ids': self.user.ids
+        }
+        return self.env.ref('popular_reports.stock_trans_prod_qty_list_by_date').report_action(self, data=data)
 
     # set excel sheet styles
     def get_style(self, workbook):

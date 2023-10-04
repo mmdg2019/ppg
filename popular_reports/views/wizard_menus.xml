@@ -317,6 +317,12 @@
               action="popular_reports.wizard_act_report_factory_stock_transfer"
               sequence="24"/>
 
+    <menuitem name="Stock Transfer Product Quantity Listing by Date"
+              parent="popular_reports.popular_reports_sub_menu_6"
+              id="popular_reports.menu_report_stock_trans_prod_qty_list_by_date"
+              action="popular_reports.wizard_act_report_stock_trans_prod_qty_list_by_date"
+              sequence="25"/>
+
     <menuitem name="All Balance Listing"
               parent="popular_reports.popular_reports_sub_menu_7"
               id="popular_reports.menu_report_all_balance_listing"
