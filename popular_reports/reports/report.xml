@@ -49,6 +49,18 @@
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
 
+    <record id="stock_trans_prod_qty_list_by_date" model="ir.actions.report">
+        <field name="name">Stock Transfer Product Quantity Listing by Date</field>
+        <field name="print_report_name"></field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_trans_prod_qty_list_by_date</field>
+        <field name="report_file">popular_reports.report_stock_trans_prod_qty_list_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+
 <!--     <report
         id="stock_focus"
         model="stock.picking"
@@ -1159,4 +1171,17 @@
         <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
+
+    <record id="mo_prod_qty_listing_by_date" model="ir.actions.report">
+        <field name="name">Manufacturing Order Product Quantity Listing by Date</field>
+        <field name="print_report_name">Manufacturing Order Product Quantity Listing by Date</field>
+        <field name="model">mrp.production</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_mo_prod_qty_listing_by_date</field>
+        <field name="report_file">popular_reports.report_mo_prod_qty_listing_by_date</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+
 </odoo>

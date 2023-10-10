@@ -1003,7 +1003,89 @@ class edit_report_factory_stock_transfer(models.AbstractModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date']
        }
+
+#     Stock Transfer Product Quantity Listing by Date
+class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
+    _name = "report.popular_reports.report_stock_trans_prod_qty_list_by_date"
+    _description="Stock Transfer Product Quantity Listing by Date Editing"
     
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        customers = None
+        lst = []
+
+        # filter stock pickings based on the selected scheduled date, state, stock picking type, partner, and products
+        if data['filter_post_stock']:
+            docs = self.env['stock.picking'].search([('scheduled_date', '>=', data['start_date']), ('scheduled_date', '<=', data['end_date']), ('state', '=', data['filter_post_stock'])])
+        else:
+            docs = self.env['stock.picking'].search([('scheduled_date', '>=', data['start_date']), ('scheduled_date', '<=', data['end_date'])])
+        if data['filter_stock_picking_type']:
+            docs = docs.filtered(lambda r: r.picking_type_id.id in data['filter_stock_picking_type'])
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+        
+        # get current date and time
+        now = datetime.now()
+        user_tz = self.env.user.tz
+        if user_tz in pytz.all_timezones:
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone(user_tz)
+            dt = old_tz.localize(now).astimezone(new_tz)
+            now = dt
+        cdate = now.date().strftime('%d/%m/%Y')
+        ctime = now.time().strftime('%H:%M:%S')
+
+        if docs:
+            doc_prod_list = docs.mapped('move_ids_without_package.product_id')
+            if data['product_ids']:
+                doc_prod_list = doc_prod_list.filtered(lambda r: r.id in data['product_ids'])
+            if doc_prod_list:
+                products = sorted(list(set(doc_prod_list)))
+
+                # get date list
+                dates = [doc.scheduled_date.strftime('%d/%m/%Y') for doc in docs]
+                dates = list(set(dates))
+                dates.sort(key = lambda date: datetime.strptime(date, '%d/%m/%Y'))
+
+                # compute sub total and grand total for each product
+                for product in products:
+                    datetemp = []
+                    grand_ttl_demand_qty = grand_ttl_done_qty = 0
+                    for date in dates:
+                        temp = []
+                        sub_ttl_demand_qty = sub_ttl_done_qty = 0
+                        docc = docs.filtered(lambda r: r.scheduled_date.strftime('%d/%m/%Y') == date)
+                        for doc in docc.sorted(key=lambda x: x.name, reverse=False):
+                            ttl_demand_qty = ttl_done_qty = 0
+                            for table_line in doc.move_ids_without_package.filtered(lambda x: x.product_id.id == product.id):
+                                if table_line.product_id.uom_id.display_name != table_line.product_uom.display_name:
+                                    ttl_demand_qty += round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)
+                                    ttl_done_qty += round((table_line.quantity_done * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)
+                                else:
+                                    ttl_demand_qty += table_line.product_uom_qty
+                                    ttl_done_qty += table_line.quantity_done
+                            if ttl_demand_qty != 0 or ttl_done_qty != 0:
+                                temp.append({'stock_picking_no': doc.name, 'demand_qty': ttl_demand_qty, 'done_qty': ttl_done_qty})
+                                sub_ttl_demand_qty += ttl_demand_qty
+                                sub_ttl_done_qty += ttl_done_qty
+                        if sub_ttl_demand_qty != 0 or sub_ttl_done_qty != 0:
+                            datetemp.append({'date': date, 'sub_total_demand': sub_ttl_demand_qty, 'sub_total_done': sub_ttl_done_qty, 'qty_per_doc': temp})
+                            grand_ttl_demand_qty += sub_ttl_demand_qty
+                            grand_ttl_done_qty += sub_ttl_done_qty
+                    if grand_ttl_demand_qty != 0 or grand_ttl_done_qty != 0:
+                        lst.append({'product': product, 'grand_total_demand': grand_ttl_demand_qty, 'grand_total_done': grand_ttl_done_qty, 'qty_per_date': datetemp})
+        return {
+            'lst': sorted(lst, key = lambda i: i['product'].default_code),
+            'customers': customers,
+            'filter_post_stock': data['filter_post_stock'],
+            'start_date': data['start_date'],
+            'end_date': data['end_date'],
+            'printing_date': cdate,
+            'printing_time': ctime
+        }
+
 #     Stock Transfer Information Summary
 class edit_report_stock_transfer_dtl_info(models.AbstractModel):
     _name = "report.popular_reports.report_stock_transfer_dtl_info"
@@ -2201,3 +2283,80 @@ class edit_report_balance_statement(models.AbstractModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date'],            
        }
+
+#     Manufacturing Order Product Quantity Listing by Date
+class edit_report_mo_prod_qty_listing_by_date(models.AbstractModel):
+    _name = "report.popular_reports.report_mo_prod_qty_listing_by_date"
+    _description="Manufacturing Order Product Quantity Listing by Date Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        mo_docs = None
+        products = None
+        lst = []
+
+        # filter MO based on the selected date range and state
+        domain = [('date_planned_start', '>=', data['start_date']), ('date_planned_start', '<=', data['end_date'])]
+        if data['status']:
+            domain += [('state', '=', data['status'])]
+        mo_docs = self.env['mrp.production'].search(domain)
+
+        # get current date and time
+        now = datetime.now()
+        user_tz = self.env.user.tz
+        if user_tz in pytz.all_timezones:
+            old_tz = pytz.timezone('UTC')
+            new_tz = pytz.timezone(user_tz)
+            dt = old_tz.localize(now).astimezone(new_tz)
+            now = dt
+        cdate = now.date().strftime('%d/%m/%Y')
+        ctime = now.time().strftime('%H:%M:%S')
+        
+        if mo_docs:
+            # extract the finished product list of the selected MOs
+            doc_prod_list = sorted(list(set(mo_docs.mapped('finished_move_line_ids.product_id'))))
+            if doc_prod_list:
+                pids = [prod.id for prod in doc_prod_list]
+                if data['product_ids']:
+                    products = self.env['product.product'].search([('id', 'in', data['product_ids']), ('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='display_name asc')
+                else:
+                    products = self.env['product.product'].search([('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='display_name asc')
+        
+                if products:
+                    # get date list
+                    dates = [doc.date_planned_start.strftime('%d/%m/%Y') for doc in mo_docs]
+                    dates = list(set(dates))
+                    dates.sort(key = lambda date: datetime.strptime(date, '%d/%m/%Y'))
+
+                    # compute sub total and grand total for each product
+                    for product in products:
+                        datetemp = []
+                        grand_ttl_qty = 0
+                        for date in dates:
+                            temp = []
+                            sub_ttl_qty = 0
+                            docc = mo_docs.filtered(lambda r: r.date_planned_start.strftime('%d/%m/%Y') == date)
+                            for doc in docc.sorted(key=lambda x: x.name, reverse=False):
+                                ttl_qty = 0
+                                for table_line in doc.finished_move_line_ids.filtered(lambda x: x.product_id.id == product.id):
+                                    if table_line.product_id.uom_id.display_name != table_line.product_uom_id.display_name:
+                                        ttl_qty += round((table_line.qty_done * table_line.product_id.uom_id.factor_inv) / table_line.product_uom_id.factor_inv, 2)
+                                    else:
+                                        ttl_qty += table_line.qty_done
+                                if ttl_qty != 0:
+                                    temp.append({'mo_no': doc.name, 'qty': ttl_qty})
+                                    sub_ttl_qty += ttl_qty
+                            if sub_ttl_qty != 0:
+                                datetemp.append({'date': date, 'sub_total': sub_ttl_qty, 'qty_per_mo': temp})
+                                grand_ttl_qty += sub_ttl_qty
+                        if grand_ttl_qty != 0:
+                            lst.append({'product': product.display_name, 'grand_total': grand_ttl_qty, 'qty_per_date': datetemp})
+
+        return {
+            'lst': sorted(lst, key = lambda i: i['product']),
+            'status': data['status'],
+            'start_date': data['start_date'],
+            'end_date': data['end_date'],
+            'printing_date': cdate,
+            'printing_time': ctime
+        }

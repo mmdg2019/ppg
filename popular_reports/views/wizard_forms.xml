@@ -1247,6 +1247,35 @@
            </form>
             </field>
         </record>
+
+        <record model='ir.ui.view' id='wizard_form_report_stock_trans_prod_qty_list_by_date'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Transfer Product Quantity Listing by Date">
+                    <group>
+                        <field name="user" widget="many2many_tags" context="{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}" status="Contact" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field name="products" widget="many2many_tags" domain="[('type', 'in', ['product', 'consu'])]" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                    </group>
+                    <group>
+                        <field name="filter_stock_picking_type" widget="many2one_tags" string="Operation Type"/>
+                    </group>
+                    <group>
+                        <field name="filter_post_stock" widget="many2one_tags" string="Status" required="1"/>
+                    </group>
+                    <group col="4" colspan="4">
+                        <field name="start_date" required="1"></field>
+                        <field name="end_date" required="1"></field>
+                    </group>
+                    <footer>
+                        <button name="print_report_stock_trans_prod_qty_list_by_date" type="object" string="Print Report" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
         
         <record model='ir.ui.view' id='wizard_form_report_stock_transfer_dtl_info'>
             <field name="name">wizard.popular.reports.form</field>
@@ -1409,6 +1438,31 @@
                         <button name="print_report_balance_statement" type="object" string="Print Report" class="oe_highlight"/>
                         <button string="Cancel" class="btn btn-default" special="cancel"/>
                     </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="wizard_form_report_mo_prod_qty_listing_by_date" model="ir.ui.view">
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Manufacturing Order Product Quantity Listing by Date">
+                    <sheet>
+                        <group string="Product">
+                            <field name="products" widget="many2many_tags" domain="[('type', '!=', 'service')]" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                        </group>
+                        <group string="Status">
+                            <field name="mo_state"/>
+                        </group>
+                        <group string="Date" col="4" colspan="4">
+                            <field name="start_date" required="1"/>
+                            <field name="end_date" required="1"/>
+                        </group>
+                        <footer>
+                            <button name="print_report_mo_prod_qty_listing_by_date" string="Print Report" type="object" class="oe_highlight"/>
+                            <button string="Cancel" class="btn btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -1802,6 +1856,15 @@
             <field name="view_id" ref="wizard_form_report_factory_stock_transfer"/>
             <field name="target">new</field>
         </record>
+
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_trans_prod_qty_list_by_date'>
+            <field name="name">Export Stock Transfer Product Quantity Listing by Date</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_trans_prod_qty_list_by_date"/>
+            <field name="target">new</field>
+        </record>
         
         <record model='ir.actions.act_window' id='wizard_act_report_stock_transfer_dtl_info'>
             <field name="name">Export Stock Transfer Information Summary</field>
@@ -1920,5 +1983,15 @@
             <field name="view_id" ref="wizard_form_report_balance_statement"/>
             <field name="target">new</field>
         </record>
+
+        <record model='ir.actions.act_window' id='wizard_act_report_mo_prod_qty_listing_by_date'>
+            <field name="name">Export Manufacturing Order Product Quantity Listing by Date</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_mo_prod_qty_listing_by_date"/>
+            <field name="target">new</field>
+        </record>
+
     </data>
 </odoo>

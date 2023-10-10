@@ -30,6 +30,7 @@ class PopularReport(models.TransientModel):
     PUR_QUOT_LIST = [('cancel','Cancelled'),('done','Locked'),('draft','RFQ'),('purchase','Purchase Order'),('sent','RFQ Sent'),('to approve','To Approve')]
     PUR_ORDER_LIST = [('invoiced','Fully Billed'),('no','Nothing to Bill'),('to invoice','Waiting to Bills')]
     DUE_STATUS_LIST = [('no_due', 'No Due'),('first_due', 'First Due'),('second_due', 'Second Due'),('third_due', 'Third Due')]
+    MO_STATUS_LIST = [('draft', 'Draft'),('confirmed', 'Confirmed'),('planned', 'Planned'),('progress', 'In Progress'),('to_close', 'To Close'),('done', 'Done'),('cancel', 'Cancelled')]
 
     start_date = fields.Date(string='Start Date')
     c_start_date = fields.Date(string='Start Date')
@@ -74,6 +75,7 @@ class PopularReport(models.TransientModel):
     filter_post_pur_order = fields.Selection(PUR_ORDER_LIST, string='Status')
     excel_file = fields.Binary('Excel File')
     invoice_due_status = fields.Selection(DUE_STATUS_LIST, string='Due Status')
+    mo_state = fields.Selection(MO_STATUS_LIST, string='Status', help='Status of Manufacturing Order')
 
     def get_company(self):
         return self.env.company
@@ -287,6 +289,18 @@ class PopularReport(models.TransientModel):
             'user_ids': self.user.ids,
         }
         return self.env.ref('popular_reports.factory_stock_transfer').report_action(self, data=data)
+    
+    #     Stock Transfer Product Quantity Listing by Date
+    def print_report_stock_trans_prod_qty_list_by_date(self):
+        data = {
+            'product_ids': self.products.ids,
+            'filter_post_stock': self.filter_post_stock,
+            'filter_stock_picking_type': self.filter_stock_picking_type.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'user_ids': self.user.ids
+        }
+        return self.env.ref('popular_reports.stock_trans_prod_qty_list_by_date').report_action(self, data=data)
 
     # set excel sheet styles
     def get_style(self, workbook):
@@ -967,3 +981,12 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.balance_statement').report_action(self, data=data)
     
+#     Manufacturing Order Product Quantity Listing by Date
+    def print_report_mo_prod_qty_listing_by_date(self):
+        data = {
+            'product_ids': self.products.ids,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
+            'status': self.mo_state
+        }
+        return self.env.ref('popular_reports.mo_prod_qty_listing_by_date').report_action(self, data=data)
