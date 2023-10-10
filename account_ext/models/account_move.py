@@ -5,7 +5,7 @@ from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
-
+from pytz import timezone, UTC
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -74,7 +74,11 @@ class AccountMove(models.Model):
 
     # update invoice due state for paid invoices
     def update_paid_invoice_due_state(self):
-        today = fields.Date.context_today(self)
+        local = self._context.get('tz', 'Asia/Yangon')
+        local_tz = timezone(local)
+        current_date = UTC.localize(fields.Datetime.from_string(fields.Date.context_today(self)), is_dst=True).astimezone(tz=local_tz)
+        today = current_date.date()
+        # today = fields.Date.context_today(self)
         domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
                   ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                   ('invoice_date_due', '<', today), ('invoice_payment_state', '=', 'paid'), ('invoice_due_state', 'in', ['first_due', 'second_due', 'third_due'])]
@@ -84,7 +88,11 @@ class AccountMove(models.Model):
 
     # update invoice due state for unpaid invoices
     def update_unpaid_invoice_due_state(self):
-        today = fields.Date.context_today(self)
+        local = self._context.get('tz', 'Asia/Yangon')
+        local_tz = timezone(local)
+        current_date = UTC.localize(fields.Datetime.from_string(fields.Date.context_today(self)), is_dst=True).astimezone(tz=local_tz)
+        today = current_date.date()
+        # today = fields.Date.context_today(self)
         domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
                   ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                   ('invoice_date_due', '<', today), ('invoice_payment_state', '!=', 'paid')]
