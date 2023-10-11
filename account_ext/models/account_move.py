@@ -76,7 +76,7 @@ class AccountMove(models.Model):
     def update_paid_invoice_due_state(self):
         local = self._context.get('tz', 'Asia/Yangon')
         local_tz = timezone(local)
-        current_date = UTC.localize(fields.Datetime.from_string(fields.Date.context_today(self)), is_dst=True).astimezone(tz=local_tz)
+        current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()
         # today = fields.Date.context_today(self)
         domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
@@ -90,7 +90,7 @@ class AccountMove(models.Model):
     def update_unpaid_invoice_due_state(self):
         local = self._context.get('tz', 'Asia/Yangon')
         local_tz = timezone(local)
-        current_date = UTC.localize(fields.Datetime.from_string(fields.Date.context_today(self)), is_dst=True).astimezone(tz=local_tz)
+        current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()
         # today = fields.Date.context_today(self)
         domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
