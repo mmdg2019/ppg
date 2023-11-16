@@ -8,6 +8,7 @@ import base64
 import binascii
 from io import BytesIO, StringIO
 from odoo.exceptions import UserError, ValidationError
+from pytz import timezone, UTC
 
 # import pdfkit
 # from xhtml2pdf import pisa  
@@ -33,9 +34,16 @@ class popular_reports(models.Model):
     
         # Start from the first cell. Rows and columns are zero indexed.
         row = 0
-        cols = ['Item Name','Unit of Measure (UoM)', 'Opening Blance', '(+) Receipt', '(+) Sales Return', '(+) Inventory Adjustment',
-               '(-) Inventory Adjustment', '(-) Putchase Return', '(-) Delivery Order', '(-) Scrap', 'Closing Balance']
+        cols = ['Item Name', 'Unit of Measure (UoM)', 'Opening Balance', '(+) Receipt', '(+) Sales Return', '(+) Inventory Adjustment',
+               '(-) Inventory Adjustment', '(-) Purchase Return', '(-) Delivery Order', '(-) Scrap', 'Closing Balance']
         
+        # to avoid timezone mismatch
+        local_tz = timezone(self._context.get('tz', 'Asia/Yangon'))
+        c_date = UTC.localize(c_date, is_dst=True).astimezone(tz=local_tz)
+        
+        # get previous month of the given date
+        first_day_given_month = c_date.replace(day=1)
+        c_date = first_day_given_month - timedelta(days=1) # previous month
         c_date_f = c_date.strftime('%m/%Y')
         for stock in stocks:
             if row == 0:
@@ -78,7 +86,7 @@ class popular_reports(models.Model):
                     elif doc.picking_type_id.display_name.find('Purchase') >= 0:
                         amt_pr += doc.product_uom_qty
                     elif doc.picking_type_id.display_name.find('Delivery') >= 0:
-                        amt_do + doc.product_uom_qty
+                        amt_do += doc.product_uom_qty
                 for doc in docs.filtered(lambda x: x.product_id == product and len(x.picking_type_id) == 0):
                     if doc.location_dest_id.id == stock.id:
                         amt_ivn_add += doc.product_uom_qty
