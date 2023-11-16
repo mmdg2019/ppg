@@ -79,12 +79,32 @@ class AccountMove(models.Model):
         current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()
         # today = fields.Date.context_today(self)
-        domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
-                  ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
-                  ('invoice_date_due', '<', today), ('invoice_payment_state', '=', 'paid'), ('invoice_due_state', 'in', ['first_due', 'second_due', 'third_due'])]
-        invoices = self.search(domain)
-        if invoices:
-            invoices.write({'invoice_due_state': 'no_due'})
+
+        cron_start_datetime = fields.Datetime.now()
+        try:
+            domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
+                    ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
+                    ('invoice_date_due', '<', today), ('invoice_payment_state', '=', 'paid'), ('invoice_due_state', 'in', ['first_due', 'second_due', 'third_due'])]
+            invoices = self.search(domain)
+            paid_inv_count = len(invoices)
+            if invoices:
+                invoices.write({'invoice_due_state': 'no_due'})
+            invoices_after = self.search(domain)
+            cron_log = self.env['invoice.due.cron.log'].sudo().create({
+                'status': 'Successful',
+                'cron_start_datetime': cron_start_datetime,
+                'cron_end_datetime': fields.Datetime.now(),
+                'invoice_type': 'paid',
+                'paid_count_before': paid_inv_count,
+                'paid_count_after': len(invoices_after)
+            })
+        except Exception as e:
+            cron_log = self.env['invoice.due.cron.log'].sudo().create({
+                'status': str(e),
+                'cron_start_datetime': cron_start_datetime,
+                'cron_end_datetime': fields.Datetime.now(),
+                'invoice_type': 'paid'
+            })
 
     # update invoice due state for unpaid invoices
     def update_unpaid_invoice_due_state(self):
@@ -93,25 +113,58 @@ class AccountMove(models.Model):
         current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()
         # today = fields.Date.context_today(self)
-        domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
-                  ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
-                  ('invoice_date_due', '<', today), ('invoice_payment_state', '!=', 'paid')]
-        invoices = self.search(domain)
-        if invoices:
-            for invoice in invoices:
-                second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
-                if today > invoice.invoice_date_due and today <= second_due_date:
-                    if invoice.invoice_due_state != 'first_due':
-                        invoice.invoice_due_state = 'first_due'
-                else:
-                    third_due_date = invoice.calculate_invoice_due_date(second_due_date)
-                    if today > second_due_date and today <= third_due_date:
-                        if invoice.invoice_due_state != 'second_due':
-                            invoice.invoice_due_state = 'second_due'
-                    elif today > third_due_date:
-                        invoice.partner_id.so_block_customer = True
-                        if invoice.invoice_due_state != 'third_due':
-                            invoice.invoice_due_state = 'third_due'
+
+        cron_start_datetime = fields.Datetime.now()
+        try:
+            domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
+                    ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
+                    ('invoice_date_due', '<', today), ('invoice_payment_state', '!=', 'paid')]
+            invoices = self.search(domain)
+            undefined_due_unpaid_before = len(invoices.filtered(lambda r: r.invoice_due_state == False))
+            first_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'first_due'))
+            second_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'second_due'))
+            third_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'third_due'))
+            if invoices:
+                for invoice in invoices:
+                    second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
+                    if today > invoice.invoice_date_due and today <= second_due_date:
+                        if invoice.invoice_due_state != 'first_due':
+                            invoice.invoice_due_state = 'first_due'
+                    else:
+                        third_due_date = invoice.calculate_invoice_due_date(second_due_date)
+                        if today > second_due_date and today <= third_due_date:
+                            if invoice.invoice_due_state != 'second_due':
+                                invoice.invoice_due_state = 'second_due'
+                        elif today > third_due_date:
+                            invoice.partner_id.so_block_customer = True
+                            if invoice.invoice_due_state != 'third_due':
+                                invoice.invoice_due_state = 'third_due'
+            invoices_after = self.search(domain)
+            undefined_due_unpaid_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == False))
+            first_due_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == 'first_due'))
+            second_due_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == 'second_due'))
+            third_due_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == 'third_due'))
+            cron_log = self.env['invoice.due.cron.log'].sudo().create({
+                'status': 'Successful',
+                'cron_start_datetime': cron_start_datetime,
+                'cron_end_datetime': fields.Datetime.now(),
+                'invoice_type': 'unpaid',
+                'undefined_due_unpaid_count_before': undefined_due_unpaid_before,
+                'first_due_count_before': first_due_before,
+                'second_due_count_before': second_due_before,
+                'third_due_count_before': third_due_before,
+                'undefined_due_unpaid_count_after': undefined_due_unpaid_after,
+                'first_due_count_after': first_due_after,
+                'second_due_count_after': second_due_after,
+                'third_due_count_after': third_due_after
+            })
+        except Exception as e:
+            cron_log = self.env['invoice.due.cron.log'].sudo().create({
+                'status': str(e),
+                'cron_start_datetime': cron_start_datetime,
+                'cron_end_datetime': fields.Datetime.now(),
+                'invoice_type': 'unpaid'
+            })
 
     # update invoice due state action
     def update_invoice_due_state_action(self):

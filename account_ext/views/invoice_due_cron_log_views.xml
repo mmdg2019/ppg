@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="invoice_due_cron_log_view_form" model="ir.ui.view">
+        <field name="name">invoice.due.cron.log.form</field>
+        <field name="model">invoice.due.cron.log</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <div class="alert alert-danger" role="alert" attrs="{'invisible': [('status', '=', 'Successful')]}">
+                        <field name="status"/>
+                    </div>
+                    <div class="alert alert-info" role="alert" attrs="{'invisible': [('status', '!=', 'Successful')]}">
+                        <field name="status"/>
+                    </div>
+                    <group string="General Info">
+                        <field name="cron_start_datetime"/>
+                        <field name="cron_end_datetime"/>
+                        <field name="invoice_type"/>
+                    </group>
+                    <group>
+                        <group string="Before">
+                            <field name="paid_count_before" string="Paid Invoices with Due Status" attrs="{'invisible': [('invoice_type', '=', 'unpaid')]}"/>
+                            <field name="undefined_due_unpaid_count_before" string="Unpaid Invoices without Due Status" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                            <field name="first_due_count_before" string="First Due Invoices" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                            <field name="second_due_count_before" string="Second Due Invoices" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                            <field name="third_due_count_before" string="Third Due Invoices" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                        </group>
+                        <group string="After">
+                            <field name="paid_count_after" string="Paid Invoices with Due Status" attrs="{'invisible': [('invoice_type', '=', 'unpaid')]}"/>
+                            <field name="undefined_due_unpaid_count_after" string="Unpaid Invoices without Due Status" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                            <field name="first_due_count_after" string="First Due Invoices" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                            <field name="second_due_count_after" string="Second Due Invoices" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                            <field name="third_due_count_after" string="Third Due Invoices" attrs="{'invisible': [('invoice_type', '=', 'paid')]}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id='invoice_due_cron_log_view_tree' model='ir.ui.view'>
+        <field name="name">invoice.due.cron.log.tree</field>
+        <field name="model">invoice.due.cron.log</field>
+        <field name="arch" type="xml">
+            <tree string="Invoice Due State Scheduler Logs" decoration-danger="status != 'Successful'" create="false" edit="false">
+                <field name="status"/>
+                <field name="cron_start_datetime"/>
+                <field name="cron_end_datetime"/>
+                <field name="invoice_type" optional="hide"/>
+                <field name="paid_count_before" optional="hide"/>
+                <field name="paid_count_after" optional="hide"/>
+                <field name="undefined_due_unpaid_count_before"/>
+                <field name="first_due_count_before"/>
+                <field name="second_due_count_before"/>
+                <field name="third_due_count_before"/>
+                <field name="undefined_due_unpaid_count_after" optional="hide"/>
+                <field name="first_due_count_after"/>
+                <field name="second_due_count_after"/>
+                <field name="third_due_count_after"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id='action_invoice_due_cron_log' model='ir.actions.act_window'>
+        <field name="name">Invoice Due State Scheduler Logs</field>
+        <field name="res_model">invoice.due.cron.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                You can see the "update invoice due state scheduler" logs here, if exists!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_scheduler_log_config" name="Scheduler Logs"
+        parent="base.menu_custom"
+        sequence="31"/>
+    <menuitem
+        id="menu_action_invoice_due_cron_log"
+        action="action_invoice_due_cron_log"
+        parent="menu_scheduler_log_config"
+        sequence="1"/>
+</odoo>
