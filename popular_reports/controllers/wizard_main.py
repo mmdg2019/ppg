@@ -2160,23 +2160,111 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
 
     @api.model
     def _get_report_values(self,docids,data=None):
-        docs = None
-        docs = self.env['stock.move'].sudo().search([('date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
-        products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('qty_available', '!=', 0)]).with_context(dict(to_date=datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y'), location= data['stock_location'], company_owned=True,create=False, edit=False),order='display_name asc')
-        scraps = self.env['stock.scrap'].sudo().search([('date_done', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('date_done', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+        s_date = datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        e_date = datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        company_list = []
+        stock_obj = self.env['stock.location'].search([('id', 'in', data['stock_location'])])
+        for stock in stock_obj:
+            company_list.append(stock.company_id.id)
+        query = """
+                    SELECT
+                        subquery_alias.id,
+                        subquery_alias.display_name,
+                        subquery_alias.uom,
+                        qty_available,
+                        receipt_qty,
+                        sr_qty,
+                        adjust_qty,
+                        pr_qty,
+                        delivery_qty,
+                        scrap_qty,
+                        min_adjust_qty,
+                        (min_adjust_qty - scrap_qty) as minus_adjust_qty,
+                        (qty_available + receipt_qty + sr_qty + adjust_qty - (min_adjust_qty - scrap_qty) - pr_qty - delivery_qty) as closing_qty
+                    FROM
+                    (SELECT pt.id,'[' || pt.default_code || ']' || pt.name as display_name,uu.name as uom,pp.qty_available,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'incoming'
+                            AND spt.sequence_code = 'IN'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.date >=  %(s_date)s
+                            AND sm.date <  %(e_date)s) as receipt_qty,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.sequence_code = 'SR'
+                            AND spt.code = 'incoming'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.date >=  %(s_date)s
+                            AND sm.date <  %(e_date)s) as sr_qty,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            WHERE sm.product_id = pp.id
+                            AND sm.picking_type_id is NULL
+                            AND sm.location_dest_id in %(location)s
+                            AND sm.date >=  %(s_date)s
+                            AND sm.date <  %(e_date)s) as adjust_qty,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.sequence_code = 'PR'
+                            AND spt.code = 'outgoing'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.date >=  %(s_date)s
+                            AND sm.date <  %(e_date)s) as pr_qty,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'OUT'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.date >= %(s_date)s
+                            AND sm.date < %(e_date)s) as delivery_qty,
+                        (SELECT COALESCE(SUM(ss.scrap_qty), 0)
+                            FROM stock_scrap ss
+                            WHERE ss.product_id = pp.id
+                            AND ss.date_done >= %(s_date)s
+                            AND ss.date_done < %(e_date)s) as scrap_qty,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            WHERE sm.product_id = pp.id
+                            AND sm.picking_type_id is NULL
+                            AND sm.location_dest_id not in %(location)s
+                            AND sm.date >=  %(s_date)s
+                            AND sm.date <  %(e_date)s) as min_adjust_qty
+                    FROM product_product as pp
+                    LEFT JOIN product_template as pt on pt.id = pp.product_tmpl_id
+                    LEFT JOIN uom_uom as uu on uu.id = pt.uom_id
+                    WHERE pt.type = 'product'
+                    AND pp.qty_available != 0
+                    And pt.active = true
+                    AND pt.company_id in  %(company)s
+                    
+                """
+        params = {
+            's_date': s_date,
+            'e_date': e_date,
+            'location': tuple(data['stock_location']),
+            'company': tuple(company_list),
+        }
         if data['product_ids']:
-            products = products.filtered(lambda r: r.id in data['product_ids'])
-            docs = docs.filtered(lambda r: r.product_id.id in data['product_ids'])
-            scraps = scraps.filtered(lambda r: r.product_id.id in data['product_ids'])
-        if data['filter_post_stock']:
-            docs = docs.filtered(lambda r: r.state == data['filter_post_stock'])
-            scraps = scraps.filtered(lambda r: r.state == data['filter_post_stock'])
+            params.update({
+                'product_ids': tuple(data['product_ids'])
+            })
+            query += "AND pp.id IN %(product_ids)s"
+        query += ") AS subquery_alias;"
+        self._cr.execute(query, params)
+        docs = self._cr.dictfetchall()
         return {
             'filter_post_stock': data['filter_post_stock'],
             'stock_loc': data['stock_location'],
             'docs': docs,
-            'products': products,
-            'scraps': scraps,
             }
 
 #     Stock Focus Report
