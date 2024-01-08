@@ -5,8 +5,10 @@ from odoo.tools.misc import format_date, DEFAULT_SERVER_DATE_FORMAT
 from datetime import timedelta
 
 
-class AccountGeneralLedgerReport(models.AbstractModel):
-  _inherit = "account.general.ledger"
+# class AccountGeneralLedgerReport(models.AbstractModel):
+#   _inherit = "account.general.ledger"
+class GeneralLedgerCustomHandler(models.AbstractModel):
+  _inherit = "account.general.ledger.report.handler"
 
   # replaced "Communication" column with "Label"
   @api.model
