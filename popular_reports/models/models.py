@@ -180,7 +180,7 @@ class popular_reports(models.Model):
         start_date = temp_date - relativedelta(months = 1)        
         report_name = f"Sales Analysis Report by Customer (Posted) ({start_date.strftime('%m/%Y')})"
 #         raise UserError(end_date)
-        docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',start_date),('invoice_date', '<=',end_date),('state', '=', 'posted'),('company_id', '=', company.id)])
+        docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',start_date),('invoice_date', '<=',end_date),('state', '=', 'posted'),('company_id', '=', company.id)])
 #         raise UserError(len(docs))
         user_ids = sorted(list(set(docs.mapped('partner_id'))),key=lambda x: x.display_name)
         product_cats_ids = sorted(list(set(docs.mapped('x_studio_invoice_category'))),key=lambda x: x.display_name)
