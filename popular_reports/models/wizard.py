@@ -685,13 +685,13 @@ class PopularReport(models.TransientModel):
         
         # filter invoices based on the selected state, date, and type
         if self.filter_post == '1':
-            docs = self.env['account.move'].search([('state', '=', 'cancel'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('state', '=', 'cancel'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
         elif self.filter_post == '2':
-            docs = self.env['account.move'].search([('state', '=', 'draft'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('state', '=', 'draft'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
         elif self.filter_post == '3':
-            docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('state', '=', 'posted'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
 
         # filter invoices based on the selected product category        
         if self.product_cats:
