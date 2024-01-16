@@ -4,3 +4,5 @@ access_popular_reports.sale_target,popular_reports.sale_target,model_popular_rep
 access_popular_reports.sale_target.line,popular_reports.sale_target.line,model_popular_reports_sale_target_line,base.group_user,1,1,1,1
 
 access_stock_valuation_layer,access_stock_valuation_layer,stock_account.model_stock_valuation_layer,popular_reports.group_stock_entry,1,1,1,0
+
+access_wizard_popular_reports,access.wizard.popular.reports,model_wizard_popular_reports,base.group_user,1,1,1,1
