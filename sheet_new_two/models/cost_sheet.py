@@ -236,7 +236,7 @@ class CostSheetTwo(models.Model):
                 raise UserError("Please choose the BoM first!")
             else:
                 rawmaterialavg = labouravg= plasticavg = labelavg = meteravg = metalavg = boxavg = dieselavg = otheravg = mainavg = mainlabelavg = mainboxavg = mainstringavg = mainotheravg = rawqty = labourqty = plasticqty = labelqty = meterqty = metalqty = boxqty = dieselqty = otherqty = mainqty = mainlabelqty = mainboxqty = mainstringqty = mainotherqty = 0.0
-                invoices = self.env['account.move'].search([('type', '=', 'out_invoice'),'&', ('invoice_date','>=',start_date),('invoice_date','<=',end_date)])
+                invoices = self.env['account.move'].search([('move_type', '=', 'out_invoice'),'&', ('invoice_date','>=',start_date),('invoice_date','<=',end_date)])
                 for line in boms.bom_line_ids:
                     ttl_amt = ttl_qty = 0.0
                     for inv in invoices.invoice_line_ids:
