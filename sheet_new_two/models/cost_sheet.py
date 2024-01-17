@@ -176,7 +176,7 @@ class CostSheetTwo(models.Model):
     def update_cost(self):
         for rec in self:
             if rec.product_id:
-                product = self.env['product.supplierinfo'].search([('product_tmpl_id', '=',rec.product_id.product_tmpl_id.id),('name', '=', rec.partner_id.id)]) 
+                product = self.env['product.supplierinfo'].search([('product_tmpl_id', '=',rec.product_id.product_tmpl_id.id),('partner_id', '=', rec.partner_id.id)]) 
                 if product:
                     product.write({'x_studio_purchase_original_price': rec.fselprice,})
                     notification = {
