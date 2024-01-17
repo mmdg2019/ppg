@@ -47,10 +47,10 @@ class AccountMove(models.Model):
     # # update invoice due state
     # def update_invoice_due_state(self):
     #     today = fields.Date.context_today(self)
-    #     domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)), 
+    #     domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)), 
     #               ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
     #               ('invoice_date_due', '<', today)]
-    #     # domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1))]
+    #     # domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1))]
     #     if self._context.get('active_ids'):
     #         domain += [('id', 'in', self._context.get('active_ids'))]
     #     invoices = self.search(domain) 
@@ -82,7 +82,7 @@ class AccountMove(models.Model):
 
         cron_start_datetime = fields.Datetime.now()
         try:
-            domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
+            domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
                     ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                     ('invoice_date_due', '<', today), ('invoice_payment_state', '=', 'paid'), ('invoice_due_state', 'in', ['first_due', 'second_due', 'third_due'])]
             invoices = self.search(domain)
@@ -116,7 +116,7 @@ class AccountMove(models.Model):
 
         cron_start_datetime = fields.Datetime.now()
         try:
-            domain = [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
+            domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
                     ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                     ('invoice_date_due', '<', today), ('invoice_payment_state', '!=', 'paid')]
             invoices = self.search(domain)
@@ -172,7 +172,7 @@ class AccountMove(models.Model):
         domain = []        
         if self._context.get('active_ids'):
             domain += [('id', 'in', self._context.get('active_ids'))]
-        domain += [('type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)), 
+        domain += [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)), 
                    ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                    ('invoice_date_due', '<', today)]
         invoices = self.search(domain)
@@ -199,7 +199,7 @@ class AccountMove(models.Model):
     # add permission for posting overdue invoices
     def action_post(self):          
         # due_invoice_count = self.search_count([
-        #     ('type', '=', 'out_invoice'), 
+        #     ('move_type', '=', 'out_invoice'), 
         #     ('partner_id', '=', self.partner_id.id),
         #     ('invoice_due_state', '=', 'third_due')])
         for record in self:
@@ -210,7 +210,7 @@ class AccountMove(models.Model):
   
     # recompute due date in case the preferred invoice date was set on SO
     def _recompute_due_date_for_preferred_invoice_date(self):
-        if self.type == 'out_invoice' and self.state == 'draft' and self.invoice_origin:
+        if self.move_type == 'out_invoice' and self.state == 'draft' and self.invoice_origin:
             sale_order = self.env['sale.order'].search([('name', '=', self.invoice_origin), ('company_id', '=', self.company_id.id)], limit=1)
             if sale_order.x_studio_pre_invoice_date:
                 self.with_context(check_move_validity=False)._onchange_invoice_date()
@@ -227,6 +227,6 @@ class AccountMove(models.Model):
     def _compute_amount(self):
         res = super(AccountMove, self)._compute_amount()
         for move in self:
-            if move.type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.invoice_payment_state == 'paid' and move.invoice_due_state != 'no_due':
+            if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.invoice_payment_state == 'paid' and move.invoice_due_state != 'no_due':
                 move.invoice_due_state = 'no_due'
         return res

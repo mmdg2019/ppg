@@ -68,7 +68,7 @@
                 <xpath expr="//field[@name='invoice_date_due']" position="replace">
                     <!-- <field name="invoice_date_due" force_save='1' 
                                            placeholder="Date"
-                                           attrs="{'invisible': ['|', ('invoice_payment_term_id', '!=', False), ('type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))], 'readonly': True}"/>                    -->
+                                           attrs="{'invisible': ['|', ('invoice_payment_term_id', '!=', False), ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))], 'readonly': True}"/>                    -->
                     <field name="invoice_date_due" force_save='1' 
                                            placeholder="Date"
                                            attrs="{'invisible': True, 'readonly': True}"/>                   
