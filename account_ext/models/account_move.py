@@ -55,9 +55,9 @@ class AccountMove(models.Model):
     #     if self._context.get('active_ids'):
     #         domain += [('id', 'in', self._context.get('active_ids'))]
     #     invoices = self.search(domain) 
-    #     invoices = invoices.filtered(lambda r: r.invoice_payment_state != 'paid' or (r.invoice_payment_state == 'paid' and r.invoice_due_state != 'no_due'))        
+    #     invoices = invoices.filtered(lambda r: r.payment_state != 'paid' or (r.payment_state == 'paid' and r.invoice_due_state != 'no_due'))        
     #     for invoice in invoices:
-    #         if invoice.invoice_payment_state != 'paid':    
+    #         if invoice.payment_state != 'paid':    
     #             second_due_date = self.calculate_invoice_due_date(invoice, invoice.invoice_date_due)
     #             if today > invoice.invoice_date_due and today <= second_due_date:
     #                 if invoice.invoice_due_state != 'first_due':
@@ -85,7 +85,7 @@ class AccountMove(models.Model):
         try:
             domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
                     ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
-                    ('invoice_date_due', '<', today), ('invoice_payment_state', '=', 'paid'), ('invoice_due_state', 'in', ['first_due', 'second_due', 'third_due'])]
+                    ('invoice_date_due', '<', today), ('payment_state', '=', 'paid'), ('invoice_due_state', 'in', ['first_due', 'second_due', 'third_due'])]
             invoices = self.search(domain)
             paid_inv_count = len(invoices)
             if invoices:
@@ -119,7 +119,7 @@ class AccountMove(models.Model):
         try:
             domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)),
                     ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
-                    ('invoice_date_due', '<', today), ('invoice_payment_state', '!=', 'paid')]
+                    ('invoice_date_due', '<', today), ('payment_state', '!=', 'paid')]
             invoices = self.search(domain)
             undefined_due_unpaid_before = len(invoices.filtered(lambda r: r.invoice_due_state == False))
             first_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'first_due'))
@@ -177,10 +177,10 @@ class AccountMove(models.Model):
                    ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                    ('invoice_date_due', '<', today)]
         invoices = self.search(domain)
-        invoices = invoices.filtered(lambda r: r.invoice_payment_state != 'paid' or (r.invoice_payment_state == 'paid' and r.invoice_due_state != 'no_due'))        
+        invoices = invoices.filtered(lambda r: r.payment_state != 'paid' or (r.payment_state == 'paid' and r.invoice_due_state != 'no_due'))        
         if invoices:
             for invoice in invoices:
-                if invoice.invoice_payment_state != 'paid':    
+                if invoice.payment_state != 'paid':    
                     second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
                     if today > invoice.invoice_date_due and today <= second_due_date:
                         if invoice.invoice_due_state != 'first_due':
@@ -228,6 +228,6 @@ class AccountMove(models.Model):
     def _compute_amount(self):
         res = super(AccountMove, self)._compute_amount()
         for move in self:
-            if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.invoice_payment_state == 'paid' and move.invoice_due_state != 'no_due':
+            if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.payment_state == 'paid' and move.invoice_due_state != 'no_due':
                 move.invoice_due_state = 'no_due'
         return res
