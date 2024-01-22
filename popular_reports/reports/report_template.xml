@@ -2472,7 +2472,7 @@
                                                 <span t-field="table_line.amount_total_signed"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
@@ -3108,7 +3108,7 @@
                                                 <span></span>
                                             </th> -->
                                             <td style="text-align:center;">
-                                                <span t-field="doc.invoice_payment_state"/>
+                                                <span t-field="doc.payment_state"/>
                                             </td>
                                         </tr>
                                         <t t-set="ttl" t-value="ttl + doc.amount_total"/>
@@ -3358,7 +3358,7 @@
                                             <span t-field="table_line.amount_residual_signed"/>
                                         </td>
                                         <td>
-                                            <span t-field="table_line.invoice_payment_state"/>
+                                            <span t-field="table_line.payment_state"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -6012,7 +6012,7 @@
                                                 <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                             <t t-set="ttl_credit" t-value="0"/>
                                             <t t-set="ttl_payment" t-value="0"/>
@@ -6253,7 +6253,7 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
@@ -6297,7 +6297,7 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
@@ -6341,7 +6341,7 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
@@ -6385,7 +6385,7 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
@@ -6795,7 +6795,7 @@
                                                 <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                             <t t-set="ttl_credit" t-value="0"/>
                                             <t t-set="ttl_payment" t-value="0"/>
@@ -6997,7 +6997,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                             <t t-set="ttl_credit" t-value="0"/>
                                             <t t-set="ttl_payment" t-value="0"/>
