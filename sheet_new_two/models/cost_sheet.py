@@ -176,7 +176,7 @@ class CostSheetTwo(models.Model):
     def update_cost(self):
         for rec in self:
             if rec.product_id:
-                product = self.env['product.supplierinfo'].search([('product_tmpl_id', '=',rec.product_id.product_tmpl_id.id),('name', '=', rec.partner_id.id)]) 
+                product = self.env['product.supplierinfo'].search([('product_tmpl_id', '=',rec.product_id.product_tmpl_id.id),('partner_id', '=', rec.partner_id.id)]) 
                 if product:
                     product.write({'x_studio_purchase_original_price': rec.fselprice,})
                     notification = {
@@ -236,7 +236,7 @@ class CostSheetTwo(models.Model):
                 raise UserError("Please choose the BoM first!")
             else:
                 rawmaterialavg = labouravg= plasticavg = labelavg = meteravg = metalavg = boxavg = dieselavg = otheravg = mainavg = mainlabelavg = mainboxavg = mainstringavg = mainotheravg = rawqty = labourqty = plasticqty = labelqty = meterqty = metalqty = boxqty = dieselqty = otherqty = mainqty = mainlabelqty = mainboxqty = mainstringqty = mainotherqty = 0.0
-                invoices = self.env['account.move'].search([('type', '=', 'out_invoice'),'&', ('invoice_date','>=',start_date),('invoice_date','<=',end_date)])
+                invoices = self.env['account.move'].search([('move_type', '=', 'out_invoice'),'&', ('invoice_date','>=',start_date),('invoice_date','<=',end_date)])
                 for line in boms.bom_line_ids:
                     ttl_amt = ttl_qty = 0.0
                     for inv in invoices.invoice_line_ids:
