@@ -188,8 +188,8 @@
         <field name="print_report_name">Refund Listing by Product Code</field>
         <field name="model">account.payment</field>
         <field name="report_type">qweb-html</field>
-        <field name="report_name">popular_reports.refund_lst_by_product_code</field>
-        <field name="report_file">popular_reports.refund_lst_by_product_code</field>
+        <field name="report_name">popular_reports.report_refund_lst_by_product_code</field>
+        <field name="report_file">popular_reports.report_refund_lst_by_product_code</field>
         <field name="binding_type">report</field>
         <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="paperformat_popular_report"/>
