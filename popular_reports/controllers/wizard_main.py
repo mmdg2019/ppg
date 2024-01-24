@@ -2168,10 +2168,9 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
             company_list.append(stock.company_id.id)
         query = """
                     SELECT
-                        subquery_alias.id,
+                        subquery_alias.id as product_id,
                         subquery_alias.display_name,
                         subquery_alias.uom,
-                        qty_available,
                         receipt_qty,
                         sr_qty,
                         adjust_qty,
@@ -2179,10 +2178,9 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                         delivery_qty,
                         scrap_qty,
                         min_adjust_qty,
-                        (min_adjust_qty - scrap_qty) as minus_adjust_qty,
-                        (qty_available + receipt_qty + sr_qty + adjust_qty - (min_adjust_qty - scrap_qty) - pr_qty - delivery_qty) as closing_qty
+                        (min_adjust_qty - scrap_qty) as minus_adjust_qty
                     FROM
-                    (SELECT pt.id,'[' || pt.default_code || ']' || pt.name as display_name,uu.name as uom,pp.qty_available,
+                    (SELECT pt.id,'[' || pt.default_code || ']' || pt.name as display_name,uu.name as uom,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
@@ -2241,8 +2239,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                     FROM product_product as pp
                     LEFT JOIN product_template as pt on pt.id = pp.product_tmpl_id
                     LEFT JOIN uom_uom as uu on uu.id = pt.uom_id
-                    WHERE pt.type = 'product'
-                    AND pp.qty_available != 0
+                    WHERE pt.type = 'product'                    
                     And pt.active = true
                     AND pt.company_id in  %(company)s
                     
@@ -2258,9 +2255,29 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                 'product_ids': tuple(data['product_ids'])
             })
             query += "AND pp.id IN %(product_ids)s"
-        query += ") AS subquery_alias;"
+        query += ") AS subquery_alias order by subquery_alias.display_name;"
         self._cr.execute(query, params)
         docs = self._cr.dictfetchall()
+
+        domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
+        if data['product_ids']:
+            domain += [('id', 'in', (tuple(data['product_ids'])))]
+        products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date=datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), order='default_code asc')
+        for product in products:
+            matching_dicts = [item for item in docs if item.get('product_id') == product.product_tmpl_id.id]
+            for matching_dict in matching_dicts:
+                matching_dict['qty_available'] = product.qty_available
+                matching_dict['closing_qty'] = (
+                    product.qty_available +
+                    matching_dict.get('receipt_qty', 0.0) +
+                    matching_dict.get('sr_qty', 0.0) +
+                    matching_dict.get('adjust_qty', 0.0) -
+                    (matching_dict.get('min_adjust_qty', 0.0) - matching_dict.get('scrap_qty', 0.0)) -
+                    matching_dict.get('pr_qty', 0.0) -
+                    matching_dict.get('delivery_qty', 0.0)
+                )
+        docs = [item for item in docs if item.get('qty_available', 0.0) > 0]
+
         return {
             'filter_post_stock': data['filter_post_stock'],
             'stock_loc': data['stock_location'],
