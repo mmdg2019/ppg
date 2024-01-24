@@ -3,4 +3,4 @@
 from . import models
 from . import sale_target
 from . import wizard
-from . import product
+# from . import product
