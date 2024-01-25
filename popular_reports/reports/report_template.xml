@@ -5214,7 +5214,8 @@
                                                 </t>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.communication"/>
+                                                <!-- <span t-field="table_line.communication"/> -->
+                                                <span t-field="table_line.ref"/>
                                             </td>
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount"/>
