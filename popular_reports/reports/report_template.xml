@@ -5198,9 +5198,11 @@
                                             </td> -->
                                             <td style="text-align:center;">
                                                 
-                                                <t t-if="table_line.move_line_ids">
+                                                <!-- <t t-if="table_line.move_line_ids"> -->
+                                                <t t-if="table_line.move_id.line_ids">
 <!--                                                     <t t-set="status" t-value="table_line.move_line_ids.mapped('reconciled')"/> -->
-                                                    <t t-if="True in table_line.move_line_ids.mapped('reconciled')">
+                                                    <!-- <t t-if="True in table_line.move_line_ids.mapped('reconciled')"> -->
+                                                    <t t-if="True in table_line.move_id.line_ids.mapped('reconciled')">
                                                         <span>Y</span>
                                                     </t>
                                                     <t t-else="">
