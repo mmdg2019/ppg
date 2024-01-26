@@ -2178,6 +2178,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                         delivery_qty,
                         scrap_qty,
                         min_adjust_qty,
+                        0 as qty_available,
+                        0 as closing_qty,
                         (min_adjust_qty - scrap_qty) as minus_adjust_qty
                     FROM
                     (SELECT pt.id,'[' || pt.default_code || ']' || pt.name as display_name,uu.name as uom,
@@ -2239,8 +2241,9 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                     FROM product_product as pp
                     LEFT JOIN product_template as pt on pt.id = pp.product_tmpl_id
                     LEFT JOIN uom_uom as uu on uu.id = pt.uom_id
-                    WHERE pt.type = 'product'                    
-                    And pt.active = true
+                    WHERE pt.type = 'product'
+                    AND pp.qty_available != 0
+                    AND pt.active = true
                     AND pt.company_id in  %(company)s
                     
                 """
@@ -2276,7 +2279,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                     matching_dict.get('pr_qty', 0.0) -
                     matching_dict.get('delivery_qty', 0.0)
                 )
-        docs = [item for item in docs if item.get('qty_available', 0.0) > 0]
+        docs = [item for item in docs if item.get('qty_available', 0.0) > 0 or item.get('receipt_qty', 0.0) > 0 or item.get('sr_qty', 0.0) > 0]
 
         return {
             'filter_post_stock': data['filter_post_stock'],
