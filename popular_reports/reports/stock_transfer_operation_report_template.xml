@@ -115,7 +115,7 @@
                                                 <t t-esc="doc['uom']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['qty_available']"/>
+                                                <t t-esc="round(doc['qty_available'], 2)"/>
                                             </td>
                                             <td style="text-align:right;">
                                                 <t t-esc="doc['receipt_qty']"/>
@@ -139,7 +139,7 @@
                                                  <t t-esc="doc['scrap_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['closing_qty']"/>
+                                                <t t-esc="round(doc['closing_qty'], 2)"/>
                                             </td>
 
                                         </tr>
