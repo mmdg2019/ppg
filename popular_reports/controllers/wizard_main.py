@@ -1736,9 +1736,12 @@ class edit_report_inv_payment_tracking(models.AbstractModel):
         
         temp_rst = []
         if data['no_of_days']:
-            for doc in docs.filtered(lambda r: r.invoice_payments_widget != "false"): 
-                for table_line in json.loads(doc.invoice_payments_widget)['content']:
-                    if abs((doc.invoice_date - datetime.strptime(table_line['date'], '%Y-%m-%d').date()).days) >= data['no_of_days']:
+            # for doc in docs.filtered(lambda r: r.invoice_payments_widget != "false"): 
+            #     for table_line in json.loads(doc.invoice_payments_widget)['content']:
+                    # if abs((doc.invoice_date - datetime.strptime(table_line['date'], '%Y-%m-%d').date()).days) >= data['no_of_days']:
+            for doc in docs.filtered(lambda r: r.invoice_payments_widget != False): 
+                for table_line in doc.invoice_payments_widget['content']:
+                    if abs((doc.invoice_date - datetime.strptime(table_line['date'].strftime('%Y-%m-%d'), '%Y-%m-%d').date()).days) >= data['no_of_days']:
                         temp_rst.append(doc.id)
             temp_rst = set(temp_rst)
             docs = docs.filtered(lambda r: r.id in temp_rst)
