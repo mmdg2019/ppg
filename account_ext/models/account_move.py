@@ -235,18 +235,27 @@ class AccountMove(models.Model):
             if sale_order.x_studio_pre_invoice_date:
                 self.with_context(check_move_validity=False)._onchange_invoice_date()
 
-    # set due state to 'No Due' as soon as an invoice is set to paid
-    @api.depends(
-    'line_ids.debit',
-    'line_ids.credit',
-    'line_ids.currency_id',
-    'line_ids.amount_currency',
-    'line_ids.amount_residual',
-    'line_ids.amount_residual_currency',
-    'line_ids.payment_id.state')
-    def _compute_amount(self):
-        res = super(AccountMove, self)._compute_amount()
+    # # set due state to 'No Due' as soon as an invoice is set to paid
+    # @api.depends(
+    # 'line_ids.debit',
+    # 'line_ids.credit',
+    # 'line_ids.currency_id',
+    # 'line_ids.amount_currency',
+    # 'line_ids.amount_residual',
+    # 'line_ids.amount_residual_currency',
+    # 'line_ids.payment_id.state')
+    # def _compute_amount(self):
+    #     res = super(AccountMove, self)._compute_amount()
+    #     for move in self:
+    #         if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.payment_state == 'paid' and move.invoice_due_state != 'no_due':
+    #             move.invoice_due_state = 'no_due'
+    #     return res
+    
+    # set due state to 'No Due' as soon as an invoice is set to paid or in_payment state: modified to be compatible with Odoo V16
+    @api.depends('amount_residual', 'move_type', 'state', 'company_id')
+    def _compute_payment_state(self):
+        res = super(AccountMove, self)._compute_payment_state()
         for move in self:
-            if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.payment_state == 'paid' and move.invoice_due_state != 'no_due':
+            if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.payment_state in ['paid', 'in_payment'] and move.invoice_due_state != 'no_due':
                 move.invoice_due_state = 'no_due'
         return res
