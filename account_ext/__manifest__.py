@@ -14,9 +14,8 @@ Account Customization
     'data': [
         'security/ir.model.access.csv',
         'security/security.xml',      
-        'data/scheduler_update_invoice_due_state_data.xml',
-        'data/scheduler_email_invoice_due_cron_failure.xml',
-        'views/res_partner_view.xml',
+        'data/scheduler_update_invoice_due_state_data.xml',  
+        # 'views/res_partner_view.xml',
         'views/account_move_view.xml',
         'views/sale_order_view.xml',
         'views/account_payment_term_views.xml',
