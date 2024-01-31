@@ -63,8 +63,8 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
-                                     <!-- <th>
-                                        <span>ID</span>
+                                    <!-- <th>
+                                        <span>No</span>
                                     </th> -->
                                     <th>
                                         <span>Item Name</span>
@@ -103,10 +103,12 @@
                             </thead>
                             <t t-if="docs">
                                 <tbody>
+                                    <!-- <t t-set="i" t-value="1" />  -->
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
                                             <!-- <td>
-                                                <t t-esc="doc['id']"/>
+                                                <span t-esc="i"/>
+                                                <t t-set="i" t-value="i+1"/> 
                                             </td> -->
                                             <td>
                                                 <t t-esc="doc['display_name']"/>
@@ -115,31 +117,31 @@
                                                 <t t-esc="doc['uom']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="round(doc['qty_available'], 2)"/>
+                                                <t t-esc="'%.2f'% doc['qty_available']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['receipt_qty']"/>
+                                                <t t-esc="'%.2f'% doc['receipt_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['sr_qty']"/>
+                                                <t t-esc="'%.2f'% doc['sr_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['adjust_qty']"/>
+                                                <t t-esc="'%.2f'% doc['adjust_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['minus_adjust_qty']"/>
+                                                <t t-esc="'%.2f'% doc['minus_adjust_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="doc['pr_qty']"/>
+                                                <t t-esc="'%.2f'% doc['pr_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                               <t t-esc="doc['delivery_qty']"/>
+                                               <t t-esc="'%.2f'% doc['delivery_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                 <t t-esc="doc['scrap_qty']"/>
+                                                 <t t-esc="'%.2f'% doc['scrap_qty']"/>
                                             </td>
                                             <td style="text-align:right;">
-                                                <t t-esc="round(doc['closing_qty'], 2)"/>
+                                                <t t-esc="'%.2f'% doc['closing_qty']"/>
                                             </td>
 
                                         </tr>
