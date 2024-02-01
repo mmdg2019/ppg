@@ -2264,7 +2264,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
         domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
         if data['product_ids']:
             domain += [('id', 'in', (tuple(data['product_ids'])))]
-        products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date=datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), order='default_code asc')
+        products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date=datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), location= data['stock_location'], company_owned=True, order='default_code asc')
         for product in products:
             matching_dicts = [item for item in docs if item.get('product_id') == product.product_tmpl_id.id]
             for matching_dict in matching_dicts:
