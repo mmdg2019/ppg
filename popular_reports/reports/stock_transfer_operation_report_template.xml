@@ -63,9 +63,6 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
-                                    <!-- <th>
-                                        <span>No</span>
-                                    </th> -->
                                     <th>
                                         <span>Item Name</span>
                                     </th>
@@ -103,13 +100,8 @@
                             </thead>
                             <t t-if="docs">
                                 <tbody>
-                                    <!-- <t t-set="i" t-value="1" />  -->
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
-                                            <!-- <td>
-                                                <span t-esc="i"/>
-                                                <t t-set="i" t-value="i+1"/> 
-                                            </td> -->
                                             <td>
                                                 <t t-esc="doc['display_name']"/>
                                             </td>
