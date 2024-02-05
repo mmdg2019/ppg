@@ -51,11 +51,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(s_month+'/'+s_year, '%m/%Y').strftime('%b/%Y')"/>
+                                    <t t-esc="start_date"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(e_month+'/'+e_year, '%m/%Y').strftime('%b/%Y')"/>
+                                    <t t-esc="end_date"/>
                                 </span>
                             </div>
                         </div>

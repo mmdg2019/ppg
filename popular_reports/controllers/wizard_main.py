@@ -10,7 +10,7 @@ from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields, api
 from calendar import monthrange
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
@@ -2160,8 +2160,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
 
     @api.model
     def _get_report_values(self,docids,data=None):
-        s_date = datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
-        e_date = datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        s_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+        e_date = datetime.combine(datetime.strptime(data['end_date'], "%Y-%m-%d").date(), time.max)
         company_list = []
         stock_obj = self.env['stock.location'].search([('id', 'in', data['stock_location'])])
         for stock in stock_obj:
@@ -2191,7 +2191,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                             AND spt.sequence_code = 'IN'
                             AND sm.picking_type_id is not NULL
                             AND sm.date >=  %(s_date)s
-                            AND sm.date <  %(e_date)s) as receipt_qty,
+                            AND sm.date <=  %(e_date)s) as receipt_qty,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
@@ -2200,14 +2200,14 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                             AND spt.code = 'incoming'
                             AND sm.picking_type_id is not NULL
                             AND sm.date >=  %(s_date)s
-                            AND sm.date <  %(e_date)s) as sr_qty,
+                            AND sm.date <=  %(e_date)s) as sr_qty,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             WHERE sm.product_id = pp.id
                             AND sm.picking_type_id is NULL
                             AND sm.location_dest_id in %(location)s
                             AND sm.date >=  %(s_date)s
-                            AND sm.date <  %(e_date)s) as adjust_qty,
+                            AND sm.date <=  %(e_date)s) as adjust_qty,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
@@ -2216,7 +2216,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                             AND spt.code = 'outgoing'
                             AND sm.picking_type_id is not NULL
                             AND sm.date >=  %(s_date)s
-                            AND sm.date <  %(e_date)s) as pr_qty,
+                            AND sm.date <=  %(e_date)s) as pr_qty,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
@@ -2225,19 +2225,19 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                             AND spt.sequence_code = 'OUT'
                             AND sm.picking_type_id is not NULL
                             AND sm.date >= %(s_date)s
-                            AND sm.date < %(e_date)s) as delivery_qty,
+                            AND sm.date <= %(e_date)s) as delivery_qty,
                         (SELECT COALESCE(SUM(ss.scrap_qty), 0)
                             FROM stock_scrap ss
                             WHERE ss.product_id = pp.id
                             AND ss.date_done >= %(s_date)s
-                            AND ss.date_done < %(e_date)s) as scrap_qty,
+                            AND ss.date_done <= %(e_date)s) as scrap_qty,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             WHERE sm.product_id = pp.id
                             AND sm.picking_type_id is NULL
                             AND sm.location_dest_id not in %(location)s
                             AND sm.date >=  %(s_date)s
-                            AND sm.date <  %(e_date)s) as min_adjust_qty
+                            AND sm.date <=  %(e_date)s) as min_adjust_qty
                     FROM product_product as pp
                     LEFT JOIN product_template as pt on pt.id = pp.product_tmpl_id
                     LEFT JOIN uom_uom as uu on uu.id = pt.uom_id
@@ -2264,7 +2264,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
         domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
         if data['product_ids']:
             domain += [('id', 'in', (tuple(data['product_ids'])))]
-        products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date=datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), location= data['stock_location'], company_owned=True, order='default_code asc')
+        products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date= s_date), location= data['stock_location'], company_owned=True, order='default_code asc')
         for product in products:
             matching_dicts = [item for item in docs if item.get('product_id') == product.product_tmpl_id.id]
             for matching_dict in matching_dicts:
