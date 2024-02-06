@@ -479,11 +479,9 @@ class PopularReport(models.TransientModel):
             'product_ids': self.products.ids,            
             'stock_location': self.stock_location.ids,
             'filter_post_stock':self.filter_post_stock,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
 #             'filter_stock_picking_type':self.filter_stock_picking_type.ids,
-            's_month':self.s_month,
-            's_year': self.s_year,
-            'e_month': self.e_month,
-            'e_year': self.e_year,
         }
         return self.env.ref('popular_reports.stock_trans_oprt').report_action(self, data=data)
     

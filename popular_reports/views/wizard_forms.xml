@@ -470,14 +470,18 @@
                     <group>
                         <field name="filter_post_stock" widget="many2one_tags" string="Status"/>
                     </group>
-                    <group col="4" colspan="4" string="Start From:">
+                    <group col="4" colspan="4">
+                       <field name="start_date" required="1"></field>
+                       <field name="end_date" required="1"></field>
+                   </group>
+                    <!-- <group col="4" colspan="4" string="Start From:">
                         <field name="s_month" required="1"></field>
                         <field name="s_year" required="1"></field>
                    </group>
                     <group col="4" colspan="4" string="End To:">
                         <field name="e_month" required="1"></field>
                         <field name="e_year" required="1"></field>
-                   </group>
+                   </group> -->
                <footer>
                    <button name="print_report_stock_trans_oprt" type="object" string="Print Report" class="oe_highlight"/>
                    <button string="Cancel" class="btn btn-default" special="cancel"/>
