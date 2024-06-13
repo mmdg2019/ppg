@@ -20,7 +20,8 @@ class AccountMove(models.Model):
         else:
             self.check_user = False        
     
-    check_user=fields.Boolean(string='user', compute='_compute_user_check')   
+    check_user=fields.Boolean(string='user', compute='_compute_user_check')
+    invoice_payment_remark = fields.Text(string='Payment Remark')
         
 
     invoice_due_state = fields.Selection([
