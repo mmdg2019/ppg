@@ -77,7 +77,9 @@
                     <field name="partner_id" options= "{'no_create_edit': True, 'no_create': True}" nolabel= '1'/>
                 </xpath> -->
                 <xpath expr="//field[@name='narration']" position="after">
-                    <field name="invoice_payment_remark" placeholder="Add payment remark ..." nolabel="1" height="50"/>
+                    <group>
+                        <field name="invoice_payment_remark" placeholder="Add payment remark ..." nolabel="1" height="50"/>
+                    </group>
                 </xpath>
             </field>
         </record>
