@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- Views: invoice due cron log -->
     <record id="invoice_due_cron_log_view_form" model="ir.ui.view">
         <field name="name">invoice.due.cron.log.form</field>
         <field name="model">invoice.due.cron.log</field>
@@ -61,6 +62,32 @@
         </field>
     </record>
 
+    <!-- Views: recipient email configuration for invoice due cron's failure noti -->
+    <record id="recipient_email_invoice_due_cron_noti_view_form" model="ir.ui.view">
+        <field name="name">recipient.email.invoice.due.cron.noti.form</field>
+        <field name="model">invoice.due.cron.noti.recipient.email</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="recipient_email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id='recipient_email_invoice_due_cron_noti_view_tree' model='ir.ui.view'>
+        <field name="name">recipient.email.invoice.due.cron.noti.tree</field>
+        <field name="model">invoice.due.cron.noti.recipient.email</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="recipient_email"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Actions -->
     <record id='action_invoice_due_cron_log' model='ir.actions.act_window'>
         <field name="name">Invoice Due State Scheduler Logs</field>
         <field name="res_model">invoice.due.cron.log</field>
@@ -72,6 +99,18 @@
         </field>
     </record>
 
+    <record id='action_configure_recipient_email_invoice_due_cron_noti' model='ir.actions.act_window'>
+        <field name="name">Recipient Emails for Invoice Due Cron Noti</field>
+        <field name="res_model">invoice.due.cron.noti.recipient.email</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure the recipient emails for invoice due cron's failure notification!
+            </p>
+        </field>
+    </record>
+
+    <!-- Menus -->
     <menuitem id="menu_scheduler_log_config" name="Scheduler Logs"
         parent="base.menu_custom"
         sequence="31"/>
@@ -80,4 +119,9 @@
         action="action_invoice_due_cron_log"
         parent="menu_scheduler_log_config"
         sequence="1"/>
+    <menuitem
+        id="menu_action_configure_recipient_email_invoice_due_cron_noti"
+        action="action_configure_recipient_email_invoice_due_cron_noti"
+        parent="menu_scheduler_log_config"
+        sequence="2"/>    
 </odoo>
