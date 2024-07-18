@@ -5,7 +5,7 @@
 import operator
 from datetime import date, datetime
 
-from odoo import api, models
+from odoo import _, api, models
 from odoo.tools import float_is_zero
 
 
@@ -16,25 +16,47 @@ class OpenItemsReport(models.AbstractModel):
 
     def _get_account_partial_reconciled(self, company_id, date_at_object):
         domain = [("max_date", ">", date_at_object), ("company_id", "=", company_id)]
-        fields = ["debit_move_id", "credit_move_id", "amount"]
+        fields = [
+            "debit_move_id",
+            "credit_move_id",
+            "amount",
+            "debit_amount_currency",
+            "credit_amount_currency",
+        ]
         accounts_partial_reconcile = self.env["account.partial.reconcile"].search_read(
             domain=domain, fields=fields
         )
         debit_amount = {}
+        debit_amount_currency = {}
         credit_amount = {}
+        credit_amount_currency = {}
         for account_partial_reconcile_data in accounts_partial_reconcile:
             debit_move_id = account_partial_reconcile_data["debit_move_id"][0]
             credit_move_id = account_partial_reconcile_data["credit_move_id"][0]
             if debit_move_id not in debit_amount.keys():
                 debit_amount[debit_move_id] = 0.0
+                debit_amount_currency[debit_move_id] = 0.0
             debit_amount[debit_move_id] += account_partial_reconcile_data["amount"]
+            debit_amount_currency[debit_move_id] += account_partial_reconcile_data[
+                "debit_amount_currency"
+            ]
             if credit_move_id not in credit_amount.keys():
                 credit_amount[credit_move_id] = 0.0
+                credit_amount_currency[credit_move_id] = 0.0
             credit_amount[credit_move_id] += account_partial_reconcile_data["amount"]
+            credit_amount_currency[credit_move_id] += account_partial_reconcile_data[
+                "credit_amount_currency"
+            ]
             account_partial_reconcile_data.update(
                 {"debit_move_id": debit_move_id, "credit_move_id": credit_move_id}
             )
-        return accounts_partial_reconcile, debit_amount, credit_amount
+        return (
+            accounts_partial_reconcile,
+            debit_amount,
+            credit_amount,
+            debit_amount_currency,
+            credit_amount_currency,
+        )
 
     def _get_data(
         self,
@@ -60,6 +82,8 @@ class OpenItemsReport(models.AbstractModel):
                 acc_partial_rec,
                 debit_amount,
                 credit_amount,
+                debit_amount_currency,
+                credit_amount_currency,
             ) = self._get_account_partial_reconciled(company_id, date_at_object)
             if acc_partial_rec:
                 ml_ids = list(map(operator.itemgetter("id"), move_lines))
@@ -80,6 +104,8 @@ class OpenItemsReport(models.AbstractModel):
                     company_id,
                     partner_ids,
                     only_posted_moves,
+                    debit_amount_currency,
+                    credit_amount_currency,
                 )
         move_lines = [
             move_line
@@ -98,7 +124,7 @@ class OpenItemsReport(models.AbstractModel):
                 prt_name = move_line["partner_id"][1]
             else:
                 prt_id = 0
-                prt_name = "Missing Partner"
+                prt_name = _("Missing Partner")
             if prt_id not in partners_ids:
                 partners_data.update({prt_id: {"id": prt_id, "name": prt_name}})
                 partners_ids.add(prt_id)
@@ -180,7 +206,7 @@ class OpenItemsReport(models.AbstractModel):
 
     @api.model
     def _order_open_items_by_date(
-        self, open_items_move_lines_data, show_partner_details
+        self, open_items_move_lines_data, show_partner_details, partners_data
     ):
         new_open_items = {}
         if not show_partner_details:
@@ -195,7 +221,10 @@ class OpenItemsReport(models.AbstractModel):
         else:
             for acc_id in open_items_move_lines_data.keys():
                 new_open_items[acc_id] = {}
-                for prt_id in open_items_move_lines_data[acc_id]:
+                for prt_id in sorted(
+                    open_items_move_lines_data[acc_id],
+                    key=lambda i: partners_data[i]["name"],
+                ):
                     new_open_items[acc_id][prt_id] = {}
                     move_lines = []
                     for move_line in open_items_move_lines_data[acc_id][prt_id]:
@@ -233,7 +262,7 @@ class OpenItemsReport(models.AbstractModel):
 
         total_amount = self._calculate_amounts(open_items_move_lines_data)
         open_items_move_lines_data = self._order_open_items_by_date(
-            open_items_move_lines_data, show_partner_details
+            open_items_move_lines_data, show_partner_details, partners_data
         )
         return {
             "doc_ids": [wizard_id],
@@ -242,7 +271,6 @@ class OpenItemsReport(models.AbstractModel):
             "foreign_currency": data["foreign_currency"],
             "show_partner_details": data["show_partner_details"],
             "company_name": company.display_name,
-            "company_currency": company.currency_id,
             "currency_name": company.currency_id.name,
             "date_at": date_at_object.strftime("%d/%m/%Y"),
             "hide_account_at_0": data["hide_account_at_0"],
@@ -256,10 +284,12 @@ class OpenItemsReport(models.AbstractModel):
 
     def _get_ml_fields(self):
         return self.COMMON_ML_FIELDS + [
+            "amount_residual",
             "reconciled",
             "currency_id",
-            "amount_residual",
+            "credit",
             "date_maturity",
             "amount_residual_currency",
+            "debit",
             "amount_currency",
         ]

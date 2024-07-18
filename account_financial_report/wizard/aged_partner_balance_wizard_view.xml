@@ -33,6 +33,8 @@
                     />
                 </group>
                 <group name="account_filter" col="4">
+                    <label for="age_partner_config_id" />
+                    <field name="age_partner_config_id" nolabel="1" />
                     <label for="account_ids" colspan="4" />
                     <field name="receivable_accounts_only" />
                     <field name="payable_accounts_only" />
@@ -44,9 +46,7 @@
                                 class="oe_inline"
                                 options="{'no_create': True}"
                             />
-                            <span class="oe_inline">
-                                To
-                            </span>
+                            <span class="oe_inline">To</span>
                             <field
                                 name="account_code_to"
                                 class="oe_inline"
@@ -70,30 +70,26 @@
                         default_focus="1"
                         class="oe_highlight"
                     />
-                    or
                     <button
                         name="button_export_pdf"
                         string="Export PDF"
                         type="object"
                     />
-                    or
                     <button
                         name="button_export_xlsx"
                         string="Export XLSX"
                         type="object"
                     />
-                    or
                     <button string="Cancel" class="oe_link" special="cancel" />
                 </footer>
             </form>
         </field>
     </record>
-    <act_window
-        id="action_aged_partner_balance_wizard"
-        name="Aged Partner Balance"
-        res_model="aged.partner.balance.report.wizard"
-        view_mode="form"
-        view_id="aged_partner_balance_wizard"
-        target="new"
-    />
+    <record id="action_aged_partner_balance_wizard" model="ir.actions.act_window">
+        <field name="name">Aged Partner Balance</field>
+        <field name="res_model">aged.partner.balance.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="aged_partner_balance_wizard" />
+        <field name="target">new</field>
+    </record>
 </odoo>

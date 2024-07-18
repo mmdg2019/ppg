@@ -33,7 +33,6 @@ class AbstractWizard(models.AbstractModel):
         default=lambda self: self.env.company.id,
         required=False,
         string="Company",
-        domain=lambda self: [("id", "in", self.env.companies.ids)],
     )
 
     def button_export_html(self):
