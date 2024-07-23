@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+        <!-- Inherit the existing form view -->
+        <record id="view_register_payment_inherit" model="ir.ui.view">
+            <field name="name">Register Payment Inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/> <!-- Replace with the actual external ID of the view you are inheriting -->
+            <field name="arch" type="xml">
+                <!-- Find the position to add the field (after the payment_type field) -->
+                <xpath expr="//field[@name='payment_type']" position="after">
+                    <field name="partner_type" widget="selection" attrs="{'required': [('state', '=', 'draft'), ('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
