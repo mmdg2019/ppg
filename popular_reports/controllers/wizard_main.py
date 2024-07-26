@@ -1884,6 +1884,10 @@ class edit_report_sales_quot_report_by_date(models.AbstractModel):
             docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'sale')])
         else:
             docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date'])])
+        
+        # filter records of selected vendors
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
             
         return {
             'filter_post_quot': data['filter_post_quot'],
