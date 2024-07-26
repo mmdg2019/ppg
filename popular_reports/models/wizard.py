@@ -803,6 +803,8 @@ class PopularReport(models.TransientModel):
     def print_report_sales_quot_report_by_date(self):
         data = {
             'filter_post_quot':self.filter_post_quot,
+            # extract data based on selected vendors
+            'user_ids': self.user.ids, 
             'start_date': self.start_date, 
             'end_date': self.end_date
         }
