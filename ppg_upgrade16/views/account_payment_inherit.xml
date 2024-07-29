@@ -10,6 +10,17 @@
                 <xpath expr="//field[@name='payment_type']" position="after">
                     <field name="partner_type" widget="selection" attrs="{'required': [('state', '=', 'draft'), ('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))]}"/>
                 </xpath>
+                <!-- add index and invisible attribute to partner_id -->
+                <xpath expr="//field[@name='partner_id'][1]" position="attributes">
+                    <attribute name="attrs">{"invisible": [["payment_type","not in",["inbound","outbound"]]], "readonly": [["state","not in",["draft"]]], "required": [["state","=","draft"],["payment_type","in",["inbound","outbound"]]], 'invisible': ['|', ('partner_type','!=','customer'), ('is_internal_transfer', '=', True)]}</attribute>
+                    <attribute name="domain">["&amp;","|",["customer_rank","&gt;",0],["supplier_rank","&gt;",0],["company_id","=",company_id]]</attribute>
+                    <attribute name="options">{"always_reload": True, "no_open":True,"no_create":True,"no_create_edit":True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id'][2]" position="attributes">
+                    <attribute name="attrs">{"invisible": [["payment_type","not in",["inbound","outbound"]]], "readonly": [["state","not in",["draft"]]], "required": [["state","=","draft"],["payment_type","in",["inbound","outbound"]]], 'invisible':['|', ('partner_type','!=','supplier'), ('is_internal_transfer', '=', True)]}</attribute>
+                    <attribute name="domain">["&amp;","|",["customer_rank","&gt;",0],["supplier_rank","&gt;",0],["company_id","=",company_id]]</attribute>
+                    <attribute name="options">{"always_reload": True, "no_open":True,"no_create":True,"no_create_edit":True}</attribute>
+                </xpath>
             </field>
         </record>
     </data>
