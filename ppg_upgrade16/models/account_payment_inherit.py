@@ -34,10 +34,10 @@ class AccountPayment(models.Model):
                     # Supplier Payment Sequence
                     sequence_code = 'account.payment.supplier.invoice'
                     name = self.env['ir.sequence'].next_by_code(sequence_code)
-                    # if name:
-                    #     name = name.replace('%(month)s', datetime.now().strftime('%m'))
-                    #     name = name.replace('%(year)s', datetime.now().strftime('%Y'))
-                    vals['name'] = name
+                    if name:
+                        name = name.replace('%(month)s', datetime.now().strftime('%m'))
+                        name = name.replace('%(year)s', datetime.now().strftime('%Y'))
+                        vals['name'] = name
 
                 elif vals.get('payment_type') == 'inbound':
                     # Supplier Payment Refund Sequence
@@ -49,11 +49,12 @@ class AccountPayment(models.Model):
                         vals['name'] = name
             else:
                 if vals.get('is_internal_tranfer'):
-                    # Internal Transfer Sequence
+                    # Supplier Payment Refund Sequence
                     sequence_code = 'account.payment.transfer'
                     name = self.env['ir.sequence'].next_by_code(sequence_code)
                     if name:
                         name = name.replace('%(month)s', datetime.now().strftime('%m'))
                         name = name.replace('%(year)s', datetime.now().strftime('%Y'))
                         vals['name'] = name
+                    
         return super(AccountPayment, self).create(vals)
