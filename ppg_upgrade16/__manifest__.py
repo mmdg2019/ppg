@@ -18,6 +18,7 @@
         # 'security/ir.model.access.csv',
         'views/stock_picking_inherit_view.xml',  # Updated to include the correct view file
         'views/account_payment_inherit.xml',
+        'views/accounting_ledger_menu_inherit.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode
