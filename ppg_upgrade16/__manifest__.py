@@ -12,7 +12,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock','account'],  # Ensure 'stock' module is added since you are inheriting stock views
+    'depends': ['base', 'stock','account','sale','purchase'],  # Ensure 'stock' module is added since you are inheriting stock views
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
@@ -20,6 +20,8 @@
         'views/account_payment_inherit.xml',
         'views/accounting_ledger_menu_inherit.xml',
         'views/templates.xml',
+        'views/sale_order_form_inherit.xml',
+        'views/purchase_order_inherit.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

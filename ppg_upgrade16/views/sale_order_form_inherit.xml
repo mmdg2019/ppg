@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <!-- Inherit the existing form view -->
+        <record id="view_sale_order_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/> 
+            <field name="arch" type="xml">                
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_packaging_qty']" position="attributes">
+                    <attribute name="string">No. of Package</attribute>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
