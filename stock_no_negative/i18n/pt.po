@@ -6,22 +6,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-26 09:53+0000\n"
-"PO-Revision-Date: 2019-02-26 09:53+0000\n"
-"Last-Translator: <>\n"
-"Language-Team: \n"
-"Language: \n"
+"PO-Revision-Date: 2021-07-08 20:48+0000\n"
+"Last-Translator: Daniel Reis <dgreis@sapo.pt>\n"
+"Language-Team: none\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #. module: stock_no_negative
 #. odoo-python
 #: code:addons/stock_no_negative/models/stock_quant.py:0
 #, python-format
 msgid " lot {}"
-msgstr " lote {}"
+msgstr ""
 
 #. module: stock_no_negative
 #: model:ir.model.fields,field_description:stock_no_negative.field_product_category__allow_negative_stock
@@ -38,9 +38,9 @@ msgid ""
 "category. The options doesn't apply to products attached to sub-categories "
 "of this category."
 msgstr ""
-"Permitir niveles de stock negativos para los productos en stock adjuntos a "
-"esta categoría. Las opciones no se aplican a los productos adjuntos a "
-"subcategorías de esta categoría."
+"Permitir níveis de stock negativos para os produtos armazenáveis ligados a "
+"esta categoria. As opções não se aplicam aos produtos vinculados a sub-"
+"categorias desta categoria."
 
 #. module: stock_no_negative
 #: model:ir.model.fields,help:stock_no_negative.field_stock_location__allow_negative_stock
@@ -48,8 +48,8 @@ msgid ""
 "Allow negative stock levels for the stockable products attached to this "
 "location."
 msgstr ""
-"Permitir niveles de stock negativos para los productos en stock ubicados en "
-"esta ubicación."
+"Permitir níveis de stock negativos para os produtos armazenáveis anexados a "
+"este local."
 
 #. module: stock_no_negative
 #: model:ir.model.fields,help:stock_no_negative.field_product_product__allow_negative_stock
@@ -60,15 +60,15 @@ msgid ""
 "stock moves will be blocked if the stock level becomes negative with the "
 "stock move."
 msgstr ""
-"Si esta opción no está activa en este producto ni en su categoría de "
-"producto y este producto es un producto almacenable, entonces la validación "
-"de los movimientos de stock relacionados se bloqueará si el nivel de stock "
-"se vuelve negativo con el movimiento de stock."
+"Se esta opção não estiver ativa neste produto nem na sua categoria e se este "
+"for um produto armazenável, então a validação dos movimentos de stock "
+"relacionados será bloqueada se o nível de stock se tornar negativo após o "
+"movimento de stock."
 
 #. module: stock_no_negative
 #: model:ir.model,name:stock_no_negative.model_stock_location
 msgid "Inventory Locations"
-msgstr "Ubicaciones de inventario"
+msgstr "Localizações de Inventário"
 
 #. module: stock_no_negative
 #: model:ir.model,name:stock_no_negative.model_product_template
@@ -78,7 +78,7 @@ msgstr ""
 #. module: stock_no_negative
 #: model:ir.model,name:stock_no_negative.model_product_category
 msgid "Product Category"
-msgstr "Categoría de producto"
+msgstr "Categoria do Artigo"
 
 #. module: stock_no_negative
 #: model:ir.model,name:stock_no_negative.model_stock_quant
@@ -96,8 +96,21 @@ msgid ""
 "product and/or location."
 msgstr ""
 
+#, python-format
+#~ msgid " lot '%s'"
+#~ msgstr " lote '%s'"
+
+#~ msgid "Display Name"
+#~ msgstr "Nome a Apresentar"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Última Modificação em"
+
 #~ msgid "Product Template"
-#~ msgstr "Plantilla de producto"
+#~ msgstr "Modelo de Artigo"
 
 #, python-format
 #~ msgid ""
@@ -105,6 +118,6 @@ msgstr ""
 #~ "product '%s'%s would become negative (%s) on the stock location '%s' and "
 #~ "negative stock is not allowed for this product and/or location."
 #~ msgstr ""
-#~ "No se puede validar esta operación de stock porque el nivel de stock del "
-#~ "producto '%s'%s se volvería negativo (%s) en la ubicación de stock '%s' y "
-#~ "no se permite stock negativo para este producto y/o ubicación."
+#~ "Não pode validar esta operação de stock porque o nível de stock do "
+#~ "produto '%s'%s tornar-se-ia negativo (%s) na localização '%s' e um stock "
+#~ "negativo não é permitido para este produto e/ou local."
