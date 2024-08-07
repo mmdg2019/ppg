@@ -23,7 +23,8 @@
         'views/sale_order_form_inherit.xml',
         'views/purchase_order_inherit.xml',
         'views/mrp_production_inherit_view.xml',
-        'views/dropshipping_for_so_inherit.xml',
+        # 'views/dropshipping_for_so_inherit.xml',
+        'views/account_move_line_inherit.xml',
         'views/stock_inventory_line_inherit.xml',
     ],
     # only loaded in demonstration mode
