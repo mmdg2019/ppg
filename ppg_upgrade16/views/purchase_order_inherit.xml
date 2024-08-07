@@ -12,7 +12,14 @@
                 <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree/field[@name='product_packaging_qty']" position="before">               
                     <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/field[@name='product_packaging_id']" position="move"/>
                 </xpath>
-                 
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button type="object"
+                    name="action_view_picking"
+                    class="oe_stat_button"
+                    icon="fa-truck" attrs="{'invisible':[('incoming_picking_count','=', 0)]}" groups="!stock.group_stock_user">
+                    <field name="incoming_picking_count" widget="statinfo" string="Receipt" help="Incoming Shipments"/>
+                </button>
+            </xpath> 
             </field>
         </record>
     </data>

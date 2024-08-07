@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <!-- Inherit the existing form view -->
+        <record id="view_mrp_production_inherit" model="ir.ui.view">
+            <field name="name">mrp.production.form.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/> 
+            <field name="arch" type="xml">
+                <!-- Find the position to add the field (after the payment_type field) -->
+                
+                <xpath expr="//label[@for='date_planned_start']" position="before">                
+                    <field name="date_deadline" attrs="{'readonly':[('state','in',['done','cancel'])]}"/>
+                </xpath>
+                <xpath expr="//form[1]/sheet[1]/group[1]/group[2]/div[1]/field[@name='date_planned_start']" position="after">                    
+                    <label for="date_planned_finished" string="to" attrs="{'invisible': ['|', ('id', '=', False), ('state', 'in', ['draft', 'confirmed'])]}"/>
+                    <field name="date_planned_finished" required="1" attrs="{'readonly': [('state', 'in', ['done', 'cancel'])]}"/>
+                </xpath>                
+            </field>
+        </record>
+    </data>
+</odoo>
