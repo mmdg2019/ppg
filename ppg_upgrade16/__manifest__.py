@@ -24,6 +24,7 @@
         'views/purchase_order_inherit.xml',
         'views/mrp_production_inherit_view.xml',
         'views/dropshipping_for_so_inherit.xml',
+        'views/stock_inventory_line_inherit.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
