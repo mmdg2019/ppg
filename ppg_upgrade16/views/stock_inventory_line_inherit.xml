@@ -1,0 +1,13 @@
+<odoo>
+    <data>        
+        <record id="stock_inventory_line_difference_qty" model="ir.ui.view">
+            <field name="name">stock.inventory.line.difference.qty</field>
+            <field name="model">stock.inventory.line</field>
+            <field name="inherit_id" ref="ak_inventory_adjustments.stock_inventory_line_tree"/> 
+            <field name="arch" type="xml">
+                <field name="difference_qty" position="attributes"><attribute name="invisible">False</attribute></field>
+                <field name="theoretical_qty" position="attributes"><attribute name="invisible">False</attribute></field>
+            </field>
+        </record>
+    </data>
+</odoo>
