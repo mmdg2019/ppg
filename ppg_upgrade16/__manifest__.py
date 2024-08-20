@@ -23,12 +23,8 @@
         'views/sale_order_form_inherit.xml',
         'views/purchase_order_inherit.xml',
         'views/mrp_production_inherit_view.xml',
-<<<<<<< HEAD
         # 'views/dropshipping_for_so_inherit.xml',
         'views/account_move_line_inherit.xml',
-=======
-        'views/dropshipping_for_so_inherit.xml',
->>>>>>> 9377506... make on hand and difference visible in inventory lines
         'views/stock_inventory_line_inherit.xml',
     ],
     # only loaded in demonstration mode
