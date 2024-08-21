@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 
 
-class ResPartner(models.Model):
+class AccountMove(models.Model):
     _inherit = 'account.move'
     
     @api.model
