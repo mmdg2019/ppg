@@ -43,5 +43,22 @@
             </xpath>
             </field>
         </record> -->
+        <!-- For Warehouse Manager -->
+        <record id="purchase_order_view_form_inherit_purchase_stock" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.purchase.stock</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_stock.purchase_order_view_form_inherit"/>
+            <field name="arch" type="xml"> 
+                <xpath expr="//form/header/button[@name='action_view_picking']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>               
+                <xpath expr="//div[hasclass('oe_button_box')]/button[@name='action_view_picking']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>
+                <xpath expr="//field[@name='incoming_picking_count']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
