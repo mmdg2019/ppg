@@ -40,34 +40,28 @@ class AccountMove(models.Model):
                     sequence_code = 'account.move.customer.invoice'
                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
                     if name:
-                        # name = name.replace('%(day)s', move.invoice_date.strftime('%d'))
-                        # name = name.replace('%(month)s', move.invoice_date.strftime('%m'))
-                        # name = name.replace('%(year)s', move.invoice_date.strftime('%Y'))
                         move.name = name
                 elif move.move_type and move.move_type == 'out_refund':
                     sequence_code = 'account.move.customer.credit.notes'
                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
                     if name:
-                        # name = name.replace('%(day)s', move.date.strftime('%d'))
-                        # name = name.replace('%(month)s', move.date.strftime('%m'))
-                        # name = name.replace('%(year)s', move.date.strftime('%Y'))
                         move.name = name
                 elif move.move_type and move.move_type == 'in_invoice':
                     sequence_code = 'account.move.vendor.bill'
                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-                    if name:
-                        # name = name.replace('%(day)s', move.date.strftime('%d'))
-                        # name = name.replace('%(month)s', move.date.strftime('%m'))
-                        # name = name.replace('%(year)s', move.date.strftime('%Y'))
+                    if name:                        
                         move.name = name
                 elif move.move_type and move.move_type == 'in_refund':
                     sequence_code = 'account.move.vendor.refund'
                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-                    if name:
-                        # name = name.replace('%(day)s', move.date.strftime('%d'))
-                        # name = name.replace('%(month)s', move.date.strftime('%m'))
-                        # name = name.replace('%(year)s', move.date.strftime('%Y'))
+                    if name:                        
                         move.name = name
+                elif move.move_type and move.move_type == 'entry':
+                    # sequence_code = 'account.move.stock.journal'
+                    # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    # if name:
+                    #     move.name = name
+                    move._set_next_sequence()
 
         self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
         self._inverse_name()
