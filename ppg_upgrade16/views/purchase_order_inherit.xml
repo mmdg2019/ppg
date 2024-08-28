@@ -22,11 +22,7 @@
                 </xpath>  -->
             </field>
         </record>
-<<<<<<< HEAD
         <!-- <record id="purchase_order_view_form_inherit_16" model="ir.ui.view">
-=======
-        <record id="purchase_order_view_form_inherit_16" model="ir.ui.view">
->>>>>>> f70ea3a... upgrade for po and so receipt&dropship
             <field name="name">purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase_stock.purchase_order_view_form_inherit"/>
@@ -45,7 +41,6 @@
                     <field name="incoming_picking_count" widget="statinfo" string="Receipt" help="Incoming Shipments"/>
                 </button>
             </xpath>
-<<<<<<< HEAD
             </field>
         </record> -->
         <!-- For Warehouse Manager -->
@@ -63,8 +58,6 @@
                 <xpath expr="//field[@name='incoming_picking_count']" position="attributes">
                     <attribute name="groups"></attribute>
                 </xpath>
-=======
->>>>>>> f70ea3a... upgrade for po and so receipt&dropship
             </field>
         </record>
     </data>
