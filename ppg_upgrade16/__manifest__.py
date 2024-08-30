@@ -22,7 +22,7 @@
         'views/templates.xml',
         'views/sale_order_form_inherit.xml',
         'views/purchase_order_inherit.xml',
-        # 'views/mrp_production_inherit_view.xml',
+        'views/mrp_production_inherit_view.xml',
         # 'views/dropshipping_for_so_inherit.xml',
         'views/account_move_line_inherit.xml',
         'views/dropshipping_for_so_inherit.xml',
