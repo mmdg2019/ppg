@@ -48,7 +48,7 @@ class MisReportInstancePeriodSum(models.Model):
     period_to_sum_id = fields.Many2one(
         comodel_name="mis.report.instance.period",
         string="Column",
-        ondelete="restrict",
+        # ondelete="restrict",
         required=True,
     )
     sign = fields.Selection([("+", "+"), ("-", "-")], required=True, default="+")

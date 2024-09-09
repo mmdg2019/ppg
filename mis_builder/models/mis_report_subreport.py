@@ -28,7 +28,7 @@ class MisReportSubReport(models.Model):
     subreport_id = fields.Many2one(
         comodel_name="mis.report",
         required=True,
-        ondelete="restrict",
+        # ondelete="restrict",
     )
 
     _sql_constraints = [

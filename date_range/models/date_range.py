@@ -22,7 +22,7 @@ class DateRange(models.Model):
         string="Type",
         index=1,
         required=True,
-        ondelete="restrict",
+        # ondelete="restrict",
         domain="['|', ('company_id', '=', company_id), " "('company_id', '=', False)]",
         store=True,
         compute="_compute_type_id",
