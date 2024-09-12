@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="open_items">
-        <t t-call="web.html_container">
+        <t t-call="account_financial_report.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="account_financial_report.internal_layout">
                     <t t-call="account_financial_report.report_open_items_base" />
@@ -13,9 +13,12 @@
         <!-- Saved flag fields into variables, used to define columns display -->
         <t t-set="foreign_currency" t-value="foreign_currency" />
         <!-- Defines global variables used by internal layout -->
-        <t t-set="title">Open Items - <t t-raw="company_name" /> - <t
-                t-raw="currency_name"
-            /></t>
+        <t t-set="title">
+            Open Items -
+            <t t-out="company_name" />
+            -
+            <t t-out="currency_name" />
+        </t>
         <t t-set="company_name" t-value="Company_Name" />
         <div class="page">
             <div class="row">
@@ -31,10 +34,10 @@
                 <!-- Display account header -->
                 <div class="act_as_table list_table" style="margin-top: 10px;" />
                 <div class="account_title" style="width: 100%;">
-                        <span t-esc="accounts_data[account_id]['code']" />
-                        -
-                        <span t-esc="accounts_data[account_id]['name']" />
-                    </div>
+                    <span t-esc="accounts_data[account_id]['code']" />
+                    -
+                    <span t-esc="accounts_data[account_id]['name']" />
+                </div>
                 <t t-if="not show_partner_details">
                     <div class="act_as_table data_table" style="width: 100%;">
                         <t
@@ -128,8 +131,7 @@
         <div class="act_as_thead">
             <div class="act_as_row labels">
                 <!--## date-->
-                <div class="act_as_cell first_column" style="width: 5.51%;">
-                    Date</div>
+                <div class="act_as_cell first_column" style="width: 5.51%;">Date</div>
                 <!--## move-->
                 <div class="act_as_cell" style="width: 9.76%;">Entry</div>
                 <!--## journal-->
@@ -137,32 +139,32 @@
                 <!--## account code-->
                 <div class="act_as_cell" style="width: 5.38%;">Account</div>
                 <!--## partner-->
-                <div class="act_as_cell" style="width: 15.07%;">Partner
-                </div>
+                <div class="act_as_cell" style="width: 15.07%;">Partner</div>
                 <!--## ref - label-->
-                <div class="act_as_cell" style="width: 24.5%;">Ref -
-                    Label</div>
-                <!--## date_due-->
-                <div class="act_as_cell" style="width: 6.47%;">Due
-                    date</div>
-                <!--## amount_total_due-->
-                <div class="act_as_cell" style="width: 6.57%;">Original
+                <div class="act_as_cell" style="width: 24.5%;">
+                    Ref -
+                    Label
                 </div>
+                <!--## date_due-->
+                <div class="act_as_cell" style="width: 6.47%;">
+                    Due
+                    date
+                </div>
+                <!--## amount_total_due-->
+                <div class="act_as_cell" style="width: 6.57%;">Original</div>
                 <!--## amount_residual-->
                 <div class="act_as_cell" style="width: 6.57%;">Residual</div>
                 <t t-if="foreign_currency">
                     <!--## currency_name-->
                     <div class="act_as_cell" style="width: 2.25%;">Cur.</div>
                     <!--## amount_total_due_currency-->
-                    <div
-                        class="act_as_cell amount"
-                        style="width: 6.57%;"
-                    >Cur. Original</div>
+                    <div class="act_as_cell amount" style="width: 6.57%;">
+                        Cur. Original
+                    </div>
                     <!--## amount_residual_currency-->
-                    <div
-                        class="act_as_cell amount"
-                        style="width: 6.57%;"
-                    >Cur. Residual</div>
+                    <div class="act_as_cell amount" style="width: 6.57%;">
+                        Cur. Residual
+                    </div>
                 </t>
             </div>
         </div>
@@ -172,7 +174,7 @@
         <div class="act_as_row lines">
             <!--## date-->
             <div class="act_as_cell left">
-                <span t-raw="line['date'].strftime('%d/%m/%Y')" />
+                <span t-out="line['date'].strftime('%d/%m/%Y')" />
             </div>
             <!--## move-->
             <div class="act_as_cell left">
@@ -228,14 +230,14 @@
                 <span
                     t-if="line.get('original', False)"
                     t-esc="line['original']"
-                    t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                    t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                 />
             </div>
             <!--## amount_residual-->
             <div class="act_as_cell amount">
                 <span
                     t-esc="line['amount_residual']"
-                    t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                    t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                 />
             </div>
             <t t-if="foreign_currency">
@@ -246,11 +248,17 @@
                     </div>
                     <!--## amount_total_due_currency-->
                     <div class="act_as_cell amount">
-                        <span t-esc="line['amount_currency']" />
+                        <span
+                            t-esc="line['amount_currency']"
+                            t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(line['currency_id'])}"
+                        />
                     </div>
                     <!--## amount_residual_currency-->
                     <div class="act_as_cell amount">
-                        <span t-esc="line['amount_residual_currency']" />
+                        <span
+                            t-esc="line['amount_residual_currency']"
+                            t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(line['currency_id'])}"
+                        />
                     </div>
                 </t>
                 <t t-if="not line['currency_id']">
@@ -275,15 +283,16 @@
                         -
                         <span t-esc="accounts_data[account_id]['name']" />
                     </div>
-                    <div class="act_as_cell right" style="width: 28.66%;">Ending
-                        balance</div>
+                    <div class="act_as_cell right" style="width: 28.66%;">
+                        Ending
+                        balance
+                    </div>
                 </t>
                 <t t-if='type == "partner_type"'>
                     <div class="act_as_cell first_column" style="width: 36.34%;" />
-                    <div
-                        class="act_as_cell right"
-                        style="width: 28.66%;"
-                    >Partner ending balance</div>
+                    <div class="act_as_cell right" style="width: 28.66%;">
+                        Partner ending balance
+                    </div>
                 </t>
                 <!--## date_due-->
                 <div class="act_as_cell" style="width: 6.47%;" />
@@ -294,13 +303,13 @@
                     <t t-if='type == "account_type"'>
                         <span
                             t-esc="total_amount[account_id]['residual']"
-                            t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                         />
                     </t>
                     <t t-if='type == "partner_type"'>
                         <span
                             t-esc="total_amount[account_id][partner_id]['residual']"
-                            t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                         />
                     </t>
                 </div>

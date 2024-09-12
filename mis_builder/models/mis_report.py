@@ -365,8 +365,7 @@ class MisReportQuery(models.Model):
             record.field_names = ", ".join(field_names)
 
     name = fields.Char(required=True)
-    # model_id = fields.Many2one("ir.model", required=True, ondelete="restrict")
-    model_id = fields.Many2one("ir.model", required=True)
+    model_id = fields.Many2one("ir.model", required=True, ondelete="restrict")
     field_ids = fields.Many2many(
         "ir.model.fields", required=True, string="Fields to fetch"
     )
@@ -385,7 +384,7 @@ class MisReportQuery(models.Model):
         comodel_name="ir.model.fields",
         required=True,
         domain=[("ttype", "in", ("date", "datetime"))],
-        # ondelete="restrict",
+        ondelete="restrict",
     )
     domain = fields.Char()
     report_id = fields.Many2one(

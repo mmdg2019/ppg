@@ -1,5 +1,7 @@
 # Author: Julien Coux
 # Copyright 2016 Camptocamp SA
+# Copyright 2021 Tecnativa - João Marques
+# Copyright 2023 Tecnativa - Carolina Fernandez
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import _, models
@@ -19,67 +21,84 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
             report_name = report_name + suffix
         return report_name
 
-    def _get_report_columns(self, report):
-        if not report.show_move_line_details:
-            return {
-                0: {"header": _("Partner"), "field": "name", "width": 70},
-                1: {
-                    "header": _("Residual"),
-                    "field": "residual",
-                    "field_footer_total": "residual",
-                    "type": "amount",
-                    "width": 14,
-                },
-                2: {
-                    "header": _("Current"),
-                    "field": "current",
-                    "field_footer_total": "current",
-                    "field_footer_percent": "percent_current",
-                    "type": "amount",
-                    "width": 14,
-                },
-                3: {
-                    "header": _(u"Age ≤ 30 d."),
-                    "field": "30_days",
-                    "field_footer_total": "30_days",
-                    "field_footer_percent": "percent_30_days",
-                    "type": "amount",
-                    "width": 14,
-                },
-                4: {
-                    "header": _(u"Age ≤ 60 d."),
-                    "field": "60_days",
-                    "field_footer_total": "60_days",
-                    "field_footer_percent": "percent_60_days",
-                    "type": "amount",
-                    "width": 14,
-                },
-                5: {
-                    "header": _(u"Age ≤ 90 d."),
-                    "field": "90_days",
-                    "field_footer_total": "90_days",
-                    "field_footer_percent": "percent_90_days",
-                    "type": "amount",
-                    "width": 14,
-                },
-                6: {
-                    "header": _(u"Age ≤ 120 d."),
-                    "field": "120_days",
-                    "field_footer_total": "120_days",
-                    "field_footer_percent": "percent_120_days",
-                    "type": "amount",
-                    "width": 14,
-                },
-                7: {
-                    "header": _("Older"),
-                    "field": "older",
-                    "field_footer_total": "older",
-                    "field_footer_percent": "percent_older",
-                    "type": "amount",
-                    "width": 14,
-                },
+    def _get_report_columns_without_move_line_details(self, report, column_index):
+        report_columns = {
+            0: {"header": _("Partner"), "field": "name", "width": 70},
+            1: {
+                "header": _("Residual"),
+                "field": "residual",
+                "field_footer_total": "residual",
+                "type": "amount",
+                "width": 14,
+            },
+            2: {
+                "header": _("Current"),
+                "field": "current",
+                "field_footer_total": "current",
+                "field_footer_percent": "percent_current",
+                "type": "amount",
+                "width": 14,
+            },
+        }
+        if not report.age_partner_config_id:
+            report_columns.update(
+                {
+                    3: {
+                        "header": _("Age ≤ 30 d."),
+                        "field": "30_days",
+                        "field_footer_total": "30_days",
+                        "field_footer_percent": "percent_30_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    4: {
+                        "header": _("Age ≤ 60 d."),
+                        "field": "60_days",
+                        "field_footer_total": "60_days",
+                        "field_footer_percent": "percent_60_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    5: {
+                        "header": _("Age ≤ 90 d."),
+                        "field": "90_days",
+                        "field_footer_total": "90_days",
+                        "field_footer_percent": "percent_90_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    6: {
+                        "header": _("Age ≤ 120 d."),
+                        "field": "120_days",
+                        "field_footer_total": "120_days",
+                        "field_footer_percent": "percent_120_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    7: {
+                        "header": _("Older"),
+                        "field": "older",
+                        "field_footer_total": "older",
+                        "field_footer_percent": "percent_older",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                }
+            )
+        for interval in report.age_partner_config_id.line_ids:
+            report_columns[column_index] = {
+                "header": interval.name,
+                "field": interval,
+                "field_footer_total": interval,
+                "field_footer_percent": f"percent_{interval.id}",
+                "type": "amount",
+                "width": 14,
             }
-        return {
+            column_index += 1
+        return report_columns
+
+    def _get_report_columns_with_move_line_details(self, report, column_index):
+        report_columns = {
             0: {"header": _("Date"), "field": "date", "width": 11},
             1: {"header": _("Entry"), "field": "entry", "width": 18},
             2: {"header": _("Journal"), "field": "journal", "width": 8},
@@ -104,52 +123,75 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
                 "type": "amount",
                 "width": 14,
             },
-            9: {
-                "header": _(u"Age ≤ 30 d."),
-                "field": "30_days",
-                "field_footer_total": "30_days",
-                "field_footer_percent": "percent_30_days",
-                "field_final_balance": "30_days",
-                "type": "amount",
-                "width": 14,
-            },
-            10: {
-                "header": _(u"Age ≤ 60 d."),
-                "field": "60_days",
-                "field_footer_total": "60_days",
-                "field_footer_percent": "percent_60_days",
-                "field_final_balance": "60_days",
-                "type": "amount",
-                "width": 14,
-            },
-            11: {
-                "header": _(u"Age ≤ 90 d."),
-                "field": "90_days",
-                "field_footer_total": "90_days",
-                "field_footer_percent": "percent_90_days",
-                "field_final_balance": "90_days",
-                "type": "amount",
-                "width": 14,
-            },
-            12: {
-                "header": _(u"Age ≤ 120 d."),
-                "field": "120_days",
-                "field_footer_total": "120_days",
-                "field_footer_percent": "percent_120_days",
-                "field_final_balance": "120_days",
-                "type": "amount",
-                "width": 14,
-            },
-            13: {
-                "header": _("Older"),
-                "field": "older",
-                "field_footer_total": "older",
-                "field_footer_percent": "percent_older",
-                "field_final_balance": "older",
-                "type": "amount",
-                "width": 14,
-            },
         }
+        if not report.age_partner_config_id:
+            report_columns.update(
+                {
+                    9: {
+                        "header": _("Age ≤ 30 d."),
+                        "field": "30_days",
+                        "field_footer_total": "30_days",
+                        "field_footer_percent": "percent_30_days",
+                        "field_final_balance": "30_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    10: {
+                        "header": _("Age ≤ 60 d."),
+                        "field": "60_days",
+                        "field_footer_total": "60_days",
+                        "field_footer_percent": "percent_60_days",
+                        "field_final_balance": "60_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    11: {
+                        "header": _("Age ≤ 90 d."),
+                        "field": "90_days",
+                        "field_footer_total": "90_days",
+                        "field_footer_percent": "percent_90_days",
+                        "field_final_balance": "90_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    12: {
+                        "header": _("Age ≤ 120 d."),
+                        "field": "120_days",
+                        "field_footer_total": "120_days",
+                        "field_footer_percent": "percent_120_days",
+                        "field_final_balance": "120_days",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                    13: {
+                        "header": _("Older"),
+                        "field": "older",
+                        "field_footer_total": "older",
+                        "field_footer_percent": "percent_older",
+                        "field_final_balance": "older",
+                        "type": "amount",
+                        "width": 14,
+                    },
+                }
+            )
+        for interval in report.age_partner_config_id.line_ids:
+            report_columns[column_index] = {
+                "header": interval.name,
+                "field": interval,
+                "field_footer_total": interval,
+                "field_footer_percent": f"percent_{interval.id}",
+                "type": "amount",
+                "width": 14,
+            }
+            column_index += 1
+        return report_columns
+
+    def _get_report_columns(self, report):
+        if not report.show_move_line_details:
+            return self._get_report_columns_without_move_line_details(
+                report, column_index=3
+            )
+        return self._get_report_columns_with_move_line_details(report, column_index=9)
 
     def _get_report_filters(self, report):
         return [
@@ -177,7 +219,7 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
     def _get_col_pos_final_balance_label(self):
         return 5
 
-    def _generate_report_content(self, workbook, report, data):
+    def _generate_report_content(self, workbook, report, data, report_data):
         res_data = self.env[
             "report.account_financial_report.aged_partner_balance"
         ]._get_report_values(report, data)
@@ -187,14 +229,16 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
             # For each account
             for account in aged_partner_balance:
                 # Write account title
-                self.write_array_title(account["code"] + " - " + account["name"])
+                self.write_array_title(
+                    account["code"] + " - " + account["name"], report_data
+                )
 
                 # Display array header for partners lines
-                self.write_array_header()
+                self.write_array_header(report_data)
 
                 # Display partner lines
                 for partner in account["partners"]:
-                    self.write_line_from_dict(partner)
+                    self.write_line_from_dict(partner, report_data)
 
                 # Display account lines
                 self.write_account_footer_from_dict(
@@ -202,45 +246,49 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
                     account,
                     ("Total"),
                     "field_footer_total",
-                    self.format_header_right,
-                    self.format_header_amount,
+                    report_data["formats"]["format_header_right"],
+                    report_data["formats"]["format_header_amount"],
                     False,
+                    report_data,
                 )
                 self.write_account_footer_from_dict(
                     report,
                     account,
                     ("Percents"),
                     "field_footer_percent",
-                    self.format_right_bold_italic,
-                    self.format_percent_bold_italic,
+                    report_data["formats"]["format_right_bold_italic"],
+                    report_data["formats"]["format_percent_bold_italic"],
                     True,
+                    report_data,
                 )
 
                 # 2 lines break
-                self.row_pos += 2
+                report_data["row_pos"] += 2
         else:
             # For each account
             for account in aged_partner_balance:
                 # Write account title
-                self.write_array_title(account["code"] + " - " + account["name"])
+                self.write_array_title(
+                    account["code"] + " - " + account["name"], report_data
+                )
 
                 # For each partner
                 for partner in account["partners"]:
                     # Write partner title
-                    self.write_array_title(partner["name"])
+                    self.write_array_title(partner["name"], report_data)
 
                     # Display array header for move lines
-                    self.write_array_header()
+                    self.write_array_header(report_data)
 
                     # Display account move lines
                     for line in partner["move_lines"]:
-                        self.write_line_from_dict(line)
+                        self.write_line_from_dict(line, report_data)
 
                     # Display ending balance line for partner
-                    self.write_ending_balance_from_dict(partner)
+                    self.write_ending_balance_from_dict(partner, report_data)
 
                     # Line break
-                    self.row_pos += 1
+                    report_data["row_pos"] += 1
 
                 # Display account lines
                 self.write_account_footer_from_dict(
@@ -248,9 +296,10 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
                     account,
                     ("Total"),
                     "field_footer_total",
-                    self.format_header_right,
-                    self.format_header_amount,
+                    report_data["formats"]["format_header_right"],
+                    report_data["formats"]["format_header_amount"],
                     False,
+                    report_data,
                 )
 
                 self.write_account_footer_from_dict(
@@ -258,23 +307,24 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
                     account,
                     ("Percents"),
                     "field_footer_percent",
-                    self.format_right_bold_italic,
-                    self.format_percent_bold_italic,
+                    report_data["formats"]["format_right_bold_italic"],
+                    report_data["formats"]["format_percent_bold_italic"],
                     True,
+                    report_data,
                 )
 
                 # 2 lines break
-                self.row_pos += 2
+                report_data["row_pos"] += 2
 
-    def write_ending_balance_from_dict(self, my_object):
+    def write_ending_balance_from_dict(self, my_object, report_data):
         """
-            Specific function to write ending partner balance
-            for Aged Partner Balance
+        Specific function to write ending partner balance
+        for Aged Partner Balance
         """
         name = None
         label = _("Partner cumul aged balance")
-        super(AgedPartnerBalanceXslx, self).write_ending_balance_from_dict(
-            my_object, name, label
+        return super().write_ending_balance_from_dict(
+            my_object, name, label, report_data
         )
 
     def write_account_footer_from_dict(
@@ -286,12 +336,13 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
         string_format,
         amount_format,
         amount_is_percent,
+        report_data,
     ):
         """
-            Specific function to write account footer for Aged Partner Balance
+        Specific function to write account footer for Aged Partner Balance
         """
         col_pos_footer_label = self._get_col_pos_footer_label(report)
-        for col_pos, column in self.columns.items():
+        for col_pos, column in report_data["columns"].items():
             if col_pos == col_pos_footer_label or column.get(field_name):
                 if col_pos == col_pos_footer_label:
                     value = label
@@ -299,17 +350,19 @@ class AgedPartnerBalanceXslx(models.AbstractModel):
                     value = account.get(column[field_name], False)
                 cell_type = column.get("type", "string")
                 if cell_type == "string" or col_pos == col_pos_footer_label:
-                    self.sheet.write_string(
-                        self.row_pos, col_pos, value or "", string_format
+                    report_data["sheet"].write_string(
+                        report_data["row_pos"], col_pos, value or "", string_format
                     )
                 elif cell_type == "amount":
                     number = float(value)
                     if amount_is_percent:
                         number /= 100
-                    self.sheet.write_number(
-                        self.row_pos, col_pos, number, amount_format
+                    report_data["sheet"].write_number(
+                        report_data["row_pos"], col_pos, number, amount_format
                     )
             else:
-                self.sheet.write_string(self.row_pos, col_pos, "", string_format)
+                report_data["sheet"].write_string(
+                    report_data["row_pos"], col_pos, "", string_format
+                )
 
-        self.row_pos += 1
+        report_data["row_pos"] += 1

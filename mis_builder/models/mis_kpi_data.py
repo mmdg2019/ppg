@@ -30,7 +30,7 @@ class MisKpiData(models.AbstractModel):
     kpi_expression_id = fields.Many2one(
         comodel_name="mis.report.kpi.expression",
         required=True,
-        # ondelete="restrict",
+        ondelete="restrict",
         string="KPI",
     )
     date_from = fields.Date(required=True, string="From")
