@@ -20,8 +20,8 @@ class TestReportXlsxHelper(TransactionCase):
             "active_model": "res.partner",
             "active_ids": self.partners.ids,
         }
-        self.report = self.env["ir.actions.report"].with_context(ctx)
+        self.report = self.env["ir.actions.report"].with_context(**ctx)
 
     def test_report_xlsx_helper(self):
-        report_xls = self.report.render_xlsx(None, None)
+        report_xls = self.report._render_xlsx(None, None, None)
         self.assertEqual(report_xls[1], "xlsx")
