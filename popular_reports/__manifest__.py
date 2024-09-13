@@ -22,7 +22,7 @@
     ],
     'data': [
         'security/security.xml',
-        'security/stock_entry_security.xml',
+        # 'security/stock_entry_security.xml',
         'security/ir.model.access.csv',
         'views/action_manager.xml',
         'views/wizard_view.xml',
