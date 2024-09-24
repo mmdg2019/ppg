@@ -6,7 +6,7 @@ import pytz
 
 from odoo import http
 from odoo.http import content_disposition, request
-from odoo.addons.web.controllers.main import _serialize_exception
+# from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields, api
 from datetime import date, datetime, timedelta

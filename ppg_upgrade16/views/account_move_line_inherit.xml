@@ -1,0 +1,35 @@
+<odoo>
+    <!-- Inherit the account.move form view -->
+    <record id="view_move_form_debit_credit_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.debit.credit.editable</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Locate the journal items line (account.move.line) tree view within the form -->
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='debit']" position="replace">
+                <!-- <attribute name="readonly">False</attribute> -->
+                <field name="debit" sum="Total Debit" attrs="{'invisible': [('display_type', 'in', ('line_section', 'line_note'))]}"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='credit']" position="replace">
+                <!-- <attribute name="readonly">False</attribute> -->
+                <field name="credit" sum="Total Credit" attrs="{'invisible': [('display_type', 'in', ('line_section', 'line_note'))]}"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Inherit the account.move.line form view -->
+    <record id="view_move_line_form_debit_credit_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.debit.credit.editable</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <!-- Locate the journal items line (account.move.line) tree view within the form -->
+            <xpath expr="//field[@name='debit']" position="attributes">
+                <attribute name="readonly">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='credit']" position="attributes">
+                <attribute name="readonly">False</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

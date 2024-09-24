@@ -36,8 +36,7 @@ class VATReport(models.AbstractModel):
             ("date", ">=", date_from),
             ("date", "<=", date_to),
             ("tax_line_id", "!=", False),
-            ("tax_exigible", "=", True),
-        ]
+        ] + self.env["account.move.line"]._get_tax_exigible_domain()
         if only_posted_moves:
             domain += [("move_id.state", "=", "posted")]
         else:
@@ -50,8 +49,7 @@ class VATReport(models.AbstractModel):
             ("company_id", "=", company_id),
             ("date", ">=", date_from),
             ("date", "<=", date_to),
-            ("tax_exigible", "=", True),
-        ]
+        ] + self.env["account.move.line"]._get_tax_exigible_domain()
         if only_posted_moves:
             domain += [("move_id.state", "=", "posted")]
         else:
@@ -64,13 +62,15 @@ class VATReport(models.AbstractModel):
         )
         ml_fields = self._get_ml_fields_vat_report()
         tax_move_lines = self.env["account.move.line"].search_read(
-            domain=tax_domain, fields=ml_fields,
+            domain=tax_domain,
+            fields=ml_fields,
         )
         net_domain = self._get_net_report_domain(
             company_id, date_from, date_to, only_posted_moves
         )
         taxed_move_lines = self.env["account.move.line"].search_read(
-            domain=net_domain, fields=ml_fields,
+            domain=net_domain,
+            fields=ml_fields,
         )
         taxed_move_lines = list(filter(lambda d: d["tax_ids"], taxed_move_lines))
         vat_data = []
@@ -221,7 +221,6 @@ class VATReport(models.AbstractModel):
             "doc_model": "open.items.report.wizard",
             "docs": self.env["open.items.report.wizard"].browse(wizard_id),
             "company_name": company.display_name,
-            "company_currency": company.currency_id,
             "currency_name": company.currency_id.name,
             "date_to": data["date_to"],
             "date_from": data["date_from"],
@@ -234,11 +233,7 @@ class VATReport(models.AbstractModel):
         return [
             "id",
             "tax_base_amount",
-            "credit",
-            "debit",
             "balance",
             "tax_line_id",
             "tax_ids",
-            "analytic_tag_ids",
-            "tag_ids",
         ]

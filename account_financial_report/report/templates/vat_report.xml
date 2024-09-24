@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="vat_report">
-        <t t-call="web.html_container">
+        <t t-call="account_financial_report.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="account_financial_report.internal_layout">
                     <t t-call="account_financial_report.report_vat_report_base" />
@@ -10,9 +10,12 @@
         </t>
     </template>
     <template id="account_financial_report.report_vat_report_base">
-        <t t-set="title">VAT Report - <t t-raw="company_name" /> - <t
-                t-raw="currency_name"
-            /></t>
+        <t t-set="title">
+            VAT Report -
+            <t t-out="company_name" />
+            -
+            <t t-out="currency_name" />
+        </t>
         <t t-set="company_name" t-value="company_name" />
         <div class="page">
             <div class="row">
@@ -30,10 +33,9 @@
                 <div class="act_as_thead">
                     <div class="act_as_row labels">
                         <!--## code-->
-                        <div
-                            class="act_as_cell first_column"
-                            style="width: 5%;"
-                        >Code</div>
+                        <div class="act_as_cell first_column" style="width: 5%;">
+                            Code
+                        </div>
                         <!--## name-->
                         <div class="act_as_cell" style="width: 65%;">Name</div>
                         <!--## net-->
@@ -53,7 +55,7 @@
                                 t-att-res-model="res_model"
                                 view-type="form"
                             >
-                                <t t-att-style="style" t-raw="tag_or_group['code']" />
+                                <t t-att-style="style" t-out="tag_or_group['code']" />
                             </span>
                         </div>
                         <div
@@ -65,21 +67,21 @@
                                 t-att-res-model="res_model"
                                 view-type="form"
                             >
-                                <t t-att-style="style" t-raw="tag_or_group['name']" />
+                                <t t-att-style="style" t-out="tag_or_group['name']" />
                             </span>
                         </div>
                         <div class="act_as_cell amount" style="width: 15%;">
                             <t
                                 t-att-style="style"
-                                t-raw="tag_or_group['net']"
-                                t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                                t-out="tag_or_group['net']"
+                                t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                             />
                         </div>
                         <div class="act_as_cell amount" style="width: 15%;">
                             <t
                                 t-att-style="style"
-                                t-raw="tag_or_group['tax']"
-                                t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                                t-out="tag_or_group['tax']"
+                                t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                             />
                         </div>
                     </div>
@@ -96,7 +98,7 @@
                                         t-att-res-model="res_model"
                                         view-type="form"
                                     >
-                                        <t t-att-style="style" t-raw="tax['name']" />
+                                        <t t-att-style="style" t-out="tax['name']" />
                                     </span>
                                 </div>
                                 <div class="act_as_cell amount" style="width: 15%;">
@@ -104,8 +106,7 @@
                                         t-set="domain"
                                         t-value="[('tax_ids', 'in', tax['id']),
                                                 ('date', '&gt;=', date_from),
-                                                ('date', '&lt;=', date_to),
-                                                ('tax_exigible', '=', True)]"
+                                                ('date', '&lt;=', date_to)]+request.env['account.move.line']._get_tax_exigible_domain()"
                                     />
                                     <span
                                         t-att-domain="domain"
@@ -113,8 +114,8 @@
                                     >
                                         <t
                                             t-att-style="style"
-                                            t-raw="tax['net']"
-                                            t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                                            t-out="tax['net']"
+                                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                                         />
                                     </span>
                                 </div>
@@ -123,8 +124,7 @@
                                         t-set="domain"
                                         t-value="[('tax_line_id', '=', tax['id']),
                                                 ('date', '&gt;=', date_from),
-                                                ('date', '&lt;=', date_to),
-                                                ('tax_exigible', '=', True)]"
+                                                ('date', '&lt;=', date_to)]+request.env['account.move.line']._get_tax_exigible_domain()"
                                     />
                                     <span
                                         t-att-domain="domain"
@@ -132,8 +132,8 @@
                                     >
                                         <t
                                             t-att-style="style"
-                                            t-raw="tax['tax']"
-                                            t-options="{'widget': 'monetary', 'display_currency': company_currency}"
+                                            t-out="tax['tax']"
+                                            t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"
                                         />
                                     </span>
                                 </div>

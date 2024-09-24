@@ -159,7 +159,7 @@ class SalesTargetLine(models.Model):
             if len(sale_target.sale_target_line_ids) > 0:
                 for temp in sale_target.sale_target_line_ids:
 #                     raise Warning(sale_target.start_date)
-                    result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date),('type','in',['out_invoice']),('state','not in',['draft','cancel'])])
+                    result_invoice_report = self.env['account.invoice.report'].search([('product_id','=',temp.product_id.id),('invoice_date', '>=',sale_target.start_date),('invoice_date', '<=',sale_target.end_date),('move_type','in',['out_invoice']),('state','not in',['draft','cancel'])])
                     if len(result_invoice_report) > 0:
                         temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
                         if temp.max_sale_target_number < temp.ttl_sold_count:

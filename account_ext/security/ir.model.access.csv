@@ -1,4 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 invoice_due_cron_log_access_right,invoice_due_cron_log_access_right,model_invoice_due_cron_log,base.group_user,1,1,1,1
-invoice_due_cron_noti_recipient_email_user,invoice_due_cron_noti_recipient_email_user,model_invoice_due_cron_noti_recipient_email,base.group_user,1,0,0,0
-invoice_due_cron_noti_recipient_email_system,invoice_due_cron_noti_recipient_email_system,model_invoice_due_cron_noti_recipient_email,base.group_system,1,1,1,1
+access_res_partner_disable,res.partner.disable.user,base.model_res_partner,account_ext.group_partner_create_disable,1,0,0,0
+crm.access_res_partner_salemsman,res.partner.crm.user,base.model_res_partner,sales_team.group_sale_salesman,1,0,0,0
+crm.access_res_partner_category,res.partner.category.crm.user,base.model_res_partner_category,sales_team.group_sale_salesman,1,0,0,0
+mrp.access_product_group_res_partner_mrp_manager,res_partner group_mrp_manager,base.model_res_partner,mrp.group_mrp_manager,1,0,0,0
+purchase.access_res_partner_purchase_manager,res.partner.purchase.manager,base.model_res_partner,purchase.group_purchase_manager,1,0,0,0
+sale.access_res_partner_sale_manager,res.partner.sale.manager,base.model_res_partner,sales_team.group_sale_manager,1,0,0,0
+stock.access_product_group_res_partner_stock_manager,res_partner group_stock_manager,base.model_res_partner,stock.group_stock_manager,1,0,0,0

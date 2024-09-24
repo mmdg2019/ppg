@@ -96,7 +96,7 @@
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name),reverse=False)" t-as="doc">
                                     <tbody>
-                                        <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
+                                        <t t-foreach="doc.move_ids.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">

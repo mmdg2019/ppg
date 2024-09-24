@@ -921,6 +921,10 @@
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
                 <form string="Sales Quotations Report by Date">
+                    <!-- add customer selection on wizard form -->                    
+                    <group>
+                        <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
                     <group>
                         <field name="filter_post_quot" widget="many2one_tags" string="Status"/>
                     </group>

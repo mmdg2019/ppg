@@ -2,10 +2,9 @@
 # @author Alexis de Lattre <alexis.delattre@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-
 {
     "name": "Stock Disallow Negative",
-    "version": "13.0.1.0.1",
+    "version": "16.0.1.0.2",
     "category": "Inventory, Logistic, Storage",
     "license": "AGPL-3",
     "summary": "Disallow negative stock levels by default",

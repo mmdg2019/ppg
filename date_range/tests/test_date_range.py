@@ -1,9 +1,9 @@
 # Copyright 2016 ACSONE SA/NV (<http://acsone.eu>)
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl)
 
 import datetime
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tests.common import TransactionCase
 
 
@@ -71,8 +71,9 @@ class DateRangeTest(TransactionCase):
                     "type_id": self.type.id,
                 }
             )
+        message = str(cm.exception.args[0])
         self.assertEqual(
-            cm.exception.name, "FS2016 is not a valid range (2016-12-31 > 2015-01-01)"
+            message, "FS2016 is not a valid range (2016-12-31 > 2015-01-01)"
         )
 
     def test_overlap(self):
@@ -93,7 +94,8 @@ class DateRangeTest(TransactionCase):
                     "type_id": self.type.id,
                 }
             )
-        self.assertEqual(cm.exception.name, "FS2016 overlaps FS2015")
+        message = str(cm.exception.args[0])
+        self.assertEqual(message, "FS2016 overlaps FS2015")
         # check it's possible to overlap if it's allowed by the date range type
         self.type.allow_overlap = True
         dr = self.date_range.create(
@@ -126,7 +128,7 @@ class DateRangeTest(TransactionCase):
         )
 
     def test_date_range_multicompany_1(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(UserError):
             self.date_range.create(
                 {
                     "name": "FS2016",

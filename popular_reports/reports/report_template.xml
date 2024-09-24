@@ -96,7 +96,7 @@
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name),reverse=False)" t-as="doc">
                                     <tbody>
-                                        <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
+                                        <t t-foreach="doc.move_ids.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
@@ -262,7 +262,7 @@
                             <t t-if="docs">
                                 <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name), reverse=False)" t-as="doc">
                                     <tbody>
-                                        <t t-foreach="doc.move_lines.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
+                                        <t t-foreach="doc.move_ids.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
@@ -2472,7 +2472,7 @@
                                                 <span t-field="table_line.amount_total_signed"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
@@ -3108,7 +3108,7 @@
                                                 <span></span>
                                             </th> -->
                                             <td style="text-align:center;">
-                                                <span t-field="doc.invoice_payment_state"/>
+                                                <span t-field="doc.payment_state"/>
                                             </td>
                                         </tr>
                                         <t t-set="ttl" t-value="ttl + doc.amount_total"/>
@@ -3358,7 +3358,7 @@
                                             <span t-field="table_line.amount_residual_signed"/>
                                         </td>
                                         <td>
-                                            <span t-field="table_line.invoice_payment_state"/>
+                                            <span t-field="table_line.payment_state"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -5115,7 +5115,7 @@
 <!--                                     <t t-set="sub_ttl_reconciled" t-value="0"/> -->
                                     <t t-set="ttl" t-value="0"/>
 <!--                                     <t t-set="ttl_reconciled" t-value="0"/> -->
-                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
+                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.date),reverse=False)" t-as="table_line">
                                         <t t-set="ttl" t-value="ttl+table_line.amount"/>
                                         <t t-if="table_line_first">
                                             <t t-set="sub_name" t-value="table_line.partner_id.display_name"/></t>
@@ -5182,7 +5182,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.payment_date"/>
+                                                <span t-field="table_line.date"/>
                                             </td>
                                             <td>
                                                 <span t-field="table_line.state"/>
@@ -5198,9 +5198,11 @@
                                             </td> -->
                                             <td style="text-align:center;">
                                                 
-                                                <t t-if="table_line.move_line_ids">
+                                                <!-- <t t-if="table_line.move_line_ids"> -->
+                                                <t t-if="table_line.move_id.line_ids">
 <!--                                                     <t t-set="status" t-value="table_line.move_line_ids.mapped('reconciled')"/> -->
-                                                    <t t-if="True in table_line.move_line_ids.mapped('reconciled')">
+                                                    <!-- <t t-if="True in table_line.move_line_ids.mapped('reconciled')"> -->
+                                                    <t t-if="True in table_line.move_id.line_ids.mapped('reconciled')">
                                                         <span>Y</span>
                                                     </t>
                                                     <t t-else="">
@@ -5212,7 +5214,8 @@
                                                 </t>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.communication"/>
+                                                <!-- <span t-field="table_line.communication"/> -->
+                                                <span t-field="table_line.ref"/>
                                             </td>
                                         </tr>
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount"/>
@@ -5386,7 +5389,7 @@
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                     <t t-set="sub_ttl" t-value="0"/>
                                     <t t-set="ttl" t-value="0"/>
-                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
+                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.date),reverse=False)" t-as="table_line">
                                         <t t-set="ttl" t-value="ttl+table_line.amount"/>
                                         <t t-if="table_line_first">
                                             <t t-set="sub_name" t-value="table_line.partner_id.display_name"/></t>
@@ -5433,7 +5436,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.payment_date"/>
+                                                <span t-field="table_line.date"/>
                                             </td>
                                             <td>
                                                 <span t-field="table_line.state"/>
@@ -5584,11 +5587,11 @@
                             <t t-if="docs">
                                 <tbody>
                                     <t t-set="ttl" t-value="0"/>
-                                    <t t-foreach="docs.sorted(key=lambda x: (x.payment_date,x.display_name),reverse=False)" t-as="table_line">
+                                    <t t-foreach="docs.sorted(key=lambda x: (x.date,x.display_name),reverse=False)" t-as="table_line">
                                         <t t-set="ttl" t-value="ttl+table_line.amount"/>
                                         <tr>
                                             <td>
-                                                <span t-field="table_line.payment_date"/>
+                                                <span t-field="table_line.date"/>
                                             </td>
                                             <td>
                                                 <span t-field="table_line.display_name"/>
@@ -6012,12 +6015,17 @@
                                                 <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                             <t t-set="ttl_credit" t-value="0"/>
                                             <t t-set="ttl_payment" t-value="0"/>
-                                            <t t-if="table_line.invoice_payments_widget != 'false'">
+                                            <!-- <t t-if="table_line.invoice_payments_widget != 'false'">
                                                 <span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+                                                    <span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+                                                    <span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+                                            </t> -->
+                                            <t t-if="table_line.invoice_payments_widget">
+                                                <span t-foreach="table_line.invoice_payments_widget['content']" t-as="payment">
                                                     <span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
                                                     <span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
                                             </t>
@@ -6253,12 +6261,17 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
-												<t t-if="table_line.invoice_payments_widget != 'false'">
+												<!-- <t t-if="table_line.invoice_payments_widget != 'false'">
 													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t> -->
+                                                <t t-if="table_line.invoice_payments_widget">
+													<span t-foreach="table_line.invoice_payments_widget['content']" t-as="payment">
 													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
 													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
 												</t>
@@ -6297,12 +6310,17 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
-												<t t-if="table_line.invoice_payments_widget != 'false'">
+												<!-- <t t-if="table_line.invoice_payments_widget != 'false'">
 													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t> -->
+                                                <t t-if="table_line.invoice_payments_widget">
+													<span t-foreach="table_line.invoice_payments_widget['content']" t-as="payment">
 													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
 													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
 												</t>
@@ -6341,12 +6359,17 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
-												<t t-if="table_line.invoice_payments_widget != 'false'">
+												<!-- <t t-if="table_line.invoice_payments_widget != 'false'">
 													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t> -->
+                                                <t t-if="table_line.invoice_payments_widget">
+													<span t-foreach="table_line.invoice_payments_widget['content']" t-as="payment">
 													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
 													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
 												</t>
@@ -6385,12 +6408,17 @@
 													<span t-field="table_line.x_studio_invoice_category"/>
 												</td>
 												<td>
-													<span t-field="table_line.invoice_payment_state"/>
+													<span t-field="table_line.payment_state"/>
 												</td>
 												<t t-set="ttl_credit" t-value="0"/>
 												<t t-set="ttl_payment" t-value="0"/>
-												<t t-if="table_line.invoice_payments_widget != 'false'">
+												<!-- <t t-if="table_line.invoice_payments_widget != 'false'">
 													<span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+												</t> -->
+                                                <t t-if="table_line.invoice_payments_widget">
+													<span t-foreach="table_line.invoice_payments_widget['content']" t-as="payment">
 													<span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
 													<span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
 												</t>
@@ -6700,9 +6728,11 @@
                                     <t t-set="ttl" t-value="0.0"/>
                                     <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.invoice_date,x.display_name),reverse=False)" t-as="doc">
                                         
-                                        <t t-if="doc.invoice_payments_widget != 'false'">
+                                        <!-- <t t-if="doc.invoice_payments_widget != 'false'"> -->
+                                        <t t-if="doc.invoice_payments_widget">
                                             <t t-set="sub_ttl" t-value="0.0"/>
-                                            <t t-foreach="json.loads(doc.invoice_payments_widget)['content']" t-as="table_line">
+                                            <!-- <t t-foreach="json.loads(doc.invoice_payments_widget)['content']" t-as="table_line"> -->
+                                            <t t-foreach="doc.invoice_payments_widget['content']" t-as="table_line">
                                                 <tr>
                                                     <td>
                                                         <span t-if="table_line_first" t-field="doc.invoice_date"/>
@@ -6735,7 +6765,8 @@
                                                         <t t-set="ttl" t-value="table_line['amount']+ttl"/>
                                                     </td>
                                                     <td style="text-align:right;">
-                                                        <span t-esc="int((datetime.datetime.strptime(table_line['date'], '%Y-%m-%d').date() - doc.invoice_date).days)"/>
+                                                        <!-- <span t-esc="int((datetime.datetime.strptime(table_line['date'], '%Y-%m-%d').date() - doc.invoice_date).days)"/> -->
+                                                        <span t-esc="int((datetime.datetime.strptime(table_line['date'].strftime('%Y-%m-%d'), '%Y-%m-%d').date() - doc.invoice_date).days)"/>
                                                     </td>
                                                 </tr>
                                                 <t t-if="table_line_last">
@@ -6795,7 +6826,7 @@
                                                 <span t-field="table_line.x_studio_invoice_category"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                             <t t-set="ttl_credit" t-value="0"/>
                                             <t t-set="ttl_payment" t-value="0"/>
@@ -6997,12 +7028,17 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.invoice_payment_state"/>
+                                                <span t-field="table_line.payment_state"/>
                                             </td>
                                             <t t-set="ttl_credit" t-value="0"/>
                                             <t t-set="ttl_payment" t-value="0"/>
-                                            <t t-if="table_line.invoice_payments_widget != 'false'">
+                                            <!-- <t t-if="table_line.invoice_payments_widget != 'false'">
                                                 <span t-foreach="json.loads(table_line.invoice_payments_widget)['content']" t-as="payment">
+                                                    <span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
+                                                    <span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
+                                            </t> -->
+                                            <t t-if="table_line.invoice_payments_widget">
+                                                <span t-foreach="table_line.invoice_payments_widget['content']" t-as="payment">
                                                     <span t-if="payment['name']" t-set="ttl_credit" t-value="ttl_credit + payment['amount']"/>
                                                     <span t-else="" t-set="ttl_payment" t-value="ttl_payment + payment['amount']"/></span>
                                             </t>
@@ -7160,7 +7196,7 @@
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
                                     <t t-set="sub_ttl" t-value="0"/>
                                     <t t-set="ttl" t-value="0"/>
-                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.payment_date),reverse=False)" t-as="table_line">
+                                    <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.date),reverse=False)" t-as="table_line">
                                         <t t-set="ttl" t-value="ttl+table_line.amount"/>
                                         <t t-if="table_line_first">
                                             <t t-set="sub_name" t-value="table_line.partner_id.display_name"/></t>
@@ -7195,7 +7231,7 @@
                                                 <span t-field="table_line.display_name"/>
                                             </td>
                                             <td>
-                                                <span t-field="table_line.payment_date"/>
+                                                <span t-field="table_line.date"/>
                                             </td>
                                             <td>
                                                 <span t-field="table_line.partner_id.display_name"/>

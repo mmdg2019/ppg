@@ -8,3 +8,11 @@
   * Vicent Cubells
   * Jairo Llopis
   * Alexandre Díaz
+
+* `DynApps NV <https://www.dynapps.be>`_:
+
+  * Raf Ven
+
+* `Camptocamp <https://www.camptocamp.com>`_
+
+    * Iván Todorovich <ivan.todorovich@camptocamp.com>

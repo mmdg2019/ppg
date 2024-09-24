@@ -6,7 +6,7 @@ import pytz
 
 from odoo import http
 from odoo.http import content_disposition, request
-from odoo.addons.web.controllers.main import _serialize_exception
+# from odoo.addons.web.controllers.main import _serialize_exception
 from odoo.tools import html_escape
 from odoo import models, fields, api
 from calendar import monthrange
@@ -28,13 +28,13 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
        
                 
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         
@@ -97,13 +97,13 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
         else:
             product_cats_ids = self.env['product.category'].search([],order='display_name asc')
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         user_ids = None
         temp = []
         sub_temp = []
@@ -156,13 +156,13 @@ class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
         else:
             product_cats_ids = self.env['product.category'].search([],order='display_name asc')
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         user_ids = None
         temp = []
         sub_temp = []
@@ -211,13 +211,13 @@ class edit_report_sales_report_by_client(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         
@@ -279,13 +279,13 @@ class edit_report_sales_report_by_date(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         product_cats_ids = []
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
@@ -308,16 +308,16 @@ class edit_report_sales_analysis_report_by_cust(models.AbstractModel):
         
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         
         if 'company' in data:
-             docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted'),('company_id', '=', data['company'])])
+             docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted'),('company_id', '=', data['company'])])
         user_ids = sorted(list(set(docs.mapped('partner_id'))),key=lambda x: x.display_name)
 #         raise UserError(data['end_date'])
         if data['user_ids']:
@@ -374,13 +374,13 @@ class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
         user_ids = None
         product_cats_ids = []
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('state', '=', 'cancel'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('state', '=', 'cancel'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('state', '=', 'draft'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('state', '=', 'draft'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         
         if data['user_ids']:
 #             docs = docs.search([('partner_id', 'in', data['user_ids'])])
@@ -427,13 +427,13 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
         user_ids = None
         product_cats_ids = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('state', '=', 'cancel'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('state', '=', 'cancel'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('state', '=', 'draft'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('state', '=', 'draft'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1))])
         
         if data['user_ids']:
 #             docs = docs.search([('partner_id', 'in', data['user_ids'])])
@@ -492,13 +492,13 @@ class edit_report_sales_analysis_by_state(models.AbstractModel):
         country = None
         state = []
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('state', '=', 'cancel'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('state', '=', 'cancel'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('state', '=', 'draft'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('state', '=', 'draft'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         
         user_ids = self.env['res.partner'].search([],order='display_name asc')
         if data['filter_country_id']:
@@ -531,9 +531,9 @@ class edit_report_stock_analysis_by_date_and_cust(models.AbstractModel):
         c = None
         pids = None
         if data['user_ids']:
-            docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('partner_id', 'in', data['user_ids']),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         else:
-            docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
             
         product_cats_ids = []
         items = []
@@ -569,7 +569,7 @@ class edit_report_today_stock_analysis(models.AbstractModel):
             dt = old_tz.localize(today_date).astimezone(new_tz)
             today_date = dt
 
-        docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '=', today_date.strftime('%Y-%m-%d'))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'), ('move_type', '=', 'out_invoice'), ('invoice_date', '=', today_date.strftime('%Y-%m-%d'))])
         pids = []
         
         items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
@@ -640,7 +640,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
         country = None
         state = None
         user_ids = self.env['res.partner'].search([],order='display_name asc')
-        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         if data['filter_country_id']:
             user_ids = user_ids.filtered(lambda r: r.country_id.id in data['filter_country_id'])
             country = self.env['res.country'].search([('id', 'in', data['filter_country_id'])],limit=1).display_name
@@ -693,7 +693,7 @@ class edit_report_stock_anlys_by_mon_and_cust_col(models.AbstractModel):
         temp = None     
 
         # filter the inovice record/docs by start and end date;
-        docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         
         # filter the invoice record/docs by customer;        
         if data['user_ids']:
@@ -750,7 +750,7 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
     @api.model
     def _get_report_values(self,docids,data=None):
         docs = None
-        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         temp = []
             
         if data['product_ids']:
@@ -782,7 +782,7 @@ class edit_report_stock_analysis_by_month_col(models.AbstractModel):
         docs = None
 
         # filter invoices based on selected date range, type, and state
-        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         
         # filter products based on selected product list
         if data['product_ids']:
@@ -831,7 +831,7 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
         product_cats_ids=[]
         user_ids = self.env['res.partner'].search([],order='display_name asc')
         # filter invoices based on selected date range, type, and state
-        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         
         # filter products based on selected product list
         
@@ -891,7 +891,7 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
     @api.model
     def _get_report_values(self,docids,data=None):
         docs = None
-        docs = self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         temp = []
             
         if data['product_ids']:
@@ -919,7 +919,7 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
 
     @api.model
     def _get_report_values(self,docids,data=None):
-        docs=self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        docs=self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         pids = []
         temp = []
         tmp = []
@@ -1105,7 +1105,7 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
         
         items = []
         temp = []
-        products = list(set(docs.mapped('move_lines.product_id')))
+        products = list(set(docs.mapped('move_ids.product_id')))
         picking_types = list(set(docs.mapped('picking_type_id')))
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
@@ -1118,8 +1118,8 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
         total_done = 0
         for location in locations:
             for product in products:
-                total_demand = sum(table_line.product_uom_qty for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_lines.filtered(lambda r: r.product_id == product))
-                total_done = sum(table_line.quantity_done for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_lines.filtered(lambda r: r.product_id == product))
+                total_demand = sum(table_line.product_uom_qty for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_ids.filtered(lambda r: r.product_id == product))
+                total_done = sum(table_line.quantity_done for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_ids.filtered(lambda r: r.product_id == product))
                 temp.append({'location':location, 'product':product, 'ttl_done':total_done, 'ttl_demand':total_demand})
         return {
             'filter_post_stock': data['filter_post_stock'],
@@ -1172,13 +1172,13 @@ class edit_report_purchase_analysis_report_by_sup(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
@@ -1197,13 +1197,13 @@ class edit_report_purchase_listing_by_sup(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
            
            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
@@ -1223,13 +1223,13 @@ class edit_report_purchase_inv_lst_by_inv_no(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         if data['product_ids']:
@@ -1249,7 +1249,7 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
     
     @api.model
     def _get_report_values(self, docids, data=None):
-        docs=self.env['account.move'].search([('state', '=', 'posted'),('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+        docs=self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         products = data['product_ids']
         pids=[]
         temp = []
@@ -1303,17 +1303,17 @@ class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post_payment'] == '1':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'cancelled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'reconciled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
         elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'sent')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
         elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date'])])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         # add customer filter to report
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
@@ -1331,17 +1331,17 @@ class edit_report_cash_receipt_listing_by_cust_no(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post_payment'] == '1':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'cancelled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'reconciled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
         elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'sent')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
         elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date'])])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
@@ -1358,17 +1358,17 @@ class edit_report_cash_receipt_listing_by_date(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post_payment'] == '1':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'cancelled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'reconciled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
         elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'sent')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
         elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date'])])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         return {
             'filter_post_payment': data['filter_post_payment'],
             'docs': docs
@@ -1383,17 +1383,17 @@ class edit_report_cash_receipt_listing_by_r_no(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post_payment'] == '1':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'cancelled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'reconciled')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
         elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'sent')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
         elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date'])])
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         return {
             'filter_post_payment': data['filter_post_payment'],
             'docs': docs
@@ -1408,13 +1408,13 @@ class edit_report_daily_sales_report_by_date(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         return {
             'docs': docs
        }
@@ -1428,13 +1428,13 @@ class edit_report_daily_sales_report_by_pdt_cat(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         product_cats_ids = None
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
@@ -1456,13 +1456,13 @@ class edit_report_daily_sales_report_by_inv_cat(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         product_cats_ids = None
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
@@ -1489,13 +1489,13 @@ class edit_report_dmg_sales_rtrn_lst_by_product(models.AbstractModel):
             for temp in obj:
                 product_ids.append(temp.display_name)
         if data['filter_post_credit'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
         elif data['filter_post_credit'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
         elif data['filter_post_credit'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
         return {            
             'filter_post_credit': data['filter_post_credit'],
             'docs': docs,
@@ -1511,13 +1511,13 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post_credit'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
         elif data['filter_post_credit'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')],order='invoice_date asc')
         elif data['filter_post_credit'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'out_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         
@@ -1547,13 +1547,13 @@ class edit_report_refund_lst_by_product_code(models.AbstractModel):
             for temp in obj:
                 product_ids.append(temp.display_name)
         if data['filter_post_credit'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
         elif data['filter_post_credit'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
         elif data['filter_post_credit'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         else:
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
         return {            
             'filter_post_credit': data['filter_post_credit'],
             'docs': docs,
@@ -1569,13 +1569,13 @@ class edit_report_refund_lst_by_vendor(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post_credit'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')],order='invoice_date asc')
         elif data['filter_post_credit'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'draft')],order='create_date asc')
         elif data['filter_post_credit'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         else:
-            docs = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
+            docs = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])],order='invoice_date asc')
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {            
@@ -1592,13 +1592,13 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
 
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
@@ -1629,7 +1629,7 @@ class edit_report_outstanding_inv_report_by_due(models.AbstractModel):
         docs = None
 
         if data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', data['start_date']), ('invoice_date', '<=', data['end_date']), ('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'), ('invoice_date', '>=', data['start_date']), ('invoice_date', '<=', data['end_date']), ('state', '=', 'posted')])
         
         if data['invoice_due_status'] == 'no_due':
             docs = docs.filtered(lambda r: r.invoice_due_state == 'no_due')
@@ -1683,13 +1683,13 @@ class edit_report_outstanding_inv_report_by_month(models.AbstractModel):
 
         # filter invoices based on the selected state, date, and type
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('state', '=', 'cancel'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('state', '=', 'cancel'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('state', '=', 'draft'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('state', '=', 'draft'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('state', '=', 'posted'), ('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('state', '=', 'posted'), ('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
+            docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'), ('invoice_date', '>=', start_date), ('invoice_date', '<=', end_date)])
 
         # filter invoices based on the selected product category
         if data['product_cats_ids']:
@@ -1721,7 +1721,7 @@ class edit_report_inv_payment_tracking(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = None
-        docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         
@@ -1736,9 +1736,12 @@ class edit_report_inv_payment_tracking(models.AbstractModel):
         
         temp_rst = []
         if data['no_of_days']:
-            for doc in docs.filtered(lambda r: r.invoice_payments_widget != "false"): 
-                for table_line in json.loads(doc.invoice_payments_widget)['content']:
-                    if abs((doc.invoice_date - datetime.strptime(table_line['date'], '%Y-%m-%d').date()).days) >= data['no_of_days']:
+            # for doc in docs.filtered(lambda r: r.invoice_payments_widget != "false"): 
+            #     for table_line in json.loads(doc.invoice_payments_widget)['content']:
+                    # if abs((doc.invoice_date - datetime.strptime(table_line['date'], '%Y-%m-%d').date()).days) >= data['no_of_days']:
+            for doc in docs.filtered(lambda r: r.invoice_payments_widget != False): 
+                for table_line in doc.invoice_payments_widget['content']:
+                    if abs((doc.invoice_date - datetime.strptime(table_line['date'].strftime('%Y-%m-%d'), '%Y-%m-%d').date()).days) >= data['no_of_days']:
                         temp_rst.append(doc.id)
             temp_rst = set(temp_rst)
             docs = docs.filtered(lambda r: r.id in temp_rst)
@@ -1881,6 +1884,10 @@ class edit_report_sales_quot_report_by_date(models.AbstractModel):
             docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'sale')])
         else:
             docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date'])])
+        
+        # filter records of selected vendors
+        if data['user_ids']:
+            docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
             
         return {
             'filter_post_quot': data['filter_post_quot'],
@@ -2139,13 +2146,13 @@ class edit_report_outstanding_bill_report_by_ven(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         if data['filter_post'] == '1':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'draft')])
         elif data['filter_post'] == '3':
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         else:
-            docs = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
+            docs = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         return {
@@ -2296,8 +2303,8 @@ class edit_report_stock_focus(models.AbstractModel):
     @api.model
     def _get_report_values(self,docids,data=None):
         product_ids = []
-        p_docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
-        c_docs = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['c_start_date']),('invoice_date', '<=',data['c_end_date']),('state', '=', 'posted')])
+        p_docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        c_docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['c_start_date']),('invoice_date', '<=',data['c_end_date']),('state', '=', 'posted')])
         if len(p_docs) > 0 or len(c_docs) > 0:
             product_ids = p_docs.mapped('invoice_line_ids.product_id.id')
             product_ids = product_ids+c_docs.mapped('invoice_line_ids.product_id.id')
@@ -2344,18 +2351,18 @@ class edit_report_balance_statement(models.AbstractModel):
         sales_return = None
         user_ids = None
                  
-        sales_inv = self.env['account.move'].search([('type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        sales_inv = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
         # for purchase bill
-        purchase_bill = self.env['account.move'].search([('type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
+        purchase_bill = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
 #         raise UserError(data['end_date'])
         #for cash receipt - from cash receipt listing by customer
-        cash_receipt = self.env['account.payment'].search([('payment_type', '=', 'inbound'),('partner_type', '=', 'customer'),('journal_id.name','=','Cash'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+        cash_receipt = self.env['account.payment'].search([('payment_type', '=', 'inbound'),('partner_type', '=', 'customer'),('journal_id.name','=','Cash'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
         #for cash payment - from cash payment by lumpsum
-        cash_payment = self.env['account.payment'].search([('payment_type', '=', 'outbound'),('partner_type', '=', 'supplier'),('journal_id.name','=','Cash'),('payment_date', '>=',data['start_date']),('payment_date', '<=',data['end_date']),('state', '=', 'posted')])
+        cash_payment = self.env['account.payment'].search([('payment_type', '=', 'outbound'),('partner_type', '=', 'supplier'),('journal_id.name','=','Cash'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
         #for damage return from vendor refund
-        damage_return = self.env['account.move'].search([('type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
+        damage_return = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         #sales return from customer credit notes
-        sales_return = self.env['account.move'].search([('type','=','out_refund'),('invoice_date','>=',data['start_date']),('invoice_date','<=',data['end_date']),('state','=','posted')],order='invoice_date asc')
+        sales_return = self.env['account.move'].search([('move_type','=','out_refund'),('invoice_date','>=',data['start_date']),('invoice_date','<=',data['end_date']),('state','=','posted')],order='invoice_date asc')
 
         if data['user_ids']:            
             sales_inv = sales_inv.filtered(lambda r: r.partner_id.id == data['user_ids'])     #sales         

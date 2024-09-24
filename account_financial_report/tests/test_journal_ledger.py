@@ -7,76 +7,58 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from odoo.fields import Date
-from odoo.tests.common import Form, TransactionCase
+from odoo.tests import tagged
+from odoo.tests.common import Form
+
+from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 
 
-class TestJournalReport(TransactionCase):
-    def setUp(self):
-        super(TestJournalReport, self).setUp()
-        self.AccountObj = self.env["account.account"]
-        self.InvoiceObj = self.env["account.move"]
-        self.JournalObj = self.env["account.journal"]
-        self.MoveObj = self.env["account.move"]
-        self.TaxObj = self.env["account.tax"]
-
-        self.JournalLedgerReportWizard = self.env["journal.ledger.report.wizard"]
-        self.JournalLedgerReport = self.env[
+@tagged("post_install", "-at_install")
+class TestJournalReport(AccountTestInvoicingCommon):
+    @classmethod
+    def setUpClass(cls, chart_template_ref=None):
+        super().setUpClass(chart_template_ref=chart_template_ref)
+        cls.env = cls.env(
+            context=dict(
+                cls.env.context,
+                mail_create_nolog=True,
+                mail_create_nosubscribe=True,
+                mail_notrack=True,
+                no_reset_password=True,
+                tracking_disable=True,
+            )
+        )
+        cls.AccountObj = cls.env["account.account"]
+        cls.InvoiceObj = cls.env["account.move"]
+        cls.JournalObj = cls.env["account.journal"]
+        cls.MoveObj = cls.env["account.move"]
+        cls.TaxObj = cls.env["account.tax"]
+        cls.JournalLedgerReportWizard = cls.env["journal.ledger.report.wizard"]
+        cls.JournalLedgerReport = cls.env[
             "report.account_financial_report.journal_ledger"
         ]
-        self.company = self.env.ref("base.main_company")
-        self.company.account_sale_tax_id = False
-        self.company.account_purchase_tax_id = False
-
+        cls.company = cls.company_data["company"]
+        cls.company.account_sale_tax_id = False
+        cls.company.account_purchase_tax_id = False
         today = datetime.today()
         last_year = today - relativedelta(years=1)
-
-        self.previous_fy_date_start = Date.to_string(last_year.replace(month=1, day=1))
-        self.previous_fy_date_end = Date.to_string(last_year.replace(month=12, day=31))
-        self.fy_date_start = Date.to_string(today.replace(month=1, day=1))
-        self.fy_date_end = Date.to_string(today.replace(month=12, day=31))
-
-        self.receivable_account = self.AccountObj.search(
-            [("user_type_id.name", "=", "Receivable")], limit=1
-        )
-        self.income_account = self.AccountObj.search(
-            [("user_type_id.name", "=", "Income")], limit=1
-        )
-        self.expense_account = self.AccountObj.search(
-            [("user_type_id.name", "=", "Expenses")], limit=1
-        )
-        self.payable_account = self.AccountObj.search(
-            [("user_type_id.name", "=", "Payable")], limit=1
-        )
-
-        self.journal_sale = self.JournalObj.create(
-            {
-                "name": "Test journal sale",
-                "code": "TST-JRNL-S",
-                "type": "sale",
-                "company_id": self.company.id,
-            }
-        )
-        self.journal_purchase = self.JournalObj.create(
-            {
-                "name": "Test journal purchase",
-                "code": "TST-JRNL-P",
-                "type": "purchase",
-                "company_id": self.company.id,
-            }
-        )
-
-        self.tax_15_s = self.TaxObj.create(
-            {
-                "sequence": 30,
-                "name": "Tax 15.0% (Percentage of Price)",
-                "amount": 15.0,
-                "amount_type": "percent",
-                "include_base_amount": False,
-                "type_tax_use": "sale",
-            }
-        )
-
-        self.tax_20_s = self.TaxObj.create(
+        cls.previous_fy_date_start = Date.to_string(last_year.replace(month=1, day=1))
+        cls.previous_fy_date_end = Date.to_string(last_year.replace(month=12, day=31))
+        cls.fy_date_start = Date.to_string(today.replace(month=1, day=1))
+        cls.fy_date_end = Date.to_string(today.replace(month=12, day=31))
+        cls.receivable_account = cls.company_data["default_account_receivable"]
+        cls.income_account = cls.company_data["default_account_revenue"]
+        cls.expense_account = cls.company_data["default_account_expense"]
+        cls.payable_account = cls.company_data["default_account_payable"]
+        cls.journal_sale = cls.company_data["default_journal_sale"]
+        cls.journal_purchase = cls.company_data["default_journal_purchase"]
+        cls.tax_15_s = cls.company_data["default_tax_sale"]
+        cls.tax_15_s.sequence = 30
+        cls.tax_15_s.amount = 15.0
+        cls.tax_15_s.amount_type = "percent"
+        cls.tax_15_s.include_base_amount = False
+        cls.tax_15_s.type_tax_use = "sale"
+        cls.tax_20_s = cls.tax_15_s.copy(
             {
                 "sequence": 30,
                 "name": "Tax 20.0% (Percentage of Price)",
@@ -86,19 +68,13 @@ class TestJournalReport(TransactionCase):
                 "type_tax_use": "sale",
             }
         )
-
-        self.tax_15_p = self.TaxObj.create(
-            {
-                "sequence": 30,
-                "name": "Tax 15.0% (Percentage of Price)",
-                "amount": 15.0,
-                "amount_type": "percent",
-                "include_base_amount": False,
-                "type_tax_use": "purchase",
-            }
-        )
-
-        self.tax_20_p = self.TaxObj.create(
+        cls.tax_15_p = cls.company_data["default_tax_purchase"]
+        cls.tax_15_p.sequence = 30
+        cls.tax_15_p.amount = 15.0
+        cls.tax_15_p.amount_type = "percent"
+        cls.tax_15_p.include_base_amount = False
+        cls.tax_15_p.type_tax_use = "purchase"
+        cls.tax_20_p = cls.tax_15_p.copy(
             {
                 "sequence": 30,
                 "name": "Tax 20.0% (Percentage of Price)",
@@ -108,8 +84,7 @@ class TestJournalReport(TransactionCase):
                 "type_tax_use": "purchase",
             }
         )
-
-        self.partner_2 = self.env.ref("base.res_partner_2")
+        cls.partner_2 = cls.env.ref("base.res_partner_2")
 
     def _add_move(
         self,
@@ -153,11 +128,11 @@ class TestJournalReport(TransactionCase):
         self, res_data, expected_debit, expected_credit
     ):
         self.assertEqual(
-            expected_debit, sum([rec["debit"] for rec in res_data["Journal_Ledgers"]])
+            expected_debit, sum(rec["debit"] for rec in res_data["Journal_Ledgers"])
         )
 
         self.assertEqual(
-            expected_credit, sum([rec["credit"] for rec in res_data["Journal_Ledgers"]])
+            expected_credit, sum(rec["credit"] for rec in res_data["Journal_Ledgers"])
         )
 
     def check_report_journal_debit_credit_taxes(
@@ -171,19 +146,19 @@ class TestJournalReport(TransactionCase):
         for rec in res_data["Journal_Ledgers"]:
             self.assertEqual(
                 expected_base_debit,
-                sum([tax_line["base_debit"] for tax_line in rec["tax_lines"]]),
+                sum(tax_line["base_debit"] for tax_line in rec["tax_lines"]),
             )
             self.assertEqual(
                 expected_base_credit,
-                sum([tax_line["base_credit"] for tax_line in rec["tax_lines"]]),
+                sum(tax_line["base_credit"] for tax_line in rec["tax_lines"]),
             )
             self.assertEqual(
                 expected_tax_debit,
-                sum([tax_line["tax_debit"] for tax_line in rec["tax_lines"]]),
+                sum(tax_line["tax_debit"] for tax_line in rec["tax_lines"]),
             )
             self.assertEqual(
                 expected_tax_credit,
-                sum([tax_line["tax_credit"] for tax_line in rec["tax_lines"]]),
+                sum(tax_line["tax_credit"] for tax_line in rec["tax_lines"]),
             )
 
     def test_01_test_total(self):
@@ -215,15 +190,15 @@ class TestJournalReport(TransactionCase):
         res_data = self.JournalLedgerReport._get_report_values(wiz, data)
         self.check_report_journal_debit_credit(res_data, 0, 0)
 
-        move1.post()
+        move1.action_post()
         res_data = self.JournalLedgerReport._get_report_values(wiz, data)
         self.check_report_journal_debit_credit(res_data, 100, 100)
 
-        move2.post()
+        move2.action_post()
         res_data = self.JournalLedgerReport._get_report_values(wiz, data)
         self.check_report_journal_debit_credit(res_data, 100, 100)
 
-        move3.post()
+        move3.action_post()
         res_data = self.JournalLedgerReport._get_report_values(wiz, data)
         self.check_report_journal_debit_credit(res_data, 200, 200)
 
@@ -234,7 +209,7 @@ class TestJournalReport(TransactionCase):
 
     def test_02_test_taxes_out_invoice(self):
         move_form = Form(
-            self.env["account.move"].with_context(default_type="out_invoice")
+            self.env["account.move"].with_context(default_move_type="out_invoice")
         )
         move_form.partner_id = self.partner_2
         move_form.journal_id = self.journal_sale
@@ -252,7 +227,7 @@ class TestJournalReport(TransactionCase):
             line_form.tax_ids.add(self.tax_15_s)
             line_form.tax_ids.add(self.tax_20_s)
         invoice = move_form.save()
-        invoice.post()
+        invoice.action_post()
 
         wiz = self.JournalLedgerReportWizard.create(
             {
@@ -269,45 +244,12 @@ class TestJournalReport(TransactionCase):
         self.check_report_journal_debit_credit_taxes(res_data, 0, 300, 0, 50)
 
     def test_03_test_taxes_in_invoice(self):
-        # invoice_values = {
-        #     "journal_id": self.journal_purchase.id,
-        #     "partner_id": self.partner_2.id,
-        #     "type": "in_invoice",
-        #     "invoice_line_ids": [
-        #         (
-        #             0,
-        #             0,
-        #             {
-        #                 "quantity": 1.0,
-        #                 "price_unit": 100,
-        #                 "account_id": self.payable_account.id,
-        #                 "name": "Test",
-        #                 "tax_ids": [(6, 0, [self.tax_15_p.id])],
-        #             },
-        #         ),
-        #         (
-        #             0,
-        #             0,
-        #             {
-        #                 "quantity": 1.0,
-        #                 "price_unit": 100,
-        #                 "account_id": self.payable_account.id,
-        #                 "name": "Test",
-        #                 "tax_ids": [
-        #                     (6, 0, [self.tax_15_p.id, self.tax_20_p.id])
-        #                 ],
-        #             },
-        #         ),
-        #     ],
-        # }
-        # invoice = self.InvoiceObj.create(invoice_values)
-        # invoice.post()
-
         move_form = Form(
-            self.env["account.move"].with_context(default_type="in_invoice")
+            self.env["account.move"].with_context(default_move_type="in_invoice")
         )
         move_form.partner_id = self.partner_2
         move_form.journal_id = self.journal_purchase
+        move_form.invoice_date = Date.today()
         with move_form.invoice_line_ids.new() as line_form:
             line_form.name = "test"
             line_form.quantity = 1.0
@@ -321,8 +263,9 @@ class TestJournalReport(TransactionCase):
             line_form.account_id = self.expense_account
             line_form.tax_ids.add(self.tax_15_p)
             line_form.tax_ids.add(self.tax_20_p)
+        move_form.invoice_date = move_form.date
         invoice = move_form.save()
-        invoice.post()
+        invoice.action_post()
 
         wiz = self.JournalLedgerReportWizard.create(
             {

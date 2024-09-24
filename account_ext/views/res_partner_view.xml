@@ -21,7 +21,7 @@
             <field name="name">res.partner.view.form.permission</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="res_partner_view_form_account_ext"/>
-            <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/>
+            <!-- <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/> -->
             <field name="arch" type="xml">
                 <xpath expr="//form" position="attributes">
                     <attribute name="create">true</attribute>
@@ -45,7 +45,7 @@
             <field name="name">res.partner.kanban.view.permission</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account_ext.res_partner_kanban_view_account_ext"/>
-            <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/>
+            <!-- <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/> -->
             <field name="arch" type="xml">
                 <xpath expr="//kanban" position="attributes">
                     <attribute name="create">true</attribute>
@@ -66,7 +66,7 @@
             <field name="name">res.partner.tree.view.form.permission</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account_ext.res_partner_tree_view_account_ext"/>
-            <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/>
+            <!-- <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/> -->
             <field name="arch" type="xml">
                 <xpath expr="//tree" position="attributes">
                     <attribute name="create">true</attribute>

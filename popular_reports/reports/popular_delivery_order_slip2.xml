@@ -75,7 +75,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-set="lines" t-value="doc.move_lines.filtered(lambda x: x.product_uom_qty)"/>
+                        <t t-set="lines" t-value="doc.move_ids.filtered(lambda x: x.product_uom_qty)"/>
                         <tr t-foreach="lines" t-as="move">
                             <td>
                                 <span t-field="move.product_id.name"/>
