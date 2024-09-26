@@ -5,8 +5,6 @@
     'summary': "Reports for Popular Plastic Group",
     'description': "Report Collection for Popular Plastic Group",
     'category': 'App',
-    'author': 'Bo Bo Oo',
-    'maintainer': 'Bo Bo Oo',
     'company': 'Digi Power',
     'website': 'https://www.digipowermm.com',
     'depends': [
