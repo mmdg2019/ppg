@@ -28,6 +28,7 @@
         'views/dropshipping_for_so_inherit.xml',
         'views/stock_inventory_line_inherit.xml',
         'views/dropshipping_for_so_inherit.xml',
+        'views/account_account_form_inherit.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
