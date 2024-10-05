@@ -9,7 +9,7 @@
 	    <field name="arch" type="xml">
 	        <notebook position="inside">
 	            <page string="Hide Specific Menu">
-	                <group colspan="4">
+	                <group>
 	                    <field name="menu_ids" nolabel="1"/>
 	                </group>
 	            </page>
