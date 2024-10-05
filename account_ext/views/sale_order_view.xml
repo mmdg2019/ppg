@@ -16,7 +16,7 @@
         <field name="name">so.payment.terms.view.form.permission.inherit</field>
         <field name="model">sale.order</field>        
         <field name="inherit_id" ref="account_ext.so_payment_terms_view_form_account_ext"/>
-        <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/>
+        <!-- <field name="groups_id" eval="[(4, ref('account_ext.group_partner_creation_permission'))]"/> -->
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="before">
                 <field name="check_user" invisible='1'/>

@@ -5,4 +5,6 @@
         <field name="category_id" ref="base.module_category_operations_inventory"/>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
+    <!-- access_stock_valuation_layer,access_stock_valuation_layer,stock_account.model_stock_valuation_layer,popular_reports.group_stock_entry,1,1,1,0 -->
+
 </odoo>

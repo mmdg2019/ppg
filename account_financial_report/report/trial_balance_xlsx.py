@@ -1,5 +1,6 @@
 # Author: Julien Coux
 # Copyright 2016 Camptocamp SA
+# Copyright 2021 Tecnativa - João Marques
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
@@ -129,7 +130,8 @@ class TrialBalanceXslx(models.AbstractModel):
         return [
             [
                 _("Date range filter"),
-                _("From: %s To: %s") % (report.date_from, report.date_to),
+                _("From: %(date_from)s To: %(date_to)s")
+                % ({"date_from": report.date_from, "date_to": report.date_to}),
             ],
             [
                 _("Target moves filter"),
@@ -147,7 +149,7 @@ class TrialBalanceXslx(models.AbstractModel):
             ],
             [
                 _("Limit hierarchy levels"),
-                _("Level %s" % report.show_hierarchy_level)
+                _("Level %s") % (report.show_hierarchy_level)
                 if report.limit_hierarchy_level
                 else _("No limit"),
             ],
@@ -159,7 +161,7 @@ class TrialBalanceXslx(models.AbstractModel):
     def _get_col_count_filter_value(self):
         return 3
 
-    def _generate_report_content(self, workbook, report, data):
+    def _generate_report_content(self, workbook, report, data, report_data):
         res_data = self.env[
             "report.account_financial_report.trial_balance"
         ]._get_report_values(report, data)
@@ -167,48 +169,39 @@ class TrialBalanceXslx(models.AbstractModel):
         total_amount = res_data["total_amount"]
         partners_data = res_data["partners_data"]
         accounts_data = res_data["accounts_data"]
-        hierarchy_on = res_data["hierarchy_on"]
+        show_hierarchy = res_data["show_hierarchy"]
         show_partner_details = res_data["show_partner_details"]
         show_hierarchy_level = res_data["show_hierarchy_level"]
         foreign_currency = res_data["foreign_currency"]
         limit_hierarchy_level = res_data["limit_hierarchy_level"]
-        hide_parent_hierarchy_level = data["hide_parent_hierarchy_level"]
+        hide_parent_hierarchy_level = res_data["hide_parent_hierarchy_level"]
         if not show_partner_details:
             # Display array header for account lines
-            self.write_array_header()
+            self.write_array_header(report_data)
 
         # For each account
         if not show_partner_details:
             for balance in trial_balance:
-                if hierarchy_on == "relation":
-                    if limit_hierarchy_level:
-                        if show_hierarchy_level > balance["level"]:
-                            # Display account lines
-                            self.write_line_from_dict(balance)
-                    else:
-                        self.write_line_from_dict(balance)
-                elif hierarchy_on == "computed":
-                    if limit_hierarchy_level:
-                        if show_hierarchy_level == balance["level"] or (
-                            not hide_parent_hierarchy_level
-                            and show_hierarchy_level > balance["level"]
-                        ):
-                            # Display account lines
-                            self.write_line_from_dict(balance)
-                    else:
-                        self.write_line_from_dict(balance)
+                if show_hierarchy and limit_hierarchy_level:
+                    if show_hierarchy_level > balance["level"] and (
+                        not hide_parent_hierarchy_level
+                        or (show_hierarchy_level - 1) == balance["level"]
+                    ):
+                        # Display account lines
+                        self.write_line_from_dict(balance, report_data)
                 else:
-                    self.write_line_from_dict(balance)
+                    self.write_line_from_dict(balance, report_data)
         else:
             for account_id in total_amount:
                 # Write account title
                 self.write_array_title(
                     accounts_data[account_id]["code"]
                     + "- "
-                    + accounts_data[account_id]["name"]
+                    + accounts_data[account_id]["name"],
+                    report_data,
                 )
                 # Display array header for partner lines
-                self.write_array_header()
+                self.write_array_header(report_data)
 
                 # For each partner
                 for partner_id in total_amount[account_id]:
@@ -217,6 +210,7 @@ class TrialBalanceXslx(models.AbstractModel):
                         self.write_line_from_dict_order(
                             total_amount[account_id][partner_id],
                             partners_data[partner_id],
+                            report_data,
                         )
 
                 # Display account footer line
@@ -245,16 +239,17 @@ class TrialBalanceXslx(models.AbstractModel):
                     accounts_data[account_id]["code"]
                     + "- "
                     + accounts_data[account_id]["name"],
+                    report_data,
                 )
 
                 # Line break
-                self.row_pos += 2
+                report_data["row_pos"] += 2
 
-    def write_line_from_dict_order(self, total_amount, partner_data):
+    def write_line_from_dict_order(self, total_amount, partner_data, report_data):
         total_amount.update({"name": str(partner_data["name"])})
-        self.write_line_from_dict(total_amount)
+        self.write_line_from_dict(total_amount, report_data)
 
-    def write_line(self, line_object, type_object):
+    def write_line(self, line_object, type_object, report_data):
         """Write a line on current line using all defined columns field name.
         Columns are defined with `_get_report_columns` method.
         """
@@ -262,33 +257,47 @@ class TrialBalanceXslx(models.AbstractModel):
             line_object.currency_id = line_object.report_account_id.currency_id
         elif type_object == "account":
             line_object.currency_id = line_object.currency_id
-        super(TrialBalanceXslx, self).write_line(line_object)
+        return super(TrialBalanceXslx, self).write_line(line_object, report_data)
 
-    def write_account_footer(self, account, name_value):
+    def write_account_footer(self, account, name_value, report_data):
         """Specific function to write account footer for Trial Balance"""
-        format_amt = self._get_currency_amt_header_format_dict(account)
-        for col_pos, column in self.columns.items():
+        format_amt = self._get_currency_amt_header_format_dict(account, report_data)
+        for col_pos, column in report_data["columns"].items():
             if column["field"] == "name":
                 value = name_value
             else:
                 value = account[column["field"]]
             cell_type = column.get("type", "string")
             if cell_type == "string":
-                self.sheet.write_string(
-                    self.row_pos, col_pos, value or "", self.format_header_left
+                report_data["sheet"].write_string(
+                    report_data["row_pos"],
+                    col_pos,
+                    value or "",
+                    report_data["formats"]["format_header_left"],
                 )
             elif cell_type == "amount":
-                self.sheet.write_number(
-                    self.row_pos, col_pos, float(value), self.format_header_amount
+                report_data["sheet"].write_number(
+                    report_data["row_pos"],
+                    col_pos,
+                    float(value),
+                    report_data["formats"]["format_header_amount"],
                 )
             elif cell_type == "many2one" and account["currency_id"]:
-                self.sheet.write_string(
-                    self.row_pos, col_pos, value.name or "", self.format_header_right
+                report_data["sheet"].write_string(
+                    report_data["row_pos"],
+                    col_pos,
+                    value.name or "",
+                    report_data["formats"]["format_header_right"],
                 )
             elif cell_type == "amount_currency" and account["currency_id"]:
-                self.sheet.write_number(self.row_pos, col_pos, float(value), format_amt)
-            else:
-                self.sheet.write_string(
-                    self.row_pos, col_pos, "", self.format_header_right
+                report_data["sheet"].write_number(
+                    report_data["row_pos"], col_pos, float(value), format_amt
                 )
-        self.row_pos += 1
+            else:
+                report_data["sheet"].write_string(
+                    report_data["row_pos"],
+                    col_pos,
+                    "",
+                    report_data["formats"]["format_header_right"],
+                )
+        report_data["row_pos"] += 1

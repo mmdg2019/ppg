@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
     def action_confirm(self):
 
         # due_invoice_count = self.env['account.move'].search_count([
-        #     ('type', '=', 'out_invoice'), 
+        #     ('move_type', '=', 'out_invoice'), 
         #     ('partner_id', '=', self.partner_id.id),
         #     ('invoice_due_state', '=', 'third_due')])
         for record in self:
@@ -36,7 +36,7 @@ class SaleOrder(models.Model):
         if vals.get('partner_id'):
             pid = self.env['res.partner'].browse(vals['partner_id'])
             # due_invoice_count = self.env['account.move'].search_count([
-            #     ('type', '=', 'out_invoice'), 
+            #     ('move_type', '=', 'out_invoice'), 
             #     ('partner_id', '=', pid.id),
             #     ('invoice_due_state', '=', 'third_due')])
             if not pid.show_credit_due_access:
@@ -49,7 +49,7 @@ class SaleOrder(models.Model):
         if values.get('partner_id'):
             pid = self.env['res.partner'].browse(values['partner_id'])
             # due_invoice_count = self.env['account.move'].search_count([
-            #     ('type', '=', 'out_invoice'), 
+            #     ('move_type', '=', 'out_invoice'), 
             #     ('partner_id', '=', pid.id),
             #     ('invoice_due_state', '=', 'third_due')])
             if not pid.show_credit_due_access:

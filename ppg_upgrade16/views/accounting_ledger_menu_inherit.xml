@@ -1,0 +1,44 @@
+<odoo>
+  <data>
+        <!-- Ledgers -->
+        <menuitem id="menu_finance_entries_accounting_ledgers" name="Ledgers" parent="account.menu_finance_entries" sequence="3"/>
+        <!-- """General Ledger""" -->
+        
+        <record id="view_account_move_line_filter_with_root_selection" model="ir.ui.view">
+            <field name="name">account.move.line.search</field>
+            <field name="model">account.move.line</field>
+            <field name="priority">20</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="account_root_filter" string="Account Root" domain="[]" context="{'group_by': 'account_root_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_account_moves_ledger_general" model="ir.actions.act_window">
+            <field name="context">{'journal_type':'general', 'search_default_group_by_account': 1, 'search_default_posted':1}</field>
+            <field name="name">General Ledger</field>
+            <field name="res_model">account.move.line</field>
+            <field name="domain">[('display_type', 'not in', ('line_section', 'line_note'))]</field>
+            <field name="view_id" ref="account.view_move_line_tree_grouped_general"/>
+            <field name="search_view_id" ref="view_account_move_line_filter_with_root_selection"/>
+            <field name="view_mode">tree,pivot,graph</field>
+        </record>
+        <!-- """accounting : general ledger""" -->
+        <menuitem
+          id="menu_action_account_moves_ledger_general"
+          action="action_account_moves_ledger_general"
+          parent="menu_finance_entries_accounting_ledgers"
+          groups="account.group_account_user"
+          sequence="1"/>
+
+        <!-- """accounting :partner ledger view """ -->
+        <menuitem
+                id="menu_action_account_moves_ledger_partner"
+                action="account.action_account_moves_ledger_partner"
+                parent="menu_finance_entries_accounting_ledgers"
+                groups="account.group_account_user"
+                sequence="1"/>
+    </data>
+</odoo>

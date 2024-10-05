@@ -1,0 +1,17 @@
+<odoo>
+    <!-- Inherit the account.view_account_form view -->
+    <record id="view_account_form_inherit" model="ir.ui.view">
+        <field name="name">account.form.inherit</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <!-- Locate the group field -->
+            <xpath expr="//field[@name='group_id']" position="attributes">
+                <attribute name="readonly">False</attribute>
+                <attribute name="required">True</attribute>               
+            </xpath>            
+        </field>
+    </record>
+</odoo>
+    
+    

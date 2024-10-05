@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_advance_payment_inv_sale_manager,access.sale.advance.payment.inv.salemanger,sale.model_sale_advance_payment_inv,sales.sales_manager,1,1,1,0
+access_stock_immediate_transfer_line_sale_manager,access.stock.immediate.transfer.line,stock.model_stock_immediate_transfer_line,sales.sales_manager,1,1,1,0

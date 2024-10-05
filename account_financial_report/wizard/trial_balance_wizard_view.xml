@@ -28,13 +28,12 @@
                             <field name="hide_account_at_0" />
                             <field name="show_partner_details" />
                             <field
-                                name="hierarchy_on"
-                                widget="radio"
+                                name="show_hierarchy"
                                 attrs="{'invisible':[('show_partner_details','=',True)]}"
                             />
                             <field
                                 name="limit_hierarchy_level"
-                                attrs="{'invisible':['|', ('hierarchy_on','=','none'),('show_partner_details','=',True)]}"
+                                attrs="{'invisible':['|', ('show_hierarchy','=',False),('show_partner_details','=',True)]}"
                             />
                             <field
                                 name="show_hierarchy_level"
@@ -106,8 +105,10 @@
                         invisible="1"
                     />
                     <group />
-                    <h4
-                    >Trial Balance can be computed only if selected company have only one unaffected earnings account.</h4>
+                    <h4>
+                        Trial Balance can be computed only if selected company have only
+                        one unaffected earnings account.
+                    </h4>
                     <group />
                 </div>
                 <footer>
@@ -145,12 +146,11 @@
             </form>
         </field>
     </record>
-    <act_window
-        id="action_trial_balance_wizard"
-        name="Trial Balance"
-        res_model="trial.balance.report.wizard"
-        view_mode="form"
-        view_id="trial_balance_wizard"
-        target="new"
-    />
+    <record id="action_trial_balance_wizard" model="ir.actions.act_window">
+        <field name="name">Trial Balance</field>
+        <field name="res_model">trial.balance.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="trial_balance_wizard" />
+        <field name="target">new</field>
+    </record>
 </odoo>

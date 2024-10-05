@@ -8,7 +8,6 @@ class ResPartner(models.Model):
     
     show_payment_terms = fields.Boolean(string="Show Payment Terms")  
 
-
 # class AccountMove(models.Model):
 
 #     _inherit = 'account.move'    

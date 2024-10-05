@@ -8,9 +8,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//group" position="inside">
                     <group>
-                        <label for="due_factor" style="padding-left: 10px;"/>
+                        <label for="due_factor"/>
                         <div class="mt-16">
-                            <field name="due_factor"/> Days
+                            <span><field name="due_factor" class="text-center oe_inline"/>Days</span>
                         </div>
                     </group>
                 </xpath>

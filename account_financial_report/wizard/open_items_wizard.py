@@ -14,7 +14,7 @@ class OpenItemsReportWizard(models.TransientModel):
     _inherit = "account_financial_report_abstract_wizard"
 
     date_at = fields.Date(required=True, default=fields.Date.context_today)
-    date_from = fields.Date(string="Date From")
+    date_from = fields.Date()
     target_move = fields.Selection(
         [("posted", "All Posted Entries"), ("all", "All Entries")],
         string="Target Moves",
@@ -49,15 +49,14 @@ class OpenItemsReportWizard(models.TransientModel):
         "will display initial and final balance in that currency.",
         default=lambda self: self._default_foreign_currency(),
     )
-    show_partner_details = fields.Boolean(string="Show Partner Details", default=True,)
+    show_partner_details = fields.Boolean(
+        default=True,
+    )
     account_code_from = fields.Many2one(
         comodel_name="account.account",
-        string="Account Code From",
-        help="Starting account in a range",
     )
     account_code_to = fields.Many2one(
         comodel_name="account.account",
-        string="Account Code To",
         help="Ending account in a range",
     )
 
@@ -69,8 +68,8 @@ class OpenItemsReportWizard(models.TransientModel):
             and self.account_code_to
             and self.account_code_to.code.isdigit()
         ):
-            start_range = int(self.account_code_from.code)
-            end_range = int(self.account_code_to.code)
+            start_range = self.account_code_from.code
+            end_range = self.account_code_to.code
             self.account_ids = self.env["account.account"].search(
                 [
                     ("code", ">=", start_range),
@@ -124,11 +123,13 @@ class OpenItemsReportWizard(models.TransientModel):
         domain = [("company_id", "=", self.company_id.id)]
         if self.receivable_accounts_only or self.payable_accounts_only:
             if self.receivable_accounts_only and self.payable_accounts_only:
-                domain += [("internal_type", "in", ("receivable", "payable"))]
+                domain += [
+                    ("account_type", "in", ("asset_receivable", "liability_payable"))
+                ]
             elif self.receivable_accounts_only:
-                domain += [("internal_type", "=", "receivable")]
+                domain += [("account_type", "=", "asset_receivable")]
             elif self.payable_accounts_only:
-                domain += [("internal_type", "=", "payable")]
+                domain += [("account_type", "=", "liability_payable")]
             self.account_ids = self.env["account.account"].search(domain)
         else:
             self.account_ids = None
