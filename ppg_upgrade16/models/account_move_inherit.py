@@ -68,43 +68,43 @@ class AccountMove(models.Model):
 
         
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        if any('state' in vals and vals.get('state') == 'posted' for vals in vals_list):
-            raise UserError(_('You cannot create a move already in the posted state. Please create a draft move and post it after.'))
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     if any('state' in vals and vals.get('state') == 'posted' for vals in vals_list):
+    #         raise UserError(_('You cannot create a move already in the posted state. Please create a draft move and post it after.'))
         
-        container = {'records': self}
-        with self._check_balanced(container):
-            with self._sync_dynamic_lines(container):
-                for vals in vals_list:
-                    self._sanitize_vals(vals)
-                    # custom here : change sequence name for journal
-                    # Get the journal and its short code
-                    if 'journal_id' in vals:
-                        journal = self.env['account.journal'].browse(vals['journal_id'])
-                        if journal:
-                            # Construct the name based on journal short code and sequence
-                            if journal.type == 'cash':
-                                if journal.code == 'CSH1':
-                                    sequence_code = 'cash.journal'
-                                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-                                    if name:
-                                        vals['name'] = name  # Update the name in vals
+    #     container = {'records': self}
+    #     with self._check_balanced(container):
+    #         with self._sync_dynamic_lines(container):
+    #             for vals in vals_list:
+    #                 self._sanitize_vals(vals)
+    #                 # custom here : change sequence name for journal
+    #                 # Get the journal and its short code
+    #                 if 'journal_id' in vals:
+    #                     journal = self.env['account.journal'].browse(vals['journal_id'])
+    #                     if journal:
+    #                         # Construct the name based on journal short code and sequence
+    #                         if journal.type == 'cash':
+    #                             if journal.code == 'CSH1':
+    #                                 sequence_code = 'cash.journal'
+    #                                 name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+    #                                 if name:
+    #                                     vals['name'] = name  # Update the name in vals
 
 
-                                elif journal.code == 'CR':
-                                    sequence_code = 'credit.journal'
-                                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-                                    if name:
-                                        vals['name'] = name  # Update the name in vals
+    #                             elif journal.code == 'CR':
+    #                                 sequence_code = 'credit.journal'
+    #                                 name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+    #                                 if name:
+    #                                     vals['name'] = name  # Update the name in vals
 
 
-                stolen_moves = self.browse(set(move for vals in vals_list for move in self._stolen_move(vals)))
-                moves = super().create(vals_list)
-                container['records'] = moves | stolen_moves
+    #             stolen_moves = self.browse(set(move for vals in vals_list for move in self._stolen_move(vals)))
+    #             moves = super().create(vals_list)
+    #             container['records'] = moves | stolen_moves
 
-            for move, vals in zip(moves, vals_list):
-                if 'tax_totals' in vals:
-                    move.tax_totals = vals['tax_totals']
+    #         for move, vals in zip(moves, vals_list):
+    #             if 'tax_totals' in vals:
+    #                 move.tax_totals = vals['tax_totals']
 
-        return moves
+    #     return moves
