@@ -29,6 +29,7 @@
         'views/stock_inventory_line_inherit.xml',
         'views/dropshipping_for_so_inherit.xml',
         'views/account_account_form_inherit.xml',
+        'views/res_partner_tree_inherit_sort.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
