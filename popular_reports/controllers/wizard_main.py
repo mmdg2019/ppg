@@ -2176,7 +2176,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
         query = """
                     SELECT
                         subquery_alias.id as product_id,
-                        subquery_alias.display_name,
+                        subquery_alias.default_code,
+                        subquery_alias.name,
                         subquery_alias.uom,
                         receipt_qty,
                         sr_qty,
@@ -2188,8 +2189,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                         0 as qty_available,
                         0 as closing_qty,
                         (min_adjust_qty - scrap_qty) as minus_adjust_qty
-                    FROM
-                    (SELECT pt.id,'[' || pt.default_code || '] ' || pt.name as display_name,uu.name as uom,
+                    FROM                    
+                    (SELECT pt.id, pt.default_code as default_code,pt.name as name,uu.name as uom,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt on spt.id = sm.picking_type_id
@@ -2264,7 +2265,7 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                 'product_ids': tuple(data['product_ids'])
             })
             query += "AND pp.id IN %(product_ids)s"
-        query += ") AS subquery_alias order by subquery_alias.display_name;"
+        query += ") AS subquery_alias order by subquery_alias.default_code;"
         self._cr.execute(query, params)
         docs = self._cr.dictfetchall()
 

@@ -51,11 +51,13 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="start_date"/>
+                                    <!-- <t t-esc="start_date"/> -->
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="end_date"/>
+                                    <!-- <t t-esc="end_date"/> -->
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -103,10 +105,11 @@
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
                                             <td>
-                                                <t t-esc="doc['display_name']"/>
+                                                <t t-esc="'[' + doc['default_code'] + '] ' + list(doc['name'].values())[0]"/>                                                 
                                             </td>
                                             <td style="text-align:center;">
-                                                <t t-esc="doc['uom']"/>
+                                                <!-- <t t-esc="doc['uom']"/> -->
+                                                <t t-esc="list(doc['uom'].values())[0]"/>
                                             </td>
                                             <td style="text-align:right;">
                                                 <t t-esc="'%.2f'% doc['qty_available']"/>
