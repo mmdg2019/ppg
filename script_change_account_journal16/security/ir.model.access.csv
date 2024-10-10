@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_script_change_account_journal16_script_change_account_journal16,script_change_account_journal16.script_change_account_journal16,model_script_change_account_journal16_script_change_account_journal16,base.group_user,1,1,1,1
