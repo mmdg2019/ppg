@@ -66,7 +66,8 @@
                         </td>
                         <td class="text-center">
                             <!-- <span t-field="table_line.x_studio_no_of_package"/> -->
-                            <span t-field="table_line.product_packaging_qty"/>
+                            <!-- <span t-field="table_line.product_packaging_qty"/> -->
+                            <span t-esc="int(table_line.product_packaging_qty)"/>
                         </td>
                         <td class="text-right">
                             <span t-field="table_line.product_qty" class="h3"/>
