@@ -15,4 +15,8 @@
         <field name="name">Enable Partner Creation</field>
         <field name="category_id" ref="module_category_partner_management"/>
     </record> -->
+    <record id="group_payment_terms_permission" model="res.groups">
+        <field name="name">Enable Payment Terms Selection</field>
+    </record>
+
 </odoo>
