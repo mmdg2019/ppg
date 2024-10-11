@@ -10,11 +10,16 @@ class SaleOrder(models.Model):
     
 
     @api.depends('user_id')
-    def _compute_user_check(self):
-        if self.env.user.has_group('account_ext.group_partner_creation_permission'): 
-            self.check_user = True            
+    def _compute_user_check(self): 
+        self.check_user = False       
+        if self.env.user.has_group('account_ext.group_partner_create_disable'):
+            # only user from disable contact creation group can choose payment terms in draft state
+            if self.state == 'draft':
+                self.check_user = True                    
         else:
-            self.check_user = False       
+            # only user from credit manager group can choose payment terms in all state
+            if self.env.user.has_group('ppg_credit_permission.group_credit_manager'): 
+                self.check_user = True                  
        
     check_user=fields.Boolean(string='user', compute='_compute_user_check')  
 
