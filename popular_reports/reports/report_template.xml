@@ -218,11 +218,11 @@
                             <div class="col">
                                 <span>
                                     <b>Date From : </b>
-                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                                 <span>
                                     <b>To : </b>
-                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%m/%d/%Y')"/>
+                                    <t t-esc="datetime.datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
                                 </span>
                             </div>
                         </div>
@@ -1813,7 +1813,9 @@
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <t>
-                                                        <span t-esc="item['date']"/>
+                                                        <!-- <span t-esc="item['date']"/> -->
+                                                        <span t-esc="datetime.datetime.strptime(item['date'], '%m/%d/%Y').strftime('%d/%m/%Y')"/>
+                                                        
                                                     </t>
                                                 </td>
                                                 <td style="text-align:right;">
@@ -7989,7 +7991,7 @@
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="ttl_other_charges" t-value="0"/>
                                 <t t-set="ttl_discount_amount" t-value="0"/>
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -8257,7 +8259,7 @@
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <tr>
                                             <td>
                                                 <span t-esc="doc.date_order.strftime('%d/%m/%Y')"/>
