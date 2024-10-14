@@ -19,7 +19,7 @@ class ScriptRun(models.AbstractModel):
             JOIN account_journal j ON am.journal_id = j.id
             WHERE aml.parent_state = 'posted' 
             AND j.type = 'cash' 
-            AND aml.account_id IN (SELECT id FROM account_account WHERE account_type = 'asset_current')
+            AND aml.account_id IN (SELECT id FROM account_account WHERE account_type = 'asset_current' AND old_current_assets = FALSE)
         """)
 
         # Step 2: Process the result

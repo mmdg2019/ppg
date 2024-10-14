@@ -9,7 +9,20 @@
             <xpath expr="//field[@name='group_id']" position="attributes">
                 <attribute name="readonly">False</attribute>
                 <attribute name="required">True</attribute>               
-            </xpath>            
+            </xpath>    
+            <xpath expr="//field[@name='allowed_journal_ids']" position="after">
+                <field name ="old_current_assets"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_account_list_inherit" model="ir.ui.view">
+        <field name="name">account.account.list.inherit</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree//field[@name='account_type']" position="before">
+                <field name="old_current_assets"/>
+            </xpath>
         </field>
     </record>
 </odoo>
