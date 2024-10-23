@@ -19,7 +19,7 @@ class ScriptRun(models.AbstractModel):
             JOIN account_journal j ON am.journal_id = j.id
             WHERE aml.parent_state = 'posted' 
             AND j.type = 'cash' 
-            AND aml.account_id IN (SELECT id FROM account_account WHERE account_type = 'asset_current' AND old_current_assets = FALSE)
+            AND aml.account_id IN (SELECT id FROM account_account WHERE account_type = 'asset_current' AND old_current_assets IS NULL)
         """)
 
         # Step 2: Process the result
@@ -27,6 +27,7 @@ class ScriptRun(models.AbstractModel):
         
         for move_line in move_lines_to_update:
             move_line_id, account_id, default_account_id = move_line
+            
             if account_id != default_account_id:
                 # Step 3: Update the account_id in account_move_line
                 self.env.cr.execute("""
