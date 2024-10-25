@@ -95,7 +95,7 @@
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:2px solid #ddd;">
                                         <t t-foreach="doc.move_ids.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                             <tr>
                                                 <td>
@@ -261,7 +261,7 @@
                             </thead>
                             <t t-if="docs">
                                 <t t-foreach="docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name), reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:2px solid #ddd;">
                                         <t t-foreach="doc.move_ids.filtered(lambda x: x.product_uom_qty)" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot; and table_line.product_uom_qty > 0">
                                             <tr>
                                                 <td>
@@ -438,7 +438,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd;">
                                         <tr>
                                             <t t-foreach="prod['qty_per_date']" t-as="item">
                                                 <tr>
@@ -479,15 +479,15 @@
                                                 </tr>
                                             </t>
                                         </tr>
-                                        <tr style="border-bottom:1px solid black;">
-                                            <th colspan="2" style="text-align:left; border-top:1px solid black;">
+                                        <tr style="border-bottom:2px solid #ddd;">
+                                            <th colspan="2" style="text-align:left; border-top:2px solid #ddd;">
                                                 <span>Grand Total</span>
                                             </th>
-                                            <th style="text-align:right; border-top:1px solid black;">
+                                            <th style="text-align:right; border-top:2px solid #ddd;">
                                                 <span t-esc="'{0:,.2f}'.format(prod['grand_total_demand'])"/>
                                                 <br/>
                                             </th>
-                                            <th style="text-align:right; border-top:1px solid black;">
+                                            <th style="text-align:right; border-top:2px solid #ddd;">
                                                 <span t-esc="'{0:,.2f}'.format(prod['grand_total_done'])"/>
                                                 <br/>
                                             </th>
@@ -616,23 +616,25 @@
                             </thead>
                             <t t-if="docs">
                                 <t t-foreach="docs" t-as="temp">
-                                    <tr>
-                                        <td>
-                                            <span t-field="temp['product'].display_name"/>
-                                        </td>
-                                        <td>
-                                            <span t-field="temp['location'].display_name"/>
-                                        </td>
-                                        <td style="text-align:right;">
-                                            <span t-esc="'{0:,.2f}'.format(temp['ttl_demand'])"/>
-                                        </td>
-                                        <td style="text-align:right;">
-                                            <span t-esc="'{0:,.2f}'.format(temp['ttl_done'])"/>
-                                        </td>
-                                        <td style="text-align:right;">
-                                            <span t-esc="temp['product'].uom_name"/>
-                                        </td>
-                                    </tr>
+                                    <tbody style="border-top:1px solid #ddd;">
+                                        <tr>
+                                            <td>
+                                                <span t-field="temp['product'].display_name"/>
+                                            </td>
+                                            <td>
+                                                <span t-field="temp['location'].display_name"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="'{0:,.2f}'.format(temp['ttl_demand'])"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="'{0:,.2f}'.format(temp['ttl_done'])"/>
+                                            </td>
+                                            <td style="text-align:right;">
+                                                <span t-esc="temp['product'].uom_name"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
                                 </t>
                             </t>
                             <t t-else="">
@@ -725,7 +727,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-if="cats">
                                         <t t-set="sub_ttl" t-value="0"/>
                                         <t t-set="i_name" t-value=""/>
@@ -900,7 +902,7 @@
                             </thead>
                             <t t-if="lst">
                                 <t t-foreach="lst" t-as="line">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd;">
                                         <tr>
                                             <td style="width:40%">
                                                 <t>
@@ -996,7 +998,7 @@
 								</div>
 								<br/>
 								<table class="table table-sm o_report_block_table" style="padding: 0.5em">
-									<tbody>
+									<tbody style="border-bottom:solid white;">
 										<tr>
 											<td style="text-align:center;color:red;">
 												<span> (+) Quantity > 50% </span>
@@ -1039,7 +1041,7 @@
 										</tr>
 									</thead>
 									<t t-if="lst">
-										<tbody>
+										<tbody style="border-top:1px solid #ddd;">
 											<t t-foreach="lst" t-as="item">
 												<tr>
 													<td>
@@ -1233,7 +1235,7 @@
 										</tr>
 									</thead>
 									<t t-if="lst">
-										<tbody>
+										<tbody style="border-top:1px solid #ddd;">
 											<t t-foreach="lst" t-as="item">
 												<tr>
 													<td>
@@ -1350,7 +1352,7 @@
                             </thead>
                             <t t-if="lst">
                                 <t t-foreach="lst" t-as="line">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd;">
                                         <tr>
                                             <td style="width:40%">
                                                 <t>
@@ -1468,7 +1470,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-foreach="lst" t-as="item">
                                         <tr>
                                             <td>
@@ -1589,7 +1591,7 @@
 						</div>
 						<br/>
 						<table class="table table-sm o_report_block_table" style="padding: 0.5em">
-							<tbody>
+							<tbody style="border-bottom:1px solid white;">
 								<tr>
 									<td style="text-align:center;color:red;">
 										<span> (+) Quantity > 50% </span>
@@ -1632,7 +1634,7 @@
 								</tr>
 							</thead>
 							<t t-if="lst">
-								<tbody>
+								<tbody style="border-top:1px solid #ddd;">
 									<t t-foreach="lst" t-as="item">
 										<tr>
 											<td>
@@ -1801,7 +1803,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-foreach="lst" t-as="line">
                                         <t t-set="sub_qty" value="0"/>
                                         <t t-foreach="line['items']" t-as="item">
@@ -1935,7 +1937,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:solid #ddd;">
                                     <t t-foreach="lst" t-as="line">
                                         <tr>
                                             <td style="width:50%">
@@ -2933,7 +2935,7 @@
                             </thead>
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:solid #ddd;">
                                     <t t-foreach="docs" t-as="item">
                                         <tr>
                                             <td>
@@ -10728,7 +10730,7 @@
                                 </tr>
                             </thead>
                             <t t-if="products">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-foreach="products" t-as="product">
                                         <tr>
                                             <td>

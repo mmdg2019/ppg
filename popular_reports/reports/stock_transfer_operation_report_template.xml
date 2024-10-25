@@ -101,7 +101,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
                                             <td>
