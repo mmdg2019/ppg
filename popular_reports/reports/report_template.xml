@@ -2082,7 +2082,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                                <tbody>
+                                <tbody  style="border-top:1px solid #ddd;">
                                     <t t-foreach="lst" t-as="line">
                                         <t t-set="sub_qty" value="0"/>
                                         <t t-foreach="line['items']" t-as="item">
@@ -2094,7 +2094,8 @@
                                                 </td>
                                                 <td style="text-align:center;">
                                                     <t>
-                                                        <span t-esc="item['date']"/>
+                                                        <!-- <span t-esc="item['date'].strftime('%d/%m/%Y')"/> -->
+                                                        <span t-esc="datetime.datetime.strptime(item['date'], '%m/%d/%Y').strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td style="text-align:right;">
@@ -2224,7 +2225,7 @@
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="ttl_due" t-value="0"/>
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-foreach="docs" t-as="doc">
                                         <t t-foreach="doc['temp_dtl']" t-as="table_line">
                                             <tr>
@@ -2384,7 +2385,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -2674,7 +2675,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-set="sub_ttl" t-value="0"/>
                                     <t t-foreach="docs" t-as="doc">
@@ -3090,10 +3091,12 @@
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.invoice_date,x.name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <tr>
                                             <td>
-                                                <span t-esc="doc.invoice_date"/>
+                                                <!-- <span t-esc="doc.invoice_date"/> -->
+                                                <span t-esc="doc.invoice_date.strftime('%d/%m/%Y')"/>
+                                                <!-- <t t-esc="datetime.datetime.strptime(doc.invoice_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/> -->
                                             </td>
                                             <td>
                                                 <span t-field="doc.name"/>
@@ -3498,7 +3501,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="no" t-value="1"/>
                                     <t t-set="sub_date" t-value=""/>
@@ -3561,25 +3564,25 @@
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
                                         <t t-set="sub_ttl_due" t-value="sub_ttl_due + table_line.amount_residual_signed"/>
                                         <t t-if="table_line_last">
-                                            <tr>
-                                                <td style="text-align:right;">
+                                            <tr style="border-bottom:2px solid #ddd;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span t-esc="no"></span>.
                                             
                                                 </td>
-                                                <td>
+                                                <td style="border-bottom:2px solid #ddd;">
                                                     <span t-esc="table_line.invoice_date.strftime('%d/%m/%Y')"/>
                                                 </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span>
                                                         <t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span>
                                                         <t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span>
                                                         <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
@@ -3721,7 +3724,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="no" t-value="1"/>
                                     <t t-set="sub_date" t-value=""/>
@@ -3944,7 +3947,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="no" t-value="1"/>
                                     <t t-set="sub_date" t-value=""/>
@@ -4007,25 +4010,25 @@
                                         <t t-set="sub_ttl" t-value="sub_ttl + table_line.amount_total_signed"/>
                                         <t t-set="sub_ttl_due" t-value="sub_ttl_due + table_line.amount_residual_signed"/>
                                         <t t-if="table_line_last">
-                                            <tr>
-                                                <td style="text-align:right;">
+                                            <tr style="border-bottom:2px solid #ddd;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span t-esc="no"></span>.
                                             
                                                 </td>
-                                                <td>
+                                                <td style="border-bottom:2px solid #ddd;">
                                                     <span t-esc="table_line.invoice_date.strftime('%d/%m/%Y')"/>
                                                 </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span>
                                                         <t t-esc="abs(sub_ttl-sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span>
                                                         <t t-esc="abs(sub_ttl_due)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right; border-bottom:2px solid #ddd;">
                                                     <span>
                                                         <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
@@ -4160,7 +4163,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="currency_id" t-value="docs.currency_id"/>
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-foreach="user_ids" t-as="cust">
@@ -4313,7 +4316,7 @@
                         </div>
                         <br/> -->
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em">
-                            <tbody>
+                            <tbody style="border-bottom:1px white;">
                                 <tr>
                                     <td style="text-align:center;color:red;">
                                         <span> (+) Amount > 50% </span>
@@ -4354,7 +4357,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-set="currency_id" t-value="docs.currency_id"/>
 <!--                                     <t t-set="g_ttl" t-value="0"/> -->
                                     <t t-set="first_amt" t-value="0"/>
@@ -4534,7 +4537,7 @@
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: x.name,reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <!--                                 <tr><td><span t-field="doc.name"/></td><td><span t-esc="doc.invoice_date"/></td><td><span t-field="doc.partner_id.display_name"/></td><td colspan="4"><span t-field="doc.narration"/></td><td style="text-align:center;"></td></tr> -->
                                         
                                         <t t-set="sub_ttl" t-value="0"/>
@@ -5729,7 +5732,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -7379,7 +7382,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-foreach="lst" t-as="product_cats">
                                         <t t-if='user_ids'>
@@ -7532,7 +7535,7 @@
                                 </tr>
                             </thead>
                             <t t-if="lst">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-foreach="lst" t-as="product_cats">
                                         <t t-if='user_ids'>
@@ -7682,7 +7685,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="temp_name" t-value=""/>
@@ -9654,7 +9657,7 @@
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <t t-set="ttl" t-value="ttl + doc.amount_total"/>
                                         <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
                                             <tr>
@@ -10014,7 +10017,7 @@
                       </th>                     
                     </tr>
                   </thead>
-									<tbody>
+									<tbody style="border-top:1px solid #ddd;">
 										<tr>
 											<t t-foreach="prod['qty_per_date']" t-as="item">
 												<tr>
@@ -10045,11 +10048,11 @@
 												</tr>
 											</t>
 										</tr>
-										<tr style="border-bottom:1px solid black;">
-											<th colspan="2" style="text-align:left; border-top:1px solid black;">
+										<tr style="border-bottom:2px solid #ddd;">
+											<th colspan="2" style="text-align:left; border-top:2px solid #ddd;">
 												<span>Grand Total</span>
 											</th>
-											<th style="text-align:right; border-top:1px solid black;">
+											<th style="text-align:right; border-top:2px solid #ddd;">
 												<span t-esc="'{0:,.2f}'.format(prod['grand_total'])"/>
                                                 <br/>
 											</th>
