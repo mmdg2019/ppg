@@ -2830,7 +2830,7 @@
                                 </tr>
                             </thead>
                             <t t-if="items">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <!--                                 <t t-foreach="docs.sorted(key=lambda x: x.location_id, reverse=False)" t-as="doc"><t t-foreach="doc.quant_ids.sorted(key=lambda x: x.product_id.display_name,reverse=False)" t-as="table_line" t-if="table_line.quantity > 0 and table_line.product_id.display_name in product_ids"><tr><td><span t-field="table_line.location_id"/></td><td><span t-field="table_line.product_id"/></td><td style="text-align:center;"><span t-field="table_line.product_uom_id"/></td><td style="text-align:right;"><span t-esc="table_line.quantity"/></td></tr></t></t> -->
                                     <t t-foreach="items" t-as="item">
                                         <tr>
@@ -4718,7 +4718,7 @@
                                 <t t-set="total_currency_id" t-value="docs.currency_id"/>
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.display_name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <t t-set="sub_ttl" t-value="sub_ttl + doc.amount_total_signed"/>
                                         <t t-set="ttl" t-value="ttl + doc.amount_total_signed"/>
                                         <t t-foreach="doc.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)" t-as="table_line">
@@ -5114,7 +5114,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -5390,7 +5390,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -5592,7 +5592,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-foreach="docs.sorted(key=lambda x: (x.date,x.display_name),reverse=False)" t-as="table_line">
                                         <t t-set="ttl" t-value="ttl+table_line.amount"/>
@@ -5968,7 +5968,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -6210,7 +6210,7 @@
 								</tr>
 							</thead>
 							<t t-if="docs">
-								<tbody>
+								<tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
 									<t t-set="sub" t-value="0"/>
 									<t t-set="sub_name" t-value=""/>
 									<t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -6595,7 +6595,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd;">
                                     <t t-foreach="customers" t-as="customer">
                                         <t t-set="sub_ttl" t-value="sum(docs.filtered(lambda x: x.partner_id.id == customer.id).mapped('amount_residual_signed'))"/>
                                         <t t-if="sub_ttl > 0">	
@@ -6731,7 +6731,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="ttl" t-value="0.0"/>
                                     <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.invoice_date,x.display_name),reverse=False)" t-as="doc">
                                         
@@ -6988,7 +6988,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -7197,7 +7197,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value=""/>
                                     <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
@@ -9222,7 +9222,7 @@
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody>
+                                <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                     <t t-set="ttl" t-value="0"/>
                                     <t t-set="total_currency_id" t-value="docs.currency_id"/>
                                     <t t-foreach="docs.sorted(key=lambda x: (x.display_name),reverse=False)" t-as="doc">
@@ -9427,7 +9427,7 @@
                                 <t t-set="sub_ttl" t-value="0"/>
                                 <t t-set="ttl_amt_due" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.invoice_partner_display_name,x.display_name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <t t-set="ttl_amt_due" t-value="ttl_amt_due + doc.amount_residual_signed"/>
                                         <t t-set="sub_ttl" t-value="0"/>
                                         <t t-foreach="doc.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)" t-as="table_line">
@@ -10183,13 +10183,13 @@
                             <t t-if="docs">
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-foreach="docs.sorted(key=lambda x: (x.date_order.strftime('%d/%m/%Y'),x.name),reverse=False)" t-as="doc">
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
                                         <t t-set="ttl" t-value="ttl + doc.amount_total"/>
                                         <t t-foreach="doc.order_line" t-as="table_line" t-if="table_line.name != &quot;Special Discount&quot; and table_line.name != &quot;Other Charges&quot;">
                                             <tr>
                                                 <td>
                                                     <t t-if="table_line_first">
-                                                        <span t-esc="doc.date_order.strftime('%m/%d/%Y')"/>
+                                                        <span t-esc="doc.date_order.strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
                                                 <td>
@@ -10875,7 +10875,7 @@
                                 <tr>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style="border-top:1px solid #ddd;">
                             <tr>
                                 <td style="text-align:right;">
                                     <span>
@@ -11181,7 +11181,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style="border-top:1px solid #ddd;">
                                         <tr>
                                             <t t-foreach="prod['qty_per_date']" t-as="item">
                                                 <tr>
@@ -11212,11 +11212,11 @@
                                                 </tr>
                                             </t>
                                         </tr>
-                                        <tr style="border-bottom:1px solid black;">
-                                            <th colspan="2" style="text-align:left; border-top:1px solid black;">
+                                        <tr style="border-bottom:2px solid #ddd;">
+                                            <th colspan="2" style="text-align:left; border-top:2px solid #ddd;">
                                                 <span>Grand Total</span>
                                             </th>
-                                            <th style="text-align:right; border-top:1px solid black;">
+                                            <th style="text-align:right; border-top:2px solid #ddd;">
                                                 <span t-esc="'{0:,.2f}'.format(prod['grand_total'])"/>
                                                 <br/>
                                             </th>
