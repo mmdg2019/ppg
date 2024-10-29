@@ -339,12 +339,12 @@
                         <field name="products" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="4" colspan="4" string="Start From:">
-                        <field name="s_month" required="1"></field>
-                        <field name="s_year" required="1"></field>
+                        <field name="s_month"></field>
+                        <field name="s_year"></field>
                    </group>
                     <group col="4" colspan="4" string="End To:">
-                        <field name="e_month" required="1"></field>
-                        <field name="e_year" required="1"></field>
+                        <field name="e_month"></field>
+                        <field name="e_year"></field>
                    </group>
                <footer>
                    <button name="print_report_monthly_stock_analysis_report" type="object" string="Print Report" class="oe_highlight"/>
