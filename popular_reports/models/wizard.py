@@ -10,6 +10,7 @@ import json
 import io
 import base64
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 from odoo.tools import date_utils
 try:
     from odoo.tools.misc import xlsxwriter
@@ -429,6 +430,8 @@ class PopularReport(models.TransientModel):
     
 #     Monthly Stock Analysis Report
     def print_report_monthly_stock_analysis_report(self):
+        if not self.s_month or not self.s_year or not self.e_month or not self.e_year:
+            raise UserError(_('"Start Month/Year" and "End Month/Year" cannot be blank!'))
         data = {
             'product_ids': self.products.ids,
             's_month':self.s_month,
