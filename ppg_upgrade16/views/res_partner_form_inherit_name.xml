@@ -7,10 +7,10 @@
             <field name="inherit_id" ref="base.view_partner_form"/> 
             <field name="arch" type="xml">                
                 <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1/field[@name='name'][1]" position="attributes">
-                    <attribute name="style">line-height: 10px;</attribute> 
+                    <attribute name="style">height:auto; line-height: 200%;</attribute> 
                 </xpath>
                 <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1/field[@name='name'][2]" position="attributes">
-                    <attribute name="style">line-height: 10px;</attribute> 
+                    <attribute name="style">height:auto; line-height: 200%;</attribute> 
                 </xpath>                
             </field>
         </record> 
