@@ -2,6 +2,10 @@
 
 from odoo import models, fields, api,_
 from odoo.exceptions import UserError
+from collections import defaultdict
+from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessError
+from datetime import datetime, timedelta
+
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -14,6 +18,20 @@ class AccountMove(models.Model):
 
     invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, index=True, copy=False,states={'draft': [('readonly', False)]},default=_get_default_invoice_date)
         
+
+    def _get_sequence(self):
+        ''' Return the sequence to be used during the post of the current move.
+        :return: An ir.sequence record or False.
+        '''
+        self.ensure_one()
+
+        journal = self.journal_id
+        if self.move_type in ('entry', 'out_invoice', 'in_invoice', 'out_receipt', 'in_receipt') or not journal.refund_sequence:
+            return journal.sequence_id
+        if not journal.refund_sequence_id:
+            return
+        return journal.refund_sequence_id
+    
     @api.depends('posted_before', 'state', 'journal_id', 'date')
     def _compute_name(self):
         self = self.sorted(lambda m: (m.date, m.ref or '', m.id))
@@ -57,54 +75,13 @@ class AccountMove(models.Model):
                     if name:                        
                         move.name = name
                 elif move.move_type and move.move_type == 'entry':
-                    # sequence_code = 'account.move.stock.journal'
-                    # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-                    # if name:
-                    #     move.name = name
-                    move._set_next_sequence()
+                # Get the journal's sequence.
+                    sequence = move._get_sequence()
+                    if not sequence:
+                        raise UserError(_('Please define a sequence on your journal.'))
+                    # Consume a new number.
+                    move.name = sequence.with_context(ir_sequence_date=move.date).next_by_id()
+                    # move._set_next_sequence()
 
         self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
         self._inverse_name()
-
-        
-
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     if any('state' in vals and vals.get('state') == 'posted' for vals in vals_list):
-    #         raise UserError(_('You cannot create a move already in the posted state. Please create a draft move and post it after.'))
-        
-    #     container = {'records': self}
-    #     with self._check_balanced(container):
-    #         with self._sync_dynamic_lines(container):
-    #             for vals in vals_list:
-    #                 self._sanitize_vals(vals)
-    #                 # custom here : change sequence name for journal
-    #                 # Get the journal and its short code
-    #                 if 'journal_id' in vals:
-    #                     journal = self.env['account.journal'].browse(vals['journal_id'])
-    #                     if journal:
-    #                         # Construct the name based on journal short code and sequence
-    #                         if journal.type == 'cash':
-    #                             if journal.code == 'CSH1':
-    #                                 sequence_code = 'cash.journal'
-    #                                 name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-    #                                 if name:
-    #                                     vals['name'] = name  # Update the name in vals
-
-
-    #                             elif journal.code == 'CR':
-    #                                 sequence_code = 'credit.journal'
-    #                                 name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
-    #                                 if name:
-    #                                     vals['name'] = name  # Update the name in vals
-
-
-    #             stolen_moves = self.browse(set(move for vals in vals_list for move in self._stolen_move(vals)))
-    #             moves = super().create(vals_list)
-    #             container['records'] = moves | stolen_moves
-
-    #         for move, vals in zip(moves, vals_list):
-    #             if 'tax_totals' in vals:
-    #                 move.tax_totals = vals['tax_totals']
-
-    #     return moves
