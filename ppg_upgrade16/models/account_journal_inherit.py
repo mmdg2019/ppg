@@ -1,7 +1,6 @@
 from odoo import api, fields, models, _, Command
 from odoo.exceptions import UserError
 
-
 class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
@@ -94,7 +93,6 @@ class AccountJournal(models.Model):
         return result
 
 
-
      # do not depend on 'sequence_id.date_range_ids', because
     # sequence_id._get_current_sequence() may invalidate it!
     @api.depends('sequence_id.use_date_range', 'sequence_id.number_next_actual')
@@ -138,7 +136,6 @@ class AccountJournal(models.Model):
             if journal.refund_sequence_id and journal.refund_sequence and journal.refund_sequence_number_next:
                 sequence = journal.refund_sequence_id._get_current_sequence()
                 sequence.sudo().number_next = journal.refund_sequence_number_next
-
 
     @api.onchange('type')
     def _onchange_type(self):
