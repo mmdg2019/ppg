@@ -1,8 +1,12 @@
-from odoo import models, fields, api
+# -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
 from datetime import datetime
 
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
+
+    # payment_name = fields.Char(string='Payment Reference', required=True, copy=False)
 
     @api.model
     def create(self, vals):
@@ -58,3 +62,17 @@ class AccountPayment(models.Model):
                         vals['name'] = name
                     
         return super(AccountPayment, self).create(vals)
+
+    @api.depends('state', 'move_id.name')
+    def name_get(self):
+        result = super(AccountPayment, self).name_get()
+        # Now, extend the result with custom logic
+        extended_result = []
+        for payment in self:
+            if payment.state == 'draft':
+                # In draft state, use 'Draft Payment'
+                extended_result.append((payment.id, _('Draft Payment')))
+            else:
+                # Once posted, use the move_id.name (journal entry number)
+                extended_result.append((payment.id, payment.move_id.name or _('Payment')))
+        return extended_result
