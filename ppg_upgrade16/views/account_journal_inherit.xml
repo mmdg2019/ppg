@@ -9,9 +9,8 @@
                     <label for="sequence_number_next"/>
                     <div>
                         <field name="sequence_number_next" style="padding-right: 1.0em"/>
-                        <field name="sequence_id" required="0"
-                                attrs="{'readonly': 1}" groups="base.group_no_one"/>
                     </div>
+                    <field name="sequence_id" context="{'form_view_ref':'sequence_for_journal.ir_sequence_view_form'}" domain="[('prefix', 'ilike', code),('company_id', '=', company_id)]" default="True"/>
                     <field name="refund_sequence"
                             attrs="{'invisible': [('type', 'not in', ['sale', 'purchase'])]}"
                             groups="base.group_no_one"/>
@@ -20,7 +19,7 @@
                     <div attrs="{'invisible': ['|',('type', 'not in', ['sale', 'purchase']), ('refund_sequence', '!=', True)]}">
                         <field name="refund_sequence_number_next" style="padding-right: 1.0em"/>
                         <field name="refund_sequence_id" required="0"
-                                attrs="{'readonly': 1}" groups="base.group_no_one"/>
+                                groups="base.group_no_one"/>
                     </div>
                 </xpath>
             </field>

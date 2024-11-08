@@ -5,7 +5,7 @@ class AccountJournal(models.Model):
     _inherit = 'account.journal'
 
     sequence_id = fields.Many2one('ir.sequence', string='Entry Sequence',
-        help="This field contains the information related to the numbering of the journal entries of this journal.", required=True, copy=False)
+        help="This field contains the information related to the numbering of the journal entries of this journal.", required=True, copy=False,domain="[('company_id', '=', company_id)]")
     refund_sequence_id = fields.Many2one('ir.sequence', string='Credit Note Entry Sequence',
         help="This field contains the information related to the numbering of the credit note entries of this journal.", copy=False)
     sequence_number_next = fields.Integer(string='Next Number',
@@ -20,45 +20,11 @@ class AccountJournal(models.Model):
         inverse='_inverse_refund_seq_number_next')
     
 
-    @api.model
     def write(self, vals):
-        for journal in self:
-            company = journal.company_id
-            
-            # Company modification check
-            if 'company_id' in vals and journal.company_id.id != vals['company_id']:
-                if self.env['account.move'].search([('journal_id', '=', journal.id)], limit=1):
-                    raise UserError(_('This journal already contains items, therefore you cannot modify its company.'))
-                company = self.env['res.company'].browse(vals['company_id'])
-                if journal.bank_account_id.company_id and journal.bank_account_id.company_id != company:
-                    journal.bank_account_id.write({
-                        'company_id': company.id,
-                        'partner_id': company.partner_id.id,
-                    })
-
-            # Currency update
-            if 'currency_id' in vals:
-                if journal.bank_account_id:
-                    journal.bank_account_id.currency_id = vals['currency_id']
-            
-            # Bank account modification check
-            if 'bank_account_id' in vals:
-                if vals.get('bank_account_id'):
-                    bank_account = self.env['res.partner.bank'].browse(vals['bank_account_id'])
-                    if bank_account.partner_id != company.partner_id:
-                        raise UserError(_("The partners of the journal's company and the related bank account mismatch."))
-
-            # Restriction mode check
-            if 'restrict_mode_hash_table' in vals and not vals.get('restrict_mode_hash_table'):
-                journal_entry = self.env['account.move'].sudo().search([('journal_id', '=', journal.id), ('state', '=', 'posted'), ('secure_sequence_number', '!=', 0)], limit=1)
-                if journal_entry:
-                    field_string = self._fields['restrict_mode_hash_table'].get_description(self.env)['string']
-                    raise UserError(_("You cannot modify the field %s of a journal that already has accounting entries.") % field_string)
-
-        # Call the super method
+        # Call the super method first to maintain the original functionality
         result = super(AccountJournal, self).write(vals)
 
-        # Handle sequences
+        # 1. Custom sequence creation logic
         if 'code' in vals:
             for journal in self.filtered(lambda j: j.code != vals['code']):
                 if self.env['account.move'].search([('journal_id', '=', journal.id)], limit=1):
@@ -69,11 +35,7 @@ class AccountJournal(models.Model):
                     new_prefix = self._get_sequence_prefix(vals['code'], refund=True)
                     journal.refund_sequence_id.write({'prefix': new_prefix})
 
-        # Create the bank account if necessary
-        if 'bank_acc_number' in vals:
-            for journal in self.filtered(lambda r: r.type == 'bank' and not r.bank_account_id):
-                journal.set_bank_account(vals.get('bank_acc_number'), vals.get('bank_id'))
-
+        # 2. Refund sequence creation logic
         # Create refund sequence if specified
         if vals.get('refund_sequence'):
             for journal in self.filtered(lambda j: j.type in ('sale', 'purchase') and not j.refund_sequence_id):
@@ -85,14 +47,11 @@ class AccountJournal(models.Model):
                 }
                 journal.refund_sequence_id = self.sudo()._create_sequence(journal_vals, refund=True).id
 
-        # Handle secure sequence creation
-        for record in self:
-            if record.restrict_mode_hash_table and not record.secure_sequence_id:
-                record._create_secure_sequence(['secure_sequence_id'])
-
+        # Return the result of the original write method (super)
         return result
 
 
+    
      # do not depend on 'sequence_id.date_range_ids', because
     # sequence_id._get_current_sequence() may invalidate it!
     @api.depends('sequence_id.use_date_range', 'sequence_id.number_next_actual')
