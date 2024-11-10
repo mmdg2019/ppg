@@ -11,6 +11,10 @@
                 </xpath>
                 <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1/field[@name='name'][2]" position="attributes">
                     <attribute name="style">height:auto; line-height: 200%;</attribute> 
+                </xpath>
+                <!-- Adding related_company_id field inside the accounting_entries group -->
+                <xpath expr="//group[@name='accounting_entries']" position="inside">
+                    <field name="related_company_id" placeholder="Select a related company"/>
                 </xpath>                
             </field>
         </record> 
