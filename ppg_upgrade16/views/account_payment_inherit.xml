@@ -21,6 +21,10 @@
                     <attribute name="domain">["&amp;","|",["customer_rank","&gt;",0],["supplier_rank","&gt;",0],["company_id","=",company_id]]</attribute>
                     <attribute name="options">{"always_reload": True, "no_open":True,"no_create":True,"no_create_edit":True}</attribute>
                 </xpath>
+                <!-- hide currency_id field -->
+                <xpath expr="//form/sheet/group/group/div/field[@name='currency_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>                    
+                </xpath>
             </field>
         </record>
     </data>
