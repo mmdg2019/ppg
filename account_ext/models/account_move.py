@@ -36,7 +36,7 @@ class AccountMove(models.Model):
         for line in self.invoice_payment_term_id.line_ids:
             inv_due_date = fields.Date.from_string(date_ref)
             duration = self.invoice_payment_term_id.due_factor and self.invoice_payment_term_id.due_factor or 0
-            if line.end_month:
+            if line.end_month: # "End of the Following Month" and "End of Current Month"
                 inv_due_date += relativedelta(day=31, months=1)
             else:
                 inv_due_date += relativedelta(days=duration)
@@ -144,19 +144,26 @@ class AccountMove(models.Model):
             third_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'third_due'))
             if invoices:
                 for invoice in invoices:
-                    second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
-                    if today > invoice.invoice_date_due and today <= second_due_date:
-                        if invoice.invoice_due_state != 'first_due':
-                            invoice.invoice_due_state = 'first_due'
-                    else:
-                        third_due_date = invoice.calculate_invoice_due_date(second_due_date)
-                        if today > second_due_date and today <= third_due_date:
-                            if invoice.invoice_due_state != 'second_due':
-                                invoice.invoice_due_state = 'second_due'
-                        elif today > third_due_date:
+                    balance_line = invoice.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance')
+                    if balance_line and balance_line[0].end_month and balance_line[0].months == 1 and balance_line[0].days == 0 and balance_line[0].days_after == 0: # End of the Following Month
+                        if today > invoice.invoice_date_due:
                             invoice.partner_id.so_block_customer = True
                             if invoice.invoice_due_state != 'third_due':
                                 invoice.invoice_due_state = 'third_due'
+                    else:
+                        second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
+                        if today > invoice.invoice_date_due and today <= second_due_date:
+                            if invoice.invoice_due_state != 'first_due':
+                                invoice.invoice_due_state = 'first_due'
+                        else:
+                            third_due_date = invoice.calculate_invoice_due_date(second_due_date)
+                            if today > second_due_date and today <= third_due_date:
+                                if invoice.invoice_due_state != 'second_due':
+                                    invoice.invoice_due_state = 'second_due'
+                            elif today > third_due_date:
+                                invoice.partner_id.so_block_customer = True
+                                if invoice.invoice_due_state != 'third_due':
+                                    invoice.invoice_due_state = 'third_due'
             invoices_after = self.search(domain)
             undefined_due_unpaid_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == False))
             first_due_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == 'first_due'))
@@ -200,19 +207,26 @@ class AccountMove(models.Model):
             for invoice in invoices:
                 # if invoice.payment_state != 'paid':
                 if invoice.payment_state in ['not_paid', 'partial']:
-                    second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
-                    if today > invoice.invoice_date_due and today <= second_due_date:
-                        if invoice.invoice_due_state != 'first_due':
-                            invoice.invoice_due_state = 'first_due'
-                    else:
-                        third_due_date = invoice.calculate_invoice_due_date(second_due_date)
-                        if today > second_due_date and today <= third_due_date:
-                            if invoice.invoice_due_state != 'second_due':
-                                invoice.invoice_due_state = 'second_due'
-                        elif today > third_due_date:
+                    balance_line = invoice.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance')
+                    if balance_line and balance_line[0].end_month and balance_line[0].months == 1 and balance_line[0].days == 0 and balance_line[0].days_after == 0: # End of the Following Month
+                        if today > invoice.invoice_date_due:
                             invoice.partner_id.so_block_customer = True
                             if invoice.invoice_due_state != 'third_due':
                                 invoice.invoice_due_state = 'third_due'
+                    else:
+                        second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
+                        if today > invoice.invoice_date_due and today <= second_due_date:
+                            if invoice.invoice_due_state != 'first_due':
+                                invoice.invoice_due_state = 'first_due'
+                        else:
+                            third_due_date = invoice.calculate_invoice_due_date(second_due_date)
+                            if today > second_due_date and today <= third_due_date:
+                                if invoice.invoice_due_state != 'second_due':
+                                    invoice.invoice_due_state = 'second_due'
+                            elif today > third_due_date:
+                                invoice.partner_id.so_block_customer = True
+                                if invoice.invoice_due_state != 'third_due':
+                                    invoice.invoice_due_state = 'third_due'
                 else:
                     invoice.invoice_due_state = 'no_due'
 
