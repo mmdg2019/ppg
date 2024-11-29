@@ -12,10 +12,11 @@
     'category': 'Uncategorized',
     'version': '0.1',
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock','account','sale','purchase','mrp','stock_dropshipping','sale_purchase','purchase_stock'],  # Ensure 'stock' module is added since you are inheriting stock views
+    'depends': ['base', 'stock','account','sale','purchase','mrp','stock_dropshipping','sale_purchase','purchase_stock','account_reports'],  # Ensure 'stock' module is added since you are inheriting stock views
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/profit_and_loss.xml',  # Updated to hide balance label
         'views/stock_picking_inherit_view.xml',  # Updated to include the correct view file
         'views/account_payment_inherit.xml',
         'views/accounting_ledger_menu_inherit.xml',
