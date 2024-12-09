@@ -12,6 +12,12 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         for column in options['columns']:
             if column['expression_label'] == 'communication':
                 column['name'] = 'Label'
+
+            # set the text alignment of column headers and body text
+            if column['name'] in ['Label', 'Partner']:
+                column['style'] = 'text-align: left; white-space: nowrap;'
+            elif column['name'] in ['Currency', 'Debit', 'Credit', 'Balance']:
+                column['style'] = 'text-align: right; white-space: nowrap;'
             
         return super()._custom_options_initializer(report, options, previous_options=previous_options)
 
