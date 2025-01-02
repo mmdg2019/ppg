@@ -56,22 +56,27 @@ class AccountMove(models.Model):
                 # move._set_next_sequence() 
                 if move.move_type and (move.move_type == 'out_invoice' or move.move_type == 'out_receipt'):
                     sequence_code = 'account.move.customer.invoice'
-                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    # compute name based on accounting date (date field)
+                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
                     if name:
                         move.name = name
                 elif move.move_type and move.move_type == 'out_refund':
                     sequence_code = 'account.move.customer.credit.notes'
-                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
                     if name:
                         move.name = name
                 elif move.move_type and move.move_type == 'in_invoice':
                     sequence_code = 'account.move.vendor.bill'
-                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
                     if name:                        
                         move.name = name
                 elif move.move_type and move.move_type == 'in_refund':
                     sequence_code = 'account.move.vendor.refund'
-                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                    name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
                     if name:                        
                         move.name = name
                 elif move.move_type and move.move_type == 'entry':
