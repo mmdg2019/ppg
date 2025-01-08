@@ -90,3 +90,34 @@ class AccountMove(models.Model):
 
         self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
         self._inverse_name()
+    
+    @api.model
+    def create(self, vals): 
+        # check the product category and related accounts are set or not
+        if vals.get('invoice_line_ids'):
+            invoice_lines =vals.get('invoice_line_ids')           
+            for line in invoice_lines:
+                product = self.env['product.product'].browse(line[2]['product_id'])
+                if not product.categ_id:
+                    raise UserError(_('The product %s is not assigned to any product category.') % (product.name)) 
+                if product.categ_id.property_valuation == 'real_time': 
+                    if not product.categ_id.property_account_income_categ_id:
+                        raise UserError(_('The Income Account has not been set for the product "%s".') % (product.name))
+                    if not product.categ_id.property_account_expense_categ_id:
+                        raise UserError(_('The Expense Account has not been set for the product "%s".') % (product.name))
+        return super(AccountMove, self).create(vals)  
+    
+    def write(self, vals):      
+        if vals.get('invoice_line_ids'):       
+            invoice_lines =vals.get('invoice_line_ids')            
+            for line in invoice_lines:
+                if line[0] == 0:
+                    product = self.env['product.product'].browse(line[2]['product_id'])
+                    if not product.categ_id:                        
+                        raise UserError(_('The product %s is not  assigned to any product category.') % (product.name))
+                    if product.categ_id.property_valuation == 'real_time':   
+                        if not product.categ_id.property_account_income_categ_id:
+                            raise UserError(_('The Income Account has not been set for the product "%s".') % (product.name))
+                        if not product.categ_id.property_account_expense_categ_id:
+                            raise UserError(_('The Expense Account has not been set for the product "%s".') % (product.name))
+        return super(AccountMove, self).write(vals)   
