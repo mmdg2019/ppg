@@ -480,6 +480,52 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
             'state': state,
             'category':product_cats_ids
         }
+    
+class edit_report_sales_anlys_by_qty_with_col(models.AbstractModel):
+    _name = "report.popular_reports.report_sales_anlys_by_qty_with_col"
+    _description="Sales Analysis Report by Quantity with Colors Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+#         raise UserError(123)
+        docs = None
+        dates = None
+        country = None
+        state = None
+       
+        product_ids = None
+        product_cats_ids = None
+        
+        docs = self.env['account.move.line'].search([('parent_state', '=', 'posted'), ('move_id.move_type', '=', 'out_invoice'), ('display_type', '=', 'product'), ('date', '>=', datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), ('date', '<', datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        if data['product_ids']:
+        
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+            docs = docs.filtered(lambda r: r.product_id.id in data['product_ids'])
+        else:
+            product_ids = list(set(docs.mapped('product_id')))
+
+        
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')            
+            docs = docs.filtered(lambda r: r.x_studio_invoice_category.id in data['product_cats_ids'])
+            product_ids = list(set(docs.mapped('product_id')))
+           
+        dates = list(set([doc.date.strftime('%b/%Y') for doc in docs]))
+        start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        end_date =datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        dt = []
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+        
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]
+    
+        dates.sort(key=lambda date: datetime.strptime(date, "%b/%Y"))
+        return {
+            'docs': docs,
+            'product_ids': sorted(product_ids, key=lambda x: x.display_name),
+            'dates': date_list,            
+            'category':product_cats_ids
+        }
+
 
 #     Sales Analysis Report by State
 class edit_report_sales_analysis_by_state(models.AbstractModel):
@@ -1844,6 +1890,7 @@ class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
             for date in dates:
                 sum_qty=0
                 i_name = None
+                i_pre_inv_date = None
                 for doc in docs.sorted(key=lambda x:x.date_order,reverse=False):
                     if date == doc.create_date.strftime('%m/%d/%Y'):
                         for table_line in doc.order_line:
@@ -1853,11 +1900,13 @@ class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
                                 else:
                                     sum_qty += table_line.product_uom_qty
                                 i_name = table_line.product_id
+                                if doc.x_studio_pre_invoice_date:
+                                    i_pre_inv_date = doc.x_studio_pre_invoice_date
                 if i_name != None:
-                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
+                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date, 'pre_inv_date':i_pre_inv_date})
                     sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
             if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
+                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'), i['pre_inv_date'])),'ttl_qty':round(sub_ttl_qty,2)})
         return {
             'docs':docs,
             'lst':sorted(pids, key = lambda i: i['c_name'].default_code),

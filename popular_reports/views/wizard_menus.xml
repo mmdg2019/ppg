@@ -171,6 +171,12 @@
               id="popular_reports.menu_report_sale_target_view"
               action="popular_reports.sale_target_view"
               sequence="12"/>
+    <menuitem name="Sales Analysis Report by Quantity with Colors"
+              parent="popular_reports.popular_reports_sub_menu_2"
+              id="popular_reports.menu_report_sales_anlys_by_qty_with_col"
+              action="popular_reports.wizard_act_report_sales_anlys_by_qty_with_col"
+              groups="ppg_credit_permission.group_credit_permission"
+              sequence="13"/>
 
 
     <menuitem name="Sales Order Report by Client"

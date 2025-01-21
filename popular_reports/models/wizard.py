@@ -180,6 +180,18 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_anlys_by_mon_and_cust_col').report_action(self, data=data)
     
+#     Sales Analysis Report by Quantity with Colors
+    def print_report_sales_anlys_by_qty_with_col(self):
+        data = {            
+            'product_ids': self.products.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+            'product_cats_ids': self.product_cats.ids
+        }
+        return self.env.ref('popular_reports.sales_anlys_by_qty_with_col').report_action(self, data=data)
+    
 #     Sales Analysis Report by State
     def print_report_sales_analysis_by_state(self):
         data = {
