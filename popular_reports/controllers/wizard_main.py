@@ -490,13 +490,15 @@ class edit_report_sales_anlys_by_qty_with_col(models.AbstractModel):
 #         raise UserError(123)
         docs = None
         dates = None
-        country = None
-        state = None
+        user_ids = None        
        
         product_ids = None
         product_cats_ids = None
-        
-        docs = self.env['account.move.line'].search([('parent_state', '=', 'posted'), ('move_id.move_type', '=', 'out_invoice'), ('display_type', '=', 'product'), ('date', '>=', datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), ('date', '<', datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        if data['user_ids']:
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            docs = self.env['account.move.line'].search([('parent_state', '=', 'posted'), ('move_id.move_type', '=', 'out_invoice'), ('display_type', '=', 'product'), ('partner_id', 'in', data['user_ids']),('date', '>=', datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), ('date', '<', datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
+        else:
+            docs = self.env['account.move.line'].search([('parent_state', '=', 'posted'), ('move_id.move_type', '=', 'out_invoice'), ('display_type', '=', 'product'), ('date', '>=', datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), ('date', '<', datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         if data['product_ids']:
         
             product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
@@ -519,7 +521,9 @@ class edit_report_sales_anlys_by_qty_with_col(models.AbstractModel):
         date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]
     
         dates.sort(key=lambda date: datetime.strptime(date, "%b/%Y"))
+        
         return {
+            'user_ids': user_ids,
             'docs': docs,
             'product_ids': sorted(product_ids, key=lambda x: x.display_name),
             'dates': date_list,            

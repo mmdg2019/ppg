@@ -182,7 +182,8 @@ class PopularReport(models.TransientModel):
     
 #     Sales Analysis Report by Quantity with Colors
     def print_report_sales_anlys_by_qty_with_col(self):
-        data = {            
+        data = {
+            'user_ids': self.user.ids,            
             'product_ids': self.products.ids,
             's_month':self.s_month,
             's_year': self.s_year,
