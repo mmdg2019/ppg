@@ -4614,56 +4614,45 @@
                                                     <t t-if="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; 0.7">
                                                         <td style="text-align:right;color:blue;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
-                                                    <t t-elif="0.5 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; 0.7">
+                                                    <t t-elif="0.5 &lt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &lt; 0.7">
                                                         <td style="text-align:right;color:purple;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
-                                                    <t t-elif="0.3 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; 0.5">
+                                                    <t t-elif="0.3 &lt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &lt; 0.5">
                                                         <td style="text-align:right;color:green;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
                                                     <t t-elif="round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &lt; -0.7">
                                                         <td style="text-align:right;color:red;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
-                                                    <t t-elif="-0.5 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt) * 100, 2) &gt; -0.7">
+                                                    <t t-elif="-0.5 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; -0.7">
                                                         <td style="text-align:right;color:orange;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
                                                     <t t-elif="-0.3 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; -0.5">
                                                         <td style="text-align:right;color:darkblue;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
-                                                    <t t-elif="0 &gt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &gt; -0.3">
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
-                                                        </td>
-                                                    </t>
-                                                    <t t-elif="0 &lt; round((ttl_amt - first_amt)/(first_amt or not first_amt), 2) &lt; 0.3">
-                                                        <td style="text-align:right;">
-                                                            <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
-                                                        </td>
-                                                    </t>
+                                                    
 
                                                     <t t-else="">
                                                         <td style="text-align:right;">
                                                             <span t-esc="ttl_amt"/><br/>
-                                                            <span t-esc="int(((ttl_amt - first_amt)/first_amt) * 100)"/> %
+                                                            <span t-esc="int(round(((ttl_amt - first_amt)/first_amt) * 100, 0))"/> %
                                                         </td>
                                                     </t>
                                                 </t>
