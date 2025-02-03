@@ -530,6 +530,231 @@ class edit_report_sales_anlys_by_qty_with_col(models.AbstractModel):
             'category':product_cats_ids
         }
 
+class edit_report_sales_anlys_by_qty_with_col1(models.AbstractModel):
+    _name = "report.popular_reports.report_sales_anlys_by_qty_with_col1"
+    _description="Sales Analysis Report by Quantity with Colors Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+
+        docs = None      
+        product_ids = None
+        product_cats_ids = None 
+        users = None  
+        category = None    
+       
+
+        company_id = self.env.company.id
+
+        start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
+        end_date =datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+ relativedelta(months = 1)
+        dt = []
+        ttl_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month) 
+        date_list = [start_date + relativedelta(months = x) for x in range(ttl_months)]
+                   
+        month_list = [(start_date + relativedelta(months = x)).strftime("%Y-%m") for x in range(ttl_months)]
+        # Create dynamic SQL for month columns
+        month_cases = ", ".join(
+            [f"MAX(CASE WHEN TO_CHAR(month, 'YYYY-MM') = '{month}' THEN quantity ELSE 0 END) AS \"{month}\"" for month in month_list]
+        )
+
+        if data['user_ids']:
+            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+            
+            query = f"""
+                WITH date_range AS (
+                    SELECT 
+                        GENERATE_SERIES(
+                            DATE_TRUNC('month', %(start_date)s::DATE),
+                            DATE_TRUNC('month', %(end_date)s::DATE),
+                            '1 month'
+                        ) AS month
+                ),
+                invoice_data AS (
+                    SELECT
+                        pp.id AS product_id,
+                        pp.default_code AS product_code,
+                        pt.name AS product_name,                
+                        DATE_TRUNC('month', ai.date) AS invoice_month,
+                        SUM(ail.quantity) AS total_quantity,
+                        uu.name as uom,
+                        ai.x_studio_invoice_category as category
+                    FROM
+                        account_move ai
+                    LEFT JOIN
+                        account_move_line ail ON ail.move_id = ai.id
+                    LEFT JOIN
+                        product_product pp ON pp.id = ail.product_id
+                    LEFT JOIN 
+                        product_template pt ON pt.id = pp.product_tmpl_id
+                    LEFT JOIN 
+                        uom_uom as uu on uu.id = pt.uom_id
+                    
+                    WHERE
+                        ai.move_type = 'out_invoice'
+                        AND ai.state = 'posted'
+                        AND ai.partner_id in %(user_list)s
+                        AND ai.date BETWEEN %(start_date)s AND %(end_date)s
+                        AND ai.company_id = %(company_id)s
+                        AND ail.display_type = 'product' 
+                    GROUP BY
+                        pp.id, pp.default_code, pt.name, ai.partner_id, DATE_TRUNC('month', ai.date), uu.name, ai.x_studio_invoice_category   
+                ),
+                pivoted_data AS (
+                    SELECT
+                        i.product_id,
+                        i.product_code,
+                        i.product_name,
+                        dr.month,
+                        COALESCE(SUM(CASE WHEN i.invoice_month = dr.month THEN i.total_quantity ELSE 0 END), 0) AS quantity,
+                        i.uom,
+                        i.category
+                    FROM
+                        date_range dr
+                    LEFT JOIN
+                        invoice_data i ON DATE_TRUNC('month', dr.month) = DATE_TRUNC('month', i.invoice_month)
+                    GROUP BY
+                        i.product_id, i.product_code, i.product_name, dr.month, i.uom, i.category
+                    
+                )
+                SELECT
+                    product_id,
+                    product_code,
+                    product_name,
+                    {month_cases},
+                    uom,
+                    category
+                FROM
+                    pivoted_data 
+                GROUP BY
+                    product_id, product_code, product_name, uom, category
+                ORDER BY
+                    product_code; 
+            """
+            params = {
+            'start_date': start_date,
+            'end_date': end_date,
+            'user_list': tuple(data['user_ids']),
+            'company_id': company_id,
+             }
+            
+           
+        else:
+            query = f"""
+                WITH date_range AS (
+                    SELECT 
+                        GENERATE_SERIES(
+                            DATE_TRUNC('month', %(start_date)s::DATE),
+                            DATE_TRUNC('month', %(end_date)s::DATE),
+                            '1 month'
+                        ) AS month
+                ),
+                invoice_data AS (
+                    SELECT
+                        pp.id AS product_id,
+                        pp.default_code AS product_code,
+                        pt.name AS product_name,                                        
+                        DATE_TRUNC('month', ai.date) AS invoice_month,
+                        SUM(ail.quantity) AS total_quantity,
+                        uu.name as uom,
+                        ai.x_studio_invoice_category as category
+                    FROM
+                        account_move ai
+                    LEFT JOIN
+                        account_move_line ail ON ail.move_id = ai.id
+                    LEFT JOIN
+                        product_product pp ON pp.id = ail.product_id
+                    LEFT JOIN 
+                        product_template pt ON pt.id = pp.product_tmpl_id
+                    LEFT JOIN 
+                        uom_uom as uu on uu.id = pt.uom_id
+                    WHERE
+                        ai.move_type = 'out_invoice'
+                        AND ai.state = 'posted'
+                        AND ai.date BETWEEN %(start_date)s AND %(end_date)s
+                        AND ai.company_id = %(company_id)s
+                        AND ail.display_type = 'product'   
+                    GROUP BY
+                        pp.id, pp.default_code, pt.name, ai.partner_id, DATE_TRUNC('month', ai.date), uu.name, ai.x_studio_invoice_category                 
+                ),
+                pivoted_data AS (
+                    SELECT
+                        i.product_id,
+                        i.product_code,
+                        i.product_name,                       
+                        dr.month,
+                        COALESCE(SUM(CASE WHEN i.invoice_month = dr.month THEN i.total_quantity ELSE 0 END), 0) AS quantity,
+                        i.uom,
+                        i.category
+                    FROM
+                        date_range dr
+                    LEFT JOIN
+                        invoice_data i ON DATE_TRUNC('month', dr.month) = DATE_TRUNC('month', i.invoice_month)
+                    GROUP BY
+                        i.product_id, i.product_code, i.product_name, dr.month, i.uom, i.category                  
+                )
+                SELECT
+                    product_id,
+                    product_code,
+                    product_name,                   
+                    {month_cases},
+                    uom,
+                    category
+                FROM
+                    pivoted_data   
+                GROUP BY
+                    product_id, product_code, product_name, uom, category
+                ORDER BY
+                    product_code;  
+            """
+            
+            params = {
+            'start_date': start_date,
+            'end_date': end_date,            
+            'company_id': company_id,
+             }
+           
+
+        self.env.cr.execute(query, params)
+        docs = self.env.cr.dictfetchall()
+        
+        if data['product_cats_ids']:
+            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc') 
+            docs = [item for item in docs if item['category'] in tuple(data['product_cats_ids'])]
+        if data['product_ids']:           
+            docs = [item for item in docs if item['product_id'] in tuple(data['product_ids'])]
+        
+        docs = [item for item in docs if item['product_id'] != None]
+
+        if docs:
+            month_columns = [col for col in docs[0].keys() if col in month_list]
+
+        result_dict = {}
+        for doc in docs:
+            product_id = doc['product_id']
+            if product_id not in result_dict:
+                result_dict[product_id] = {
+                'product_id' : product_id,
+                'product_code' : doc['product_code'],
+                'product_name' : doc['product_name'],
+                'uom': doc['uom'],
+                'category': doc['category'],
+                'values': [0] * len(date_list)
+                }
+            # monthly_values = [doc.get(month, 0) for month in month_columns]
+            monthly_values = [{'month': month, 'monthly_tot': doc.get(month, 0)} for month in month_columns]
+            result_dict[product_id]['values'] = monthly_values
+
+        # convert to a list to pass to qweb
+        docs = list(result_dict.values())        
+        
+        return {
+            'users': users,
+            'docs': docs,   
+            # 'product_ids': sorted(data['product_ids'], key=lambda x: x.display_name),
+            'dates': date_list,            
+            'category': category
+        }
 
 #     Sales Analysis Report by State
 class edit_report_sales_analysis_by_state(models.AbstractModel):
