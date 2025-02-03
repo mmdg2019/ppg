@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <!--Export Sales Analysis Report by Quantity with Colors -->
+        <record model="ir.ui.view" id="wizard_form_report_sales_analysis_by_quantity_with_colors">
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Export Sales Analysis Report by Quantity with Colors">
+                    <sheet>
+                        <group colspan="4">
+                            <field name="start_date" string="Date" required="1" widget="date"/>
+                        </group>
+                        <group string="Product Category" colspan="4">
+                                <field name="products" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Print Report" name="print_report_export_sales_analysis_by_quantity_with_colors" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Export Sales Analysis Report by Quantity with Colors -->
+        <record model='ir.actions.act_window' id='wizard_act_export_sales_analysis_report_by_quant_colors'>
+            <field name="name">Export Sales Analysis Report by Quantity with Colors</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_sales_analysis_by_quantity_with_colors"/>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Export Sales Analysis Report by Quantity with Colors -->
+    <template id="report_sales_analysis_by_quantity_with_colors">
+        <t t-call="web.html_container">
+            <div class="page">
+                <h2 style="text-align:center">Export Sales Analysis Report by Quantity with Colors</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th style="color:blue">Over 1 Year (Qty)</th>
+                            <th style="color:orange">Over 1.5 Year (Qty)</th>
+                            <th style="color:red">Over 2 Year (Qty)</th>
+                            <th>Total Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="report_data" t-as="row">
+                            <tr>
+                                <td><t t-esc="row['product_name']"/></td>
+                                <td><t t-esc="row['over_1_year']"/></td>
+                                <td><t t-esc="row['over_1.5_year']"/></td>
+                                <td><t t-esc="row['over_2_year']"/></td>
+                                <td><t t-esc="row['total']"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+</odoo>

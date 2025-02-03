@@ -1196,5 +1196,16 @@
         <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
+    
+        <!-- Export Sale Analysis Report by Quantity with Color -->
+    <record id="action_report_sales_analysis_by_quantity_with_colors" model="ir.actions.report">
+        <field name="name">Export Sales Analysis by Quantity with Colors</field>
+        <field name="model">wizard.popular.reports</field>
+        <field name="report_type">qweb-html</field>  
+        <field name="report_name">popular_reports.report_sales_analysis_by_quantity_with_colors</field>
+        <field name="report_file">popular_reports.report_sales_analysis_by_quantity_with_colors</field>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
 
 </odoo>
