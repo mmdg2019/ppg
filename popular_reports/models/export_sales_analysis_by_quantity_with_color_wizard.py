@@ -1,5 +1,5 @@
 from odoo import models, fields
-
+ 
 class PopularReportMethods(models.TransientModel):
     _inherit = "wizard.popular.reports"
     
@@ -27,22 +27,24 @@ class PopularReportMethods(models.TransientModel):
                     'over_1_year': 0,
                     'over_1.5_year': 0,
                     'over_2_year': 0,
-                    'total': 0.0
+                    'total': 0.0,   
                 }
             
             in_date = quant.in_date.date() if quant.in_date else fields.Date.today()
             delta = fields.Date.today() - in_date
             age_years = delta.days / 365.0
+            
                   
             if age_years >= 2:
                 product_data[product_id]['over_2_year'] += quant.quantity
+                product_data[product_id]['total'] += quant.quantity
             elif age_years >= 1.5:
                 product_data[product_id]['over_1.5_year'] += quant.quantity
+                product_data[product_id]['total'] += quant.quantity
             elif age_years >= 1:
                 product_data[product_id]['over_1_year'] += quant.quantity
-                
                 product_data[product_id]['total'] += quant.quantity
-        
+                      
         report_data = []
         for product_id, data in product_data.items():
             product = self.env['product.product'].browse(product_id)
