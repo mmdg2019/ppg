@@ -4769,23 +4769,26 @@
                             <tbody style="border-bottom:1px white;">
                                 <tr>
                                     <td style="text-align:center;color:blue;">
-                                        <span> (+)Quantity > 70% </span>
+                                        <!-- <span> (+)Quantity > 70% </span> -->
+                                        <span>70% အထက် ရောင်းအားတက်သည်</span>
                                     </td>
                                     <td style="text-align:center;color:purple;">
-                                        <span> 50% &lt; (+)Quantity &lt; 70%</span>
+                                        <!-- <span> 50% &lt; (+)Quantity &lt; 70%</span> -->
+                                        <span>30% နှင့် 50% ကြား ရောင်းအားတက်သည်</span>
                                     </td>
                                     <td style="text-align:center;color:green;">
-                                        <span> 30% &lt; (+)Quantity &lt; 50%</span>
+                                        <!-- <span> 30% &lt; (+)Quantity &lt; 50%</span> -->
+                                        <span>50% နှင့် 70% ကြား ရောင်းအားတက်သည်</span>
                                     </td>
                                                                     
                                     <td style="text-align:center;color:darkblue;">
-                                        <span> -30% &lt; (-)Quantity &lt; -50%</span>
+                                        <span> 30% နှင့် 50% ကြား ရောင်းအားကျသည်</span>
                                     </td>
                                     <td style="text-align:center;color:orange;">
-                                        <span> -50% &lt; (-)Quantity &lt; -70%</span>
+                                        <span> 50% နှင့် 70% ကြား ရောင်းအားကျသည်</span>
                                     </td>
                                     <td style="text-align:center;color:red;">
-                                        <span> (-)Quantity > -70% </span>
+                                        <span>70% အထက် ရောင်းအားကျသည်</span>
                                     </td>
                                 </tr>
                             </tbody>
