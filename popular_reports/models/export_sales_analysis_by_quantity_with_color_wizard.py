@@ -48,13 +48,13 @@ class PopularReportMethods(models.TransientModel):
             delta = self.start_date - stock_entry_date
             age_years = delta.days / 365.0
 
-            if age_years >= 2:
+            if age_years > 2:
                 product_data[product_id]['over_2_year'] += quant.quantity
                 product_data[product_id]['total'] += quant.quantity
-            elif age_years >= 1.5:
+            elif age_years > 1.5:
                 product_data[product_id]['over_1.5_year'] += quant.quantity
                 product_data[product_id]['total'] += quant.quantity
-            elif age_years >= 1:
+            elif age_years > 1:
                 product_data[product_id]['over_1_year'] += quant.quantity
                 product_data[product_id]['total'] += quant.quantity
 
