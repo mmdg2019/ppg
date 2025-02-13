@@ -10,14 +10,12 @@ class PopularReportMethods(models.TransientModel):
     def print_report_export_sales_analysis_by_quantity_with_colors(self):
         domain = [
             ('quantity', '>', 0),
-            ('location_id.usage', '=', 'internal') 
+            ('location_id.usage', '=', 'internal')
         ]
-
         if self.products:
             domain.append(('product_id', 'in', self.products.ids))
         if self.product_cat:
             domain.append(('product_id.categ_id', '=', self.product_cat.id))
-
         if self.start_date:
             domain.append(('in_date', '<=', self.start_date))
 
@@ -37,26 +35,34 @@ class PopularReportMethods(models.TransientModel):
                     'total': 0.0,
                 }
 
-            oldest_move = stock_move_env.search([
+            remaining_qty = quant.quantity
+
+            moves = stock_move_env.search([
                 ('product_id', '=', product.id),
                 ('state', '=', 'done'),
                 ('location_dest_id.usage', '=', 'internal'),
-                ('date', '<=', self.start_date) 
-            ], order="date asc", limit=1)
+                ('date', '<=', self.start_date)
+            ], order="date asc")
+            
+            for move in moves:
+                if remaining_qty <= 0:
+                    break
 
-            stock_entry_date = oldest_move.date.date() if oldest_move else self.start_date
-            delta = self.start_date - stock_entry_date
-            age_years = delta.days / 365.0
+                allocated = min(remaining_qty, move.product_uom_qty)
+                move_date = move.date.date()  
+                
+                delta = self.start_date - move_date
+                age_years = delta.days / 365.0
 
-            if age_years > 2:
-                product_data[product_id]['over_2_year'] += quant.quantity
-                product_data[product_id]['total'] += quant.quantity
-            elif age_years > 1.5:
-                product_data[product_id]['over_1.5_year'] += quant.quantity
-                product_data[product_id]['total'] += quant.quantity
-            elif age_years > 1:
-                product_data[product_id]['over_1_year'] += quant.quantity
-                product_data[product_id]['total'] += quant.quantity
+                if age_years > 2:
+                    product_data[product_id]['over_2_year'] += allocated
+                elif age_years > 1.5:
+                    product_data[product_id]['over_1.5_year'] += allocated
+                elif age_years > 1:
+                    product_data[product_id]['over_1_year'] += allocated
+
+                product_data[product_id]['total'] += allocated
+                remaining_qty -= allocated
 
         report_data = []
         for product_id, data in product_data.items():
@@ -66,7 +72,7 @@ class PopularReportMethods(models.TransientModel):
                 'over_1_year': data['over_1_year'],
                 'over_1.5_year': data['over_1.5_year'],
                 'over_2_year': data['over_2_year'],
-                'total': data['total']
+                'total': data['total'],
             })
 
         return self.env.ref('popular_reports.action_report_sales_analysis_by_quantity_with_colors').report_action(
