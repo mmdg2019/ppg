@@ -32,7 +32,6 @@ class PopularReportMethods(models.TransientModel):
                     'over_1_year': 0,
                     'over_1.5_year': 0,
                     'over_2_year': 0,
-                    'total': 0.0,
                 }
 
             remaining_qty = quant.quantity
@@ -43,17 +42,21 @@ class PopularReportMethods(models.TransientModel):
                 ('location_dest_id.usage', '=', 'internal'),
                 ('date', '<=', self.start_date)
             ], order="date asc")
-            
+
             for move in moves:
                 if remaining_qty <= 0:
-                    break
+                    break  
 
-                allocated = min(remaining_qty, move.product_uom_qty)
-                move_date = move.date.date()  
-                
+                move_date = move.date.date()
                 delta = self.start_date - move_date
                 age_years = delta.days / 365.0
 
+                if age_years < 1:  
+                    break  
+                
+                allocated = min(remaining_qty, move.product_uom_qty)
+
+                
                 if age_years > 2:
                     product_data[product_id]['over_2_year'] += allocated
                 elif age_years > 1.5:
@@ -61,19 +64,21 @@ class PopularReportMethods(models.TransientModel):
                 elif age_years > 1:
                     product_data[product_id]['over_1_year'] += allocated
 
-                product_data[product_id]['total'] += allocated
-                remaining_qty -= allocated
-
+                remaining_qty -= allocated  
         report_data = []
         for product_id, data in product_data.items():
             product = self.env['product.product'].browse(product_id)
-            report_data.append({
-                'product_name': product.display_name,
-                'over_1_year': data['over_1_year'],
-                'over_1.5_year': data['over_1.5_year'],
-                'over_2_year': data['over_2_year'],
-                'total': data['total'],
-            })
+            
+            total = data['over_1_year'] + data['over_1.5_year'] + data['over_2_year']
+
+            if total > 0:
+                report_data.append({
+                    'product_name': product.display_name,
+                    'over_1_year': data['over_1_year'],
+                    'over_1.5_year': data['over_1.5_year'],
+                    'over_2_year': data['over_2_year'],
+                    'total': total,
+                })
 
         return self.env.ref('popular_reports.action_report_sales_analysis_by_quantity_with_colors').report_action(
             self, 
