@@ -9,22 +9,20 @@ class PopularReportMethods(models.TransientModel):
     # This function processed the data of onhand product and put them on report.
     def print_report_export_sales_analysis_by_quantity_with_colors(self):
         domain = [
-            ('quantity', '>', 0),
-            ('location_id.usage', '=', 'internal')
+            ('state', '=', 'done'),
+            ('location_dest_id.usage', '=', 'internal'),
+            ('date', '<=', self.start_date)
         ]
         if self.products:
             domain.append(('product_id', 'in', self.products.ids))
         if self.product_cat:
             domain.append(('product_id.categ_id', '=', self.product_cat.id))
-        if self.start_date:
-            domain.append(('in_date', '<=', self.start_date))
 
-        quants = self.env['stock.quant'].search(domain)
-        stock_move_env = self.env['stock.move']
+        stock_moves = self.env['stock.move'].search(domain, order="date asc")
         product_data = {}
 
-        for quant in quants:
-            product = quant.product_id
+        for move in stock_moves:
+            product = move.product_id
             product_id = product.id
 
             if product_id not in product_data:
@@ -32,43 +30,35 @@ class PopularReportMethods(models.TransientModel):
                     'over_1_year': 0,
                     'over_1.5_year': 0,
                     'over_2_year': 0,
+                    'remaining_qty': product.with_context({'location': move.location_dest_id.id}).qty_available  
                 }
 
-            remaining_qty = quant.quantity
+            remaining_qty = product_data[product_id]['remaining_qty']
+            if remaining_qty <= 0:
+                continue  
 
-            moves = stock_move_env.search([
-                ('product_id', '=', product.id),
-                ('state', '=', 'done'),
-                ('location_dest_id.usage', '=', 'internal'),
-                ('date', '<=', self.start_date)
-            ], order="date asc")
+            move_date = move.date.date()
+            delta = self.start_date - move_date
+            age_years = delta.days / 365.0
 
-            for move in moves:
-                if remaining_qty <= 0:
-                    break  
+            if age_years < 1:
+                continue 
 
-                move_date = move.date.date()
-                delta = self.start_date - move_date
-                age_years = delta.days / 365.0
+            allocated = min(remaining_qty, move.product_uom_qty)
 
-                if age_years < 1:  
-                    break  
-                
-                allocated = min(remaining_qty, move.product_uom_qty)
+            if age_years > 2:
+                product_data[product_id]['over_2_year'] += allocated
+            elif age_years > 1.5:
+                product_data[product_id]['over_1.5_year'] += allocated
+            elif age_years > 1:
+                product_data[product_id]['over_1_year'] += allocated
 
-                
-                if age_years > 2:
-                    product_data[product_id]['over_2_year'] += allocated
-                elif age_years > 1.5:
-                    product_data[product_id]['over_1.5_year'] += allocated
-                elif age_years > 1:
-                    product_data[product_id]['over_1_year'] += allocated
+            product_data[product_id]['remaining_qty'] -= allocated  
 
-                remaining_qty -= allocated  
         report_data = []
         for product_id, data in product_data.items():
             product = self.env['product.product'].browse(product_id)
-            
+
             total = data['over_1_year'] + data['over_1.5_year'] + data['over_2_year']
 
             if total > 0:
