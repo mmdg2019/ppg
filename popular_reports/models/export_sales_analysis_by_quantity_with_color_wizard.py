@@ -9,20 +9,18 @@ class PopularReportMethods(models.TransientModel):
     # This function processed the data of onhand product and put them on report.
     def print_report_export_sales_analysis_by_quantity_with_colors(self):
         domain = [
-            ('state', '=', 'done'),
-            ('location_dest_id.usage', '=', 'internal'),
-            ('date', '<=', self.start_date)
+            ('move_id.state', '=', 'done'),  
+            ('location_dest_id.usage', '=', 'internal'),  
+            ('date', '<=', self.start_date)  
         ]
         if self.products:
-            domain.append(('product_id', 'in', self.products.ids))
-        if self.product_cat:
-            domain.append(('product_id.categ_id', '=', self.product_cat.id))
+                domain.append(('product_id', 'in', self.products.ids))
 
-        stock_moves = self.env['stock.move'].search(domain, order="date asc")
+        move_lines = self.env['stock.move.line'].search(domain, order="date asc")
         product_data = {}
 
-        for move in stock_moves:
-            product = move.product_id
+        for move_line in move_lines:
+            product = move_line.product_id
             product_id = product.id
 
             if product_id not in product_data:
@@ -30,21 +28,21 @@ class PopularReportMethods(models.TransientModel):
                     'over_1_year': 0,
                     'over_1.5_year': 0,
                     'over_2_year': 0,
-                    'remaining_qty': product.with_context({'location': move.location_dest_id.id}).qty_available  
+                    'remaining_qty': product.with_context({'location': move_line.location_dest_id.id}).qty_available  
                 }
 
             remaining_qty = product_data[product_id]['remaining_qty']
-            if remaining_qty <= 0:
+            if remaining_qty <= 0: 
                 continue  
 
-            move_date = move.date.date()
+            move_date = move_line.date.date()  
             delta = self.start_date - move_date
-            age_years = delta.days / 365.0
+            age_years = delta.days / 365.0  
 
             if age_years < 1:
-                continue 
+                continue  
 
-            allocated = min(remaining_qty, move.product_uom_qty)
+            allocated = min(remaining_qty, move_line.qty_done)  
 
             if age_years > 2:
                 product_data[product_id]['over_2_year'] += allocated
@@ -52,9 +50,8 @@ class PopularReportMethods(models.TransientModel):
                 product_data[product_id]['over_1.5_year'] += allocated
             elif age_years > 1:
                 product_data[product_id]['over_1_year'] += allocated
-
             product_data[product_id]['remaining_qty'] -= allocated  
-
+            
         report_data = []
         for product_id, data in product_data.items():
             product = self.env['product.product'].browse(product_id)
