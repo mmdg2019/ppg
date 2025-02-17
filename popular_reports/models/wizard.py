@@ -327,6 +327,14 @@ class PopularReport(models.TransientModel):
             'user_ids': self.user.ids
         }
         return self.env.ref('popular_reports.stock_trans_prod_qty_list_by_date').report_action(self, data=data)
+    
+    # export stock analysis report by quantity with colors
+    def print_report_stock_analys_by_qty_with_colors(self):
+        data = {
+            'product_ids': self.products.ids,            
+            'start_date': self.start_date,   
+        }
+        return self.env.ref('popular_reports.stock_analys_by_qty_with_colors').report_action(self, data=data)
 
     # set excel sheet styles
     def get_style(self, workbook):
