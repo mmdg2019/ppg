@@ -61,10 +61,10 @@
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
 
-    <!-- Sales Analysis Report by Quantity with Colors -->
+    <!-- Stock Analysis Report by Product Quantity in Warehouse with Colors -->
     <record id="stock_analys_by_qty_with_colors" model="ir.actions.report">
-        <field name="name">Stock Analysis Report by Quantity with Colors</field>
-        <field name="print_report_name">Stock Analysis Report by Quantity with Colors</field>
+        <field name="name">Stock Analysis Report by Product Quantity in Warehouse with Colors</field>
+        <field name="print_report_name">Stock Analysis Report by Product Quantity in Warehouse with Colors</field>
         <field name="model">stock.move.line</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_stock_analys_by_qty_with_colors</field>

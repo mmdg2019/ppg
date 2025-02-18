@@ -1360,10 +1360,10 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
             'printing_date': cdate,
             'printing_time': ctime
         }
-# export stock analysis report by quantity with colors
+# export Stock Analysis Report by Product Quantity in Warehouse with Colors
 class edit_report_stock_analys_by_qty_with_colors(models.AbstractModel):
     _name = "report.popular_reports.report_stock_analys_by_qty_with_colors"
-    _description="Stock Analysis by Quantity with Colors Report Editing"
+    _description="Stock Analysis Report by Product Quantity in Warehouse with Colors Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1429,19 +1429,19 @@ class edit_report_stock_analys_by_qty_with_colors(models.AbstractModel):
                             break
         
         report_data = []
-        for product_id, data in product_data.items():
+        for product_id, item in product_data.items():
             
             report_data.append({
                 'product_name': product_id.display_name,
-                'over_1_year': data['over_1_year'],
-                'over_1.5_year': data['over_1.5_year'],
-                'over_2_year': data['over_2_year'],
-                'total': data['total'],
-                'uom': data['uom']
+                'over_1_year': item['over_1_year'],
+                'over_1.5_year': item['over_1.5_year'],
+                'over_2_year': item['over_2_year'],
+                'total': item['total'],
+                'uom': item['uom']
             })
 
         return {           
-            
+            'start_date': data['start_date'],
             'report_data': report_data,
             
        }

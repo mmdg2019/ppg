@@ -553,14 +553,21 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        Export Stock Analysis Report by Quantity with Colors                                       
+                                        Stock Analysis Report by Product Quantity in Warehouse with Colors                                      
                                         <br/>
                                     </font>
                                 </b>
                             </div>
+                        </div>                        
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Start Date : </b>
+                                    <t t-esc="datetime.datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/>
+                                </span>                                
+                            </div>
                         </div>
-                        <br/> 
-                                               
+                        <br/>                       
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em;">
                            
                             <thead >
@@ -595,13 +602,13 @@
                                             <td>
                                                 <span t-esc="row['product_name']"/>
                                             </td>
-                                            <td  style="text-align:right;">
+                                            <td  style="color:blue; text-align:right;">
                                                 <span t-esc="'{0:,.2f}'.format(row['over_1_year'])"/>
                                             </td>
-                                            <td  style="text-align:right;">
+                                            <td  style="color:orange; text-align:right;">
                                                 <span t-esc="'{0:,.2f}'.format(row['over_1.5_year'])"/>
                                             </td>
-                                            <td  style="text-align:right;">
+                                            <td  style="color:red; text-align:right;">
                                                 <span t-esc="'{0:,.2f}'.format(row['over_2_year'])"/>
                                             </td>
                                             <td  style="text-align:right;">
