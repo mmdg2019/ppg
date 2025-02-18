@@ -335,10 +335,11 @@
               action="popular_reports.wizard_act_report_stock_trans_prod_qty_list_by_date"
               sequence="25"/>
     
-    <menuitem name="Stock Analysis Report by Quantity with Colors"
+    <menuitem name="Stock Analysis Report by Product Quantity in Warehouse with Colors"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_analys_by_qty_with_colors"
               action="popular_reports.wizard_act_report_stock_analys_by_qty_with_colors"
+              groups="ppg_credit_permission.group_credit_permission"
               sequence="26"/>
 
     <menuitem name="All Balance Listing"
