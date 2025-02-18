@@ -1380,7 +1380,7 @@ class edit_report_stock_analys_by_qty_with_colors(models.AbstractModel):
         product_data = {}  
           
         product_ids = quants.mapped('product_id.id')
-        stock_moves = self.env['stock.move.line'].search([('product_id','in',product_ids),'|',('reference','like', '%IN%'),('reference','like','%SR%')],order='date desc')
+        stock_moves = self.env['stock.move.line'].search([('product_id','in',product_ids),('location_id.usage','not in', ('internal','transit')),('location_dest_id.usage','in',('internal','transit'))],order='date desc')
         for quant in quants:
             
             incoming_moves = stock_moves.filtered(lambda r: r.product_id == quant.product_id)
