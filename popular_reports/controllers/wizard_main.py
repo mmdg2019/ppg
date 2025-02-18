@@ -1360,6 +1360,92 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
             'printing_date': cdate,
             'printing_time': ctime
         }
+# export Stock Analysis Report by Product Quantity in Warehouse with Colors
+class edit_report_stock_analys_by_qty_with_colors(models.AbstractModel):
+    _name = "report.popular_reports.report_stock_analys_by_qty_with_colors"
+    _description="Stock Analysis Report by Product Quantity in Warehouse with Colors Report Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        domain = [
+            ('quantity', '>', 0),
+            ('location_id.usage', '=', 'internal'),
+            ('in_date', '<=', data['start_date']) 
+        ]
+
+        if data['product_ids']:
+            domain.append(('product_id', 'in', data['product_ids']))  
+
+        quants = self.env['stock.quant'].search(domain, order="product_id asc")
+        product_data = {}  
+          
+        product_ids = quants.mapped('product_id.id')
+        stock_moves = self.env['stock.move.line'].search([('product_id','in',product_ids),('location_id.usage','not in', ('internal','transit')),('location_dest_id.usage','in',('internal','transit'))],order='date desc')
+        for quant in quants:
+            
+            incoming_moves = stock_moves.filtered(lambda r: r.product_id == quant.product_id)
+            qty_available = quant.quantity
+            to_add = []            
+           
+            if incoming_moves:
+                for move in incoming_moves:
+                    start_date = datetime.strptime(data['start_date'], '%Y-%m-%d')
+                    
+                    delta = start_date - move.date
+
+                    age_years = delta.days / 365.0
+                    product_id = move.product_id
+                    if product_id not in product_data:
+                        product_data[product_id] = {
+                            'over_1_year': 0,
+                            'over_1.5_year': 0,
+                            'over_2_year': 0,
+                            'total': 0.0,
+                            'uom': quant.product_uom_id.name
+                        }
+                    if qty_available > 0:
+                        to_add.append(move.id)
+                        if qty_available >= move.qty_done:
+                            qty_available -= move.qty_done
+                            if age_years > 2:
+                                product_data[product_id]['over_2_year'] += move.qty_done
+                                product_data[product_id]['total'] += move.qty_done
+                            elif age_years > 1.5:
+                                product_data[product_id]['over_1.5_year'] += move.qty_done
+                                product_data[product_id]['total'] += move.qty_done
+                            elif age_years > 1:
+                                product_data[product_id]['over_1_year'] += move.qty_done
+                                product_data[product_id]['total'] += move.qty_done
+                        else:
+                            if age_years > 2:
+                                product_data[product_id]['over_2_year'] += qty_available
+                                product_data[product_id]['total'] += qty_available
+                            elif age_years > 1.5:
+                                product_data[product_id]['over_1.5_year'] += qty_available
+                                product_data[product_id]['total'] += qty_available
+                            elif age_years > 1:
+                                product_data[product_id]['over_1_year'] += qty_available
+                                product_data[product_id]['total'] += qty_available
+                            break
+        
+        report_data = []
+        for product_id, item in product_data.items():
+            
+            report_data.append({
+                'product_name': product_id.display_name,
+                'over_1_year': item['over_1_year'],
+                'over_1.5_year': item['over_1.5_year'],
+                'over_2_year': item['over_2_year'],
+                'total': item['total'],
+                'uom': item['uom']
+            })
+
+        return {           
+            'start_date': data['start_date'],
+            'report_data': report_data,
+            
+       }
+
 
 #     Stock Transfer Information Summary
 class edit_report_stock_transfer_dtl_info(models.AbstractModel):

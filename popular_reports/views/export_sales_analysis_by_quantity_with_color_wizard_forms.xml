@@ -12,8 +12,9 @@
                         <group colspan="4">
                             <field name="start_date" string="Date" required="1" widget="date"/>
                         </group>
+                        
                         <group string="Product Category" colspan="4">
-                                <field name="products" required="1" widget="many2many_tags"/>
+                                <field name="products" widget="many2many_tags"/>
                         </group>
                     </sheet>
                     <footer>
