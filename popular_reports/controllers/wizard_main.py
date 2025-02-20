@@ -1360,10 +1360,10 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
             'printing_date': cdate,
             'printing_time': ctime
         }
-# export Stock Analysis Report by Product Quantity in Warehouse with Colors
+# export Stock Analysis Report by Quantity with Colors (N)
 class edit_report_stock_analys_by_qty_with_colors(models.AbstractModel):
     _name = "report.popular_reports.report_stock_analys_by_qty_with_colors"
-    _description="Stock Analysis Report by Product Quantity in Warehouse with Colors Report Editing"
+    _description="Stock Analysis Report by Stock Analysis Report by Quantity with Colors (N) Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):

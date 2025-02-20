@@ -553,7 +553,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        Stock Analysis Report by Product Quantity in Warehouse with Colors                                      
+                                        Stock Analysis Report by Quantity with Colors (N)                                     
                                         <br/>
                                     </font>
                                 </b>
@@ -4894,23 +4894,20 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em;">
                             <tbody style="border-bottom:1px white;">
                                 <tr>
-                                    <td style="text-align:center;color:blue;">
-                                        <!-- <span> (+)Quantity > 70% </span> -->
+                                    <td style="text-align:center;color:blue;">                                        
                                         <span>70% အထက် ရောင်းအားတက်သည်</span>
                                     </td>
-                                    <td style="text-align:center;color:purple;">
-                                        <!-- <span> 50% &lt; (+)Quantity &lt; 70%</span> -->
+                                    <td style="text-align:center;color:purple;">                                        
                                         <span>30% နှင့် 50% ကြား ရောင်းအားတက်သည်</span>
                                     </td>
-                                    <td style="text-align:center;color:green;">
-                                        <!-- <span> 30% &lt; (+)Quantity &lt; 50%</span> -->
+                                    <td style="text-align:center;color:green;">                                       
                                         <span>50% နှင့် 70% ကြား ရောင်းအားတက်သည်</span>
                                     </td>
                                                                     
                                     <td style="text-align:center;color:darkblue;">
                                         <span> 30% နှင့် 50% ကြား ရောင်းအားကျသည်</span>
                                     </td>
-                                    <td style="text-align:center;color:orange;">
+                                    <td style="text-align:center;color:darkorange;">
                                         <span> 50% နှင့် 70% ကြား ရောင်းအားကျသည်</span>
                                     </td>
                                     <td style="text-align:center;color:red;">
@@ -4974,42 +4971,42 @@
                                                     <t t-if="set_first_amt == True">
                                                         <t t-if="round((monthly_ttl - first_amt)/(first_amt or not first_amt), 2) &gt; 0.7">                                                          
                                                             <td style="text-align:right;color:blue;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>
                                                         </t>
                                                         <t t-elif="0.5 &lt; round((monthly_ttl - first_amt)/(first_amt or not first_amt), 2) &lt; 0.7">
                                                            
-                                                            <td style="text-align:right;color:purple;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                            <td style="text-align:right;color:green;">
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>
                                                         </t>
                                                         <t t-elif="0.3 &lt; round((monthly_ttl - first_amt)/(first_amt or not first_amt), 2) &lt; 0.5">
                                                           
-                                                            <td style="text-align:right;color:green;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                            <td style="text-align:right;color:purple;">
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>                                                            
                                                         </t>
                                                         <t t-elif="round((monthly_ttl - first_amt)/(first_amt or not first_amt), 2) &lt; -0.7">
                                                            
                                                             <td style="text-align:right;color:red;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>
                                                         </t>
                                                         <t t-elif="-0.5 &gt; round((monthly_ttl - first_amt)/(first_amt or not first_amt), 2) &gt; -0.7">
                                                           
-                                                            <td style="text-align:right;color:orange;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                            <td style="text-align:right;color:darkorange;">
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>
                                                         </t>
                                                         <t t-elif="-0.3 &gt; round((monthly_ttl - first_amt)/(first_amt or not first_amt), 2) &gt; -0.5">
                                                           
                                                             <td style="text-align:right;color:darkblue;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>
                                                         </t>
@@ -5017,7 +5014,7 @@
                                                         <t t-else="">
                                                          
                                                             <td style="text-align:right;">
-                                                                <span t-esc="monthly_ttl"/><br/>
+                                                                <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                                 <span t-esc="int(round(((monthly_ttl - first_amt)/first_amt) * 100, 0))"/> %
                                                             </td>
                                                         </t>
@@ -5025,14 +5022,14 @@
                                                     <t t-else="">
                                                        
                                                         <td style="text-align:right;">
-                                                            <span t-esc="monthly_ttl"/><br/>
+                                                            <span t-esc="'{0:,.2f}'.format(monthly_ttl)"/><br/>
                                                         </td>
                                                     </t>
                                                 
                                             </t>                                            
                                            
                                             <td  style="text-align:right;">
-                                                <span t-esc="ttl"/>
+                                                <span t-esc="'{0:,.2f}'.format(ttl)"/>
                                             </td>
                                             
                                             <td  style="text-align:right;">

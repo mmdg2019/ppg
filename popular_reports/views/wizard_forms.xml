@@ -1960,7 +1960,7 @@
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
-                <form string="Export Stock Analysis Report by Product Quantity in Warehouse with Colors">
+                <form string="Export Stock Analysis Report by Quantity with Colors (N)">
                     <sheet>
                         <group colspan="4">
                             <field name="start_date" string="Date" required="1" widget="date"/>
@@ -1979,7 +1979,7 @@
         </record>
 
         <record model='ir.actions.act_window' id='wizard_act_report_stock_analys_by_qty_with_colors'>
-            <field name="name">Export Stock Analysis Report by Product Quantity in Warehouse with Colors</field>
+            <field name="name">Export Stock Analysis Report by Quantity with Colors (N)</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>            
