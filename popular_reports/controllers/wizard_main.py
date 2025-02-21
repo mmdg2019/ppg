@@ -530,9 +530,9 @@ class edit_report_sales_anlys_by_qty_with_col(models.AbstractModel):
             'category':product_cats_ids
         }
 
-class edit_report_sales_anlys_by_qty_with_col1(models.AbstractModel):
-    _name = "report.popular_reports.report_sales_anlys_by_qty_with_col1"
-    _description="Sales Analysis Report by Quantity with Colors Editing"
+class edit_report_stock_anlys_by_qty_with_col(models.AbstractModel):
+    _name = "report.popular_reports.report_stock_anlys_by_qty_with_col"
+    _description="Stock Analysis Report by Quantity with Colors Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -1121,8 +1121,12 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
         # filter users based on state and filter invoices based on filtered users
         if data['filter_state_id']:
             user_ids = user_ids.filtered(lambda r: r.state_id.id in data['filter_state_id'])
-            state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name            
-            docs = docs.filtered(lambda r: r.partner_id in user_ids)
+            state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name 
+        if data['user_ids']:
+            user_ids = user_ids.filtered(lambda r:r.id in data['user_ids'])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')  
+
+        docs = docs.filtered(lambda r: r.partner_id in user_ids)
         
         # change selected date range to list of months 
         start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
@@ -1155,6 +1159,7 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
             'dates': date_list,
             'product_cats_ids': product_cats_ids,
             'state': state, 
+            'user_ids': customers,
         }   
   
     
@@ -1360,10 +1365,10 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
             'printing_date': cdate,
             'printing_time': ctime
         }
-# export Stock Analysis Report by Quantity with Colors (N)
+# export Stock Analysis Report by Product Quantity in Warehouse with Colors
 class edit_report_stock_analys_by_qty_with_colors(models.AbstractModel):
     _name = "report.popular_reports.report_stock_analys_by_qty_with_colors"
-    _description="Stock Analysis Report by Stock Analysis Report by Quantity with Colors (N) Report Editing"
+    _description="Stock Analysis Report by Product Quantity in Warehouse with Colors Report Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):

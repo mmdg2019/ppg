@@ -193,7 +193,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_anlys_by_qty_with_col').report_action(self, data=data)
     
-    def print_report_sales_anlys_by_qty_with_col1(self):
+    def print_report_stock_anlys_by_qty_with_col(self):
         data = {            
             'product_ids': self.products.ids,
             'user_ids': self.user.ids,
@@ -203,7 +203,7 @@ class PopularReport(models.TransientModel):
             'e_year': self.e_year,
             'product_cats_ids': self.product_cats.ids
         }
-        return self.env.ref('popular_reports.sales_anlys_by_qty_with_col1').report_action(self, data=data)
+        return self.env.ref('popular_reports.stock_anlys_by_qty_with_col').report_action(self, data=data)
     
 #     Sales Analysis Report by State
     def print_report_sales_analysis_by_state(self):
@@ -328,7 +328,7 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.stock_trans_prod_qty_list_by_date').report_action(self, data=data)
     
-    # export stock analysis report by quantity with colors
+    # export stock analysis report by Product Quantity in Warehouse with Colors
     def print_report_stock_analys_by_qty_with_colors(self):
         data = {
             'product_ids': self.products.ids,            
@@ -492,6 +492,7 @@ class PopularReport(models.TransientModel):
             'product_ids': self.products.ids,
             'product_cats_ids': self.product_cats.ids,
             'filter_state_id': self.filter_state_id.ids,
+            'user_ids': self.user.ids,
             's_month':self.s_month,
             's_year': self.s_year,
             'e_month': self.e_month,
