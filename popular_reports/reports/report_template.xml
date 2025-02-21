@@ -519,7 +519,7 @@
 		</t>
 	</template>
 
-    <!-- export stock analysis report by quantity with colors -->
+    <!-- export stock analysis report by Product Quantity in Warehouse with Colors -->
     <template id="report_stock_analys_by_qty_with_colors">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
@@ -553,7 +553,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        Stock Analysis Report by Quantity with Colors (N)                                     
+                                        Stock Analysis Report by Product Quantity in Warehouse with Colors                                     
                                         <br/>
                                     </font>
                                 </b>
@@ -4827,7 +4827,7 @@
         </t>
     </template>
 
-     <template id="report_sales_anlys_by_qty_with_col1">
+     <template id="report_stock_anlys_by_qty_with_col">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
                 <head>
@@ -4860,7 +4860,7 @@
                             <div class="col">
                                 <b>
                                     <font style="font-size: 24px;">
-                                        Sales Analysis Report by Quantity with Colors                                        
+                                        Stock Analysis Report by Quantity with Colors                                        
                                         <br/>
                                     </font>
                                 </b>
