@@ -1121,8 +1121,12 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
         # filter users based on state and filter invoices based on filtered users
         if data['filter_state_id']:
             user_ids = user_ids.filtered(lambda r: r.state_id.id in data['filter_state_id'])
-            state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name            
-            docs = docs.filtered(lambda r: r.partner_id in user_ids)
+            state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name 
+        if data['user_ids']:
+            user_ids = user_ids.filtered(lambda r:r.id in data['user_ids'])
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')  
+
+        docs = docs.filtered(lambda r: r.partner_id in user_ids)
         
         # change selected date range to list of months 
         start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
@@ -1155,6 +1159,7 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
             'dates': date_list,
             'product_cats_ids': product_cats_ids,
             'state': state, 
+            'user_ids': customers,
         }   
   
     

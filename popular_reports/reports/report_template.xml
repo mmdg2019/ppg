@@ -1313,8 +1313,15 @@
                                                         </t>                                    
                                                 </span>
                                         </div>
-                                </div>
-                                <br/>
+                                </div>                              
+                                <div t-if="user_ids" class="row" style="text-align:center; font-size: 20px;">
+                                    <div class="col">
+                                        <span>
+                                            <b>Customer : </b>
+                                            <span t-esc="', '.join(user_ids.mapped('display_name'))"/>
+                                        </span>
+                                    </div>
+                                </div>                             
                                 <div class="row" style="text-align:center; font-size: 20px;">
                                         <div class="col">
                                                 <span>

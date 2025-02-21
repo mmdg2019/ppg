@@ -492,6 +492,7 @@ class PopularReport(models.TransientModel):
             'product_ids': self.products.ids,
             'product_cats_ids': self.product_cats.ids,
             'filter_state_id': self.filter_state_id.ids,
+            'user_ids': self.user.ids,
             's_month':self.s_month,
             's_year': self.s_year,
             'e_month': self.e_month,
