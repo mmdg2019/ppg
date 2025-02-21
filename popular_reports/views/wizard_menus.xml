@@ -178,7 +178,7 @@
               groups="ppg_credit_permission.group_credit_permission"
               sequence="13"/>
 
-    <menuitem name="Stock Analysis Report by Quantity with Colors"
+    <menuitem name="Stock Analysis Report by Quantity with Colors (N)"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_anlys_by_qty_with_col"
               action="popular_reports.wizard_act_report_stock_anlys_by_qty_with_col"

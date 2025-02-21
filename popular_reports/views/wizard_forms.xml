@@ -293,7 +293,7 @@
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
             <field name="arch" type="xml">
-                <form string="Stock Analysis Report by Quantity with Colors">
+                <form string="Stock Analysis Report by Quantity with Colors (N)">
                     <group string="Customer">
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>                    
@@ -1642,7 +1642,7 @@
         </record>
 
         <record model='ir.actions.act_window' id='wizard_act_report_stock_anlys_by_qty_with_col'>
-            <field name="name">Export Stock Analysis Report by Quantity with Colors</field>
+            <field name="name">Export Stock Analysis Report by Quantity with Colors (N)</field>
             <field name="res_model">wizard.popular.reports</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>

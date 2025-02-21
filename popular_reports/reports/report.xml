@@ -963,8 +963,8 @@
     </record>
 
     <record id="stock_anlys_by_qty_with_col" model="ir.actions.report">
-        <field name="name">Stock Analysis Report by Quantity with Colors</field>
-        <field name="print_report_name">Stock Analysis Report by Quantity with Colors</field>
+        <field name="name">Stock Analysis Report by Quantity with Colors (N)</field>
+        <field name="print_report_name">Stock Analysis Report by Quantity with Colors (N)</field>
         <field name="model">account.move.line</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">popular_reports.report_stock_anlys_by_qty_with_col</field>
