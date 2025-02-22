@@ -1104,6 +1104,7 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
         user_ids = None
         state = None
         product_cats_ids=[]
+        customers = None
         user_ids = self.env['res.partner'].search([],order='display_name asc')
         # filter invoices based on selected date range, type, and state
         docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
