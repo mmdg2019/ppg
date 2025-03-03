@@ -80,13 +80,15 @@ class AccountMove(models.Model):
                     if name:                        
                         move.name = name
                 elif move.move_type and move.move_type == 'entry':
-                # Get the journal's sequence.
-                    sequence = move._get_sequence()
-                    if not sequence:
-                        raise UserError(_('Please define a sequence on your journal.'))
-                    # Consume a new number.
-                    move.name = sequence.with_context(ir_sequence_date=move.date).next_by_id()
-                    # move._set_next_sequence()
+                    # compute the name only when state = 'posted' not in 'draft' state 
+                    if move.state != 'draft':
+                    # Get the journal's sequence.
+                        sequence = move._get_sequence()
+                        if not sequence:
+                            raise UserError(_('Please define a sequence on your journal.'))
+                        # Consume a new number.
+                        move.name = sequence.with_context(ir_sequence_date=move.date).next_by_id()
+                        # move._set_next_sequence()
 
         self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
         self._inverse_name()
