@@ -193,6 +193,20 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_anlys_by_qty_with_col').report_action(self, data=data)
     
+    #     Sales Analysis Report by Invoice Category
+    def print_report_sales_anlys_by_inv_cat(self):
+        data = {
+            'user_ids': self.user.ids,            
+            'product_ids': self.products.ids,
+            'filter_post':self.filter_post,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+            'product_cats_ids': self.product_cats.ids
+        }
+        return self.env.ref('popular_reports.sales_anlys_by_inv_cat').report_action(self, data=data)
+    
     def print_report_stock_anlys_by_qty_with_col(self):
         data = {            
             'product_ids': self.products.ids,

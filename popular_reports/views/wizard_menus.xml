@@ -177,6 +177,12 @@
               action="popular_reports.wizard_act_report_sales_anlys_by_qty_with_col"
               groups="ppg_credit_permission.group_credit_permission"
               sequence="13"/>
+    <menuitem name="Sales Analysis Report by Invoice Category"
+              parent="popular_reports.popular_reports_sub_menu_2"
+              id="popular_reports.menu_report_sales_anlys_by_inv_cat"
+              action="popular_reports.wizard_act_report_sales_anlys_by_inv_cat"
+              groups="ppg_credit_permission.group_credit_permission"
+              sequence="14"/>
 
     <menuitem name="Stock Analysis Report by Quantity with Colors (N)"
               parent="popular_reports.popular_reports_sub_menu_6"
