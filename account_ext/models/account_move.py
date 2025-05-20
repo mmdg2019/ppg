@@ -169,7 +169,7 @@ class AccountMove(models.Model):
             second_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'second_due'))
             third_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'third_due'))
             if invoices:
-                for invoice in invoices.filtered(lambda k: k.invoice_due_state != 'third_due'):
+                for invoice in invoices:
                     invoice._compute_invoice_due_state(today)
             invoices_after = self.search(domain)
             undefined_due_unpaid_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == False))
