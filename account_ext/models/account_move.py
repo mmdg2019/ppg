@@ -125,6 +125,28 @@ class AccountMove(models.Model):
                 'invoice_type': 'paid'
             })
 
+    def _compute_invoice_due_state(self, today):
+        second_due_date = self.calculate_invoice_due_date(self.invoice_date_due)
+        eofm_invoice = self.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance' and r.end_month and r.months == 1 and r.days == 0)
+        if eofm_invoice: # end of the following month payment term
+            if today > second_due_date:
+                self.partner_id.so_block_customer = True
+                if self.invoice_due_state != 'third_due':
+                    self.invoice_due_state = 'third_due'
+        else:
+            if today > self.invoice_date_due and today <= second_due_date:
+                if self.invoice_due_state != 'first_due':
+                    self.invoice_due_state = 'first_due'
+            else:
+                third_due_date = self.calculate_invoice_due_date(second_due_date)
+                if today > second_due_date and today <= third_due_date:
+                    if self.invoice_due_state != 'second_due':
+                        self.invoice_due_state = 'second_due'
+                elif today > third_due_date:
+                    self.partner_id.so_block_customer = True
+                    if self.invoice_due_state != 'third_due':
+                        self.invoice_due_state = 'third_due'
+
     # update invoice due state for unpaid invoices
     def update_unpaid_invoice_due_state(self):
         local = self._context.get('tz', 'Asia/Yangon')
@@ -148,19 +170,7 @@ class AccountMove(models.Model):
             third_due_before = len(invoices.filtered(lambda r: r.invoice_due_state == 'third_due'))
             if invoices:
                 for invoice in invoices:
-                    second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
-                    if today > invoice.invoice_date_due and today <= second_due_date:
-                        if invoice.invoice_due_state != 'first_due':
-                            invoice.invoice_due_state = 'first_due'
-                    else:
-                        third_due_date = invoice.calculate_invoice_due_date(second_due_date)
-                        if today > second_due_date and today <= third_due_date:
-                            if invoice.invoice_due_state != 'second_due':
-                                invoice.invoice_due_state = 'second_due'
-                        elif today > third_due_date:
-                            invoice.partner_id.so_block_customer = True
-                            if invoice.invoice_due_state != 'third_due':
-                                invoice.invoice_due_state = 'third_due'
+                    invoice._compute_invoice_due_state(today)
             invoices_after = self.search(domain)
             undefined_due_unpaid_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == False))
             first_due_after = len(invoices_after.filtered(lambda r: r.invoice_due_state == 'first_due'))
@@ -204,19 +214,7 @@ class AccountMove(models.Model):
             for invoice in invoices:
                 # if invoice.payment_state != 'paid':
                 if invoice.payment_state in ['not_paid', 'partial']:
-                    second_due_date = invoice.calculate_invoice_due_date(invoice.invoice_date_due)
-                    if today > invoice.invoice_date_due and today <= second_due_date:
-                        if invoice.invoice_due_state != 'first_due':
-                            invoice.invoice_due_state = 'first_due'
-                    else:
-                        third_due_date = invoice.calculate_invoice_due_date(second_due_date)
-                        if today > second_due_date and today <= third_due_date:
-                            if invoice.invoice_due_state != 'second_due':
-                                invoice.invoice_due_state = 'second_due'
-                        elif today > third_due_date:
-                            invoice.partner_id.so_block_customer = True
-                            if invoice.invoice_due_state != 'third_due':
-                                invoice.invoice_due_state = 'third_due'
+                    invoice._compute_invoice_due_state(today)
                 else:
                     invoice.invoice_due_state = 'no_due'
 
