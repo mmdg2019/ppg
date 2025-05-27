@@ -4594,6 +4594,133 @@
         </t>
     </template>
 
+    <template id="report_sales_anlys_by_mon_and_cust_vert">
+        <t t-call="web.html_container">
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="initial-scale=1"/>
+                    <title>
+                        <t t-esc="title or 'Odoo Report'"/>
+                    </title>
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+                    <link rel='stylesheet' href="/popular_reports/static/src/css/style.css"/>
+                    <t t-call-assets="web.report_assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_common" t-css="false"/>
+                    <t t-call-assets="web.report_assets_common" t-css="false"/>
+                    <t t-if="studio" t-call-assets="web_studio.report_assets"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
+                    <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
+                </head>
+                <body >
+                    <div class="container-fluid" id="wrapwrap">
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 30px;">
+                                        <span t-esc="env.company.name"/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <div class="row" style="text-align:center;">
+                            <div class="col">
+                                <b>
+                                    <font style="font-size: 24px;">
+                                        Sales Analysis Report by Month and Customer (Vertical) 
+                                        <t t-if="filter_post=='1'">(Cancel)</t>
+                                        <t t-elif="filter_post=='2'">(Draft)</t>
+                                        <t t-elif="filter_post=='3'">(Posted)</t>                                      
+                                        <br/>
+                                    </font>
+                                </b>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" style="text-align:center; font-size: 20px;">
+                            <div class="col">
+                                <span>
+                                    <b>Date From : </b>
+                                    <t t-esc="datetime.datetime.strptime(s_month+'/'+s_year, '%m/%Y').strftime('%b/%Y')"/>
+                                </span>
+                                <span>
+                                    <b>To : </b>
+                                    <t t-esc="datetime.datetime.strptime(e_month+'/'+e_year, '%m/%Y').strftime('%b/%Y')"/>
+                                </span>
+                            </div>
+                        </div>
+                        <br/> 
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em;font-size: 13px;">
+                            <thead >
+                                <tr>                                   
+                                    <th>
+                                        <span>Customer Name</span>
+                                    </th>                               
+                                    <th style="text-align:right;">
+                                        <span>Month</span>
+                                    </th>                                   
+                                    <th style="text-align:right;">
+                                        <span>ရောင်းအား</span>
+                                    </th>  
+                                </tr>
+                            </thead>
+                            <t t-if="docs">
+                                <tbody style="border-top:2px solid #ddd;">                                      
+                                    <t t-foreach="docs" t-as="doc">
+                                        <t t-set="ttl" t-value="0"/>
+                                        <t t-foreach="month_list" t-as="month"> 
+                                            <tr>  
+                                                <td>
+                                                    <t t-if="month_index == 0">
+                                                        <span t-esc="doc['customer']"/>
+                                                    </t>
+                                                </td>
+                                                <td style="text-align:right;"> 
+                                                    <span t-esc="dates[month_index].strftime('%b-%Y')"/>
+                                                </td>
+                                                <t t-set="monthly_ttl" t-value="doc[month]"/>
+                                                <t t-set="ttl" t-value="ttl + monthly_ttl"/>
+
+                                                <td style="text-align:right;">
+                                                    <span t-esc="monthly_ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/><br/>
+                                                </td>
+                                            </tr>
+                                            <t t-if="month_index ==len(month_list)-1">
+                                                <tr>
+                                                    <td colspan="2" style="text-align:right; font-weight: bold;">
+                                                        <span>Total</span>
+                                                    </td>
+                                                    <td  style="text-align:right; font-weight: bold;">                                                
+                                                        <span t-esc="ttl" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                                    </td>
+                                                </tr>
+                                                <t t-set="ttl" t-value="0"/>
+                                            </t>
+                                        </t> 
+                                    </t>
+                                </tbody>
+                            </t>
+                            <t t-else="">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="100" style="text-align:center; font-size: 20px;">
+                                            <span>
+                                                <b>No Results Found.</b>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+                        </table>
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+                </body>
+            </html>
+        </t>
+    </template>
+
     <template id="report_sales_anlys_by_qty_with_col">
         <t t-call="web.html_container">
             <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-report-margin-top="data_report_margin_top" t-att-data-report-header-spacing="data_report_header_spacing" t-att-data-report-dpi="data_report_dpi" t-att-data-report-landscape="data_report_landscape" t-att-web-base-url="web_base_url">

@@ -207,6 +207,18 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.sales_anlys_by_inv_cat').report_action(self, data=data)
     
+#     Sales Analysis Report by Month and Customer (Vertical)
+    def print_report_sales_anlys_by_mon_and_cust_vert(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            's_month':self.s_month,
+            's_year': self.s_year,
+            'e_month': self.e_month,
+            'e_year': self.e_year,
+        }
+        return self.env.ref('popular_reports.sales_anlys_by_mon_and_cust_vert').report_action(self, data=data)
+
     def print_report_stock_anlys_by_qty_with_col(self):
         data = {            
             'product_ids': self.products.ids,
