@@ -474,6 +474,13 @@
             action="popular_reports.wizard_act_export_sales_analysis_report_by_quant_colors"
             groups="ppg_credit_permission.group_credit_permission"
             sequence="8"/>
+    
+    <menuitem name="Sales Analysis Report by Month and Customer (Vertical)"
+              parent="popular_reports.popular_reports_sub_menu_2"
+              id="popular_reports.menu_report_sales_anlys_by_mon_and_cust_vert"
+              action="popular_reports.wizard_act_report_sales_anlys_by_mon_and_cust_vert"
+              groups="ppg_credit_permission.group_credit_permission"
+              sequence="15"/>
 
 </odoo>
     
