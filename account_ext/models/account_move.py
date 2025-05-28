@@ -138,14 +138,24 @@ class AccountMove(models.Model):
                 if self.invoice_due_state != 'first_due':
                     self.invoice_due_state = 'first_due'
             else:
-                third_due_date = self.calculate_invoice_due_date(second_due_date)
-                if today > second_due_date and today <= third_due_date:
-                    if self.invoice_due_state != 'second_due':
-                        self.invoice_due_state = 'second_due'
-                elif today > third_due_date:
-                    self.partner_id.so_block_customer = True
-                    if self.invoice_due_state != 'third_due':
-                        self.invoice_due_state = 'third_due'
+                eocm_plus_due_factor_invoice = self.invoice_payment_term_id.due_factor and any(self.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance' and r.end_month and r.months == 0 and r.days == 0))
+                if eocm_plus_due_factor_invoice:
+                    if today > second_due_date and today <= (second_due_date + relativedelta(days=self.invoice_payment_term_id.due_factor)):
+                        if self.invoice_due_state != 'second_due':
+                            self.invoice_due_state = 'second_due'
+                    else:
+                        self.partner_id.so_block_customer = True
+                        if self.invoice_due_state != 'third_due':
+                            self.invoice_due_state = 'third_due'
+                else:
+                    third_due_date = self.calculate_invoice_due_date(second_due_date)
+                    if today > second_due_date and today <= third_due_date:
+                        if self.invoice_due_state != 'second_due':
+                            self.invoice_due_state = 'second_due'
+                    elif today > third_due_date:
+                        self.partner_id.so_block_customer = True
+                        if self.invoice_due_state != 'third_due':
+                            self.invoice_due_state = 'third_due'
 
     # update invoice due state for unpaid invoices
     def update_unpaid_invoice_due_state(self):
