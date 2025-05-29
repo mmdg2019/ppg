@@ -248,6 +248,13 @@
               action="popular_reports.wizard_act_report_purchase_stock_analysis_by_date"
               sequence="12"/>
 
+    <menuitem name="Purchase Report by Invoice Category"
+              parent="popular_reports.popular_reports_sub_menu_5"
+              id="popular_reports.menu_report_purchase_report_by_inv_cat"
+              action="popular_reports.wizard_act_report_purchase_report_by_inv_cat"
+              groups="ppg_credit_permission.group_credit_permission"
+              sequence="13"/>
+
     <menuitem name="Monthly Stock Analysis Report"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_monthly_stock_analysis_report"

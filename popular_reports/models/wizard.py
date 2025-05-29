@@ -589,6 +589,17 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.purchase_stock_analysis_by_date').report_action(self, data=data)
     
+    #     Purchase Report by Invoice Category
+    def print_report_purchase_report_by_inv_cat(self):
+        data = {
+            'filter_post':self.filter_post,
+            'user_ids': self.user.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date,
+            'product_cats_ids': self.product_cats.ids
+        }
+        return self.env.ref('popular_reports.purchase_report_by_inv_cat').report_action(self, data=data)
+    
 #     Cash Payment Listing by Lumpsum
     def print_report_cash_payment_listing_by_lumpsum(self):
         data = {
