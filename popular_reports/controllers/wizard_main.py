@@ -1953,6 +1953,72 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
             'user_id':user_id,
             'lst':sorted(pids, key = lambda i: i['c_name'].default_code)
             }
+    
+class edit_report_purchase_report_by_inv_cat(models.AbstractModel):
+    _name = "report.popular_reports.report_purchase_report_by_inv_cat"
+    _description="Purchase Report by Invoice Category Report Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        users = None          
+        currency_id = None
+        state = 'posted'
+        company_id = self.env.company.id
+        currency_id = self.env.company.currency_id      
+
+        if data['filter_post']:
+            if data['filter_post']== '1':
+                state = 'cancel'
+            elif data['filter_post']== '2':
+                state = 'draft'     
+            
+        query = """
+                SELECT                                              
+                    usr.display_name as vendor, 
+                    cat.name as category,  
+                    SUM(ai.amount_total_signed) AS total_amount 
+                FROM
+                    account_move ai                    
+                LEFT JOIN
+                    res_partner usr ON usr.id = ai.partner_id 
+                LEFT JOIN
+                    product_category cat on cat.id = ai.x_studio_invoice_category 
+                WHERE
+                    ai.move_type = 'in_invoice'
+                    AND ai.state = %(state)s
+                    AND ai.date BETWEEN %(start_date)s AND %(end_date)s
+                    AND ai.company_id = %(company_id)s 
+        """
+        params = {
+        'start_date': data['start_date'],
+        'end_date': data['end_date'],            
+        'company_id': company_id,
+        'state': state,
+            } 
+        if data['user_ids']: 
+            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('supplier_rank', '>', 0)], order='display_name asc').ids      
+            params.update({'user_list':tuple(users)}) 
+            query += "AND ai.partner_id in %(user_list)s" 
+        if data['product_cats_ids']:
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc').ids
+            params.update({'cat_list':tuple(product_cats_ids)})
+            query += "AND ai.x_studio_invoice_category in %(cat_list)s"
+        query += """
+            GROUP BY
+                usr.display_name, cat.name
+                """            
+        self.env.cr.execute(query, params)
+        docs = self.env.cr.dictfetchall()            
+        
+        docs = [item for item in docs if item['vendor'] != None]  
+        
+        return {
+            'users': data['user_ids'],
+            'currency_id': currency_id,
+            'docs': docs,   
+            'filter_post': data['filter_post'],
+        }
 
 #     Cash Payment Listing by Lumpsum
 class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
