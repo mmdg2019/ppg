@@ -7,3 +7,4 @@ from . import sale_order
 from . import account_payment_term
 from . import invoice_due_cron_log
 from . import invoice_due_cron_noti_recipient_email
+from . import account_move_line
