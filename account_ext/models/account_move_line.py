@@ -14,8 +14,8 @@ class AccountMoveLine(models.Model):
     def reconcile(self):
         if self:
             if self._context.get('reduced_line_sorting'):
-                sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.currency_id)
+                sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id , line.currency_id)
             else:
-                sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.currency_id, line.amount_currency)
+                sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id, line.currency_id, line.amount_currency)
             self = self.sorted(key=sorting_f)
         super(AccountMoveLine,self).reconcile()
