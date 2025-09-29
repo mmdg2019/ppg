@@ -354,6 +354,11 @@
               action="popular_reports.wizard_act_report_stock_analys_by_qty_with_colors"
               groups="ppg_credit_permission.group_credit_permission"
               sequence="26"/>
+    <menuitem name="Stock In Out Balance Report"
+              parent="popular_reports.popular_reports_sub_menu_6"
+              id="popular_reports.menu_report_stock_in_out_bal"
+              action="popular_reports.wizard_act_report_stock_in_out_bal"
+              sequence="27"/>
 
     <menuitem name="All Balance Listing"
               parent="popular_reports.popular_reports_sub_menu_7"

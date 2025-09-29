@@ -609,6 +609,28 @@
            </form>
             </field>
         </record>
+
+        <record model='ir.ui.view' id='wizard_form_report_stock_in_out_bal'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group string="Product">
+                        <field string="Category" name="product_cats" widget="many2many_tags" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                        <field string="Product" name="filtered_prod_by_categ_ids" widget="many2many_tags" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                    </group>
+                    <group string="Date">
+                       <group><field name="start_date" required="1"></field></group>
+                       <group><field name="end_date" required="1"></field></group>
+                    </group>
+                    <footer>
+                        <button name="print_report_stock_in_out_bal" type="object" string="Print Report" class="oe_highlight"/>
+                        <button string="Cancel" class="btn btn-default" special="cancel"/>
+                    </footer>
+                 </form>
+            </field>
+        </record>
+
         <record model='ir.ui.view' id='wizard_form_report_dmg_sales_rtrn_lst_by_product'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -1842,6 +1864,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_trans_oprt"/>
+            <field name="target">new</field>
+        </record>
+
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_in_out_bal'>
+            <field name="name">Stock In Out Balance Report</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_stock_in_out_bal"/>
             <field name="target">new</field>
         </record>
         

@@ -84,7 +84,26 @@ class PopularReport(models.TransientModel):
     def default_status(self):
         return 'posted'
     
-    
+    # for Stock In Out Balance Report
+    filtered_prod_by_categ_ids = fields.Many2many(
+        comodel_name='product.product',
+        relation='wizard_filtered_product_rel',
+        column1='wizard_id',
+        column2='product_id',
+        string='Product Lists'
+    )
+
+    @api.onchange('product_cats')
+    def _onchange_product_cats(self):
+        prod_domain = [('type', '=', 'product'), ('company_id', '=', self.env.company.id)]
+        if self.product_cats:
+            prod_domain += [('categ_id', 'in', self.product_cats.ids)]
+        prod_ids = self.env['product.product'].search(prod_domain).ids
+        return {
+            'domain': {'filtered_prod_by_categ_ids': [('id', 'in', prod_ids)]},
+            'value': {'filtered_prod_by_categ_ids': False}
+        }
+
 #     Sales Report by Product Code
     def print_report_sales_report_by_product_code(self):
         data = {
@@ -547,6 +566,16 @@ class PopularReport(models.TransientModel):
 #             'filter_stock_picking_type':self.filter_stock_picking_type.ids,
         }
         return self.env.ref('popular_reports.stock_trans_oprt').report_action(self, data=data)
+    
+#     Stock In Out Balance Report
+    def print_report_stock_in_out_bal(self):
+        data = {
+            'product_cats_ids': self.product_cats.ids,
+            'product_ids': self.filtered_prod_by_categ_ids.ids,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
+        }
+        return self.env.ref('popular_reports.stock_in_out_bal').report_action(self, data=data)
     
 #     Purchase Analysis Report by Supplier
     def print_report_purchase_analysis_report_by_sup(self):

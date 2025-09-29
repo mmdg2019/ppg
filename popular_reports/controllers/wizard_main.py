@@ -3025,6 +3025,237 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
             'docs': docs,
             }
 
+#     Stock In Out Balance Report 
+class edit_report_stock_in_out_bal(models.AbstractModel):
+    _name="report.popular_reports.report_stock_in_out_bal"
+    _description="Stock In Out Balance Report Editing"
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        selected_categ_ids = []
+        if not data['product_ids'] and data['product_cats_ids']:
+            selected_categ_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='complete_name asc')
+        s_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
+        e_date = datetime.combine(datetime.strptime(data['end_date'], "%Y-%m-%d").date(), time.max)
+        internal_stock_loc_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('company_id', '=', self.env.company.id)])
+        query = """
+                    SELECT
+                        subquery_alias.id AS product_id,
+                        subquery_alias.default_code,
+                        subquery_alias.name,
+                        subquery_alias.uom,
+                        receipt_qty,
+                        receipt_amt,
+                        sr_qty,
+                        sr_amt,
+                        adjust_qty,
+                        adjust_amt,
+                        delivery_qty,
+                        delivery_amt,
+                        pr_qty,
+                        pr_amt,
+                        scrap_qty,
+                        scrap_amt,
+                        (min_adjust_qty - scrap_qty) AS minus_adjust_qty,
+                        (min_adjust_amt - scrap_amt) AS minus_adjust_amt,
+                        0 AS qty_available,
+                        opening_amt,
+                        0 AS closing_qty,
+                        closing_amt
+                    FROM
+                    (SELECT pp.id, pt.default_code AS default_code, pt.name AS name, uu.name AS uom,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'incoming'
+                            AND spt.sequence_code = 'IN'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS receipt_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'incoming'
+                            AND spt.sequence_code = 'IN'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS receipt_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'incoming'
+                            AND spt.sequence_code = 'SR'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS sr_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'incoming'
+                            AND spt.sequence_code = 'SR'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS sr_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            WHERE sm.product_id = pp.id
+                            AND sm.picking_type_id is NULL
+                            AND sm.state = 'done'
+                            AND sm.location_dest_id in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS adjust_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND sm.picking_type_id is NULL
+                            AND sm.state = 'done'
+                            AND sm.location_dest_id in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS adjust_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'OUT'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS delivery_qty,
+                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'OUT'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS delivery_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'PR'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS pr_qty,
+                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'PR'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS pr_amt,
+                        (SELECT COALESCE(SUM(ss.scrap_qty), 0)
+                            FROM stock_scrap ss
+                            WHERE ss.product_id = pp.id
+                            AND ss.state = 'done'
+                            AND ss.date_done >= %(s_date)s
+                            AND ss.date_done <= %(e_date)s) AS scrap_qty,
+                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                            FROM stock_scrap ss
+                            JOIN stock_move sm ON sm.id = ss.move_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE ss.product_id = pp.id
+                            AND ss.state = 'done'
+                            AND ss.date_done >= %(s_date)s
+                            AND ss.date_done <= %(e_date)s) AS scrap_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            WHERE sm.product_id = pp.id
+                            AND sm.picking_type_id is NULL
+                            AND sm.state = 'done'
+                            AND sm.location_dest_id not in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS min_adjust_qty,
+                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                            FROM stock_move sm
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND sm.picking_type_id is NULL
+                            AND sm.state = 'done'
+                            AND sm.location_dest_id not in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS min_adjust_amt,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_valuation_layer svl
+                            LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
+                            WHERE svl.product_id = pp.id
+                            AND svl.company_id = %(company)s
+                            AND ((svl.stock_move_id IS NOT NULL AND sm.date < %(s_date)s) OR (svl.stock_move_id IS NULL AND svl.create_date < %(s_date)s))) AS opening_amt,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_valuation_layer svl
+                            LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
+                            WHERE svl.product_id = pp.id
+                            AND svl.company_id = %(company)s
+                            AND ((svl.stock_move_id IS NOT NULL AND sm.date <= %(e_date)s) OR (svl.stock_move_id IS NULL AND svl.create_date <= %(e_date)s))) AS closing_amt
+                    FROM product_product pp
+                    LEFT JOIN product_template pt ON pt.id = pp.product_tmpl_id
+                    LEFT JOIN product_category pc ON pc.id = pt.categ_id
+                    LEFT JOIN uom_uom uu ON uu.id = pt.uom_id
+                    WHERE pt.type = 'product'
+                    AND pt.active = true
+                    AND pt.company_id = %(company)s
+                """
+        params = {
+            's_date': s_date,
+            'e_date': e_date,
+            'location': tuple(internal_stock_loc_ids.ids),
+            'company': self.env.company.id,
+        }
+        if data['product_ids']:
+            params.update({'product_ids': tuple(data['product_ids'])})
+            query += "AND pp.id IN %(product_ids)s"
+        elif not data['product_ids'] and data['product_cats_ids']:
+            params.update({'product_categ_ids': tuple(data['product_cats_ids'])})
+            query += "AND pc.id IN %(product_categ_ids)s"
+        query += ") AS subquery_alias ORDER BY subquery_alias.default_code;"
+        self._cr.execute(query, params)
+        docs = self._cr.dictfetchall()
+
+        selected_pids = [doc['product_id'] for doc in docs]
+        products = self.env['product.product'].sudo().search([('id', 'in', selected_pids)]).with_context(dict(to_date=s_date), location=internal_stock_loc_ids.ids, company_owned=True, order='default_code asc')
+        for product in products:
+            matching_dicts = [item for item in docs if item.get('product_id') == product.id]
+            for matching_dict in matching_dicts:
+                matching_dict['qty_available'] = product.qty_available
+                matching_dict['closing_qty'] = (
+                    product.qty_available +
+                    matching_dict.get('receipt_qty', 0.0) +
+                    matching_dict.get('sr_qty', 0.0) +
+                    matching_dict.get('adjust_qty', 0.0) -
+                    matching_dict.get('delivery_qty', 0.0) -
+                    matching_dict.get('pr_qty', 0.0) -
+                    matching_dict.get('minus_adjust_qty', 0.0) -
+                    matching_dict.get('scrap_qty', 0.0)
+                )
+        docs = [item for item in docs if item.get('qty_available', 0.0) > 0 or item.get('receipt_qty', 0.0) > 0 or item.get('sr_qty', 0.0) > 0 or item.get('adjust_qty', 0.0) > 0 
+        or item.get('delivery_qty', 0.0) > 0 or item.get('pr_qty', 0.0) > 0 or item.get('minus_adjust_qty', 0.0) > 0 or item.get('scrap_qty', 0.0) > 0]
+
+        return {
+            'docs': docs,
+            'category': selected_categ_ids
+            }
+
 #     Stock Focus Report
 class edit_report_stock_focus(models.AbstractModel):
     _name="report.popular_reports.report_stock_focus"
