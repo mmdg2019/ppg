@@ -11804,7 +11804,7 @@
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
                                             <td style="border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'[' + doc['default_code'] + '] ' + list(doc['name'].values())[0]"/>
+                                                <t t-esc="doc['product']"/>
                                             </td>
                                             <td style="text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
                                                 <t t-esc="list(doc['uom'].values())[0]"/>
