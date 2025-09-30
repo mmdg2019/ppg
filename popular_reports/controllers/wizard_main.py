@@ -3041,8 +3041,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
         query = """
                     SELECT
                         subquery_alias.id AS product_id,
-                        subquery_alias.default_code,
-                        subquery_alias.name,
+                        subquery_alias.product,
                         subquery_alias.uom,
                         receipt_qty,
                         receipt_amt,
@@ -3063,7 +3062,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                         0 AS closing_qty,
                         closing_amt
                     FROM
-                    (SELECT pp.id, pt.default_code AS default_code, pt.name AS name, uu.name AS uom,
+                    (SELECT pp.id, COALESCE('[' || pt.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') AS product, uu.name AS uom,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
@@ -3228,12 +3227,12 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
         elif not data['product_ids'] and data['product_cats_ids']:
             params.update({'product_categ_ids': tuple(data['product_cats_ids'])})
             query += "AND pc.id IN %(product_categ_ids)s"
-        query += ") AS subquery_alias ORDER BY subquery_alias.default_code;"
+        query += ") AS subquery_alias ORDER BY subquery_alias.product;"
         self._cr.execute(query, params)
         docs = self._cr.dictfetchall()
 
         selected_pids = [doc['product_id'] for doc in docs]
-        products = self.env['product.product'].sudo().search([('id', 'in', selected_pids)]).with_context(dict(to_date=s_date), location=internal_stock_loc_ids.ids, company_owned=True, order='default_code asc')
+        products = self.env['product.product'].sudo().search([('id', 'in', selected_pids)]).with_context(dict(to_date=s_date), location=internal_stock_loc_ids.ids, company_owned=True)
         for product in products:
             matching_dicts = [item for item in docs if item.get('product_id') == product.id]
             for matching_dict in matching_dicts:
