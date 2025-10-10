@@ -92,6 +92,7 @@ class PopularReport(models.TransientModel):
         column2='product_id',
         string='Product Lists'
     )
+    stock_picking_type_ids = fields.Many2many('stock.picking.type', string='Operation Type')
 
     @api.onchange('product_cats')
     def _onchange_product_cats(self):
@@ -572,6 +573,7 @@ class PopularReport(models.TransientModel):
         data = {
             'product_cats_ids': self.product_cats.ids,
             'product_ids': self.filtered_prod_by_categ_ids.ids,
+            'stock_picking_type_ids': self.stock_picking_type_ids.ids,
             'start_date': self.start_date,
             'end_date': self.end_date,
         }
