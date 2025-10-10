@@ -3033,10 +3033,63 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         selected_categ_ids = []
+        selected_operation_types = []
+        amt_keys = []
+        pos_qty_keys = []
+        neg_qty_keys = []
+        table_col = 16 # from opening to closing with all possible operation types
         if not data['product_ids'] and data['product_cats_ids']:
             selected_categ_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='complete_name asc')
+        if data['stock_picking_type_ids']:
+            picking_types = self.env['stock.picking.type'].search([('id', 'in', data['stock_picking_type_ids'])])
+            for pick in picking_types:
+                if pick.code == 'incoming' and pick.sequence_code == 'IN':
+                    selected_operation_types.append('Receipt')
+                    amt_keys.append('receipt_amt')
+                    pos_qty_keys.append('receipt_qty')
+                elif pick.code == 'incoming' and pick.sequence_code == 'SR':
+                    selected_operation_types.append('SR')
+                    amt_keys.append('sr_amt')
+                    pos_qty_keys.append('sr_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'OUT':
+                    selected_operation_types.append('Delivery')
+                    amt_keys.append('delivery_amt')
+                    neg_qty_keys.append('delivery_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'PR':
+                    selected_operation_types.append('PR')
+                    amt_keys.append('pr_amt')
+                    neg_qty_keys.append('pr_qty')
+                elif pick.code == 'mrp_operation' and pick.sequence_code == 'MO':
+                    selected_operation_types.append('MO')
+                    amt_keys.extend(['mo_in_amt', 'mo_out_amt'])
+                    pos_qty_keys.append('mo_in_qty')
+                    neg_qty_keys.append('mo_out_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'OIL':
+                    selected_operation_types.append('OIL')
+                    amt_keys.append('oil_amt')
+                    neg_qty_keys.append('oil_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'PACK':
+                    selected_operation_types.append('PACK')
+                    amt_keys.append('pack_amt')
+                    neg_qty_keys.append('pack_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'ACC':
+                    selected_operation_types.append('ACC')
+                    amt_keys.append('acc_amt')
+                    neg_qty_keys.append('acc_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'DMG':
+                    selected_operation_types.append('DMG')
+                    amt_keys.append('dmg_amt')
+                    neg_qty_keys.append('dmg_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'RAW':
+                    selected_operation_types.append('RAW')
+                    amt_keys.append('raw_amt')
+                    neg_qty_keys.append('raw_qty')
+            table_col = len(selected_operation_types) + 4 if 'MO' in selected_operation_types else len(selected_operation_types) + 3
         s_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
         e_date = datetime.combine(datetime.strptime(data['end_date'], "%Y-%m-%d").date(), time.max)
+        local_tz = pytz.timezone(self._context.get('tz', 'Asia/Yangon'))
+        s_date = local_tz.localize(s_date).astimezone(tz=pytz.timezone('utc')).replace(tzinfo=None)
+        e_date = local_tz.localize(e_date).astimezone(tz=pytz.timezone('utc')).replace(tzinfo=None)
         internal_stock_loc_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('company_id', '=', self.env.company.id)])
         query = """
                     SELECT
@@ -3049,6 +3102,8 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                         sr_amt,
                         adjust_qty,
                         adjust_amt,
+                        mo_in_qty,
+                        mo_in_amt,
                         delivery_qty,
                         delivery_amt,
                         pr_qty,
@@ -3057,12 +3112,26 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                         scrap_amt,
                         (min_adjust_qty - scrap_qty) AS minus_adjust_qty,
                         (min_adjust_amt - scrap_amt) AS minus_adjust_amt,
-                        0 AS qty_available,
+                        mo_out_qty,
+                        mo_out_amt,
+                        oil_qty,
+                        oil_amt,
+                        pack_qty,
+                        pack_amt,
+                        acc_qty,
+                        acc_amt,
+                        dmg_qty,
+                        dmg_amt,
+                        raw_qty,
+                        raw_amt,
+                        opening_qty,
                         opening_amt,
-                        0 AS closing_qty,
-                        closing_amt
+                        closing_qty,
+                        closing_amt,
+                        0 AS ttl_qty,
+                        0 AS ttl_amt
                     FROM
-                    (SELECT pp.id, COALESCE('[' || pt.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') AS product, uu.name AS uom,
+                    (SELECT pp.id, COALESCE('[' || pt.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') AS product, pt.default_code AS code, pt.name AS pname, uu.name AS uom,
                         (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
@@ -3126,13 +3195,36 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
                             WHERE sm.product_id = pp.id
+                            AND spt.code = 'mrp_operation'
+                            AND spt.sequence_code = 'MO'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.location_dest_id in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS mo_in_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'mrp_operation'
+                            AND spt.sequence_code = 'MO'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.location_dest_id in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS mo_in_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
                             AND spt.code = 'outgoing'
                             AND spt.sequence_code = 'OUT'
                             AND sm.picking_type_id is not NULL
                             AND sm.state = 'done'
                             AND sm.date >= %(s_date)s
                             AND sm.date <= %(e_date)s) AS delivery_qty,
-                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                        (SELECT COALESCE(SUM(svl.value), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
                             JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
@@ -3153,7 +3245,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                             AND sm.state = 'done'
                             AND sm.date >= %(s_date)s
                             AND sm.date <= %(e_date)s) AS pr_qty,
-                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                        (SELECT COALESCE(SUM(svl.value), 0)
                             FROM stock_move sm
                             LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
                             JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
@@ -3170,7 +3262,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                             AND ss.state = 'done'
                             AND ss.date_done >= %(s_date)s
                             AND ss.date_done <= %(e_date)s) AS scrap_qty,
-                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                        (SELECT COALESCE(SUM(svl.value), 0)
                             FROM stock_scrap ss
                             JOIN stock_move sm ON sm.id = ss.move_id
                             JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
@@ -3186,7 +3278,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                             AND sm.location_dest_id not in %(location)s
                             AND sm.date >= %(s_date)s
                             AND sm.date <= %(e_date)s) AS min_adjust_qty,
-                        (SELECT COALESCE(SUM(abs(svl.value)), 0)
+                        (SELECT COALESCE(SUM(svl.value), 0)
                             FROM stock_move sm
                             JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
                             WHERE sm.product_id = pp.id
@@ -3195,12 +3287,152 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                             AND sm.location_dest_id not in %(location)s
                             AND sm.date >= %(s_date)s
                             AND sm.date <= %(e_date)s) AS min_adjust_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'mrp_operation'
+                            AND spt.sequence_code = 'MO'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.location_id in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS mo_out_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'mrp_operation'
+                            AND spt.sequence_code = 'MO'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.location_id in %(location)s
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS mo_out_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'OIL'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS oil_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'OIL'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS oil_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'PACK'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS pack_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'PACK'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS pack_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'ACC'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS acc_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'ACC'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS acc_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'DMG'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS dmg_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'DMG'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS dmg_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'RAW'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS raw_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'RAW'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS raw_amt,
+                        (SELECT COALESCE(SUM(svl.quantity), 0)
+                            FROM stock_valuation_layer svl
+                            LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
+                            WHERE svl.product_id = pp.id
+                            AND svl.company_id = %(company)s
+                            AND ((svl.stock_move_id IS NOT NULL AND sm.date < %(s_date)s) OR (svl.stock_move_id IS NULL AND svl.create_date < %(s_date)s))) AS opening_qty,
                         (SELECT COALESCE(SUM(svl.value), 0)
                             FROM stock_valuation_layer svl
                             LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
                             WHERE svl.product_id = pp.id
                             AND svl.company_id = %(company)s
                             AND ((svl.stock_move_id IS NOT NULL AND sm.date < %(s_date)s) OR (svl.stock_move_id IS NULL AND svl.create_date < %(s_date)s))) AS opening_amt,
+                        (SELECT COALESCE(SUM(svl.quantity), 0)
+                            FROM stock_valuation_layer svl
+                            LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
+                            WHERE svl.product_id = pp.id
+                            AND svl.company_id = %(company)s
+                            AND ((svl.stock_move_id IS NOT NULL AND sm.date <= %(e_date)s) OR (svl.stock_move_id IS NULL AND svl.create_date <= %(e_date)s))) AS closing_qty,
                         (SELECT COALESCE(SUM(svl.value), 0)
                             FROM stock_valuation_layer svl
                             LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
@@ -3227,32 +3459,26 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
         elif not data['product_ids'] and data['product_cats_ids']:
             params.update({'product_categ_ids': tuple(data['product_cats_ids'])})
             query += "AND pc.id IN %(product_categ_ids)s"
-        query += ") AS subquery_alias ORDER BY subquery_alias.product;"
+        query += ") AS subquery_alias ORDER BY subquery_alias.code, subquery_alias.pname;"
         self._cr.execute(query, params)
         docs = self._cr.dictfetchall()
 
-        selected_pids = [doc['product_id'] for doc in docs]
-        products = self.env['product.product'].sudo().search([('id', 'in', selected_pids)]).with_context(dict(to_date=s_date), location=internal_stock_loc_ids.ids, company_owned=True)
-        for product in products:
-            matching_dicts = [item for item in docs if item.get('product_id') == product.id]
-            for matching_dict in matching_dicts:
-                matching_dict['qty_available'] = product.qty_available
-                matching_dict['closing_qty'] = (
-                    product.qty_available +
-                    matching_dict.get('receipt_qty', 0.0) +
-                    matching_dict.get('sr_qty', 0.0) +
-                    matching_dict.get('adjust_qty', 0.0) -
-                    matching_dict.get('delivery_qty', 0.0) -
-                    matching_dict.get('pr_qty', 0.0) -
-                    matching_dict.get('minus_adjust_qty', 0.0) -
-                    matching_dict.get('scrap_qty', 0.0)
-                )
-        docs = [item for item in docs if item.get('qty_available', 0.0) > 0 or item.get('receipt_qty', 0.0) > 0 or item.get('sr_qty', 0.0) > 0 or item.get('adjust_qty', 0.0) > 0 
-        or item.get('delivery_qty', 0.0) > 0 or item.get('pr_qty', 0.0) > 0 or item.get('minus_adjust_qty', 0.0) > 0 or item.get('scrap_qty', 0.0) > 0]
+        if docs:
+            if selected_operation_types: # no operation type selected >>> no need to compute total
+                docs = [item for item in docs if item.get('opening_qty', 0.0) > 0 or any(item.get(k, 0.0) > 0 for k in pos_qty_keys) or any(item.get(k, 0.0) > 0 for k in neg_qty_keys)]
+                for item in docs:
+                    item['ttl_amt'] = item.get('opening_amt', 0.0) + sum([item.get(k, 0.0) for k in amt_keys])
+                    item['ttl_qty'] = item.get('opening_qty', 0.0) + sum([item.get(k, 0.0) for k in pos_qty_keys]) - sum([item.get(k, 0.0) for k in neg_qty_keys])
+            else:
+                docs = [item for item in docs if item.get('opening_qty', 0.0) > 0 or item.get('receipt_qty', 0.0) > 0 or item.get('sr_qty', 0.0) > 0 or item.get('adjust_qty', 0.0) > 0 or item.get('mo_in_qty', 0.0) > 0 
+                or item.get('delivery_qty', 0.0) > 0 or item.get('pr_qty', 0.0) > 0 or item.get('minus_adjust_qty', 0.0) > 0 or item.get('mo_out_qty', 0.0) > 0 or item.get('scarp_qty', 0.0) > 0
+                or item.get('oil_qty', 0.0) > 0 or item.get('pack_qty', 0.0) > 0 or item.get('acc_qty', 0.0) > 0 or item.get('dmg_qty', 0.0) > 0 or item.get('raw_qty', 0.0) > 0]
 
         return {
             'docs': docs,
-            'category': selected_categ_ids
+            'category': selected_categ_ids,
+            'op_types': selected_operation_types,
+            'loop': list(range(table_col))
             }
 
 #     Stock Focus Report

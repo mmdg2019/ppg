@@ -619,6 +619,9 @@
                         <field string="Category" name="product_cats" widget="many2many_tags" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
                         <field string="Product" name="filtered_prod_by_categ_ids" widget="many2many_tags" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
                     </group>
+                    <group>
+                        <field name="stock_picking_type_ids" widget="many2many_tags" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                    </group>
                     <group string="Date">
                        <group><field name="start_date" required="1"></field></group>
                        <group><field name="end_date" required="1"></field></group>
