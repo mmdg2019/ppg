@@ -11833,6 +11833,11 @@
                                             <span>(-) Production Cost - Raw Material</span>
                                         </th>
                                     </t>
+                                    <t t-if="not op_types or (op_types and 'FGUsage' in op_types)">
+                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                            <span>(-) Finished Usage</span>
+                                        </th>
+                                    </t>
                                     <t t-if="op_types">
                                         <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
                                             <span>Total Balance</span>
@@ -11979,6 +11984,14 @@
                                                 </td>
                                                 <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
                                                     <t t-esc="'{0:,.2f}'.format(doc['raw_amt'])"/>
+                                                </td>
+                                            </t>
+                                            <t t-if="not op_types or (op_types and 'FGUsage' in op_types)">
+                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                                    <t t-esc="'{0:,.2f}'.format(doc['fgusage_qty'])"/>
+                                                </td>
+                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                                    <t t-esc="'{0:,.2f}'.format(doc['fgusage_amt'])"/>
                                                 </td>
                                             </t>
                                             <t t-if="op_types">

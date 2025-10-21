@@ -3037,7 +3037,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
         amt_keys = []
         pos_qty_keys = []
         neg_qty_keys = []
-        table_col = 16 # from opening to closing with all possible operation types
+        table_col = 17 # from opening to closing with all possible operation types
         if not data['product_ids'] and data['product_cats_ids']:
             selected_categ_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='complete_name asc')
         if data['stock_picking_type_ids']:
@@ -3084,6 +3084,10 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                     selected_operation_types.append('RAW')
                     amt_keys.append('raw_amt')
                     neg_qty_keys.append('raw_qty')
+                elif pick.code == 'outgoing' and pick.sequence_code == 'FGUsage':
+                    selected_operation_types.append('FGUsage')
+                    amt_keys.append('fgusage_amt')
+                    neg_qty_keys.append('fgusage_qty')
             table_col = len(selected_operation_types) + 4 if 'MO' in selected_operation_types else len(selected_operation_types) + 3
         s_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
         e_date = datetime.combine(datetime.strptime(data['end_date'], "%Y-%m-%d").date(), time.max)
@@ -3124,6 +3128,8 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                         dmg_amt,
                         raw_qty,
                         raw_amt,
+                        fgusage_qty,
+                        fgusage_amt,
                         opening_qty,
                         opening_amt,
                         closing_qty,
@@ -3415,6 +3421,27 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                             AND sm.state = 'done'
                             AND sm.date >= %(s_date)s
                             AND sm.date <= %(e_date)s) AS raw_amt,
+                        (SELECT COALESCE(SUM(sm.product_uom_qty), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'FGUsage'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS fgusage_qty,
+                        (SELECT COALESCE(SUM(svl.value), 0)
+                            FROM stock_move sm
+                            LEFT JOIN stock_picking_type spt ON spt.id = sm.picking_type_id
+                            JOIN stock_valuation_layer svl ON svl.stock_move_id = sm.id
+                            WHERE sm.product_id = pp.id
+                            AND spt.code = 'outgoing'
+                            AND spt.sequence_code = 'FGUsage'
+                            AND sm.picking_type_id is not NULL
+                            AND sm.state = 'done'
+                            AND sm.date >= %(s_date)s
+                            AND sm.date <= %(e_date)s) AS fgusage_amt,
                         (SELECT COALESCE(SUM(svl.quantity), 0)
                             FROM stock_valuation_layer svl
                             LEFT JOIN stock_move sm ON sm.id = svl.stock_move_id
@@ -3472,7 +3499,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
             else:
                 docs = [item for item in docs if item.get('opening_qty', 0.0) > 0 or item.get('receipt_qty', 0.0) > 0 or item.get('sr_qty', 0.0) > 0 or item.get('adjust_qty', 0.0) > 0 or item.get('mo_in_qty', 0.0) > 0 
                 or item.get('delivery_qty', 0.0) > 0 or item.get('pr_qty', 0.0) > 0 or item.get('minus_adjust_qty', 0.0) > 0 or item.get('mo_out_qty', 0.0) > 0 or item.get('scarp_qty', 0.0) > 0
-                or item.get('oil_qty', 0.0) > 0 or item.get('pack_qty', 0.0) > 0 or item.get('acc_qty', 0.0) > 0 or item.get('dmg_qty', 0.0) > 0 or item.get('raw_qty', 0.0) > 0]
+                or item.get('oil_qty', 0.0) > 0 or item.get('pack_qty', 0.0) > 0 or item.get('acc_qty', 0.0) > 0 or item.get('dmg_qty', 0.0) > 0 or item.get('raw_qty', 0.0) > 0 or item.get('fgusage_qty', 0.0) > 0]
 
         return {
             'docs': docs,
