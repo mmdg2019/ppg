@@ -3709,7 +3709,7 @@ class edit_report_stock_unit_cost(models.AbstractModel):
         query = """
                 SELECT                                              
                     pp.id,
-                    '[' || pp.default_code || ']' || ' ' || (pt.name->>'en_US') as prod_name,
+                    COALESCE('[' || pp.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') as prod_name,
                     quant.quantity as on_hand,
                     sm.product_uom_qty as move_qty,
                     valuation.unit_cost as unit_cost,
@@ -3776,8 +3776,8 @@ class edit_report_stock_unit_cost(models.AbstractModel):
                         move['qty'] = qty_available
                         move['ttl_value'] = move['unit_cost'] * qty_available
                         docs_list.append(move)
-                        break
-                                        
+                        break                                        
+       
         docs_sorted = sorted(docs_list, key=itemgetter('prod_name', 'unit_cost'))
         result = []
         for (prod_name, unit_cost), group in groupby(docs_sorted, key=itemgetter('prod_name', 'unit_cost')):
