@@ -12143,35 +12143,35 @@
                                                 <span t-esc="doc['total_val']" t-options="{'widget': 'monetary', 'display_currency': currency_id}"/><br/>
                                             </td>                                                                                            
                                             <td style="text-align:right;">                                                   
-                                                <span t-esc="'%.2f' % doc['total_qty']"/><br/>
+                                                <span t-esc="'{0:,.2f}'.format(doc['total_qty'])"/><br/>
                                             </td> 
                                             <td style="text-align:right;">
                                                     <t t-if="sub_name == 'first'">
-                                                        <span t-esc="'%.2f' % doc['free_qty']"/>
+                                                        <span t-esc="'{0:,.2f}'.format(doc['free_qty'])"/>
                                                     </t>
                                                     <t t-else="">
                                                         <t t-if="sub==1">
-                                                            <span t-esc="'%.2f' % doc['free_qty']"/>
+                                                            <span t-esc="'{0:,.2f}'.format(doc['free_qty'])"/>
                                                         </t>                                                       
                                                     </t>                                                
                                             </td>
                                             <td style="text-align:right;">
                                                     <t t-if="sub_name == 'first'">
-                                                        <span t-esc="'%.2f' % doc['incoming']"/>
+                                                        <span t-esc="'{0:,.2f}'.format(doc['incoming'])"/>
                                                     </t>
                                                     <t t-else="">
                                                         <t t-if="sub==1">
-                                                            <span t-esc="'%.2f' % doc['incoming']"/>
+                                                            <span t-esc="'{0:,.2f}'.format(doc['incoming'])"/>
                                                         </t>
                                                     </t>                                                
                                             </td>
                                                 <td style="text-align:right;">
                                                     <t t-if="sub_name == 'first'">
-                                                        <span t-esc="'%.2f' % doc['outgoing']"/>
+                                                        <span t-esc="'{0:,.2f}'.format(doc['outgoing'])"/>
                                                     </t>
                                                     <t t-else="">
                                                         <t t-if="sub==1">
-                                                            <span t-esc="'%.2f' % doc['outgoing']"/>
+                                                            <span t-esc="'{0:,.2f}'.format(doc['outgoing'])"/>
                                                         </t>
                                                     </t>                                                
                                             </td>
