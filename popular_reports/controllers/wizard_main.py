@@ -13,7 +13,8 @@ from calendar import monthrange
 from datetime import date, datetime, timedelta, time
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
-
+from itertools import groupby
+from operator import itemgetter
 
 # Sales Report by Product Code
 class edit_report_sales_report_by_product_code(models.AbstractModel):
@@ -3689,3 +3690,108 @@ class edit_report_mo_prod_qty_listing_by_date(models.AbstractModel):
             'printing_date': cdate,
             'printing_time': ctime
         }
+    
+class edit_report_stock_unit_cost(models.AbstractModel):
+    _name = "report.popular_reports.report_stock_report_unit_cost"
+    _description="Stock Report (Unit Cost)"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        products = None          
+        currency_id = None
+        state = 'posted'
+        company_id = self.env.company.id
+        currency_id = self.env.company.currency_id   
+
+        locations = self.env['stock.location'].search([('usage', '=', 'internal'), ('company_id', '=', company_id), ('active', '=', True )]).ids
+            
+        query = """
+                SELECT                                              
+                    pp.id,
+                    '[' || pp.default_code || ']' || ' ' || (pt.name->>'en_US') as prod_name,
+                    quant.quantity as on_hand,
+                    sm.product_uom_qty as move_qty,
+                    valuation.unit_cost as unit_cost,
+                    quant.location_id 
+                from
+                    product_product pp                    
+                LEFT JOIN
+                    product_template pt on pt.id = pp.product_tmpl_id
+                LEFT JOIN
+                    stock_quant quant on quant.product_id = pp.id 
+                LEFT JOIN
+                    stock_location qloc on qloc.id = quant.location_id
+                LEFT JOIN
+                    stock_move sm on sm.product_id = quant.product_id                
+                LEFT JOIN
+                    stock_location loc on sm.location_dest_id = loc.id
+                LEFT JOIN
+                    stock_valuation_layer valuation on valuation.stock_move_id = sm.id                
+                WHERE
+                    quant.quantity > 0
+                    AND sm.state = 'done'
+                    AND loc.usage = 'internal'
+                    AND qloc.usage = 'internal'
+                    AND loc.id in %(locations)s
+                    AND qloc.id in %(locations)s
+                    AND quant.company_id = %(company_id)s 
+        """
+        params = {        
+        'locations': tuple(locations),          
+        'company_id': company_id,        
+            } 
+        
+        if data['product_ids']: 
+            products = self.env['product.product'].search([('id', 'in', data['product_ids'])], order='display_name asc').ids      
+            params.update({'products':tuple(products)}) 
+            query += "AND pp.id in %(products)s" 
+
+        query += """
+            GROUP BY
+                pp.id, prod_name, sm.date, unit_cost, on_hand, move_qty, quant.location_id
+            ORDER BY 
+                prod_name, sm.date desc
+                """            
+        self.env.cr.execute(query, params)
+        docs = self.env.cr.dictfetchall()  
+        docs_list = []
+        product_ids = list({row['id'] for row in docs})
+        products = self.env['product.product'].search([('id', 'in', product_ids)])
+        for product in products:
+            stock_moves = [row for row in docs if row['id'] == product.id]
+            qty_available = stock_moves[0]['on_hand']
+            for move in stock_moves:
+                if qty_available > 0:
+                    move['free_qty'] = product.free_qty
+                    move['incoming'] = product.incoming_qty
+                    move['outgoing'] = product.outgoing_qty
+                    move['uom'] = product.uom_id.name
+                    if qty_available >= move['move_qty']:
+                        qty_available -= move['move_qty']
+                        move['qty'] = move['move_qty']
+                        move['ttl_value'] = move['unit_cost'] * move['move_qty']
+                        docs_list.append(move)
+                    else: 
+                        move['qty'] = qty_available
+                        move['ttl_value'] = move['unit_cost'] * qty_available
+                        docs_list.append(move)
+                        break
+                                        
+        docs_sorted = sorted(docs_list, key=itemgetter('prod_name', 'unit_cost'))
+        result = []
+        for (prod_name, unit_cost), group in groupby(docs_sorted, key=itemgetter('prod_name', 'unit_cost')):
+            group_list = list(group)
+            total_qty = sum(r['qty'] for r in group_list)
+            total_val = sum(r['ttl_value'] for r in group_list)
+            free_qty = group_list[0].get('free_qty')
+            incoming = group_list[0].get('incoming')
+            outgoing = group_list[0].get('outgoing')
+            uom = group_list[0].get('uom')
+            result.append({'name': prod_name, 'unit_cost': unit_cost, 'total_qty': total_qty, 'total_val': total_val, 'free_qty': free_qty, 'incoming': incoming, 'outgoing': outgoing, 'uom': uom })
+        
+        return {            
+            'currency_id': currency_id,
+            'docs': result,               
+        }
+

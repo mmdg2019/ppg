@@ -634,6 +634,24 @@
             </field>
         </record>
 
+        <record id="wizard_form_report_stock_unit_cost" model="ir.ui.view">
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="Stock Report (Unit Cost)">
+                    <sheet>
+                        <group string="Product">
+                            <field name="products" widget="many2many_tags" domain="[('type', '!=', 'service')]" options="{'no_open':1, 'no_create':1, 'no_create_edit':1}"/>
+                        </group>                        
+                        <footer>
+                            <button name="print_report_stock_report_unit_cost" string="Print Report" type="object" class="oe_highlight"/>
+                            <button string="Cancel" class="btn btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record model='ir.ui.view' id='wizard_form_report_dmg_sales_rtrn_lst_by_product'>
             <field name="name">wizard.popular.reports.form</field>
             <field name="model">wizard.popular.reports</field>
@@ -1876,6 +1894,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_stock_in_out_bal"/>
+            <field name="target">new</field>
+        </record>
+
+        <record model='ir.actions.act_window' id='wizard_act_report_stock_unit_cost'>
+            <field name="name">Export Stock Report (Unit Cost)</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>            
+            <field name="view_id" ref="wizard_form_report_stock_unit_cost"/>
             <field name="target">new</field>
         </record>
         
