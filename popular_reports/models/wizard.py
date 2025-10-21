@@ -1095,3 +1095,11 @@ class PopularReport(models.TransientModel):
             'status': self.mo_state
         }
         return self.env.ref('popular_reports.mo_prod_qty_listing_by_date').report_action(self, data=data)
+    
+    # Stock Report (Unit Cost)
+    def print_report_stock_report_unit_cost(self):
+        data = {
+            'product_ids': self.products.ids,
+            
+        }
+        return self.env.ref('popular_reports.stock_report_unit_cost').report_action(self, data=data)

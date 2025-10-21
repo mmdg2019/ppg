@@ -405,6 +405,18 @@
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
 
+    <record id="stock_report_unit_cost" model="ir.actions.report">
+        <field name="name">Stock Report (Unit Cost)</field>
+        <field name="print_report_name">Stock Report (Unit Cost)</field>
+        <field name="model">stock.move.line</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_stock_report_unit_cost</field>
+        <field name="report_file">popular_reports.report_stock_report_unit_cost</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
+
 <!--     <report
         id="sales_quot_stock_analysis_by_d"
         model="account.move"
