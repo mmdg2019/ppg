@@ -15,8 +15,21 @@
         <field name="name">Enable Partner Creation</field>
         <field name="category_id" ref="module_category_partner_management"/>
     </record> -->
+    <record model="ir.module.category" id="module_category_payment_terms">
+        <field name="name">Payment Terms Selection</field>
+        <field name="sequence">9</field>
+    </record>
+
     <record id="group_payment_terms_permission" model="res.groups">
-        <field name="name">Enable Payment Terms Selection</field>
+        <field name="name">User</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="category_id" ref="account_ext.module_category_payment_terms"/>        
+    </record>
+    
+    <record id="group_payment_terms_permission_admin" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="implied_ids" eval="[(4, ref('account_ext.group_payment_terms_permission'))]"/>
+        <field name="category_id" ref="account_ext.module_category_payment_terms"/>        
     </record>
 
 </odoo>
