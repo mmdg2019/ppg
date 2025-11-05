@@ -12,13 +12,12 @@ class AccountMove(models.Model):
 
     @api.depends('user_id')
     def _compute_user_check(self):
-        if self.env.user.has_group('account_ext.group_partner_creation_permission'): 
+        
+        self.check_user = False 
+        # only administrator from payment terms selection can choose payment terms in draft state
+        if self.env.user.has_group('account_ext.group_payment_terms_permission_admin'): 
             if self.state == 'draft':
-                self.check_user = True
-            else:
-                self.check_user = False
-        else:
-            self.check_user = False        
+                self.check_user = True                  
     
     check_user=fields.Boolean(string='user', compute='_compute_user_check')
     invoice_payment_remark = fields.Text(string='Payment Remark')
