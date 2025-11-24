@@ -281,7 +281,7 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         docs = None
         product_ids = []
-        company_id = self.env.company.id
+        company_id = self.env.company.id       
 
         if data['stock_location']:
             locations = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal'), ('active', '=', True)])
@@ -290,14 +290,16 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
         
         if data['product_ids']:
             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
-        else:
+        else:            
             products = self.env['product.product'].search([('type', '=', 'product'), ('active', '=', True)])
-        if data['product_cats_ids']:
-            products = [product for product in products if product.categ_id.id in data['product_cats_ids']]
+        # if data['product_cats_ids']: 
+        #     products = [product for product in products if product.categ_id.id in data['product_cats_ids']]
         
-        product_ids = list(set(products.mapped('id')))
+        if products:
+            product_ids = list({p.id for p in products})
+           
         location_ids = list(set(locations.mapped('id')))
-        temp = []
+        
         query = """
             SELECT
                 sq.product_id,
@@ -305,7 +307,8 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
                 sq.location_id,
                 sl.complete_name AS location_name,
                 SUM(sq.quantity) AS on_hand_qty,
-                COALESCE(uu.name->>'en_US', uu.name::text, '') as uom
+                COALESCE(uu.name->>'en_US', uu.name::text, '') as uom,
+                pt.categ_id as category
 
             FROM stock_quant sq
             JOIN product_product pp ON sq.product_id = pp.id
@@ -317,8 +320,8 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
             AND sl.active = True            
             AND pp.id in %(product_ids)s
             AND sq.company_id = %(company_id)s 
-            GROUP BY sq.product_id, product_name, sq.location_id, sl.complete_name,uom
-            ORDER BY sq.product_id, product_name, sl.complete_name;
+            GROUP BY sq.product_id, product_name, sq.location_id, sl.complete_name,uom, category
+            ORDER BY product_name, sl.complete_name;
         """
         params = {
         'product_ids': tuple(product_ids),
@@ -326,41 +329,51 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
         'company_id': company_id,        
             } 
         self.env.cr.execute(query, params)
-        docs = self.env.cr.dictfetchall()  
+        docs = self.env.cr.dictfetchall() 
+
+        if data['product_cats_ids']:
+            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc') 
+            docs = [item for item in docs if item['category'] in tuple(data['product_cats_ids'])] 
         
-        groups = defaultdict(list)
-
-        # Group locations and quantities
-        for item in docs:
-            groups[item['product_name']].append({
-            'location': item['location_name'],
-            'quantity': item['on_hand_qty'],
-            'uom': item['uom']
-        })
-            
-        # Determine the group with the maximum number of locations
-        max_group_key = max(groups, key=lambda k: len(groups[k]))
-        max_group = groups[max_group_key]
-
-        # Build a stable ordered list of location names
-        ordered_locations = [p['location'] for p in max_group]
         result_list = []
+        if docs:
+            groups = defaultdict(list)
 
-        for group_key, pairs in groups.items():
-            merged = {'product_name': group_key}
-            merged['uom'] = pairs[0]['uom']
+            # Group locations and quantities
+            for item in docs:
+                groups[item['product_name']].append({
+                'location': item['location_name'],
+                'quantity': item['on_hand_qty'],
+                'uom': item['uom']
+            })
+                
+            # Determine the group with the maximum number of locations
+            max_group_key = max(groups, key=lambda k: len(groups[k]))
+            max_group = groups[max_group_key]
 
-            # Create dictionary: location → quantity for fast lookup
-            lookup = {p['location']: p['quantity'] for p in pairs}            
+            # Build a stable ordered list of location names
+            ordered_locations = [p['location'] for p in max_group]
+            # result_list = []
 
-            # Fill in values in the fixed order
-            for i, loc in enumerate(ordered_locations):
-                qty = lookup.get(loc, 0)  # 0 if missing
-                merged[f'location_{i}'] = loc
-                merged[f'quantity_{i}'] = qty
+            for group_key, pairs in groups.items():
+                merged = {'product_name': group_key}
+                merged['uom'] = pairs[0]['uom']
 
-            result_list.append(merged)
+                # Create dictionary: location → quantity for fast lookup
+                lookup = {p['location']: p['quantity'] for p in pairs}            
 
+                # Fill in values in the fixed order
+                for i, loc in enumerate(ordered_locations):
+                    qty = lookup.get(loc, 0)  # 0 if missing
+                    merged[f'location_{i}'] = loc
+                    merged[f'quantity_{i}'] = qty
+
+                result_list.append(merged)
+            locs = []
+            if len(max_group) != len(locations):
+                for group in max_group:
+                    locs.append(group['location'])
+                locations = locations.filtered(lambda r: r.display_name in locs)
         return {            
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
