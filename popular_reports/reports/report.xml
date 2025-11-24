@@ -799,6 +799,18 @@
         <field name="binding_model_id" eval="False"/>
         <field name="paperformat_id" ref="paperformat_popular_report"/>
     </record>
+
+    <record id="all_balance_listing_total" model="ir.actions.report">
+        <field name="name">All Balance Listing (Total)</field>
+        <field name="print_report_name">All Balance Listing (Total)</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">popular_reports.report_all_balance_listing_total</field>
+        <field name="report_file">popular_reports.report_all_balance_listing_total</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="paperformat_id" ref="paperformat_popular_report"/>
+    </record>
 <!--     <report
         id="stock_valuation_info"
         model="product.template"

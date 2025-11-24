@@ -499,6 +499,13 @@
               action="popular_reports.wizard_act_report_sales_anlys_by_mon_and_cust_vert"
               groups="ppg_credit_permission.group_credit_permission"
               sequence="15"/>
+    
+    <menuitem name="All Balance Listing (Total)"
+              parent="popular_reports.popular_reports_sub_menu_7"
+              id="popular_reports.menu_report_all_balance_listing_total"
+              action="popular_reports.wizard_act_report_all_balance_listing_total"
+              groups="ppg_credit_permission.group_credit_permission"
+              sequence="1"/>
 
 </odoo>
     
