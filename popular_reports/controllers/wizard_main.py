@@ -15,6 +15,7 @@ from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 from itertools import groupby
 from operator import itemgetter
+from collections import defaultdict
 
 # Sales Report by Product Code
 class edit_report_sales_report_by_product_code(models.AbstractModel):
@@ -270,6 +271,103 @@ class edit_report_all_balance_listing(models.AbstractModel):
             'products': products,
             'items': sorted(temp, key = lambda i: (i['location'],i['product_name'].default_code)),
        }
+    
+#     All Balance Listing (Total)
+class edit_report_all_balance_listing_total(models.AbstractModel):
+    _name = "report.popular_reports.report_all_balance_listing_total"
+    _description="All Balance Listing (Total) Report Editing"
+    
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = None
+        product_ids = []
+        company_id = self.env.company.id
+
+        if data['stock_location']:
+            locations = self.env['stock.location'].search([('id', 'in', data['stock_location']),('usage', '=', 'internal'), ('active', '=', True)])
+        else:
+            locations = self.env['stock.location'].search([('usage', '=', 'internal'), ('active', '=', True)])
+        
+        if data['product_ids']:
+            products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
+        else:
+            products = self.env['product.product'].search([('type', '=', 'product'), ('active', '=', True)])
+        if data['product_cats_ids']:
+            products = [product for product in products if product.categ_id.id in data['product_cats_ids']]
+        
+        product_ids = list(set(products.mapped('id')))
+        location_ids = list(set(locations.mapped('id')))
+        temp = []
+        query = """
+            SELECT
+                sq.product_id,
+                COALESCE('[' || pp.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') as product_name,
+                sq.location_id,
+                sl.complete_name AS location_name,
+                SUM(sq.quantity) AS on_hand_qty,
+                COALESCE(uu.name->>'en_US', uu.name::text, '') as uom
+
+            FROM stock_quant sq
+            JOIN product_product pp ON sq.product_id = pp.id
+            JOIN product_template pt ON pp.product_tmpl_id = pt.id
+            JOIN uom_uom as uu on uu.id = pt.uom_id
+            JOIN stock_location sl ON sq.location_id = sl.id
+            WHERE sl.usage = 'internal'
+            AND sl.id in %(location_ids)s
+            AND sl.active = True            
+            AND pp.id in %(product_ids)s
+            AND sq.company_id = %(company_id)s 
+            GROUP BY sq.product_id, product_name, sq.location_id, sl.complete_name,uom
+            ORDER BY sq.product_id, product_name, sl.complete_name;
+        """
+        params = {
+        'product_ids': tuple(product_ids),
+        'location_ids': tuple(location_ids),            
+        'company_id': company_id,        
+            } 
+        self.env.cr.execute(query, params)
+        docs = self.env.cr.dictfetchall()  
+        
+        groups = defaultdict(list)
+
+        # Group locations and quantities
+        for item in docs:
+            groups[item['product_name']].append({
+            'location': item['location_name'],
+            'quantity': item['on_hand_qty'],
+            'uom': item['uom']
+        })
+            
+        # Determine the group with the maximum number of locations
+        max_group_key = max(groups, key=lambda k: len(groups[k]))
+        max_group = groups[max_group_key]
+
+        # Build a stable ordered list of location names
+        ordered_locations = [p['location'] for p in max_group]
+        result_list = []
+
+        for group_key, pairs in groups.items():
+            merged = {'product_name': group_key}
+            merged['uom'] = pairs[0]['uom']
+
+            # Create dictionary: location → quantity for fast lookup
+            lookup = {p['location']: p['quantity'] for p in pairs}            
+
+            # Fill in values in the fixed order
+            for i, loc in enumerate(ordered_locations):
+                qty = lookup.get(loc, 0)  # 0 if missing
+                merged[f'location_{i}'] = loc
+                merged[f'quantity_{i}'] = qty
+
+            result_list.append(merged)
+
+        return {            
+            'start_date': data['start_date'], 
+            'end_date': data['end_date'],
+            'locations': locations,
+            'items': result_list,
+       }
+
     
 #     Sales Report by Date
 class edit_report_sales_report_by_date(models.AbstractModel):

@@ -22,6 +22,26 @@
            </form>
             </field>
         </record>
+
+        <record model='ir.ui.view' id='wizard_form_report_all_balance_listing_total'>
+            <field name="name">wizard.popular.reports.form</field>
+            <field name="model">wizard.popular.reports</field>
+            <field name="arch" type="xml">
+                <form string="All Balance Listing (Total)">
+                    <group string="Product">
+                        <field name="products" widget="many2many_tags" domain="[('type', '=', 'product')]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                    </group>
+                    <group string="Stock Location">
+                        <field name="stock_location" context="{'search_default_in_location':1}" domain="[('usage', '=', 'internal')]" widget="many2many_tags"/>
+                    </group>
+               <footer>
+                   <button name="print_report_all_balance_listing_total" type="object" string="Print Report" class="oe_highlight"/>
+                   <button string="Cancel" class="btn btn-default" special="cancel"/>
+               </footer>
+           </form>
+            </field>
+        </record>
         
         <record model='ir.ui.view' id='wizard_form_report_cash_payment_listing_by_lumpsum'>
             <field name="name">wizard.popular.reports.form</field>
@@ -1670,6 +1690,15 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="wizard_form_report_all_balance_listing"/>
+            <field name="target">new</field>
+        </record>
+
+        <record model='ir.actions.act_window' id='wizard_act_report_all_balance_listing_total'>
+            <field name="name">Export All Balance Listing (Total)</field>
+            <field name="res_model">wizard.popular.reports</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_form_report_all_balance_listing_total"/>
             <field name="target">new</field>
         </record>
         

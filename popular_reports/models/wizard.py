@@ -161,6 +161,17 @@ class PopularReport(models.TransientModel):
         }
         return self.env.ref('popular_reports.all_balance_listing').report_action(self, data=data)
     
+    #     All Balance Listing (Total)
+    def print_report_all_balance_listing_total(self):
+        data = {
+            'stock_location': self.stock_location.ids,
+            'product_ids': self.products.ids,
+            'product_cats_ids': self.product_cats.ids,
+            'start_date': self.start_date, 
+            'end_date': self.end_date
+        }
+        return self.env.ref('popular_reports.all_balance_listing_total').report_action(self, data=data)
+    
 #     Sales Analysis Report by Customer
     def print_report_sales_analysis_report_by_cust(self):
         data = {
