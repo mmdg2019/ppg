@@ -12148,7 +12148,7 @@
                                             </th>
                                         </t>
                                         <t t-if="not op_types or (op_types and 'SR' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">S
+                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
                                                 <t t-esc="'{0:,.2f}'.format(ttl['sr_qty'])"/>
                                             </th>
                                             <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
