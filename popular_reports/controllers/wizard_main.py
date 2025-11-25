@@ -3149,6 +3149,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
         amt_keys = []
         pos_qty_keys = []
         neg_qty_keys = []
+        grand_ttl = {}
         table_col = 17 # from opening to closing with all possible operation types
         if not data['product_ids'] and data['product_cats_ids']:
             selected_categ_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='complete_name asc')
@@ -3612,12 +3613,22 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
                 docs = [item for item in docs if item.get('opening_qty', 0.0) > 0 or item.get('receipt_qty', 0.0) > 0 or item.get('sr_qty', 0.0) > 0 or item.get('adjust_qty', 0.0) > 0 or item.get('mo_in_qty', 0.0) > 0 
                 or item.get('delivery_qty', 0.0) > 0 or item.get('pr_qty', 0.0) > 0 or item.get('minus_adjust_qty', 0.0) > 0 or item.get('mo_out_qty', 0.0) > 0 or item.get('scarp_qty', 0.0) > 0
                 or item.get('oil_qty', 0.0) > 0 or item.get('pack_qty', 0.0) > 0 or item.get('acc_qty', 0.0) > 0 or item.get('dmg_qty', 0.0) > 0 or item.get('raw_qty', 0.0) > 0 or item.get('fgusage_qty', 0.0) > 0]
+                
+            if docs:
+                grand_ttl = {key: 0 for key in docs[0].keys() if key not in ('product_id', 'product', 'uom')}
+                for key in grand_ttl.keys():
+                    if selected_operation_types:
+                        if key in amt_keys or key in pos_qty_keys or key in neg_qty_keys or key in ('opening_qty', 'opening_amt', 'ttl_qty', 'ttl_amt', 'closing_qty', 'closing_amt'):
+                            grand_ttl[key] = sum([rec[key] for rec in docs])
+                    else:
+                        grand_ttl[key] = sum([rec[key] for rec in docs])
 
         return {
             'docs': docs,
             'category': selected_categ_ids,
             'op_types': selected_operation_types,
-            'loop': list(range(table_col))
+            'loop': list(range(table_col)),
+            'ttl': grand_ttl
             }
 
 #     Stock Focus Report
