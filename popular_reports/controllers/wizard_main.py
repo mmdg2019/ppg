@@ -3830,10 +3830,10 @@ class edit_report_stock_unit_cost(models.AbstractModel):
             
         query = """
                 SELECT                                              
-                    pp.id,
+                    pp.id, sm.id as move_id, 
                     COALESCE('[' || pp.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') as prod_name,
                     quant.quantity as on_hand,
-                    sm.product_uom_qty as move_qty,
+                    sm.quantity_done as move_qty,
                     valuation.unit_cost as unit_cost,
                     quant.location_id 
                 from
@@ -3871,12 +3871,13 @@ class edit_report_stock_unit_cost(models.AbstractModel):
 
         query += """
             GROUP BY
-                pp.id, prod_name, sm.date, unit_cost, on_hand, move_qty, quant.location_id
+                pp.id, prod_name, sm.date, move_id, unit_cost, on_hand, move_qty, quant.location_id
             ORDER BY 
                 prod_name, sm.date desc
                 """            
         self.env.cr.execute(query, params)
         docs = self.env.cr.dictfetchall()  
+        docs = [row for row in docs if row['unit_cost'] != None]
         docs_list = []
         product_ids = list({row['id'] for row in docs})
         products = self.env['product.product'].search([('id', 'in', product_ids)])
@@ -3902,6 +3903,7 @@ class edit_report_stock_unit_cost(models.AbstractModel):
        
         docs_sorted = sorted(docs_list, key=itemgetter('prod_name', 'unit_cost'))
         result = []
+        grand_total_quantity = grand_total_amount = total_free_qty = total_incoming = total_outgoing = 0 
         for (prod_name, unit_cost), group in groupby(docs_sorted, key=itemgetter('prod_name', 'unit_cost')):
             group_list = list(group)
             total_qty = sum(r['qty'] for r in group_list)
@@ -3911,9 +3913,19 @@ class edit_report_stock_unit_cost(models.AbstractModel):
             outgoing = group_list[0].get('outgoing')
             uom = group_list[0].get('uom')
             result.append({'name': prod_name, 'unit_cost': unit_cost, 'total_qty': total_qty, 'total_val': total_val, 'free_qty': free_qty, 'incoming': incoming, 'outgoing': outgoing, 'uom': uom })
-        
+            grand_total_quantity += total_qty
+            grand_total_amount += total_val 
+            total_free_qty += free_qty
+            total_incoming += incoming
+            total_outgoing += outgoing
+            
         return {            
             'currency_id': currency_id,
-            'docs': result,               
+            'docs': result, 
+            'grand_total_amount': grand_total_amount,
+            'grand_total_quantity': grand_total_quantity,
+            'total_free_qty': total_free_qty,
+            'total_incoming': total_incoming,
+            'total_outgoing': total_outgoing                         
         }
 
