@@ -12342,7 +12342,7 @@
                             <thead >
                                 <tr>                                                                    
                                     <th>
-                                        <span>Display Name</span>
+                                        <span>Product</span>
                                     </th>                                                                     
                                     <th style="text-align:right;" >
                                         <span>Unit Cost</span>
@@ -12444,6 +12444,29 @@
                                             </td>
                                         </tr>
                                     </t>
+                                    <tr>
+                                        <td colspan="2" style="text-align:left; font-weight: bold;">
+                                            <span>Total</span>
+                                        </td>
+                                        <td style="text-align:right; font-weight: bold;">
+                                            <span t-esc="grand_total_amount"  t-options="{'widget': 'monetary', 'display_currency': currency_id}"/>
+                                            <br/>
+                                        </td>
+                                        <td style="text-align:right; font-weight: bold;">
+                                            <span t-esc="'{0:,.2f}'.format(grand_total_quantity)"/>
+                                            <br/>
+                                        </td>
+                                        <td style="text-align:right; font-weight: bold;">
+                                            <span t-esc="'{0:,.2f}'.format(total_free_qty)"/>
+                                        </td>
+                                        <td style="text-align:right; font-weight: bold;">
+                                            <span t-esc="'{0:,.2f}'.format(total_incoming)"/>
+                                        </td>
+                                        <td style="text-align:right; font-weight: bold;">
+                                            <span t-esc="'{0:,.2f}'.format(total_outgoing)"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>                                    
                                 </tbody>
                             </t>
                             <t t-else="">
