@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Car Number Menu -->
+         <menuitem id="menu_car_root" name="Car Way Management"
+            parent="sale.sale_menu_root" sequence="45" />
+        <menuitem id="menu_car_number_root" name="Car Numbers"
+            parent="car_way_management.menu_car_root" sequence="100" />
+        <menuitem id="menu_car_number" name="Car Numbers"
+            parent="car_way_management.menu_car_number_root" action="car_way_management.action_car_number" />
+        <!-- Car Way Menu -->
+        <menuitem id="menu_car_way_root" name="Car Ways"
+            parent="car_way_management.menu_car_root" sequence="110" />
+        <menuitem id="menu_car_way" name="Car Ways"
+            parent="menu_car_way_root" action="car_way_management.action_car_way" />
+    </data>
+</odoo>

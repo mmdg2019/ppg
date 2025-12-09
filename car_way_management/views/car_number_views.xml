@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Car Number Tree View -->
+    <record id="view_car_number_tree" model="ir.ui.view">
+        <field name="name">car.number.tree</field>
+        <field name="model">car.number</field>
+        <field name="arch" type="xml">
+            <tree string="Car Numbers">
+                <field name="name" />
+                <field name="car_size" />
+                <field name="car_ton" />
+                <field name="car_length" />
+                <field name="car_width" />
+                <field name="car_height" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+    <!-- Car Number Form View -->
+    <record id="view_car_number_form" model="ir.ui.view">
+        <field name="name">car.number.form</field>
+        <field name="model">car.number</field>
+        <field name="arch" type="xml">
+            <form string="Car Number">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Create Car Number....." />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="car_size" />
+                            <field name="car_ton" />
+                            <field name="car_length" />
+                        </group>
+                        <group>
+                            <field name="car_width" />
+                            <field name="car_height" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Car Number Action -->
+    <record id="action_car_number" model="ir.actions.act_window">
+        <field name="name">Car Numbers</field>
+        <field name="res_model">car.number</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first car number
+            </p>
+        </field>
+    </record>
+</odoo>

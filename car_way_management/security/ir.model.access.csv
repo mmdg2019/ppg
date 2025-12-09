@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_car_number,car.number,model_car_number,base.group_user,1,1,1,1
+access_assign_by_township_wizard,assign.by.township.wizard,model_assign_by_township_wizard,base.group_user,1,1,1,1
+access_export_wizard,export.car.way.wizard,model_export_car_way_wizard,base.group_user,1,1,1,1
