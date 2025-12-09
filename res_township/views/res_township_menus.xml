@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_res_city" parent="sale.menu_sale_config" sequence="3" name="Localization" />
+    <menuitem id="menu_res_city_root" name="Cities"
+        parent="res_township.menu_res_city" sequence="2"
+        action="base_address_extended.action_res_city_tree" />
+    <menuitem id="menu_res_township" name="Townships"
+        parent="res_township.menu_res_city" sequence="3" action="res_township.action_res_township" />
+
+</odoo>
