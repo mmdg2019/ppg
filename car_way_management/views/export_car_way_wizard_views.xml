@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Export Wizard Form View -->
+    <record id="view_export_car_way_wizard_form" model="ir.ui.view">
+        <field name="name">export.car.way.wizard.form</field>
+        <field name="model">export.car.way.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export Car Way Orders">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Export Car Way Orders</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="file_name" />
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="export_to_excel" string="Export"
+                            type="object" class="btn-primary" icon="fa-file-excel-o" close="1"/>
+                        <button string="Cancel" class="btn-secondary"
+                            special="cancel" />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

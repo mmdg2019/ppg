@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Original Wizard View -->
+    <record id="view_assign_by_township_wizard_form" model="ir.ui.view">
+        <field name="name">assign.by.township.wizard.form</field>
+        <field name="model">assign.by.township.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Car Numbers by Township">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="car_number_id" required="1" />
+                            <field name="car_size" />
+                        </group>
+                        <group>
+                            <field name="township_id" widget="many2many_tags" readonly="1" />
+                        </group>
+                        <field name="is_warning" invisible="1" />
+                        <div class="alert alert-warning"
+                            attrs="{'invisible': [('is_warning', '=', False)]}">
+                            <!-- <strong>Warning!</strong> -->
+                            <br />
+                            <field name="warning_message" nolabel="1" />
+                        </div>
+                    </group>
+                    <footer>
+                        <button name="action_assign_by_township" string="Assign" type="object"
+                            class="btn-primary" />
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_assign_by_township_wizard" model="ir.actions.act_window">
+        <field name="name">Assign by Township</field>
+        <field name="res_model">assign.by.township.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" eval="False" />
+    </record>
+</odoo>

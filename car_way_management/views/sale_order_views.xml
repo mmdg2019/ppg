@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit Sale Order Form View to add car fields -->
+    <record id="view_order_form_inherit_car_way" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.car.way</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='client_order_ref']" position="after">
+                <group name="car_info_group" string="Car Information">
+                    <field name="car_number_id" widget="many2one" />
+                    <field name="car_size" readonly="1" />
+                    <field name="delivery_assign_status" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Car Way Specific Tree View -->
+    <record id="view_sale_order_car_way_tree" model="ir.ui.view">
+        <field name="name">sale.order.car.way.tree</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <tree string="Car Way Orders"
+                decoration-info="delivery_assign_status=='assigned'"
+                decoration-warning="delivery_assign_status=='pending'">
+                <header>
+                    <button name="open_export_wizard" string="Export to Excel"
+                        type="object" class="btn-primary" icon="fa-file-excel-o" />
+                    <button name="action_open_assign_wizard"
+                        string="Assign by Township (Wizard)"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-map-marker" />
+                </header>
+                <field name="name" string="Order Reference" />
+                <field name="car_number_id" widget="many2one"
+                    options="{'no_create': True}" />
+                <field name="car_size" />
+                <field name="partner_id" />
+                <field name="date_order" />
+                <field name="amount_total" />
+                <field name="delivery_assign_status" widget="badge"
+                    options="{'decoration-mapping': {
+                           'pending': 'warning',
+                           'assigned': 'info',
+                           'delivered': 'success'
+                       }}" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Car Way Action -->
+    <record id="action_car_way" model="ir.actions.act_window">
+        <field name="name">Car Way</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('picking_ids.state', 'not in', ['done' , 'cancel'])]</field>
+        <field name="context">
+            {
+            'search_default_group_township': 1,
+            'group_by': 'partner_township_id',
+            'default_delivery_assign_status': 'pending'
+            }
+        </field>
+        <field name="search_view_id" ref="sale.view_sales_order_filter" />
+        <field name="view_id" ref="car_way_management.view_sale_order_car_way_tree" />
+    </record>
+</odoo>
