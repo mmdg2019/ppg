@@ -63,7 +63,6 @@ class ExportCarWayWizard(models.TransientModel):
             "Customer",
             "",
             "Order Date",
-            "Total",
             "Delivery Assign Status",
         ]
 
@@ -78,7 +77,7 @@ class ExportCarWayWizard(models.TransientModel):
 
             # ---- Township Group Row ----
             worksheet.merge_range(
-                row, 0, row, 5, f"Car Number: {car_number} ({len(orders)})", group_header
+                row, 0, row, 4, f"Car Number: {car_number} ({len(orders)})", group_header
             )
             row += 1
 
@@ -98,11 +97,9 @@ class ExportCarWayWizard(models.TransientModel):
                     text_format,
                 )
 
-                worksheet.write(row, 4, order.amount_total or 0, number_format)
-
                 worksheet.write(
                     row,
-                    5,
+                    4,
                     dict(order._fields["delivery_assign_status"].selection).get(
                         order.delivery_assign_status, ""
                     ),
