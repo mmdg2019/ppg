@@ -34,6 +34,8 @@ class SaleOrder(models.Model):
                 if record.partner_id.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                 # if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+            if not all(record.order_line.mapped('price_unit')):
+                raise UserError(_("Order lines should not have products with ZERO unit price. Please check!"))
         return super(SaleOrder, self).action_confirm()
 
     @api.model
