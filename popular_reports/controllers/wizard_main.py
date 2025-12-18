@@ -3914,18 +3914,12 @@ class edit_report_stock_unit_cost(models.AbstractModel):
             uom = group_list[0].get('uom')
             result.append({'name': prod_name, 'unit_cost': unit_cost, 'total_qty': total_qty, 'total_val': total_val, 'free_qty': free_qty, 'incoming': incoming, 'outgoing': outgoing, 'uom': uom })
             grand_total_quantity += total_qty
-            grand_total_amount += total_val 
-            total_free_qty += free_qty
-            total_incoming += incoming
-            total_outgoing += outgoing
+            grand_total_amount += total_val             
             
         return {            
             'currency_id': currency_id,
             'docs': result, 
             'grand_total_amount': grand_total_amount,
-            'grand_total_quantity': grand_total_quantity,
-            'total_free_qty': total_free_qty,
-            'total_incoming': total_incoming,
-            'total_outgoing': total_outgoing                         
+            'grand_total_quantity': grand_total_quantity                                    
         }
 
