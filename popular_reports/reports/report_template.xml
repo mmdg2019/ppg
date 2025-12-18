@@ -12372,6 +12372,9 @@
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value="first"/>
                                     <t t-set="user_id" t-value="0"/>
+                                    <t t-set="ttl_free_qty" t-value="0"/>
+                                    <t t-set="ttl_incoming" t-value="0"/>
+                                    <t t-set="ttl_outgoing" t-value="0"/>
                                     <t t-foreach="docs" t-as="doc">                                        
                                        
                                             <t t-if="sub_name == 'first'">
@@ -12409,33 +12412,39 @@
                                             <td style="text-align:right;">                                                   
                                                 <span t-esc="'{0:,.2f}'.format(doc['total_qty'])"/><br/>
                                             </td> 
-                                            <td style="text-align:right;">
+                                            <td style="text-align:right;">                                                    
                                                     <t t-if="sub_name == 'first'">
                                                         <span t-esc="'{0:,.2f}'.format(doc['free_qty'])"/>
+                                                        <t t-set="ttl_free_qty" t-value="ttl_free_qty + doc['free_qty']"/>
                                                     </t>
                                                     <t t-else="">
                                                         <t t-if="sub==1">
                                                             <span t-esc="'{0:,.2f}'.format(doc['free_qty'])"/>
+                                                            <t t-set="ttl_free_qty" t-value="ttl_free_qty + doc['free_qty']"/>
                                                         </t>                                                       
                                                     </t>                                                
                                             </td>
-                                            <td style="text-align:right;">
+                                            <td style="text-align:right;">                                                    
                                                     <t t-if="sub_name == 'first'">
                                                         <span t-esc="'{0:,.2f}'.format(doc['incoming'])"/>
+                                                        <t t-set="ttl_incoming" t-value="ttl_incoming + doc['incoming']"/>
                                                     </t>
                                                     <t t-else="">
                                                         <t t-if="sub==1">
                                                             <span t-esc="'{0:,.2f}'.format(doc['incoming'])"/>
+                                                            <t t-set="ttl_incoming" t-value="ttl_incoming + doc['incoming']"/>
                                                         </t>
                                                     </t>                                                
                                             </td>
-                                                <td style="text-align:right;">
+                                                <td style="text-align:right;">                                                    
                                                     <t t-if="sub_name == 'first'">
                                                         <span t-esc="'{0:,.2f}'.format(doc['outgoing'])"/>
+                                                        <t t-set="ttl_outgoing" t-value="ttl_outgoing + doc['outgoing']"/>
                                                     </t>
                                                     <t t-else="">
                                                         <t t-if="sub==1">
                                                             <span t-esc="'{0:,.2f}'.format(doc['outgoing'])"/>
+                                                            <t t-set="ttl_outgoing" t-value="ttl_outgoing + doc['outgoing']"/>
                                                         </t>
                                                     </t>                                                
                                             </td>
@@ -12457,13 +12466,13 @@
                                             <br/>
                                         </td>
                                         <td style="text-align:right; font-weight: bold;">
-                                            <span t-esc="'{0:,.2f}'.format(total_free_qty)"/>
+                                            <span t-esc="'{0:,.2f}'.format(ttl_free_qty)"/>
                                         </td>
                                         <td style="text-align:right; font-weight: bold;">
-                                            <span t-esc="'{0:,.2f}'.format(total_incoming)"/>
+                                            <span t-esc="'{0:,.2f}'.format(ttl_incoming)"/>
                                         </td>
                                         <td style="text-align:right; font-weight: bold;">
-                                            <span t-esc="'{0:,.2f}'.format(total_outgoing)"/>
+                                            <span t-esc="'{0:,.2f}'.format(ttl_outgoing)"/>
                                         </td>
                                         <td></td>
                                     </tr>                                    
