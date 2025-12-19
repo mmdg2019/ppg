@@ -292,8 +292,6 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
         else:            
             products = self.env['product.product'].search([('type', '=', 'product'), ('active', '=', True)])
-        # if data['product_cats_ids']: 
-        #     products = [product for product in products if product.categ_id.id in data['product_cats_ids']]
         
         if products:
             product_ids = list({p.id for p in products})
@@ -346,39 +344,33 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
                 'quantity': item['on_hand_qty'],
                 'uom': item['uom']
             })
-                
-            # Determine the group with the maximum number of locations
-            max_group_key = max(groups, key=lambda k: len(groups[k]))
-            max_group = groups[max_group_key]
+            
+        # Step 2: define fixed location order (internal locations)
+        ordered_locations = locations.mapped('complete_name')   # <-- key change
 
-            # Build a stable ordered list of location names
-            ordered_locations = [p['location'] for p in max_group]
-            # result_list = []
+        result = []
 
-            for group_key, pairs in groups.items():
-                merged = {'product_name': group_key}
-                merged['uom'] = pairs[0]['uom']
+        # Step 3: align all groups to internal location order
+        for group_key, pairs in groups.items():
+            merged = {'product_name': group_key}
 
-                # Create dictionary: location → quantity for fast lookup
-                lookup = {p['location']: p['quantity'] for p in pairs}            
+            # UoM per product
+            merged['uom'] = pairs[0]['uom']
 
-                # Fill in values in the fixed order
-                for i, loc in enumerate(ordered_locations):
-                    qty = lookup.get(loc, 0)  # 0 if missing
-                    merged[f'location_{i}'] = loc
-                    merged[f'quantity_{i}'] = qty
+            # location → quantity lookup
+            lookup = {p['location']: p['quantity'] for p in pairs}
 
-                result_list.append(merged)
-            locs = []
-            if len(max_group) != len(locations):
-                for group in max_group:
-                    locs.append(group['location'])
-                locations = locations.filtered(lambda r: r.display_name in locs)
+            for i, loc in enumerate(ordered_locations):
+                merged[f'location_{i}'] = loc
+                merged[f'quantity_{i}'] = lookup.get(loc, 0)
+
+            result.append(merged)
+            
         return {            
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
             'locations': locations,
-            'items': result_list,
+            'items': result,
        }
 
     
