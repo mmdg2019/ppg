@@ -237,8 +237,6 @@ class AccountMove(models.Model):
             if not record.partner_id.show_credit_due_access:
                 if record.partner_id.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
-            if record.move_type == 'out_invoice' and not all(record.invoice_line_ids.mapped('price_unit')):
-                raise UserError(_("Invoice lines should not have products with ZERO unit price. Please check!"))
         return super(AccountMove, self).action_post()    
   
     # # recompute due date in case the preferred invoice date was set on SO
