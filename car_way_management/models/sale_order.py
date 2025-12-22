@@ -28,7 +28,12 @@ class SaleOrder(models.Model):
         store=True,
         # index=True,
     )
-
+    @api.model_create_multi
+    def create(self,vals_list):
+        for vals in vals_list:
+            if vals.get('car_number_id'):
+                vals['delivery_assign_status'] = 'assigned'
+        return super().create(vals_list)
     @api.onchange("car_number_id")
     def _onchange_car_number_id(self):
         if self.car_number_id:
