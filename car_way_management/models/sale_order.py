@@ -22,12 +22,24 @@ class SaleOrder(models.Model):
         tracking=True,
     )
 
+    # partner_township_id = fields.Many2one(
+    #     "res.township",
+    #     related="partner_id.township_id",
+    #     store=True,
+    #     # index=True,
+    # )
     partner_township_id = fields.Many2one(
         "res.township",
-        related="partner_id.township_id",
-        store=True,
-        # index=True,
+        string="Township",
+        # readonly=True
     )
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        for record in self:
+            if record.partner_id:
+                record.partner_township_id = record.partner_id.township_id
+            else:
+                record.partner_township_id = False
     @api.model_create_multi
     def create(self,vals_list):
         for vals in vals_list:
