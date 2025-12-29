@@ -23,6 +23,12 @@ class ResPartner(models.Model):
             self.city_id = self.township_id.city_id
             self.state_id = self.township_id.state_id
             self.country_id = self.township_id.country_id
+            sale_orders = self.env["sale.order"].search([
+                ('partner_id', '=', self._origin.id),
+                ("picking_ids.state", "not in", ["done", "cancel"]),
+            ])
+            if sale_orders:
+                sale_orders.partner_township_id = self.township_id
 
     @api.onchange("city_id")
     def _onchange_city_id_township(self):
