@@ -27,6 +27,13 @@
 
     <record id="account_reports.general_ledger_report" model="account.report">
         <field name="main_table_header_template">account_ext.main_table_header_general_ledger_report</field>
+        <field name="column_ids">
+            <record id="general_ledger_report_creditor_debitor" model="account.report.column">
+                <field name="name">Creditor/Debitor</field>
+                <field name="expression_label">creditor_debitor</field>
+                <field name="figure_type">none</field>
+            </record>
+        </field>
     </record>
 
 </odoo>
