@@ -11,7 +11,12 @@ class CarNumber(models.Model):
     car_length = fields.Char(string='Length', required=True)
     car_width = fields.Char(string='Width', required=True)
     car_height = fields.Char(string='Height', required=True)
-
+    company_ids = fields.Many2many(
+        'res.company', 
+        string='Companies',
+        required=True,
+    )
+    
 
     active = fields.Boolean(string='Active', default=True)
     

@@ -14,6 +14,7 @@
     "depends": ["sale","res_township","stock",],
     "data": [
         "security/ir.model.access.csv",
+        "security/car_number_security.xml",
         "views/car_number_views.xml",
         "views/assign_by_township_wizard_views.xml",
         "views/sale_order_views.xml",
