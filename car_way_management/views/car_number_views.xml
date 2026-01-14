@@ -37,6 +37,7 @@
                         <group>
                             <field name="car_width" />
                             <field name="car_height" />
+                            <field name="company_ids" widget="many2many_tags"/>
                             <field name="active" />
                         </group>
                     </group>
