@@ -11,7 +11,7 @@
     """,
     "author": "Your Company",
     "category": "Sales",
-    "depends": ["sale","res_township","stock",],
+    "depends": ["sale","res_township","stock","account"],
     "data": [
         "security/ir.model.access.csv",
         "security/car_number_security.xml",
@@ -21,6 +21,7 @@
         "views/car_management_menus.xml",
         'views/export_car_way_wizard_views.xml',
         'views/stock_picking_views.xml',
+        'views/account_move_views.xml',
     ],
     "installable": True,
     "application": True,

@@ -33,6 +33,12 @@ class SaleOrder(models.Model):
         string="Township",
         # readonly=True
     )
+
+    def _prepare_invoice(self):
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+        invoice_vals['car_number_id'] = self.car_number_id.id
+        return invoice_vals
+        
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
         for record in self:
