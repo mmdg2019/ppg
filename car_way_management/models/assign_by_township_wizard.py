@@ -9,7 +9,7 @@ class AssignByTownshipWizard(models.TransientModel):
     car_number_id = fields.Many2one(
         "car.number", string="Car Number", required=True, domain=[("active", "=", True)]
     )
-    car_size = fields.Integer(
+    car_size = fields.Char(
         string="Car Size", related="car_number_id.car_size", readonly=True
     )
     township_id = fields.Many2many(
