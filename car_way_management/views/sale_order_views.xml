@@ -6,12 +6,19 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_shipping_id']" position="after">
-                <label for="car_number_id" string="Car Number"/>
-                <div name="car_number_div" class="o_row">
-                    <field name="car_number_id" widget="many2one"/>
-                    <span name="car_size_span" class="text-muted">Car Size: <field name="car_size" class="oe_inline" readonly="1"/></span>
-                </div>
+            <xpath expr="//group[@name='sale_header']" position="after">
+                <group name="car_info_group" string="Car Information">
+                    <group>
+                        <field name="car_number_id" widget="many2one" />
+                        <field name="car_size" readonly="1" />
+                        <field name="car_ton" readonly="1" />
+                    </group>
+                    <group>
+                        <field name="car_length" readonly="1" />
+                        <field name="car_width" readonly="1" />
+                        <field name="car_height" readonly="1" />
+                    </group>
+                </group>
                 <field name="partner_township_id" class="oe_inline" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='client_order_ref']" position="after">
