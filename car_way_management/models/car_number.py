@@ -6,7 +6,7 @@ class CarNumber(models.Model):
     _rec_name = 'name'
 
     name = fields.Char(string='Car Number', required=True)
-    car_size = fields.Integer(string='Feet', required=True)
+    car_size = fields.Char(string='Feet', required=True)
     car_ton = fields.Char(string='Ton', required=True)
     car_length = fields.Char(string='Length', required=True)
     car_width = fields.Char(string='Width', required=True)
