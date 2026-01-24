@@ -74,24 +74,25 @@ class ExportCarWayWizard(models.TransientModel):
 
         # Write data with township grouping
         for car_number, orders in grouped.items():
-            car_size = ""
-            car_ton = ""
-            car_length = ""
-            car_width = ""
-            car_height = ""
-            if orders and orders[0].car_number_id:
-                car = orders[0].car_number_id
-                if hasattr(car, 'car_size'):
-                    car_size = car.car_size
-                if hasattr(car, 'car_ton'):
-                    car_ton = car.car_ton
-                if hasattr(car, 'car_length'):
-                    car_length = car.car_length
-                if hasattr(car, 'car_width'):
-                    car_width = car.car_width
-                if hasattr(car, 'car_height'):
-                    car_height = car.car_height
-            group_info = f"Car Number: {car_number} ({len(orders)}) \ Size: {car_size} \ Ton: {car_ton} \ Length: {car_length} \ Width: {car_width} \ Height: {car_height}"
+            # car_size = ""
+            # car_ton = ""
+            # car_length = ""
+            # car_width = ""
+            # car_height = ""
+            # if orders and orders[0].car_number_id:
+            #     car = orders[0].car_number_id
+            #     if hasattr(car, 'car_size'):
+            #         car_size = car.car_size
+            #     if hasattr(car, 'car_ton'):
+            #         car_ton = car.car_ton
+            #     if hasattr(car, 'car_length'):
+            #         car_length = car.car_length
+            #     if hasattr(car, 'car_width'):
+            #         car_width = car.car_width
+            #     if hasattr(car, 'car_height'):
+            #         car_height = car.car_height
+            # group_info = f"Car Number: {car_number} ({len(orders)}) \ Size: {car_size} \ Ton: {car_ton} \ Length: {car_length} \ Width: {car_width} \ Height: {car_height}"
+            group_info = f"Car Number: {car_number} ({len(orders)})"
             # ---- Township Group Row ----
             worksheet.merge_range(
                 row, 0, row, 4,group_info , group_header
