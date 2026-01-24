@@ -6,7 +6,10 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
-             <xpath expr="//group" position="after">
+            <xpath expr="//field[@name='location_id'][2]" position="after">
+                <field name="car_number_id" widget="many2one" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+             <!-- <xpath expr="//group" position="after">
                 <group name="car_info_group" string="Car Information">
                     <group>
                         <field name="car_number_id" widget="many2one" />
@@ -19,7 +22,7 @@
                         <field name="car_height" readonly="1" />
                     </group>
                 </group>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 </odoo>
