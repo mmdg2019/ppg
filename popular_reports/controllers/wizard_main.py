@@ -1,5 +1,4 @@
-# # -*- coding: utf-8 -*-
-# #############################################################################
+# # #############################################################################
 
 import json
 import pytz
@@ -3099,8 +3098,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
             })
             query += "AND pp.id IN %(product_ids)s"
         query += ") AS subquery_alias order by subquery_alias.default_code;"
-        self._cr.execute(query, params)
-        docs = self._cr.dictfetchall()
+        self.env.cr.execute(query, params)
+        docs = self.env.cr.dictfetchall()
 
         domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
         if data['product_ids']:
@@ -3196,7 +3195,7 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
             table_col = len(selected_operation_types) + 4 if 'MO' in selected_operation_types else len(selected_operation_types) + 3
         s_date = datetime.strptime(data['start_date'], "%Y-%m-%d")
         e_date = datetime.combine(datetime.strptime(data['end_date'], "%Y-%m-%d").date(), time.max)
-        local_tz = pytz.timezone(self._context.get('tz', 'Asia/Yangon'))
+        local_tz = pytz.timezone(self.env.context.get('tz', 'Asia/Yangon'))
         s_date = local_tz.localize(s_date).astimezone(tz=pytz.timezone('utc')).replace(tzinfo=None)
         e_date = local_tz.localize(e_date).astimezone(tz=pytz.timezone('utc')).replace(tzinfo=None)
         internal_stock_loc_ids = self.env['stock.location'].search([('usage', '=', 'internal'), ('company_id', '=', self.env.company.id)])
@@ -3592,8 +3591,8 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
             params.update({'product_categ_ids': tuple(data['product_cats_ids'])})
             query += "AND pc.id IN %(product_categ_ids)s"
         query += ") AS subquery_alias ORDER BY subquery_alias.code, subquery_alias.pname;"
-        self._cr.execute(query, params)
-        docs = self._cr.dictfetchall()
+        self.env.cr.execute(query, params)
+        docs = self.env.cr.dictfetchall()
 
         if docs:
             if selected_operation_types: # no operation type selected >>> no need to compute total

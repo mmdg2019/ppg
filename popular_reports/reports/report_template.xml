@@ -12412,7 +12412,7 @@
                                             <td style="text-align:right;">                                                   
                                                 <span t-esc="'{0:,.2f}'.format(doc['total_qty'])"/><br/>
                                             </td> 
-                                            <td style="text-align:right;">                                                    
+                                            <td style="text-align:right;">
                                                     <t t-if="sub_name == 'first'">
                                                         <span t-esc="'{0:,.2f}'.format(doc['free_qty'])"/>
                                                         <t t-set="ttl_free_qty" t-value="ttl_free_qty + doc['free_qty']"/>
@@ -12424,7 +12424,7 @@
                                                         </t>                                                       
                                                     </t>                                                
                                             </td>
-                                            <td style="text-align:right;">                                                    
+                                            <td style="text-align:right;">
                                                     <t t-if="sub_name == 'first'">
                                                         <span t-esc="'{0:,.2f}'.format(doc['incoming'])"/>
                                                         <t t-set="ttl_incoming" t-value="ttl_incoming + doc['incoming']"/>
@@ -12436,7 +12436,7 @@
                                                         </t>
                                                     </t>                                                
                                             </td>
-                                                <td style="text-align:right;">                                                    
+                                                <td style="text-align:right;">
                                                     <t t-if="sub_name == 'first'">
                                                         <span t-esc="'{0:,.2f}'.format(doc['outgoing'])"/>
                                                         <t t-set="ttl_outgoing" t-value="ttl_outgoing + doc['outgoing']"/>

@@ -1,7 +1,7 @@
 
 {
     'name': 'Popular Reports',
-    'version': '1.0.0.1',
+    'version': "19.0.1.0.0",
     'summary': "Reports for Popular Plastic Group",
     'description': "Report Collection for Popular Plastic Group",
     'category': 'App',
@@ -26,7 +26,6 @@
         'views/wizard_view.xml',
         'views/export_sales_analysis_by_quantity_with_color_wizard_forms.xml',
         'views/wizard_forms.xml',
-        'views/wizard_menus.xml',
         'views/sale_target.xml',
         'views/wizard_view_detail.xml',
         'reports/popular_reports.xml',
@@ -38,6 +37,7 @@
         'reports/popular_delivery_order_slip2.xml',
         'reports/stock_transfer_operation_report_template.xml',
         'reports/export_sales_analysis_by_quantity_with_color_report_template.xml',
+        'views/wizard_menus.xml',
     ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',

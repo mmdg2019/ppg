@@ -2,18 +2,20 @@
 <odoo>
     
     <record id="popular_reports_tree" model="ir.ui.view">
-        <field name="name">popular_reports.stock_transfer_operation_reports.tree</field>
+        <field name="name">popular_reports.stock_transfer_operation_reports.list</field>
         <field name="model">popular_reports.popular_reports</field>
         <field name="arch" type="xml">
-            <tree string="Stock Transfer Operation Reports" create="false">
+            <list create="false">
                 <field name="report_name"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="date"/>
-            </tree>
+            </list>
         </field>
     </record>
+    
     <record id="popular_reports_form" model="ir.ui.view">
-        <field name="active" eval="True"/>
+        <field name="name">popular_reports.stock_transfer_operation_reports.form</field>
+        <field name="model">popular_reports.popular_reports</field>
         <field name="arch" type="xml">
             <form string="Stock Transfer Operation Reports" create="false">
                 <sheet string="Stock Transfer Operation Reports">
@@ -32,34 +34,24 @@
                 </sheet>
             </form>
         </field>
-        <field name="field_parent" eval="False"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="inherit_id" eval="False"/>
-        <field name="key" eval="False"/>
-        <field name="mode">primary</field>
-        <field name="name">popular_reports.stock_transfer_operation_reports.form</field>
-        <field name="model">popular_reports.popular_reports</field>
-        <field name="priority">16</field>
-        <field name="type">form</field>
     </record>
     
-    
     <record id="stock_valuation_reports_tree" model="ir.ui.view">
-        <field name="name">popular_reports.stock_valuation_reports.tree</field>
+        <field name="name">popular_reports.stock_valuation_reports.list</field>
         <field name="model">popular_reports.popular_reports</field>
         <field name="arch" type="xml">
-            <tree string="Stock Valuation Reports" create="false">
+            <list create="false">
                 <field name="report_name"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="date"/>
-            </tree>
+            </list>
         </field>
     </record>
     <record id="stock_valuation_reports_form" model="ir.ui.view">
-        <field name="active" eval="True"/>      
+        <field name="name">popular_reports.stock_valuation_reports.form</field>
+        <field name="model">popular_reports.popular_reports</field>
         <field name="arch" type="xml">
             <form create="false">
-                
                 <sheet string="Stock Valuation Reports">
                     <div class="oe_title">
                         <h1>
@@ -76,62 +68,6 @@
                 </sheet>
             </form>
         </field>
-        <field name="field_parent" eval="False"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="inherit_id" eval="False"/>
-        <field name="key" eval="False"/>
-        <field name="mode">primary</field>
-        <field name="name">popular_reports.stock_valuation_reports.form</field>
-        <field name="model">popular_reports.popular_reports</field>
-        <field name="priority">16</field>
-        <field name="type">form</field>
-        
     </record>
-<!-- 
-        <record id="view_move_pivot" model="ir.ui.view">
-            <field name="name">stock.move.pivot</field>
-            <field name="model">stock.move</field>
-            <field name="arch" type="xml">
-                <pivot string="Stock Moves Analysis">
-                    <field name="product_id" type="row"/>
-                    <field name="location_dest_id" groups="stock.group_stock_multi_locations" type="row"/>
-                    <field name="product_uom_qty" type="measure"/>
-                </pivot>
-            </field>
-        </record>
-
-        <record id="view_move_graph" model="ir.ui.view">
-            <field name="name">stock.move.graph</field>
-            <field name="model">stock.move</field>
-            <field name="arch" type="xml">
-                <graph string="Stock Moves Analysis">
-                    <field name="product_id"/>
-                    <field name="location_dest_id" groups="stock.group_stock_multi_locations" type="row"/>
-                    <field name="product_uom_qty" type="measure"/>
-                </graph>
-            </field>
-        </record>
-
-        <record id="view_move_tree" model="ir.ui.view">
-            <field name="name">stock.move.tree</field>
-            <field name="model">stock.move</field>
-            <field eval="8" name="priority"/>
-            <field name="arch" type="xml">
-                <tree decoration-muted="state == 'cancel'" decoration-danger="(state not in ('cancel','done')) and date > current_date" string="Moves" create="0">
-                    <field name="date" groups="base.group_no_one"/>
-                    <field name="reference"/>
-                    <field name="picking_type_id" invisible="1"/>
-                    <field name="create_date" invisible="1" groups="base.group_no_one"/>
-                    <field name="product_id"/>
-                    <field name="location_id" options="{'no_create': True}" string="From"/>
-                    <field name="location_dest_id" options="{'no_create': True}" string="To"/>
-                    <field name="product_uom_qty"/>
-                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
-                    <field name="state"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
-            </field>
-        </record> -->
-    
     
 </odoo>

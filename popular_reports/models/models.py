@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from datetime import *
 from dateutil.relativedelta import relativedelta
@@ -38,7 +37,7 @@ class popular_reports(models.Model):
                '(-) Inventory Adjustment', '(-) Purchase Return', '(-) Delivery Order', '(-) Scrap', 'Closing Balance']
         
         # to avoid timezone mismatch
-        local_tz = timezone(self._context.get('tz', 'Asia/Yangon'))
+        local_tz = timezone(self.env.context.get('tz', 'Asia/Yangon'))
         c_date = UTC.localize(c_date, is_dst=True).astimezone(tz=local_tz)
         
         # get previous month of the given date
