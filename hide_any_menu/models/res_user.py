@@ -10,14 +10,14 @@ class Users(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(Users, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(Users, self).create(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(Users, self).write(values)
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(Users, self).write(values)
 
 
 class ResGroups(models.Model):
@@ -29,14 +29,14 @@ class ResGroups(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(ResGroups, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(ResGroups, self).create(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(ResGroups, self).write(values)
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(ResGroups, self).write(values)
 
 
 class IrActionsReport(models.Model):
@@ -54,14 +54,14 @@ class IrUiMenu(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(IrUiMenu, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(IrUiMenu, self).create(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(IrUiMenu, self).write(values)
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(IrUiMenu, self).write(values)
 
     @api.model
     def search(self, args, offset=0, limit=None, order=None):
