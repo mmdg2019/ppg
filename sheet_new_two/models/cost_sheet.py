@@ -12,34 +12,25 @@ import pandas as pd
 
 
 class MrpBom(models.Model):
-    
-    
     _inherit = 'mrp.bom'
-    
     
     name = fields.Char('Bom Name', required=True, )
     
 
-    _sql_constraints = [
-        ('name_uniq', 'unique (name)', "BOM name already exists !"),
-    ]
+    _name_uniq = models.Constraint(
+        'unique (name)',
+        "BOM name already exists !",
+    )
     
     def name_get(self):
         return [(bom.id, '%s%s' % (bom.code and '%s: ' % bom.code or '', bom.name)) for bom in self]
 
-
-
 class MrpProduction(models.Model):
-    
-    
     _inherit = 'mrp.production'   
         
     
     costsheet_id = fields.Many2one('cost.sheet.two', string = 'CostSheet',store =True)
-    
-    
     partner_id = fields.Many2one('res.partner', related ='costsheet_id.partner_id',string='Partner',store =True)
-    
     
     @api.onchange('product_id')
     def onchange_costsheet(self):
@@ -52,96 +43,51 @@ class MrpProduction(models.Model):
                 'costsheet_id': [('id', 'in', shs)]
             }}
 
-
-
 class CostSheetTwo(models.Model):
-    
     _name = 'cost.sheet.two'
-    
     _description = 'Cost Sheet Two'   
 
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.company.id)
-   
     status = fields.Selection([('active', 'Active'), ('expired', 'Expired')], 'Status', default='active')
-    
     name = fields.Char(string ="Name",readonly=True,)
-    
     costsheet_lines  = fields.One2many('cost.sheet.line', 'cosheet_id', string="Product List")
-    
     partner_id = fields.Many2one('res.partner', string='Partner',require = True)
-    
     avg_sale = fields.Boolean(string = "Average Sales Price",)
-    
     product_id = fields.Many2one('product.product', string="Product")
-
     product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', string='Unit of Measure')
-       
     bom_id = fields.Many2one('mrp.bom', string="BOM")
-    
     raw_ids = fields.Many2many('product.product', string="Raw Components")
-    
     material_cost = fields.Float(string ='Material Cost',)
-    
     labcost = fields.Float(string ='Labour/Overhead' ,)
-    
     total = fields.Float(string ='Total',compute='_compute_total',store = True)
-    
     plb = fields.Float(string ='Product per LB', default = lambda self: self._onchange_default_plb())
-    
     unitcost = fields.Float(string ='Unit Cost',compute='_compute_unit_cost',store =True)
-    
     qty = fields.Integer(string ='Quantity', default = lambda self: self._onchange_default_qty())
-    
     amount = fields.Float(string ='Amount', compute ='_compute_amount',store =True)
-    
     bag = fields.Float(string ='Plastic Bag')
-    
     label = fields.Float(string ='Label')
-    
     other = fields.Float(string ='Others')
-    
     meter = fields.Float(string ='Meter')
-    
     metal = fields.Float(string ='Metal')
-    
     box = fields.Float(string ='Box')
-    
     diesel = fields.Float(string ='Diesel')
-    
     facttotal = fields.Float(string ='Sub Factory Total Cost',compute='_compute_factorytotal',store =True)
-    
     date = fields.Date(string="Date")
-    
     start_date = fields.Date(string="Start Date")
-    
     end_date = fields.Date(string="End Date")
-    
     pop = fields.Float(string ='Main Plastic')
-    
     new1 = fields.Float(string ='Main Label')
-    
     new2 = fields.Float(string ='Main Box')
-    
     new3 = fields.Float(string ='Main String')
-    
     new4 = fields.Float(string ='Main Other')
-    
     ppitotal = fields.Float(string ='PPI Total',compute = '_compute_pptotal',store =True)
-    
     originp = fields.Float(string ='Original Price')
-    
     discount = fields.Float(string ='Discount (%)')
-    
     sellprice = fields.Float(string ='Selling Price',compute ='_compute_sellprice',store =True)
-    
     prototal = fields.Float(string ='Profit Total',compute ='_compute_prototal',store =True)
-    
     proeach = fields.Float(string ='Profit Each',compute ='_compute_proeach',store =True)
-    
     fselprice = fields.Float(string ='Factory Selling Price',compute ='_compute_factorysale',store =True)
-    
     manu_count = fields.Integer(string ='Manufacturing',compute ='_compute_manu_count')
-
     
     @api.onchange('product_id')
     def _onchange_default_plb(self):        
@@ -467,38 +413,23 @@ class CostSheetTwo(models.Model):
             'domain': [('costsheet_id','=',self.id)],
             'res_model': 'mrp.production',
             'view_id': False,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'type': 'ir.actions.act_window',
         }
             
-    
-                    
-    
-    
-    
 class CostSheetLine(models.Model):
-    
     _name = 'cost.sheet.line'
     _description = 'Cost Sheet Line'
       
     cosheet_id = fields.Many2one('cost.sheet.two', string="CostSheetLine")
-
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.company.id)
-    
     product_id = fields.Many2one('product.product', string="Product")
-
     product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', string='UoM')
-       
     category_id = fields.Many2one('product.category', string="Category")
-    
     total  = fields.Float(string ='Total', help="Standard sale price (default case) or avg. sale price for the selected date range!")
-    
     qty = fields.Float(string ='Quantity')
-    
     cost = fields.Float(string ='Cost', help="Cost = Total * Quantity")
-    
     total_amt = fields.Float(string="Total Amount", default=0.0, help="Total sales amount within the selected date range (0 for default)!")
-
     total_qty = fields.Float(string="Total Quantity", default=0.0, help="Total sales quantity within the selected date range (0 for default)!")
     
     

@@ -1,10 +1,9 @@
 {
     'name': 'Costsheet Two',
-    'version': '1.0.0',
-    'author': 'Laminaung',
-    'license': 'AGPL-3',
+    'version': "19.0.1.0.0",
+    'author': 'Digipower',
     'category': 'Cost Sheet TWo',
-    'website': '',
+    'website': 'http://www.digipowermm.com',
     'description': """
 
 Cost Sheet Customization
