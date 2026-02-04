@@ -1,0 +1,129 @@
+<odoo>
+    <!-- Inherit the account.move form view -->
+    <record id="view_move_form_debit_credit_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.debit.credit.editable</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- Locate the journal items line (account.move.line) list view within the form -->
+            <xpath expr="//field[@name='line_ids']/list/field[@name='debit']" position="replace">
+                <!-- <attribute name="readonly">False</attribute> -->
+                <field name="debit" sum="Total Debit" invisible="display_type in ('line_section', 'line_note')"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='credit']" position="replace">
+                <!-- <attribute name="readonly">False</attribute> -->
+                <field name="credit" sum="Total Credit" invisible="display_type in ('line_section', 'line_note')"/>
+            </xpath>
+            <!-- make name field readonly in all state for journal entry-->            
+            <xpath expr="//h1/field[@name='name']" position="attributes">            
+                <attribute name="invisible">name == '/', posted_before == False, quick_edit_mode == False</attribute>                
+                <attribute name="readonly">(move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')) or (state != 'draft') and (move_type in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))</attribute>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Inherit the account.move.line form view -->
+    <record id="view_move_line_form_debit_credit_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.debit.credit.editable</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <!-- Locate the journal items line (account.move.line) list view within the form -->
+            <xpath expr="//field[@name='debit']" position="attributes">
+                <attribute name="readonly">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='credit']" position="attributes">
+                <attribute name="readonly">False</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- create tree for partner ledger tree in order to sort the list by invoice date -->
+    <record id="view_move_line_tree_sort_inv_date" model="ir.ui.view">
+            <field name="name">account.move.line.list.sort.inv.date</field>
+            <field name="model">account.move.line</field>
+            <field eval="100" name="priority"/>
+            <field name="arch" type="xml">
+                <list create="false" edit="true" expand="context.get('expand', False)" multi_edit="1" sample="1" default_order="date">
+                    <field name="move_id" invisible="1"/>
+                    <!-- <field name="date" readonly="1"/> -->
+                    <field name="date" readonly="1" optional="hide"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company" readonly="1" optional="hide"/>
+                    <field name="journal_id" readonly="1" options='{"no_open":True}' optional="hide"/>
+                    <field name="move_name" string="Journal Entry" widget="open_move_widget"/>
+                    <!-- <field name="account_id" options="{'no_open': True, 'no_create': True}" domain="[('company_id', '=', company_id)]" groups="account.group_account_readonly"/> -->
+                    <field name="account_id" options="{'no_open': True, 'no_create': True}" groups="account.group_account_readonly" optional="hide"/>
+                    <!-- <field name="partner_id" optional="show" attrs="{'readonly':[('move_type', '!=', 'entry')]}"/> -->
+                    <field name="partner_id" optional="hide" readonly="move_type != 'entry'"/>
+                    <field name="ref" optional="hide" readonly="False"/>
+                    <field name="product_id" readonly="1" optional="hide"/>
+                    <field name="name" optional="show"/>
+                    <field name="tax_ids" widget="many2many_tags" width="0.5" optional="hide" readonly="1"/>
+                    <field name="amount_currency" groups="base.group_multi_currency" optional="show" readonly="1" invisible= "is_same_currency == True"/>
+                    <field name="currency_id" readonly="1" groups="base.group_multi_currency" optional="hide" string="Currency" invisible="is_same_currency == True"/>
+                    <field name="debit" sum="Total Debit" readonly="1"/>
+                    <field name="credit" sum="Total Credit" readonly="1"/>
+                    <field name="tax_tag_ids" string="Tax Grids" widget="many2many_tags" width="0.5" optional="hide"/>                    
+                    <field name="discount_date" string="Discount Date" optional="hide" />
+                    <field name="discount_amount_currency" string="Discount Amount" optional="hide" />
+                    <field name="tax_line_id" string="Originator Tax" optional="hide" readonly="1"/>
+                    <field name="date_maturity" readonly="1" optional="hide"/>
+                    <field name="balance" sum="Total Balance" optional="hide" readonly="1"/>
+                    <field name="matching_number" readonly="1" optional="show"/>
+                    <field name="amount_residual" sum="Total Residual" string="Residual" readonly="1" optional="hide" invisible="is_account_reconcile == False"/>
+                    <field name="amount_residual_currency" sum="Total Residual in Currency" string="Residual in Currency" readonly="1" optional="hide" invisible="is_same_currency == True or is_account_reconcile == False"/>
+                    <field name="analytic_distribution" widget="analytic_distribution"
+                           groups="analytic.group_analytic_accounting"
+                           optional="show"
+                           options="{'product_field': 'product_id', 'account_field': 'account_id', 'force_applicability': 'optional'}"
+                           />
+
+                    <field name="move_type" invisible="1"/>
+                    <field name="parent_state" invisible="1"/>
+                    <field name="account_type" invisible="1"/>
+                    <field name="statement_line_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="is_same_currency" invisible="1"/>
+                    <field name="is_account_reconcile" invisible="1"/>
+                    <field name="sequence" invisible="1"/>
+                    <groupby name="partner_id">
+                        <button name="edit" type="edit" icon="fa-edit" title="Edit"/>
+                    </groupby>
+                </list>
+            </field>
+        </record>        
+
+    <!-- create child tree to add "reconcile" and "create asset" buttons to partner ledger tree    -->
+    <!-- in place of account_accountant.view_move_line_tree and account_asset.view_move_line_tree -->
+    <record id="view_move_line_tree_sort_inv_date_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.list.sort.inv.date.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account_ext.view_move_line_tree_sort_inv_date"/>
+        <field name="mode">extension</field>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="js_class">account_move_line_list</attribute>
+            </xpath>
+            <xpath expr="//list" position="inside">
+               <header>
+                    <button name="action_reconcile" type="object" string="Reconcile" groups="account.group_account_user"/>
+                    <!-- <button name="turn_as_asset" type="object" string="Create Asset" groups="account.group_account_user"/> -->
+                </header>
+            </xpath>
+            <xpath expr="//list" position= "inside">
+                <field name="move_attachment_ids" invisible="1">
+                    <list>
+                        <field name="mimetype"/> <!--  We want to fetch the data for using it in the js-->
+                    </list>
+                </field>
+            </xpath>
+            <xpath expr="//list/field[@name='matching_number']" position="attributes">
+                <attribute name="widget">matching_link_widget</attribute>
+            </xpath>
+            <xpath expr="//list" position="inside">
+                <field name="is_account_reconcile" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

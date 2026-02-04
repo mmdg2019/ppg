@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
 from odoo.tools.misc import format_date, DEFAULT_SERVER_DATE_FORMAT
@@ -25,10 +24,10 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
     def _get_aml_values(self, report, options, expanded_account_ids, offset=0, limit=None):
         rslt = {account_id: {} for account_id in expanded_account_ids}
         aml_query, aml_params = self._get_query_amls(report, options, expanded_account_ids, offset=offset, limit=limit)
-        self._cr.execute(aml_query, aml_params)
+        self.env.cr.execute(aml_query, aml_params)
         aml_results_number = 0
         has_more = False
-        for aml_result in self._cr.dictfetchall():
+        for aml_result in self.env.cr.dictfetchall():
             aml_results_number += 1
             if aml_results_number == limit:
                 has_more = True

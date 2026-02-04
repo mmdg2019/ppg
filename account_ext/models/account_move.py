@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from datetime import datetime, date, timedelta
@@ -17,10 +16,20 @@ class AccountMove(models.Model):
         # only administrator from payment terms selection can choose payment terms in draft state
         if self.env.user.has_group('account_ext.group_payment_terms_permission_admin'): 
             if self.state == 'draft':
-                self.check_user = True                  
+                self.check_user = True
+
+    #from ppg_upgrade16/account_move_inherit.py
+    @api.model
+    def _get_default_invoice_date(self):
+        if self.env.context.get('default_move_type', 'entry') in self.get_purchase_types(include_receipts=True):
+            return fields.Date.context_today(self)
+        return False
     
     check_user=fields.Boolean(string='user', compute='_compute_user_check')
     invoice_payment_remark = fields.Text(string='Payment Remark')
+
+    #from ppg_upgrade16/account_move_inherit.py
+    invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, index=True, copy=False,states={'draft': [('readonly', False)]},default=_get_default_invoice_date)
         
 
     invoice_due_state = fields.Selection([
@@ -66,8 +75,8 @@ class AccountMove(models.Model):
     #               ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
     #               ('invoice_date_due', '<', today)]
     #     # domain = [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1))]
-    #     if self._context.get('active_ids'):
-    #         domain += [('id', 'in', self._context.get('active_ids'))]
+    #     if self.env.context.get('active_ids'):
+    #         domain += [('id', 'in', self.env.context.get('active_ids'))]
     #     invoices = self.search(domain) 
     #     invoices = invoices.filtered(lambda r: r.payment_state != 'paid' or (r.payment_state == 'paid' and r.invoice_due_state != 'no_due'))        
     #     for invoice in invoices:
@@ -89,7 +98,7 @@ class AccountMove(models.Model):
 
     # update invoice due state for paid invoices
     def update_paid_invoice_due_state(self):
-        local = self._context.get('tz', 'Asia/Yangon')
+        local = self.env.context.get('tz', 'Asia/Yangon')
         local_tz = timezone(local)
         current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()
@@ -158,7 +167,7 @@ class AccountMove(models.Model):
 
     # update invoice due state for unpaid invoices
     def update_unpaid_invoice_due_state(self):
-        local = self._context.get('tz', 'Asia/Yangon')
+        local = self.env.context.get('tz', 'Asia/Yangon')
         local_tz = timezone(local)
         current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()
@@ -211,8 +220,8 @@ class AccountMove(models.Model):
     def update_invoice_due_state_action(self):
         today = fields.Date.context_today(self)
         domain = []        
-        if self._context.get('active_ids'):
-            domain += [('id', 'in', self._context.get('active_ids'))]
+        if self.env.context.get('active_ids'):
+            domain += [('id', 'in', self.env.context.get('active_ids'))]
         domain += [('move_type', '=', 'out_invoice'), ('create_date', '>=', datetime(2023, 2, 1)), 
                    ('state', '=', 'posted'), ('invoice_payment_term_id', '!=', False),
                    ('invoice_date_due', '<', today)]
@@ -277,3 +286,87 @@ class AccountMove(models.Model):
             if move.move_type == 'out_invoice' and move.state == 'posted' and move.create_date >= datetime(2023, 2, 1) and move.invoice_payment_term_id and move.payment_state in ['paid', 'in_payment'] and move.invoice_due_state != 'no_due':
                 move.invoice_due_state = 'no_due'
         return res
+
+    #from ppg_upgrade16/account_move_inherit.py
+    def _get_sequence(self):
+        ''' Return the sequence to be used during the post of the current move.
+        :return: An ir.sequence record or False.
+        '''
+        self.ensure_one()
+
+        journal = self.journal_id
+        if self.move_type in ('entry', 'out_invoice', 'in_invoice', 'out_receipt', 'in_receipt') or not journal.refund_sequence:
+            return journal.sequence_id
+        if not journal.refund_sequence_id:
+            return
+        return journal.refund_sequence_id
+    
+    #from ppg_upgrade16/account_move_inherit.py
+    @api.depends('posted_before', 'state', 'journal_id', 'date')
+    def _compute_name(self):
+        self = self.sorted(lambda m: (m.date, m.ref or '', m.id))
+
+        for move in self:
+            move_has_name = move.name and move.name != '/'
+            if move_has_name or move.state != 'posted':
+                if not move.posted_before and not move._sequence_matches_date():
+                    if move._get_last_sequence(lock=False):
+                        # The name does not match the date and the move is not the first in the period:
+                        # Reset to draft
+                        move.name = False
+                        continue
+                else:
+                    if move_has_name and move.posted_before or not move_has_name and move._get_last_sequence(lock=False):
+                        # The move either
+                        # - has a name and was posted before, or
+                        # - doesn't have a name, but is not the first in the period
+                        # so we don't recompute the name
+                        continue
+            if move.date and (not move_has_name or not move._sequence_matches_date()):
+                # move._set_next_sequence() 
+                if move.move_type and (move.move_type == 'out_invoice' or move.move_type == 'out_receipt'):
+                    # compute the name only when state = 'posted' not in 'draft' state
+                    if move.state != 'draft':
+                        sequence_code = 'account.move.customer.invoice'
+                        # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                        # compute name based on accounting date (date field)
+                        name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+                        if name:
+                            move.name = name
+                elif move.move_type and move.move_type == 'out_refund':
+                    # compute the name only when state = 'posted' not in 'draft' state
+                    if move.state != 'draft':
+                        sequence_code = 'account.move.customer.credit.notes'
+                        # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                        name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+                        if name:
+                            move.name = name
+                elif move.move_type and move.move_type == 'in_invoice':
+                    # compute the name only when state = 'posted' not in 'draft' state
+                    if move.state != 'draft':
+                        sequence_code = 'account.move.vendor.bill'
+                        # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                        name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+                        if name:                        
+                            move.name = name
+                elif move.move_type and move.move_type == 'in_refund':
+                    # compute the name only when state = 'posted' not in 'draft' state
+                    if move.state != 'draft':
+                        sequence_code = 'account.move.vendor.refund'
+                        # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+                        name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+                        if name:                        
+                            move.name = name
+                elif move.move_type and move.move_type == 'entry':
+                    # compute the name only when state = 'posted' not in 'draft' state 
+                    if move.state != 'draft':
+                    # Get the journal's sequence.
+                        sequence = move._get_sequence()
+                        if not sequence:
+                            raise UserError(_('Please define a sequence on your journal.'))
+                        # Consume a new number.
+                        move.name = sequence.with_context(ir_sequence_date=move.date).next_by_id()
+                        # move._set_next_sequence()
+
+        self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
+        self._inverse_name()
