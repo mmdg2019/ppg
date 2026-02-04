@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': "ppg_upgrade16",
     'summary': """
@@ -10,7 +9,7 @@
     'author': "DiGi Power",
     'website': "https://www.digipower.com.mm",
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': "19.0.1.0.0",
     # any module necessary for this one to work correctly
     'depends': ['base', 'stock','account','sale','purchase','mrp','stock_dropshipping','sale_purchase','purchase_stock','account_reports'],  # Ensure 'stock' module is added since you are inheriting stock views
     # always loaded

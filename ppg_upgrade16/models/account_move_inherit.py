@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from odoo import models, fields, api,_
 from odoo.exceptions import UserError
@@ -12,7 +11,7 @@ class AccountMove(models.Model):
     
     @api.model
     def _get_default_invoice_date(self):
-        if self._context.get('default_move_type', 'entry') in self.get_purchase_types(include_receipts=True):
+        if self.env.context.get('default_move_type', 'entry') in self.get_purchase_types(include_receipts=True):
             return fields.Date.context_today(self)
         return False
 

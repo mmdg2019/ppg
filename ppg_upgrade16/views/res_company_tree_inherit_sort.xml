@@ -6,7 +6,7 @@
             <field name="model">res.company</field>
             <field name="inherit_id" ref="base.view_company_tree"/> 
             <field name="arch" type="xml">                
-                <xpath expr="//tree" position="attributes">
+                <xpath expr="//list" position="attributes">
                     <attribute name="default_order">name</attribute>                    
                 </xpath>                
             </field>
