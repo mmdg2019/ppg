@@ -9,7 +9,7 @@
         Long description of module's purpose
     """,
 
-    'author': "DiGi Power R&D",
+    'author': "DiGi Power",
     'website': "http://www.digipowermm.com",
 
     # Categories can be used to filter modules in modules listing
