@@ -13,7 +13,7 @@
 	                    <field name="menu_ids" nolabel="1"/>
 	                </group>
 	            </page>
-	            <page string="Hide Specific Report">
+	            <!-- <page string="Hide Specific Report">
 	                <group colspan="4">
 	                    <field name="report_ids" nolabel="1">
 	                        <tree>
@@ -24,7 +24,7 @@
 	                        </tree>
 	                    </field>
 	                </group>
-	            </page>
+	            </page> -->
 	        </notebook>
 	    </field>
 	</record>
@@ -38,7 +38,7 @@
 	            <page string="Menu To Hide">
 	                <field name="menu_ids"/>
 	            </page>
-	            <page string="Report To Hide">
+	            <!-- <page string="Report To Hide">
 	                <field name="report_ids" nolabel="1">
 	                    <tree>
 	                        <field name="name"/>
@@ -47,7 +47,7 @@
 	                        <field name="report_type"/>
 	                    </tree>
 	                </field>
-	            </page>
+	            </page> -->
 	        </xpath>
 	    </field>
 	</record>
@@ -86,7 +86,7 @@
 	                        </strong>
 	                    </span>
 	                </div>
-	                <field name="field_configuration_ids" context="{'default_model_id': active_id}" nolabel="1">
+	                <field name="field_configuration_ids" nolabel="1">
 	                    <form>
 	                        <div class="oe_button_box" name="button_box">
 	                        </div>
@@ -103,14 +103,14 @@
 	                            </group>
 	                        </group>
 	                    </form>
-	                    <tree>
+	                    <!-- <tree>
 	                        <field name="model_id" invisible="1"/>
 	                        <field name="field_id" domain="[('model_id', '=', model_id)]"/>
 	                        <field name="field_name"/>
 	                        <field name="group_ids" widget="many2many_tags"/>
 	                        <field name="readonly"/>
 	                        <field name="invisible"/>
-	                    </tree>
+	                    </tree> -->
 	                </field>
 	            </page>
 	        </xpath>
