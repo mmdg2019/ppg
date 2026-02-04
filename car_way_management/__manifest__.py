@@ -1,6 +1,6 @@
 {
     "name": "Car Way Management",
-    "version": "1.0",
+    "version": "19.0.1.0.0",
     "summary": "Manage Car Assignments for Delivery",
     "description": """
         This module helps manage car assignments for delivery orders.

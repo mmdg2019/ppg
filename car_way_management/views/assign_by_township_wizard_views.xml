@@ -17,7 +17,7 @@
                         </group>
                         <field name="is_warning" invisible="1" />
                         <div class="alert alert-warning"
-                            attrs="{'invisible': [('is_warning', '=', False)]}">
+                            invisible="is_warning == False">
                             <!-- <strong>Warning!</strong> -->
                             <br />
                             <field name="warning_message" nolabel="1" />

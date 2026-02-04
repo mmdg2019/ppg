@@ -20,6 +20,7 @@ class CarNumber(models.Model):
 
     active = fields.Boolean(string='Active', default=True)
     
-    _sql_constraints = [
-        ('name_unique', 'UNIQUE(name)', 'Car number must be unique!'),
-    ]
+    _name_unique = models.Constraint(
+        'UNIQUE(name)',
+        "Car number must be unique!",
+    )
