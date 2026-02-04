@@ -12,10 +12,14 @@ class Township(models.Model):
     active = fields.Boolean(string='Active', default=True)
 
 
-    _sql_constraints = [
-        ('unique_code', 'UNIQUE(code)', 'The township code must be unique.'),
-        ('unique_name_state', 'UNIQUE(name, state_id)', 'The township name must be unique within the same state.'),
-    ]
+    _unique_code = models.Constraint(
+        'UNIQUE(code)',
+        "The township code must be unique.",
+    )
+    _unique_name_state = models.Constraint(
+        'UNIQUE(name, state_id)',
+        "The township name must be unique within the same state.",
+    )
 
     def name_get(self):
         result = []
