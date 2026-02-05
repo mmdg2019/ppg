@@ -48,3 +48,6 @@ class AccountMoveLine(models.Model):
                 sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id, line.currency_id, line.amount_currency)
             self = self.sorted(key=sorting_f)
         super(AccountMoveLine,self).reconcile()
+
+    def turn_as_asset(self):
+        return super(AccountMoveLine, self).turn_as_asset()

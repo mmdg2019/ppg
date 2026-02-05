@@ -108,7 +108,7 @@
             <xpath expr="//list" position="inside">
                <header>
                     <button name="action_reconcile" type="object" string="Reconcile" groups="account.group_account_user"/>
-                    <!-- <button name="turn_as_asset" type="object" string="Create Asset" groups="account.group_account_user"/> -->
+                    <button name="turn_as_asset" type="object" string="Create Asset" groups="account.group_account_user"/>
                 </header>
             </xpath>
             <xpath expr="//list" position= "inside">

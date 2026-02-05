@@ -8,8 +8,8 @@
     'description': """
 
 Account Customization
-    """,      
-    'depends': ['base', 'account_reports', 'account','sale', 'ppg_credit_permission'],    
+    """,
+    'depends': ['base', 'account_reports', 'account', 'account_asset','sale', 'ppg_credit_permission'],
     'data': [
         'security/security.xml',   
         #'security/ir.model.access.csv',
