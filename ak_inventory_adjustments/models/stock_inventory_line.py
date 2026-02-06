@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 
 from odoo import _, api, fields, models
@@ -84,9 +83,9 @@ class InventoryLine(models.Model):
         default=0,
     )
     categ_id = fields.Many2one(related="product_id.categ_id", store=True)
-    package_id = fields.Many2one(
-        "stock.quant.package", "Pack", index=True, check_company=True
-    )
+    # package_id = fields.Many2one(
+    #     "stock.quant.package", "Pack", index=True, check_company=True
+    # )
     package_id_domain = fields.Char(
         compute="_compute_package_id_domain", readonly=True, store=False
     )
@@ -360,8 +359,8 @@ class InventoryLine(models.Model):
             "inventory_id",
         ]
         lines_count = {}
-        for group in self.read_group(
-            domain, ["product_id"], groupby_fields, lazy=False
+        for group in self._read_group(
+            domain, groupby_fields, ['product_id']
         ):
             key = tuple([group[field] and group[field][0] for field in groupby_fields])
             lines_count[key] = group["__count"]

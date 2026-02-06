@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import _, api, fields, models
 from odoo.addons.base.models.ir_model import MODULE_UNINSTALL_FLAG
 from odoo.exceptions import UserError
-from odoo.osv import expression
+from odoo.fields import Domain
 from odoo.tools.misc import OrderedSet
 from odoo.tools import float_compare
 import json
@@ -138,7 +137,7 @@ class StockInventory(models.Model):
         action_data.update(
             {
                 "domain": [("stock_move_id.id", "in", self.move_ids.ids)],
-                "context": dict(self._context, create=False),
+                "context": dict(self.env.context, create=False),
             }
         )
         return action_data
@@ -147,7 +146,7 @@ class StockInventory(models.Model):
     def _onchange_company_id(self):
         # If the multilocation group is not active, default the location to the one of the main
         # warehouse.
-        if not self.user_has_groups("stock.group_stock_multi_locations"):
+        if not self.env.user.has_group("stock.group_stock_multi_locations"):
             warehouse = self.env["stock.warehouse"].search(
                 [("company_id", "=", self.company_id.id)], limit=1
             )
@@ -222,17 +221,17 @@ class StockInventory(models.Model):
                 "default_inventory_id": self.id,
             }
         )
-        if inventory_lines and not lines:
+        # if inventory_lines and not lines:
 
-            return {
-                "name": _("Tracked Products in Inventory Adjustment"),
-                "type": "ir.actions.act_window",
-                "view_mode": "form",
-                "views": [(False, "form")],
-                "res_model": "stock.track.confirmation",
-                "target": "new",
-                "context": ctx,
-            }
+        #     return {
+        #         "name": _("Tracked Products in Inventory Adjustment"),
+        #         "type": "ir.actions.act_window",
+        #         "view_mode": "form",
+        #         "views": [(False, "form")],
+        #         "res_model": "stock.track.confirmation",
+        #         "target": "new",
+        #         "context": ctx,
+        #     }
         self._action_done()
         self.line_ids._check_company()
         self._check_company()
@@ -312,7 +311,7 @@ class StockInventory(models.Model):
         self.ensure_one()
         action = {
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "name": _("Inventory Lines"),
             "res_model": "stock.inventory.line",
         }
@@ -388,11 +387,11 @@ class StockInventory(models.Model):
             domain.append(("product_id.active", "=", True))
 
         if self.product_ids:
-            domain = expression.AND(
+            domain = Domain.AND(
                 [domain, [("product_id", "in", self.product_ids.ids)]]
             )
         # if self.product_cate_ids:
-        #     domain = expression.AND(
+        #     domain = Domain.AND(
         #         [domain, [("product_categ_id", "in", self.product_cate_ids.ids)]]
         #     )
 
@@ -405,8 +404,8 @@ class StockInventory(models.Model):
             "quantity:sum",
         ]
         group_by = ["product_id", "location_id", "lot_id", "package_id", "owner_id"]
-        quants = self.env["stock.quant"].read_group(
-            domain, fields, group_by, lazy=False
+        quants = self.env["stock.quant"]._read_group(
+            domain, group_by, fields
         )
         return {
             (
