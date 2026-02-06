@@ -1,0 +1,5 @@
+<odoo>
+  <data>
+    <function model="script.run" name="run_script"/>
+  </data>
+</odoo>
