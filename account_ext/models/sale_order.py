@@ -62,12 +62,15 @@ class SaleOrder(models.Model):
                 # if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).write(values)
-    
-    # check for products with zero original sales price on pricelist (for changes made via UI)
-    @api.onchange('order_line')
-    def _onchange_product_price_zero_check(self):
-        if not self.x_studio_editing_price_status:
-            for ol in self.order_line.filtered(lambda x: x.product_id.id not in (2350, 2351)): # don't need to check "Other Charges" and "Special Discount"
-                price_list_lines = self.pricelist_id.item_ids.filtered(lambda r: r.product_tmpl_id.product_variant_id.id == ol.product_id.id)
-                if price_list_lines and price_list_lines[0].x_studio_original_sales_price == 0.0:
-                    raise ValidationError(_('The product "%s" has price ZERO.', ol.product_id.display_name))
+
+    @api.onchange('partner_id', 'pricelist_id', 'x_studio_editing_price_status')
+    def _onchange_pricelist_edit_product_price(self):
+        if self.order_line and self.state not in ('done', 'cancel'):
+            for line in self.order_line:
+                line._compute_price_unit()
+
+    @api.onchange('x_studio_editing_price_status')
+    def _onchange_edit_product_price(self):
+        if self.order_line:
+            for line in self.order_line:
+                line.x_studio_editing_price_status = self.x_studio_editing_price_status
