@@ -16,12 +16,12 @@ class IrActions(models.Model):
                     for report in reports:
                         skip_report = False
                         for user in report.hide_user_ids:
-                            if user.id == self._uid:
+                            if user.id == self.env.uid:
                                 skip_report = True
                                 break
                         for group in report.hide_group_ids:
                             for user in group.users:
-                                if user.id == self._uid:
+                                if user.id == self.env.uid:
                                     skip_report = True
                                     break
                         if skip_report:

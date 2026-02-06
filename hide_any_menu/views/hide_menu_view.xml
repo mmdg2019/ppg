@@ -16,12 +16,12 @@
 	            <!-- <page string="Hide Specific Report">
 	                <group colspan="4">
 	                    <field name="report_ids" nolabel="1">
-	                        <tree>
+	                        <list>
 	                            <field name="name"/>
 	                            <field name="model"/>
 	                            <field name="report_name"/>
 	                            <field name="report_type"/>
-	                        </tree>
+	                        </list>
 	                    </field>
 	                </group>
 	            </page> -->
@@ -40,12 +40,12 @@
 	            </page>
 	            <!-- <page string="Report To Hide">
 	                <field name="report_ids" nolabel="1">
-	                    <tree>
+	                    <list>
 	                        <field name="name"/>
 	                        <field name="model"/>
 	                        <field name="report_name"/>
 	                        <field name="report_type"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page> -->
 	        </xpath>
@@ -63,9 +63,9 @@
 	            </page>
 	            <page string="Hide From Users">
 	                <field name="hide_user_ids">
-	                    <tree>
+	                    <list>
 	                        <field name="name"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page>
 	        </xpath>
@@ -103,14 +103,14 @@
 	                            </group>
 	                        </group>
 	                    </form>
-	                    <!-- <tree>
+	                    <!-- <list>
 	                        <field name="model_id" invisible="1"/>
 	                        <field name="field_id" domain="[('model_id', '=', model_id)]"/>
 	                        <field name="field_name"/>
 	                        <field name="group_ids" widget="many2many_tags"/>
 	                        <field name="readonly"/>
 	                        <field name="invisible"/>
-	                    </tree> -->
+	                    </list> -->
 	                </field>
 	            </page>
 	        </xpath>
@@ -128,9 +128,9 @@
 	            </page>
 	            <page string="Hide From Users">
 	                <field name="hide_user_ids">
-	                    <tree>
+	                    <list>
 	                        <field name="name"/>
-	                    </tree>
+	                    </list>
 	                </field>
 	            </page>
 	        </xpath>
