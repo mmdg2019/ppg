@@ -25,9 +25,9 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'security/hide_access_right_security.xml',
-        'views/res_user_hide_menu_inherit.xml',
-        'views/templates.xml',
+        # 'security/hide_access_right_security.xml',
+        # 'views/res_user_hide_menu_inherit.xml',
+        # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
