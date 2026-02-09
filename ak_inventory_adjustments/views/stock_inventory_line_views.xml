@@ -27,7 +27,7 @@
                 <field name="partner_id" groups="stock.group_tracking_owner" readonly="is_editable == False or state not in ['confirm','waiting_for_approval']"/>
                 <field name="theoretical_qty" string="On Hand" width="0.5" force_save="1" readonly="1" invisible="1"/>
                 <button name="action_refresh_quantity" title="Refresh quantity" icon="fa-refresh" type="object" invisible= "outdated == False"/>
-                <field name="product_qty" width="0.5" string="Counted"/>
+                <field name="product_qty" width="0.5" string="Counted" readonly="state not in ['confirm', 'waiting_for_approval']"/>
                 <field name="difference_qty" optional="show" invisible="1"/>
                 <field name="product_uom_id" string="UoM" groups="uom.group_uom" width="0.3" force_save="1"/>
                 <field name="inventory_id" invisible="1"/>

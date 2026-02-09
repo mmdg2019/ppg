@@ -74,11 +74,6 @@ class InventoryLine(models.Model):
     
     product_qty = fields.Float(
         "Counted Quantity",
-        readonly=True,
-        states={
-            "confirm": [("readonly", False)],
-            "waiting_for_approval": [("readonly", False)],
-        },
         digits="Product Unit of Measure",
         default=0,
     )

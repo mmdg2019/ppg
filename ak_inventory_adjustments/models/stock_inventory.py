@@ -18,9 +18,7 @@ class StockInventory(models.Model):
     name = fields.Char(
         "Inventory Reference",
         default="Inventory",
-        readonly=True,
         required=True,
-        states={"draft": [("readonly", False)]},
     )
     date = fields.Datetime(
         "Inventory Date",
@@ -34,15 +32,11 @@ class StockInventory(models.Model):
         "stock.inventory.line",
         "inventory_id",
         string="Inventories",
-        copy=False,
-        readonly=False,
-        states={"done": [("readonly", True)]},
-    )
+        copy=False)
     move_ids = fields.One2many(
         "stock.move",
         "inventory_id",
         string="Created Moves",
-        states={"done": [("readonly", True)]},
     )
     state = fields.Selection(
         string="Status",
@@ -63,23 +57,18 @@ class StockInventory(models.Model):
         "Company",
         readonly=True,
         index=True,
-        required=True,
-        states={"draft": [("readonly", False)]},
         default=lambda self: self.env.company,
     )
     location_ids = fields.Many2many(
         "stock.location",
         string="Locations",
-        readonly=True,
         check_company=True,
-        states={"draft": [("readonly", False)]},
         domain="[('company_id', '=', company_id), ('usage', 'in', ['internal', 'transit'])]",
     )
 
     product_ids = fields.Many2many(
         'product.product', string='Products', check_company=True,
-        domain="[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]", readonly=True,
-        states={'draft': [('readonly', False)]},
+        domain="[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="Specify Products to focus your inventory on particular Products.")
     start_empty = fields.Boolean('Empty Inventory',
         help="Allows to start with an empty inventory.")

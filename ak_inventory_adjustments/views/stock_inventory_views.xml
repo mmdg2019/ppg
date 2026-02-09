@@ -92,7 +92,7 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                 </header>
                 <sheet>
-                    <field name="line_ids" invisible="1"/>
+                    <field name="line_ids" invisible="1" readonly="state == 'done'"/>
                     <div class="oe_button_box" name="button_box">
                         <button string="Product Moves" type="object" name="action_view_related_move_lines" class="oe_stat_button" icon="fa-exchange" invisible = "state != 'done'" context="{'no_reference': True}"/>
                         <field name="has_account_moves" invisible="1"/>
@@ -101,14 +101,14 @@
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>
-                            <field name="name" placeholder="e.g. Annual inventory"/>
+                            <field name="name" placeholder="e.g. Annual inventory" readonly="state != 'draft'"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="location_ids" options="{'no_create': True}" widget="many2many_tags" force_save="1" groups="stock.group_stock_multi_locations"/>
+                            <field name="location_ids" readonly="state != 'draft'" options="{'no_create': True}" widget="many2many_tags" force_save="1" groups="stock.group_stock_multi_locations"/>
 
-                            <field name="product_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                            <field name="product_ids" readonly="state != 'draft'" options="{'no_create': True}" widget="many2many_tags"/>
                             <!-- <field name="product_cate_ids" widget="many2many_tags"/>
                             <field name="_domain_product_id" invisible="1"/>
                             <field name="product_ids"
@@ -120,7 +120,7 @@
                         </group>
                         <group>
                             <field name="accounting_date" readonly= "state == 'done'"/>
-                            <field name="company_id" options="{'no_create': True}"/>
+                            <field name="company_id" options="{'no_create': True}" readonly="state != 'draft'"/>
                             <field name="prefill_counted_quantity" widget="radio" invisible= "state != 'draft'"/>
                         </group>
                     </group>

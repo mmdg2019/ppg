@@ -29,7 +29,7 @@ class AccountMove(models.Model):
     invoice_payment_remark = fields.Text(string='Payment Remark')
 
     #from ppg_upgrade16/account_move_inherit.py
-    invoice_date = fields.Date(string='Invoice/Bill Date', readonly=True, index=True, copy=False,states={'draft': [('readonly', False)]},default=_get_default_invoice_date)
+    invoice_date = fields.Date(string='Invoice/Bill Date', index=True, copy=False, default=_get_default_invoice_date)
         
 
     invoice_due_state = fields.Selection([
