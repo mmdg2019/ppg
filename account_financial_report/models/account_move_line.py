@@ -3,6 +3,7 @@
 from collections import defaultdict
 
 from odoo import api, fields, models
+from odoo.fields import Command
 
 
 class AccountMoveLine(models.Model):
@@ -15,25 +16,25 @@ class AccountMoveLine(models.Model):
     @api.depends("analytic_distribution")
     def _compute_analytic_account_ids(self):
         # Prefetch all involved analytic accounts
-        with_distribution = self.filtered("analytic_distribution")
-        batch_by_analytic_account = defaultdict(list)
-        for record in with_distribution:
-            for account_id in map(int, record.analytic_distribution):
-                batch_by_analytic_account[account_id].append(record.id)
+        batch_by_analytic_account = defaultdict(lambda: self.env["account.move.line"])
+        for record in self.filtered("analytic_distribution"):
+            # NB: ``analytic_distribution`` is a JSON field where keys can be either
+            # 'account.id' or 'account.id,account.id'
+            # Eg: https://github.com/odoo/odoo/blob/8479b4e/addons/sale/models/account_move_line.py#L158
+            for key in record.analytic_distribution:
+                for account_id in map(int, key.split(",")):
+                    batch_by_analytic_account[account_id] += record
         existing_account_ids = set(
             self.env["account.analytic.account"]
-            .browse(map(int, batch_by_analytic_account))
+            .browse(batch_by_analytic_account)
             .exists()
             .ids
         )
         # Store them
-        self.analytic_account_ids = False
-        for account_id, record_ids in batch_by_analytic_account.items():
-            if account_id not in existing_account_ids:
-                continue
-            self.browse(record_ids).analytic_account_ids = [
-                fields.Command.link(account_id)
-            ]
+        self.analytic_account_ids = [Command.clear()]
+        for account_id, records in batch_by_analytic_account.items():
+            if account_id in existing_account_ids:
+                records.analytic_account_ids = [Command.link(account_id)]
 
     def init(self):
         """
@@ -49,12 +50,12 @@ class AccountMoveLine(models.Model):
             By adding the following index, performances are strongly increased.
         :return:
         """
-        self._cr.execute(
-            "SELECT indexname FROM pg_indexes WHERE indexname = " "%s",
+        self.env.cr.execute(
+            "SELECT indexname FROM pg_indexes WHERE indexname = %s",
             ("account_move_line_account_id_partner_id_index",),
         )
-        if not self._cr.fetchone():
-            self._cr.execute(
+        if not self.env.cr.fetchone():
+            self.env.cr.execute(
                 """
             CREATE INDEX account_move_line_account_id_partner_id_index
             ON account_move_line (account_id, partner_id)"""
