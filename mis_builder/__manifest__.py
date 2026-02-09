@@ -3,7 +3,7 @@
 
 {
     "name": "MIS Builder",
-    "version": "13.0.4.1.1",
+    "version": "18.0.1.8.0",
     "category": "Reporting",
     "summary": """
         Build 'Management Information System' Reports and Dashboards
@@ -17,6 +17,7 @@
         "date_range",  # OCA/server-ux
     ],
     "data": [
+        "security/res_groups.xml",
         "wizard/mis_builder_dashboard.xml",
         "views/mis_report.xml",
         "views/mis_report_instance.xml",
@@ -27,8 +28,20 @@
         "report/mis_report_instance_qweb.xml",
         "report/mis_report_instance_xlsx.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "mis_builder/static/src/components/mis_report_widget.esm.js",
+            "mis_builder/static/src/components/mis_report_widget.xml",
+            "mis_builder/static/src/components/mis_report_widget.scss",
+            "mis_builder/static/src/annotation_dialog/annotation_dialog.xml",
+            "mis_builder/static/src/annotation_dialog/annotation_dialog.esm.js",
+        ],
+        "web.report_assets_common": [
+            "mis_builder/static/src/scss/report.scss",
+        ],
+    },
     "qweb": ["static/src/xml/mis_report_widget.xml"],
-    "installable": True,
+    "installable": False,
     "application": True,
     "license": "AGPL-3",
     "development_status": "Production/Stable",

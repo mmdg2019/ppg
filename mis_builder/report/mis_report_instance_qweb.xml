@@ -7,11 +7,6 @@
         <field name="report_name">mis_builder.report_mis_report_instance</field>
         <field name="report_type">qweb-pdf</field>
     </record>
-    <template id="assets_report" inherit_id="web.report_assets_common">
-        <xpath expr="." position="inside">
-            <link href="/mis_builder/static/src/css/report.css" rel="stylesheet" />
-        </xpath>
-    </template>
     <!--
         TODO we use divs with css table layout, but this has drawbacks:
              (bad layout of first column, no colspan for first header row),
@@ -22,6 +17,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.internal_layout">
                     <t t-set="matrix" t-value="o._compute_matrix()" />
+                    <t t-set="notes" t-value="o.get_notes_by_cell_id()" />
                     <t t-set="style_obj" t-value="o.env['mis.report.style']" />
                     <div class="page">
                         <h3>
@@ -35,11 +31,11 @@
                         <p>
                             <div class="mis_report_filers">
                                 <t
-                                    t-foreach="o.get_filter_descriptions_from_context()"
+                                    t-foreach="o.get_filter_descriptions()"
                                     t-as="filter_description"
                                 >
                                     <div>
-                                        <span t-esc="filter_description" />
+                                        <span t-out="filter_description" />
                                     </div>
                                 </t>
                             </div>
@@ -50,10 +46,10 @@
                                     <div class="mis_cell mis_collabel" />
                                     <t t-foreach="matrix.iter_cols()" t-as="col">
                                         <div class="mis_cell mis_collabel">
-                                            <t t-esc="col.label" />
+                                            <t t-out="col.label" />
                                             <t t-if="col.description">
                                                 <br />
-                                                <t t-esc="col.description" />
+                                                <t t-out="col.description" />
                                             </t>
                                         </div>
                                         <!-- add empty cells because we have no colspan with css tables -->
@@ -69,10 +65,10 @@
                                     <div class="mis_cell mis_collabel" />
                                     <t t-foreach="matrix.iter_subcols()" t-as="subcol">
                                         <div class="mis_cell mis_collabel">
-                                            <t t-esc="subcol.label" />
+                                            <t t-out="subcol.label" />
                                             <t t-if="subcol.description">
                                                 <br />
-                                                <t t-esc="subcol.description" />
+                                                <t t-out="subcol.description" />
                                             </t>
                                         </div>
                                     </t>
@@ -88,10 +84,10 @@
                                             t-att-style="style_obj.to_css_style(row.style_props)"
                                             class="mis_cell mis_rowlabel"
                                         >
-                                            <t t-esc="row.label" />
+                                            <t t-out="row.label" />
                                             <t t-if="row.description">
                                                 <br />
-                                                <t t-esc="row.description" />
+                                                <t t-out="row.description" />
                                             </t>
                                         </div>
                                         <t t-foreach="row.iter_cells()" t-as="cell">
@@ -100,13 +96,35 @@
                                                 class="mis_cell mis_amount"
                                             >
                                                 <t
-                                                    t-esc="cell and cell.val_rendered or ''"
+                                                    t-out="cell and cell.val_rendered or ''"
                                                 />
+                                                <span
+                                                    class="oe_mis_builder_footnote"
+                                                    t-if="cell"
+                                                >
+                                                    <t
+                                                        t-out="notes.get(cell.cell_id,{}).get('sequence','')"
+                                                    />
+                                                </span>
                                             </div>
                                         </t>
                                     </div>
                                 </t>
                             </div>
+                        </div>
+                        <!-- Foot notes -->
+                        <div class="oe_mis_builder_footnote_div">
+                            <table class="oe_mis_builder_footnote_table">
+                                <t
+                                    t-foreach="sorted(notes.values(),key=lambda r:r['sequence'])"
+                                    t-as="note"
+                                >
+                                    <tr>
+                                        <td><t t-out="note['sequence']" />. </td>
+                                        <td t-out="note['text']" />
+                                    </tr>
+                                </t>
+                            </table>
                         </div>
                     </div>
                 </t>
