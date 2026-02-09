@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- TOWNSHIP TREE VIEW -->
-    <record id="view_res_township_list" model="ir.ui.view">
+    <record id="view_res_township_tree" model="ir.ui.view">
         <field name="name">res.township.list</field>
         <field name="model">res.township</field>
         <field name="arch" type="xml">
