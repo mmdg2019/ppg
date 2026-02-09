@@ -14,7 +14,7 @@
     "name": "Inventory Adjustments",
     "category": "Inventory/Inventory",
     "summary": """Custom Inventory Adjustments""",
-    "version": "19.0.1.0.1",
+    "version": "19.0.1.0.0",
     "website": "http://www.aktivsoftware.com",
     "author": "Aktiv Software",
     "description": """Custom Inventory Adjustments for multi products""",
