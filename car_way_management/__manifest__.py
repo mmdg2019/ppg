@@ -9,7 +9,7 @@
         - Group orders by township
         - Export to Excel functionality
     """,
-    "author": "Your Company",
+    "author": "Digipower",
     "category": "Sales",
     "depends": ["sale","res_township","stock","account"],
     "data": [
@@ -24,5 +24,5 @@
         'views/account_move_views.xml',
     ],
     "installable": True,
-    "application": True,
+    "application": False,
 }
