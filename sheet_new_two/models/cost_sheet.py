@@ -14,7 +14,7 @@ import pandas as pd
 class MrpBom(models.Model):
     _inherit = 'mrp.bom'
     
-    name = fields.Char('Bom Name', required=True, )
+    name = fields.Char('Bom Name', required=False)
     
 
     _name_uniq = models.Constraint(
