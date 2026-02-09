@@ -1,6 +1,7 @@
 {
     'name': 'Hide Any Menu, Any Field, Any Report',
-    'version': '1.0.0',
+    'version': '19.0.1.0.0',
+    'license': 'OPL-1',
     'author': 'FreelancerApps',
     'category': 'Tools',
     'depends': ['base'],
