@@ -8,7 +8,7 @@
     'description': """
         Module to run script on module update or install. For now, this is used to copy Product Packaging info to built-in fields for each purchase order line.
     """,
-
+    'license': 'AGPL-3',
     'author': "Digipower",
     'website': "http://www.digipowermm.com",
 
