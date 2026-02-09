@@ -6,7 +6,7 @@
     'description': """
 Long description of module's purpose
     """,
-
+    'license': 'AGPL-3',
     'author': "Digipower",
     'website': "https://www.digipowermm.com",
 
