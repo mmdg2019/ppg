@@ -8,7 +8,7 @@
     'description': """
         Long description of module's purpose
     """,
-
+    'license': 'AGPL-3',
     'author': "DiGi Power",
     'website': "https://dgmgmt.odoo.com/",
 
