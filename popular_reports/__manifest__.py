@@ -6,7 +6,7 @@
     'description': "Report Collection for Popular Plastic Group",
     'category': 'Popular Reports',
     'license': 'AGPL-3',
-    'company': 'Digi Power',
+    'author': 'DIGI POWER',
     'website': 'https://www.digipowermm.com',
     'depends': [
         'account',
