@@ -4,7 +4,8 @@
     'version': "19.0.1.0.0",
     'summary': "Reports for Popular Plastic Group",
     'description': "Report Collection for Popular Plastic Group",
-    'category': 'App',
+    'category': 'Popular Reports',
+    'license': 'AGPL-3',
     'company': 'Digi Power',
     'website': 'https://www.digipowermm.com',
     'depends': [
@@ -40,7 +41,6 @@
         'views/wizard_menus.xml',
     ],
     'images': ['static/description/banner.png'],
-    'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,
     'application': True,
