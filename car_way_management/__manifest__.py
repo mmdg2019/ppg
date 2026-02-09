@@ -1,6 +1,10 @@
 {
     "name": "Car Way Management",
-    "version": "19.0.1.0.0",
+    'version': "19.0.1.0.0",
+    'author': 'DIGI POWER',
+    'license': 'AGPL-3',
+    'category': 'Sales',
+    'website': 'https://www.digipowermm.com/',
     "summary": "Manage Car Assignments for Delivery",
     "description": """
         This module helps manage car assignments for delivery orders.
@@ -9,8 +13,7 @@
         - Group orders by township
         - Export to Excel functionality
     """,
-    "author": "Digipower",
-    "category": "Sales",
+    
     "depends": ["sale","res_township","stock","account"],
     "data": [
         "security/ir.model.access.csv",
