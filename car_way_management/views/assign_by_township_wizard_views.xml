@@ -15,7 +15,7 @@
                         <group>
                             <field name="township_id" widget="many2many_tags" readonly="1" />
                         </group>
-                        <field name="is_warning" invisible="1"/>
+                        <field name="is_warning"/>
                         <div class="alert alert-warning" role="alert"
                             invisible="not is_warning">
                             <br/>

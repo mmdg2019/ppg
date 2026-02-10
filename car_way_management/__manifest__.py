@@ -24,7 +24,7 @@
         "views/car_management_menus.xml",
         'views/export_car_way_wizard_views.xml',
         'views/stock_picking_views.xml',
-        'views/account_move_views.xml',
+        # 'views/account_move_views.xml',
     ],
     "installable": True,
     "application": False,
