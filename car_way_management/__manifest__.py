@@ -14,7 +14,7 @@
         - Export to Excel functionality
     """,
     
-    "depends": ["sale","res_township","stock","account"],
+    "depends": ["base", "sale","res_township","stock","account"],
     "data": [
         "security/ir.model.access.csv",
         "security/car_number_security.xml",
