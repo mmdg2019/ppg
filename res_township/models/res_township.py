@@ -21,16 +21,15 @@ class Township(models.Model):
         "The township name must be unique within the same state.",
     )
 
-    def name_get(self):
-        result = []
+    @api.depends('name', 'code', 'state_id', 'country_id')
+    def _compute_display_name(self):
         for record in self:
             name = f"{record.name} ({record.code})"
             if record.state_id:
                 name += f" - {record.state_id.name}"
             if record.country_id:
                 name += f" ({record.country_id.name})"
-            result.append((record.id, name))
-        return result   
+            record.display_name = name
 
     @api.onchange('country_id')
     def _onchange_country_id(self):
