@@ -19,7 +19,7 @@ class popular_reports(models.Model):
     _rec_name = 'report_name'
     date = fields.Date(string='Date')
     report_name = fields.Char(string="Report Name")
-    report_file = fields.Binary('Report File',filters='*.xml')
+    report_file = fields.Binary('Report File', attachment=True)
     company_id = fields.Many2one('res.company')
     
     def export_stock_transfer_operation_report(self, company, c_date = datetime.now()):
