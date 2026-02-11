@@ -51,7 +51,7 @@ class CostSheetTwo(models.Model):
     status = fields.Selection([('active', 'Active'), ('expired', 'Expired')], 'Status', default='active')
     name = fields.Char(string ="Name",readonly=True,)
     costsheet_lines  = fields.One2many('cost.sheet.line', 'cosheet_id', string="Product List")
-    partner_id = fields.Many2one('res.partner', string='Partner',required=True)
+    partner_id = fields.Many2one('res.partner', string='Partner',required=False)
     avg_sale = fields.Boolean(string = "Average Sales Price",)
     product_id = fields.Many2one('product.product', string="Product")
     product_uom_id = fields.Many2one('uom.uom', related='product_id.uom_id', string='Unit of Measure')
