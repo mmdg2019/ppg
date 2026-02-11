@@ -67,7 +67,7 @@ class CostSheet(models.Model):
     
     name = fields.Char(string ="Name",readonly=True,)
     
-    partner_id = fields.Many2one('res.partner', string='Partner',require = True)
+    partner_id = fields.Many2one('res.partner', string='Partner',required = True)
     
     avg_sale = fields.Boolean(string = "Average Sales Price")
     
