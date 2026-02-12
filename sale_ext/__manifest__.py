@@ -21,7 +21,7 @@ Long description of module's purpose
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/dropshipping_for_so_inherit.xml',
         'views/sale_order_form_inherit.xml',
     ],
