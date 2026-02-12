@@ -11,7 +11,7 @@ def migrate(cr, version):
     before removing the upgrade16 module.
     """
 
-    _logger.error("=== PRE MIGRATION RAN: Move Xmlid ppg_upgrade16-> account_ext ===")
+    # _logger.error("=== PRE MIGRATION RAN: Move Xmlid ppg_upgrade16-> account_ext ===")
 
     xmlid_mappings = {
         #account_account_form_inherit

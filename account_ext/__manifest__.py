@@ -12,7 +12,7 @@ Account Customization
     'depends': ['base', 'account_reports', 'account', 'account_asset','sale', 'ppg_credit_permission'],
     'data': [
         'security/security.xml',   
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'data/profit_and_loss.xml',
         'data/scheduler_update_invoice_due_state_data.xml',
         # 'data/general_ledger_inherit.xml',
