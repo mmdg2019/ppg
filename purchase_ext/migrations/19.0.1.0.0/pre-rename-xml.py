@@ -11,7 +11,7 @@ def migrate(cr, version):
     before removing the ppg_upgrade16 module.
     """
 
-    _logger.error("=== PRE MIGRATION RAN: Move Xmlid ppg_upgrade16 -> purchase_ext ===")
+    # _logger.error("=== PRE MIGRATION RAN: Move Xmlid ppg_upgrade16 -> purchase_ext ===")
 
     xmlid_mappings = {
         #purchase_order_inherit

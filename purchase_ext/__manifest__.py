@@ -21,7 +21,7 @@ Long description of module's purpose
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/purchase_order_inherit.xml',
     ],
     # only loaded in demonstration mode
