@@ -21,7 +21,7 @@ Long description of module's purpose
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         # 'views/stock_inventory_line_inherit.xml',
         'views/stock_picking_inherit_view.xml',
     ],

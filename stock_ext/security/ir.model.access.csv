@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_stock_immediate_transfer_line_sale_manager,access.stock.immediate.transfer.line,stock.model_stock_immediate_transfer_line,sales.sales_manager,1,1,1,0
+stock.access_product_group_res_partner_stock_manager,res_partner group_stock_manager,base.model_res_partner,stock.group_stock_manager,1,0,0,0
