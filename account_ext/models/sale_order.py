@@ -35,19 +35,20 @@ class SaleOrder(models.Model):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).action_confirm()
 
-    @api.model
-    def create(self, vals):
-        if vals.get('partner_id'):
-            pid = self.env['res.partner'].browse(vals['partner_id'])
-            # due_invoice_count = self.env['account.move'].search_count([
-            #     ('move_type', '=', 'out_invoice'), 
-            #     ('partner_id', '=', pid.id),
-            #     ('invoice_due_state', '=', 'third_due')])
-            if not pid.show_credit_due_access:
-                if pid.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
-                # if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
-                    raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
-        return super(SaleOrder, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('partner_id'):
+                pid = self.env['res.partner'].browse(vals['partner_id'])
+                # due_invoice_count = self.env['account.move'].search_count([
+                #     ('move_type', '=', 'out_invoice'), 
+                #     ('partner_id', '=', pid.id),
+                #     ('invoice_due_state', '=', 'third_due')])
+                if not pid.show_credit_due_access:
+                    if pid.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                    # if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                        raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+        return super(SaleOrder, self).create(vals_list)
 
     def write(self, values):
         if values.get('partner_id'):
