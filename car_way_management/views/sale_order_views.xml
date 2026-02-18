@@ -12,6 +12,7 @@
                     <field name="car_number_id" widget="many2one" />
                     <span name="car_size_span" class="text-muted">Car Size: <field name="car_size" class="oe_inline" readonly="1"/></span>
                 </div>
+                <field name="partner_township_id" class="oe_inline" invisible="1"/>
             </xpath>
             <xpath expr="//field[@name='client_order_ref']" position="after">
                 <group name="car_info_group" string="Car Information">
