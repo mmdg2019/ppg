@@ -6,14 +6,14 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
             <!-- Locate the journal items line (account.move.line) list view within the form -->
-            <xpath expr="//field[@name='line_ids']/list/field[@name='debit']" position="replace">
+            <!-- <xpath expr="//field[@name='line_ids']/list/field[@name='debit']" position="replace"> -->
                 <!-- <attribute name="readonly">False</attribute> -->
-                <field name="debit" sum="Total Debit" invisible="display_type in ('line_section', 'line_note')"/>
+                <!-- <field name="debit" sum="Total Debit" invisible="display_type in ('line_section', 'line_note')"/>
             </xpath>
-            <xpath expr="//field[@name='line_ids']/list/field[@name='credit']" position="replace">
+            <xpath expr="//field[@name='line_ids']/list/field[@name='credit']" position="replace"> -->
                 <!-- <attribute name="readonly">False</attribute> -->
-                <field name="credit" sum="Total Credit" invisible="display_type in ('line_section', 'line_note')"/>
-            </xpath>
+                <!-- <field name="credit" sum="Total Credit" invisible="display_type in ('line_section', 'line_note')"/>
+            </xpath> -->
             <!-- make name field readonly in all state for journal entry-->            
             <xpath expr="//h1/field[@name='name']" position="attributes">            
                 <!-- <attribute name="invisible">name == '/', posted_before == False, quick_edit_mode == False</attribute> -->
