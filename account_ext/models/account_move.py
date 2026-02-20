@@ -302,28 +302,93 @@ class AccountMove(models.Model):
         return journal.refund_sequence_id
     
     #from ppg_upgrade16/account_move_inherit.py
-    @api.depends('posted_before', 'state', 'journal_id', 'date')
+    # @api.depends('posted_before', 'state', 'journal_id', 'date')
+    # def _compute_name(self):
+    #     self = self.sorted(lambda m: (m.date, m.ref or '', m.id))
+
+    #     for move in self:
+    #         move_has_name = move.name and move.name != '/'
+    #         if move_has_name or move.state != 'posted':
+    #             if not move.posted_before and not move._sequence_matches_date():
+    #                 # if move._get_last_sequence(lock=False):
+    #                 if move._get_last_sequence(): # no "lock" parameter in Odoo 19 and thus removed (as per code check, seems no impact)
+    #                     # The name does not match the date and the move is not the first in the period:
+    #                     # Reset to draft
+    #                     move.name = False
+    #                     continue
+    #             else:
+    #                 # if move_has_name and move.posted_before or not move_has_name and move._get_last_sequence(lock=False):
+    #                 if move_has_name and move.posted_before or not move_has_name and move._get_last_sequence(): # no "lock" parameter in Odoo 19 and thus removed (as per code check, seems no impact)
+    #                     # The move either
+    #                     # - has a name and was posted before, or
+    #                     # - doesn't have a name, but is not the first in the period
+    #                     # so we don't recompute the name
+    #                     continue
+    #         if move.date and (not move_has_name or not move._sequence_matches_date()):
+    #             # move._set_next_sequence() 
+    #             if move.move_type and (move.move_type == 'out_invoice' or move.move_type == 'out_receipt'):
+    #                 # compute the name only when state = 'posted' not in 'draft' state
+    #                 if move.state != 'draft':
+    #                     sequence_code = 'account.move.customer.invoice'
+    #                     # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+    #                     # compute name based on accounting date (date field)
+    #                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+    #                     if name:
+    #                         move.name = name
+    #             elif move.move_type and move.move_type == 'out_refund':
+    #                 # compute the name only when state = 'posted' not in 'draft' state
+    #                 if move.state != 'draft':
+    #                     sequence_code = 'account.move.customer.credit.notes'
+    #                     # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+    #                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+    #                     if name:
+    #                         move.name = name
+    #             elif move.move_type and move.move_type == 'in_invoice':
+    #                 # compute the name only when state = 'posted' not in 'draft' state
+    #                 if move.state != 'draft':
+    #                     sequence_code = 'account.move.vendor.bill'
+    #                     # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+    #                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+    #                     if name:                        
+    #                         move.name = name
+    #             elif move.move_type and move.move_type == 'in_refund':
+    #                 # compute the name only when state = 'posted' not in 'draft' state
+    #                 if move.state != 'draft':
+    #                     sequence_code = 'account.move.vendor.refund'
+    #                     # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
+    #                     name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
+    #                     if name:                        
+    #                         move.name = name
+    #             elif move.move_type and move.move_type == 'entry':
+    #                 # compute the name only when state = 'posted' not in 'draft' state 
+    #                 if move.state != 'draft':
+    #                 # Get the journal's sequence.
+    #                     sequence = move._get_sequence()
+    #                     if not sequence:
+    #                         raise UserError(_('Please define a sequence on your journal.'))
+    #                     # Consume a new number.
+    #                     move.name = sequence.with_context(ir_sequence_date=move.date).next_by_id()
+    #                     # move._set_next_sequence()
+
+    #     self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
+    #     self._inverse_name()
+
+    @api.depends('posted_before', 'state', 'journal_id', 'date', 'move_type', 'origin_payment_id')
     def _compute_name(self):
-        self = self.sorted(lambda m: (m.date, m.ref or '', m.id))
+        self = self.sorted(lambda m: (m.date, m.ref or '', m._origin.id))
 
         for move in self:
+            if move.state == 'cancel':
+                continue
+
             move_has_name = move.name and move.name != '/'
-            if move_has_name or move.state != 'posted':
-                if not move.posted_before and not move._sequence_matches_date():
-                    if move._get_last_sequence(lock=False):
-                        # The name does not match the date and the move is not the first in the period:
-                        # Reset to draft
-                        move.name = False
-                        continue
-                else:
-                    if move_has_name and move.posted_before or not move_has_name and move._get_last_sequence(lock=False):
-                        # The move either
-                        # - has a name and was posted before, or
-                        # - doesn't have a name, but is not the first in the period
-                        # so we don't recompute the name
-                        continue
-            if move.date and (not move_has_name or not move._sequence_matches_date()):
-                # move._set_next_sequence() 
+            if not move.posted_before and not move._sequence_matches_date():
+                # The name does not match the date and the move is not the first in the period:
+                # Reset to draft
+                move.name = False
+                continue
+            if move.date and not move_has_name and move.state != 'draft':
+                # move._set_next_sequence()
                 if move.move_type and (move.move_type == 'out_invoice' or move.move_type == 'out_receipt'):
                     # compute the name only when state = 'posted' not in 'draft' state
                     if move.state != 'draft':
@@ -347,7 +412,7 @@ class AccountMove(models.Model):
                         sequence_code = 'account.move.vendor.bill'
                         # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
                         name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
-                        if name:                        
+                        if name:
                             move.name = name
                 elif move.move_type and move.move_type == 'in_refund':
                     # compute the name only when state = 'posted' not in 'draft' state
@@ -355,7 +420,7 @@ class AccountMove(models.Model):
                         sequence_code = 'account.move.vendor.refund'
                         # name = self.env['ir.sequence'].with_context(force_company=self.company_id.id).next_by_code(sequence_code)
                         name = self.env['ir.sequence'].with_context(force_company=self.company_id.id,ir_sequence_date=move.date).next_by_code(sequence_code)
-                        if name:                        
+                        if name:
                             move.name = name
                 elif move.move_type and move.move_type == 'entry':
                     # compute the name only when state = 'posted' not in 'draft' state 
@@ -368,5 +433,4 @@ class AccountMove(models.Model):
                         move.name = sequence.with_context(ir_sequence_date=move.date).next_by_id()
                         # move._set_next_sequence()
 
-        self.filtered(lambda m: not m.name and not move.quick_edit_mode).name = '/'
         self._inverse_name()
