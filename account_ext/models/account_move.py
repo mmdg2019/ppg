@@ -48,7 +48,8 @@ class AccountMove(models.Model):
             #     inv_due_date += relativedelta(day=31, months=1)
             # else:
             #     inv_due_date += relativedelta(days=duration)
-            if line.end_month and not line.months: # "End of Current Month"
+            # if line.end_month and not line.months: # "End of Current Month"
+            if line.delay_type == 'days_after_end_of_month': # "End of Current Month"; updated to be fit with Odoo 19
                 inv_due_date += relativedelta(day=31, months=1)
             else: # day-based payment terms and "End of the Following Month"
                 inv_due_date += relativedelta(days=duration)
@@ -135,7 +136,8 @@ class AccountMove(models.Model):
 
     def _compute_invoice_due_state(self, today):
         second_due_date = self.calculate_invoice_due_date(self.invoice_date_due)
-        eofm_invoice = self.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance' and r.end_month and r.months == 1 and r.days == 0)
+        # eofm_invoice = self.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance' and r.end_month and r.months == 1 and r.days == 0)
+        eofm_invoice = self.invoice_payment_term_id.line_ids.filtered(lambda r: r.delay_type == 'days_after_end_of_next_month') # updated to be fit with Odoo 19
         if eofm_invoice: # end of the following month payment term
             if today > second_due_date:
                 self.partner_id.so_block_customer = True
@@ -146,7 +148,8 @@ class AccountMove(models.Model):
                 if self.invoice_due_state != 'first_due':
                     self.invoice_due_state = 'first_due'
             else:
-                eocm_plus_due_factor_invoice = self.invoice_payment_term_id.due_factor and any(self.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance' and r.end_month and r.months == 0 and r.days == 0))
+                # eocm_plus_due_factor_invoice = self.invoice_payment_term_id.due_factor and any(self.invoice_payment_term_id.line_ids.filtered(lambda r: r.value == 'balance' and r.end_month and r.months == 0 and r.days == 0))
+                eocm_plus_due_factor_invoice = self.invoice_payment_term_id.due_factor and any(self.invoice_payment_term_id.line_ids.filtered(lambda r: r.delay_type == 'days_after_end_of_month')) # updated to be fit with Odoo 19
                 if eocm_plus_due_factor_invoice:
                     if today > second_due_date and today <= (second_due_date + relativedelta(days=self.invoice_payment_term_id.due_factor)):
                         if self.invoice_due_state != 'second_due':
