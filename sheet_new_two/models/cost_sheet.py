@@ -31,17 +31,27 @@ class MrpProduction(models.Model):
     
     costsheet_id = fields.Many2one('cost.sheet.two', string = 'CostSheet',store =True)
     partner_id = fields.Many2one('res.partner', related ='costsheet_id.partner_id',string='Partner',store =True)
-    
-    @api.onchange('product_id')
-    def onchange_costsheet(self):
-        shs = []
+    suitable_costsheet_ids = fields.Many2many('cost.sheet.two', compute='_compute_suitable_costsheet_ids')
+
+    @api.depends('product_id')
+    def _compute_suitable_costsheet_ids(self):
         for rec in self:
-            sheets = self.env['cost.sheet.two'].search([('product_id','=',rec.product_id.id),('status','=','active')])
-            for sheet in sheets:
-                shs.append(sheet.id)
-            return {'domain': {
-                'costsheet_id': [('id', 'in', shs)]
-            }}
+            if rec.product_id:
+                sheets = self.env['cost.sheet.two'].search([('product_id','=',rec.product_id.id),('status','=','active')])
+                rec.suitable_costsheet_ids = sheets.ids
+            else:
+                rec.suitable_costsheet_ids = []
+    
+    # @api.onchange('product_id')
+    # def onchange_costsheet(self):
+    #     shs = []
+    #     for rec in self:
+    #         sheets = self.env['cost.sheet.two'].search([('product_id','=',rec.product_id.id),('status','=','active')])
+    #         for sheet in sheets:
+    #             shs.append(sheet.id)
+    #         return {'domain': {
+    #             'costsheet_id': [('id', 'in', shs)]
+    #         }}
 
 class CostSheetTwo(models.Model):
     _name = 'cost.sheet.two'
@@ -88,6 +98,7 @@ class CostSheetTwo(models.Model):
     proeach = fields.Float(string ='Profit Each',compute ='_compute_proeach',store =True)
     fselprice = fields.Float(string ='Factory Selling Price',compute ='_compute_factorysale',store =True)
     manu_count = fields.Integer(string ='Manufacturing',compute ='_compute_manu_count')
+    suitable_bom_ids = fields.Many2many('mrp.bom', compute='_compute_suitable_bom_ids')
     
     @api.onchange('product_id')
     def _onchange_default_plb(self):        
@@ -107,10 +118,15 @@ class CostSheetTwo(models.Model):
         else:
             self.qty = 1
     
-    @api.model
-    def create(self , vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('cost.sheet.sequence') or '/'
-        return super(CostSheetTwo, self).create(vals)
+    # @api.model
+    # def create(self , vals):
+    #     vals['name'] = self.env['ir.sequence'].next_by_code('cost.sheet.sequence') or '/'
+    #     return super(CostSheetTwo, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('cost.sheet.sequence') or '/'
+        return super(CostSheetTwo, self).create(vals_list)
     
     def write(self, vals):        
         res = super(CostSheetTwo, self).write(vals)
@@ -139,24 +155,40 @@ class CostSheetTwo(models.Model):
                     raise UserError("No vendor pricelist for that product!")
                     
     
+    # @api.onchange('product_id')
+    # def onchange_priceanddiscount(self):
+    #     if self.product_id:  
+    #         bos =[]
+    #         pricelist = self.env['product.pricelist.item'].search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)],order='create_date desc', limit=1) 
+    #         if pricelist:
+    #             self.originp = pricelist.x_studio_original_sales_price
+    #             self.discount = pricelist.percent_price
+    #         else:
+    #             self.originp = 0.0
+    #             self.discount = 0.0
+                
+    #         boms = self.env['mrp.bom'].search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
+    #         for bo in boms:
+    #             bos.append(bo.id)
+    #         return {'domain': {'bom_id': [('id', 'in', bos)] }}
     @api.onchange('product_id')
     def onchange_priceanddiscount(self):
         if self.product_id:  
-            bos =[]
             pricelist = self.env['product.pricelist.item'].search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)],order='create_date desc', limit=1) 
             if pricelist:
                 self.originp = pricelist.x_studio_original_sales_price
                 self.discount = pricelist.percent_price
             else:
                 self.originp = 0.0
-                self.discount = 0.0
-                
-            boms = self.env['mrp.bom'].search([('product_tmpl_id','=',self.product_id.product_tmpl_id.id)])
-            for bo in boms:
-                bos.append(bo.id)
-            return {'domain': {'bom_id': [('id', 'in', bos)] }}
-            
-            
+                self.discount = 0.0 
+    @api.depends('product_id')
+    def _compute_suitable_bom_ids(self):
+        for rec in self:
+            if rec.product_id:
+                boms = self.env['mrp.bom'].search([('product_tmpl_id','=',rec.product_id.product_tmpl_id.id)])
+                rec.suitable_bom_ids = boms.ids
+            else:
+                rec.suitable_bom_ids = []       
     @api.onchange('bom_id')
     def onchange_raws(self):
         for rec in self:
@@ -368,7 +400,7 @@ class CostSheetTwo(models.Model):
             rec.amount = rec.unitcost * rec.qty
             
     
-    @api.depends('amount','bag','label','other','meter','diesel','metal')
+    @api.depends('amount','bag','label','other','meter','diesel','metal','box')
     def _compute_factorytotal(self):
         for rec in self:
             rec.facttotal = rec.amount + rec.bag + rec.label + rec.other + rec.meter + rec.diesel + rec.metal + rec.box
