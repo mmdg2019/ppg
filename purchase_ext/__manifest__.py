@@ -17,7 +17,7 @@ Long description of module's purpose
     'version': '19.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'purchase'],
+    'depends': ['base', 'purchase','purchase_stock'],
 
     # always loaded
     'data': [
