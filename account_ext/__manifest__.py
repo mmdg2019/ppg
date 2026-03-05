@@ -15,7 +15,7 @@ Account Customization
         'security/ir.model.access.csv',
         'data/profit_and_loss.xml',
         'data/scheduler_update_invoice_due_state_data.xml',
-        # 'data/general_ledger_inherit.xml',
+        'data/general_ledger_inherit.xml',
         # 'views/res_partner_view.xml',
         'views/account_move_view.xml',
         'views/sale_order_view.xml',
