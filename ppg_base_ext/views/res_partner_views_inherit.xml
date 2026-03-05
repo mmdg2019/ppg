@@ -6,12 +6,12 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/> 
             <field name="arch" type="xml">                
-                <!-- <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1/field[@name='name'][1]" position="attributes">
+                <xpath expr="//form/sheet//h1[hasclass('mb-0')]/field[@name='name'][1]" position="attributes">
                     <attribute name="style">height:auto; line-height: 200%;</attribute> 
                 </xpath>
-                <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1/field[@name='name'][2]" position="attributes">
+                <xpath expr="//form/sheet//h1[hasclass('mb-0')]/field[@name='name'][2]" position="attributes">
                     <attribute name="style">height:auto; line-height: 200%;</attribute> 
-                </xpath> -->
+                </xpath>
                 <!-- Adding related_company_id field inside the accounting_entries group -->
                 <field name="property_account_payable_id" position="after">
                     <field name="related_company_id" placeholder="Select a related company"/>
@@ -25,7 +25,7 @@
             <field name="inherit_id" ref="base.view_partner_tree"/> 
             <field name="arch" type="xml">                
                 <xpath expr="//list" position="attributes">
-                    <attribute name="default_order">display_name</attribute>                    
+                    <attribute name="default_order">name</attribute>                    
                 </xpath>                
             </field>
         </record> 
