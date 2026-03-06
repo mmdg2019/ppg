@@ -72,7 +72,22 @@
                     <attribute name="create">true</attribute>
                 </xpath>
             </field>
-        </record>      
+        </record>
+
+        <!-- 6.3.2026: in Odoo 16, the following attributes were added via studio view; it does not work in Odoo 19 and thus moved here; -->
+        <!-- no 'accounting_entries' group in Odoo 19; so groups are added to separate fields; currency_id is already invisible and thus no group added; -->
+        <record id="view_partner_property_form_account_ext_inherit" model="ir.ui.view">
+            <field name="name">res.partner.property.form.account_ext.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field=[@name='property_account_receivable_id']" position="attributes">
+                    <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group/group[1]/field=[@name='property_account_payable_id']" position="attributes">
+                    <attribute name="groups">account.group_account_manager,account.group_account_invoice</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
-
