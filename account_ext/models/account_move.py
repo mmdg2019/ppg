@@ -209,7 +209,7 @@ class AccountMove(models.Model):
                 self.invoice_date = sale_order.x_studio_pre_invoice_date
     
     # set due state to 'No Due' as soon as an invoice is set to paid or in_payment state: modified to be compatible with Odoo V16
-    @api.depends('amount_residual', 'move_type', 'state', 'company_id')
+    @api.depends('amount_residual', 'move_type', 'state', 'company_id', 'reconciled_payment_ids.state')
     def _compute_payment_state(self):
         res = super(AccountMove, self)._compute_payment_state()
         for move in self:
