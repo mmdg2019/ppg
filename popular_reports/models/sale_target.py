@@ -41,7 +41,11 @@ class SalesTarget(models.Model):
     def _compute_sales_target_line(self):
         results = self.env['popular_reports.sale_target.line']._read_group([('sale_target_id', 'in', self.ids)], ['sale_target_id'], ['__count'])
         dic = {}
-        for x in results: dic[x['sale_target_id'][0]] = x['sale_target_id_count']
+        # 10.3.2026: the "results" returned from _read_group in Odoo 19 is not the same as in Odoo 16;
+        # e.g. Odoo 16: {'sale_target_id_count': 1, 'sale_target_id': (26, ...), '__domain': ['&', (...), (...)]}
+        # e.g. Odoo 19: [(popular_reports.sale_target(26,), 1)]
+        # for x in results: dic[x['sale_target_id'][0]] = x['sale_target_id_count']
+        for x in results: dic[x[0].id] = x[1]
         for record in self: record['sale_target_line_ids_count'] = dic.get(record.id, 0)
     
 #     @api.depends('sale_target_line_ids')
