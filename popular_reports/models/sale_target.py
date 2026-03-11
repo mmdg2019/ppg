@@ -69,7 +69,7 @@ class SalesTargetLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
                 
     product_id = fields.Many2one('product.product', string='Product', required=True, tracking=True)
-    prouct_uom_id = fields.Char(related='product_id.uom_name', string='Product UoM', store=False, tracking=True)
+    prouct_uom_id = fields.Char(related='product_id.uom_name', string='Product UoM', store=True, tracking=True)
     ttl_sold_count = fields.Float(string='Sold Quantity', store=True, tracking=True)
     min_sale_target_number = fields.Float(string='Minnimum Target Quantity', required=True, default = 0.0, tracking=True)
     max_sale_target_number = fields.Float(string='Maximum Target Quantity', required=True, default = 0.0, tracking=True)
