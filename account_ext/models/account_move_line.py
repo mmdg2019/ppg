@@ -40,14 +40,44 @@ class AccountMoveLine(models.Model):
     #         line.balance = line.debit - line.credit
 
     # sort the invoices to be reconciled by due date, invoice date and currency_id
-    def reconcile(self):
-        if self:
-            if self.env.context.get('reduced_line_sorting'):
-                sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id , line.currency_id)
-            else:
-                sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id, line.currency_id, line.amount_currency)
-            self = self.sorted(key=sorting_f)
-        super(AccountMoveLine,self).reconcile()
+    # def reconcile(self):
+    #     if self:
+    #         if self.env.context.get('reduced_line_sorting'):
+    #             sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id , line.currency_id)
+    #         else:
+    #             sorting_f = lambda line: (line.date_maturity or line.date, line.date, line.id, line.currency_id, line.amount_currency)
+    #         self = self.sorted(key=sorting_f)
+    #     super(AccountMoveLine,self).reconcile()
 
     def turn_as_asset(self):
         return super(AccountMoveLine, self).turn_as_asset()
+    
+    # sort the invoices to be reconciled by due date, aml date,  aml id, currency_id and amount in currency
+    @api.model
+    def _optimize_reconciliation_plan(self, reconciliation_plan, shadowed_aml_values=None):
+        results = super(AccountMoveLine, self)._optimize_reconciliation_plan(reconciliation_plan, shadowed_aml_values=None)
+        amls = results[0][0]['amls']
+        if self.env.context.get('reduced_line_sorting'):
+                sorted_amls = amls.sorted(key=lambda aml: (
+                    aml._get_reconciliation_aml_field_value('date_maturity', shadowed_aml_values)
+                        or aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
+                    aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
+                    aml._get_reconciliation_aml_field_value('id', shadowed_aml_values),    
+                    aml._get_reconciliation_aml_field_value('currency_id', shadowed_aml_values),
+                ))
+        else:
+            sorted_amls = amls.sorted(key=lambda aml: (
+                aml._get_reconciliation_aml_field_value('date_maturity', shadowed_aml_values)
+                    or aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
+                aml._get_reconciliation_aml_field_value('date', shadowed_aml_values), 
+                aml._get_reconciliation_aml_field_value('id', shadowed_aml_values),  
+                aml._get_reconciliation_aml_field_value('currency_id', shadowed_aml_values),
+                aml._get_reconciliation_aml_field_value('amount_currency', shadowed_aml_values),
+                aml._get_reconciliation_aml_field_value('balance', shadowed_aml_values),
+            ))
+        
+        results[0][0] = {
+            'amls': sorted_amls,
+            'aml_ids': set(sorted_amls.ids),
+        }
+        return results
