@@ -17,7 +17,9 @@
         'stock',
         'website',
         'website_sale',
-        'ppg_credit_permission'
+        'ppg_credit_permission',
+        'stock_barcode',
+        
     ],
     'data': [
         'security/security.xml',
