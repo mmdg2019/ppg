@@ -17,7 +17,7 @@
            <field name="report_type">qweb-html</field>
            <field name="report_name">popular_reports.report_main_group_purchase_slip</field>
            <field name="report_file">popular_reports.report_main_group_purchase_slip</field>
-           <field name="print_report_name">Main Group Purchase Order Slip</field>
+           <field name="print_report_name">'Main Group Purchase Order Slip'</field>
            <field name="binding_model_id" ref="purchase.model_purchase_order"/>
            <field name="binding_type">report</field>
        </record>

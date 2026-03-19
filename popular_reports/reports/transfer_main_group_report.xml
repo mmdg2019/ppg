@@ -16,7 +16,7 @@
            <field name="report_type">qweb-html</field>
            <field name="report_name">popular_reports.report_transfer_main_group</field>
            <field name="report_file">popular_reports.report_transfer_main_group</field>
-           <field name="print_report_name">Transfer Main Group</field>
+           <field name="print_report_name">'Transfer Main Group'</field>
            <field name="binding_model_id" ref="stock.model_stock_picking"/>
            <field name="binding_type">report</field>
         </record>
