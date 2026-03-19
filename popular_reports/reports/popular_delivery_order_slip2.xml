@@ -7,7 +7,7 @@
            <field name="report_type">qweb-html</field>
            <field name="report_name">popular_reports.report_popular_delivery_order_slip</field>
            <field name="report_file">popular_reports.report_popular_delivery_order_slip</field>
-           <field name="print_report_name">Popular Delivery Order Slip 2</field>
+           <field name="print_report_name">'Popular Delivery Order Slip 2'</field>
            <field name="binding_model_id" ref="stock.model_stock_picking"/>
            <field name="binding_type">report</field>
        </record>
