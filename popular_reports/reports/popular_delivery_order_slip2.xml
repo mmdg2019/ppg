@@ -60,10 +60,14 @@
                     <div t-if="doc.state" class="col-auto" name="div_sched_date">
                         <strong>Shipping Date:</strong>
                         <t t-if="doc.state == 'done'">
-                            <p t-field="doc.scheduled_date"/>
+                            <p>
+                                <t t-esc="context_timestamp(doc.scheduled_date).strftime('%d/%m/%Y %H:%M:%S') if doc.scheduled_date else ''"/>
+                            </p>
                         </t>
                         <t t-if="doc.state != 'done'">
-                            <p t-field="doc.scheduled_date"/>
+                            <p>
+                                <t t-esc="context_timestamp(doc.scheduled_date).strftime('%d/%m/%Y %H:%M:%S') if doc.scheduled_date else ''"/>
+                            </p>
                         </t>
                     </div>
                     <div class="row justify-content-end" t-if="doc.sudo().sale_id.client_order_ref">
