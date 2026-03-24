@@ -34,7 +34,7 @@
             <field name="code">
                 if records:
                     for record in records:
-                        if not record.restrict_mode_hash_table and record.state != 'draft':
+                        if not record._is_move_restricted(record) and not record.inalterable_hash and (record.state == 'cancel' or (record.state == 'posted' and not record.need_cancel_request)):
                             record.button_draft()
             </field>
         </record>
