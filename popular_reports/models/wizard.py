@@ -431,7 +431,7 @@ class PopularReport(models.TransientModel):
         if docs:
             for doc in docs.sorted(key=lambda x: (x.scheduled_date.date(),x.partner_id.display_name), reverse=False):                
                 ind = 1
-                lines = doc.move_lines.filtered(lambda x: x.product_uom_qty and x.name != "Special Discount" and x.name != "Other Charges" and x.product_uom_qty > 0)
+                lines = doc.move_ids.filtered(lambda x: x.product_uom_qty and x.display_name != "Special Discount" and x.display_name != "Other Charges" and x.product_uom_qty > 0)
                 for table_line in lines:
                     y_offset += 1
                     if ind == 1:
@@ -442,7 +442,7 @@ class PopularReport(models.TransientModel):
                             sheet.write(y_offset, 0, doc.scheduled_date.strftime('%m/%d/%Y'), default_style3)
                             sheet.write(y_offset, 1, doc.display_name, default_style)
                         ind += 1
-                    sheet.write(y_offset, 2, table_line.product_id.name_get()[0][1], default_style)
+                    sheet.write(y_offset, 2, '['+ table_line.product_id.default_code+'] ' + table_line.product_id.name, default_style)
                     if doc.picking_type_code == 'incoming':
                         sheet.write(y_offset, 3, doc.partner_id.display_name, default_style)
                     else:
@@ -453,7 +453,7 @@ class PopularReport(models.TransientModel):
                         sheet.write(y_offset, 4, table_line.location_dest_id.display_name, default_style)
                     sheet.write(y_offset, 5, table_line.product_uom_qty, float_style)
                     if doc.state == 'done':
-                        sheet.write(y_offset, 6, table_line.quantity_done, float_style)
+                        sheet.write(y_offset, 6, table_line.quantity, float_style)
                     else:
                         sheet.write(y_offset, 6, '-', default_style3)
                     sheet.write(y_offset, 7, table_line.product_uom.display_name, default_style)
@@ -473,7 +473,7 @@ class PopularReport(models.TransientModel):
         output.seek(0)
         generated_file = output.read()
         output.close()
-        excel_file = base64.encodestring(generated_file)
+        excel_file = base64.b64encode(generated_file)
         self.write({'excel_file': excel_file})
 
         if self.excel_file:
@@ -814,10 +814,10 @@ class PopularReport(models.TransientModel):
         # filter invoices based on the selected customers
         if self.user:
             docs = docs.filtered(lambda r: r.partner_id.id in self.user.ids)
-            customers = self.env['res.partner'].search([('id', 'in', self.user.ids), ('customer_rank', '>', 0)], order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', self.user.ids), ('customer_rank', '>', 0)], order='complete_name asc')
         else:
             uids = docs.mapped('partner_id.id')
-            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='complete_name asc')
 
         if docs:
             currency_format = '#,##0.00 ' + '"' + docs.currency_id.symbol + '"'
@@ -846,7 +846,7 @@ class PopularReport(models.TransientModel):
         output.seek(0)
         generated_file = output.read()
         output.close()
-        excel_file = base64.encodestring(generated_file)
+        excel_file = base64.b64encode(generated_file)
         self.write({'excel_file': excel_file})
 
         if self.excel_file:
@@ -1044,7 +1044,7 @@ class PopularReport(models.TransientModel):
                 ind = 1                
                 for table_line in doc.order_line:
                     length = len(doc.order_line)
-                    # print("*****************length of order line is **********", len(doc.order_line))
+                    
                     if table_line.name != "Special Discount" and table_line.name != "Other Charges":
                     
                         if ind == 1:
@@ -1062,12 +1062,12 @@ class PopularReport(models.TransientModel):
                             
                         sheet.write(y_offset, 3, table_line.product_id.display_name, default_style)
                         
-                        if table_line.product_id.uom_id.display_name != table_line.product_uom.display_name:
-                            qty = '{0:,.2f}'.format((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv)
+                        if table_line.product_id.uom_id.display_name != table_line.product_uom_id.display_name:
+                            qty = '{0:,.2f}'.format((table_line.product_uom_qty * table_line.product_id.uom_id.factor) / table_line.product_uom_id.factor)
                         else:
                             qty = '{0:,.2f}'.format(table_line.product_uom_qty)
                         sheet.write(y_offset, 4, qty, float_style1)
-                        sheet.write(y_offset, 5, table_line.product_uom.display_name, default_style)
+                        sheet.write(y_offset, 5, table_line.product_uom_id.display_name, default_style)
                         
                         y_offset += 1
 
@@ -1075,7 +1075,7 @@ class PopularReport(models.TransientModel):
         output.seek(0)
         generated_file = output.read()
         output.close()
-        excel_file = base64.encodestring(generated_file)
+        excel_file = base64.b64encode(generated_file)
         self.write({'excel_file': excel_file})
 
         if self.excel_file:

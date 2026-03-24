@@ -29,7 +29,7 @@
             <field name="arch" type="xml">
                 <form string="All Balance Listing (Total)">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags" domain="[('type', '=', 'product')]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="products" widget="many2many_tags" domain="[('type', '=', 'consu'), ('is_storable', '=', True)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                         <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Stock Location">

@@ -45,7 +45,7 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
 
         dates = sorted(list(set(docs.mapped('invoice_date'))))
         if data['product_ids']:
-            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='name asc')
         else:
             product_ids = list(set(docs.mapped('invoice_line_ids.product_id')))
         temp=[]
@@ -63,7 +63,7 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
                     for doc in docs.filtered(lambda r: r.partner_id == user and r.invoice_date == date):
                         for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id == product):
                             if table_line.product_uom_id.display_name != "Units":
-                                sub_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                                sub_qty += table_line.quantity * table_line.product_uom_id.factor
                             else:
                                 sub_qty += table_line.quantity
                             currency_id = doc.currency_id
@@ -73,7 +73,7 @@ class edit_report_sales_report_by_product_code(models.AbstractModel):
                             sub_ttl += table_line.price_subtotal
                             sub_table_line = table_line
                     if sub_ttl > 0 :
-                        temp_dtl.append({'product_cat':temp_product_cat,'sub_qty':round((sub_qty/product.uom_id.factor_inv),2), 'sub_ttl': sub_ttl,'sub_table_line':sub_table_line})
+                        temp_dtl.append({'product_cat':temp_product_cat,'sub_qty':round((sub_qty/product.uom_id.factor),2), 'sub_ttl': sub_ttl,'sub_table_line':sub_table_line})
                 if temp_dtl:
                     temp.append({'date':date,'user':temp_user,'temp_dtl':sorted(temp_dtl, key = lambda i: ( i['sub_table_line'].product_id.default_code),reverse=False)})
         return {
@@ -94,9 +94,9 @@ class edit_report_sales_report_by_product_cat(models.AbstractModel):
         docs = None
         product_cats_ids = []
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc')
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
@@ -153,9 +153,9 @@ class edit_report_sales_report_by_org_product_cat(models.AbstractModel):
         docs = None
         product_cats_ids = []
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc')
         if data['filter_post'] == '1':
             docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post'] == '2':
@@ -227,7 +227,7 @@ class edit_report_sales_report_by_client(models.AbstractModel):
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])])
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc')
         return {
             'filter_post': data['filter_post'],
             'docs': docs,
@@ -250,7 +250,7 @@ class edit_report_all_balance_listing(models.AbstractModel):
             docs = self.env['stock.location'].search([('usage', '=', 'internal')])
         location = list(set(docs.mapped('quant_ids.location_id')))
         if data['product_ids']:
-            products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']), ('name','not in',['Other Charges','Special Discount'])])
         else:
             products = list(set(docs.mapped('quant_ids.product_id')))
         if data['product_cats_ids']:
@@ -268,7 +268,7 @@ class edit_report_all_balance_listing(models.AbstractModel):
             'start_date': data['start_date'], 
             'end_date': data['end_date'],
             'products': products,
-            'items': sorted(temp, key = lambda i: (i['location'],i['product_name'].default_code)),
+            'items': sorted(temp, key = lambda i: (i['location'],i['product_name'].default_code or i['product_name'].name)),
        }
     
 #     All Balance Listing (Total)
@@ -290,7 +290,7 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
         if data['product_ids']:
             products = self.env['product.product'].search([('id', 'in', data['product_ids'])])
         else:            
-            products = self.env['product.product'].search([('type', '=', 'product'), ('active', '=', True)])
+            products = self.env['product.product'].search([('type', '=', 'consu'), ('is_storable', '=', True), ('active', '=', True)])
         
         if products:
             product_ids = list({p.id for p in products})
@@ -329,7 +329,7 @@ class edit_report_all_balance_listing_total(models.AbstractModel):
         docs = self.env.cr.dictfetchall() 
 
         if data['product_cats_ids']:
-            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc') 
+            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc') 
             docs = [item for item in docs if item['category'] in tuple(data['product_cats_ids'])] 
         
         result_list = []
@@ -391,7 +391,7 @@ class edit_report_sales_report_by_date(models.AbstractModel):
             docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         product_cats_ids = []
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
@@ -487,9 +487,9 @@ class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
         
         if data['user_ids']:
 #             docs = docs.search([('partner_id', 'in', data['user_ids'])])
-            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='complete_name asc')
         else:
-            user_ids = self.env['res.partner'].search([],order='display_name asc')
+            user_ids = self.env['res.partner'].search([],order='complete_name asc')
         
         if data['filter_country_id']:
             user_ids = user_ids.filtered(lambda r: r.country_id.id in data['filter_country_id'])
@@ -499,10 +499,10 @@ class edit_report_sales_analysis_by_month_and_cust(models.AbstractModel):
             state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name
         
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc')
            
         dates = list(set([doc.invoice_date.strftime('%b/%Y') for doc in docs]))
         dates.sort(key=lambda date: datetime.strptime(date, "%b/%Y"))
@@ -540,7 +540,7 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
         
         if data['user_ids']:
 #             docs = docs.search([('partner_id', 'in', data['user_ids'])])
-            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         else:
             user_ids = list(set(docs.mapped('partner_id')))
@@ -554,7 +554,7 @@ class edit_report_sales_anlys_by_mon_and_cust_col(models.AbstractModel):
 #         raise UserError(str(docs))
         
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category.id in data['product_cats_ids'])
 #         else:
 #             product_cats_ids = list(set(docs.mapped('x_studio_invoice_category')))
@@ -614,7 +614,7 @@ class edit_report_sales_anlys_by_mon_and_cust_vertical(models.AbstractModel):
                 state = 'draft'  
 
         if data['user_ids']:
-            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc').ids
+            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc').ids
             user_filter = "AND ai.partner_id in %(user_list)s" 
                
         # Create dynamic SQL for month columns
@@ -633,7 +633,7 @@ class edit_report_sales_anlys_by_mon_and_cust_vertical(models.AbstractModel):
             ),
             invoice_data AS (
                 SELECT                                              
-                    usr.display_name as customer,              
+                    usr.complete_name as customer,              
                     DATE_TRUNC('month', ai.date) AS invoice_month,
                     SUM(ai.amount_total_signed) AS total_amount 
                 FROM
@@ -647,7 +647,7 @@ class edit_report_sales_anlys_by_mon_and_cust_vertical(models.AbstractModel):
                     AND ai.company_id = %(company_id)s
                     {user_filter}
                 GROUP BY
-                    usr.display_name, DATE_TRUNC('month', ai.date)
+                    usr.complete_name, DATE_TRUNC('month', ai.date)
             ),
             pivoted_data AS (
                 SELECT
@@ -707,20 +707,20 @@ class edit_report_sales_anlys_by_qty_with_col(models.AbstractModel):
         product_ids = None
         product_cats_ids = None
         if data['user_ids']:
-            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='complete_name asc')
             docs = self.env['account.move.line'].search([('parent_state', '=', 'posted'), ('move_id.move_type', '=', 'out_invoice'), ('display_type', '=', 'product'), ('partner_id', 'in', data['user_ids']),('date', '>=', datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), ('date', '<', datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         else:
             docs = self.env['account.move.line'].search([('parent_state', '=', 'posted'), ('move_id.move_type', '=', 'out_invoice'), ('display_type', '=', 'product'), ('date', '>=', datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')), ('date', '<', datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         if data['product_ids']:
         
-            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='name asc')
             docs = docs.filtered(lambda r: r.product_id.id in data['product_ids'])
         else:
             product_ids = list(set(docs.mapped('product_id')))
 
         
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')            
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')            
             docs = docs.filtered(lambda r: r.x_studio_invoice_category.id in data['product_cats_ids'])
             product_ids = list(set(docs.mapped('product_id')))
            
@@ -771,7 +771,7 @@ class edit_report_stock_anlys_by_qty_with_col(models.AbstractModel):
         )
 
         if data['user_ids']:
-            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc')
             
             query = f"""
                 WITH date_range AS (
@@ -931,7 +931,7 @@ class edit_report_stock_anlys_by_qty_with_col(models.AbstractModel):
         docs = self.env.cr.dictfetchall()
         
         if data['product_cats_ids']:
-            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc') 
+            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc') 
             docs = [item for item in docs if item['category'] in tuple(data['product_cats_ids'])]
         if data['product_ids']:           
             docs = [item for item in docs if item['product_id'] in tuple(data['product_ids'])]
@@ -985,9 +985,9 @@ class edit_report_sales_anlys_by_inv_cat(models.AbstractModel):
         currency_id = self.env.company.currency_id
 
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc').ids            
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc').ids            
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc').ids       
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc').ids       
         
 
         start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
@@ -1003,7 +1003,7 @@ class edit_report_sales_anlys_by_inv_cat(models.AbstractModel):
         )
 
         if data['user_ids']:
-            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc').ids
+            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc').ids
         # else:
         #     users = self.env['res.partner'].search([('customer_rank', '>', 0)], order='display_name asc').ids
         
@@ -1019,7 +1019,7 @@ class edit_report_sales_anlys_by_inv_cat(models.AbstractModel):
                 ),
                 invoice_data AS (
                     SELECT                                              
-                        usr.display_name as customer,              
+                        usr.complete_name as customer,              
                         DATE_TRUNC('month', ai.date) AS invoice_month,
                         SUM(ai.amount_total_signed) AS total_amount,                        
                         cat.name as category
@@ -1038,7 +1038,7 @@ class edit_report_sales_anlys_by_inv_cat(models.AbstractModel):
                         AND ai.company_id = %(company_id)s
                         AND ai.x_studio_invoice_category in %(category_list)s
                     GROUP BY
-                        usr.display_name, DATE_TRUNC('month', ai.date),  cat.name   
+                        usr.complete_name, DATE_TRUNC('month', ai.date),  cat.name   
                 ),
                 pivoted_data AS (
                     SELECT
@@ -1209,12 +1209,12 @@ class edit_report_stock_analysis_by_date_and_cust(models.AbstractModel):
         product_cats_ids = []
         items = []
         if data['product_ids']:
-            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
-            items = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            items = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='name asc')
         if data['product_cats_ids']:
             pids = []
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         custs = list(set(docs.mapped('partner_id')))
         return {
@@ -1254,12 +1254,12 @@ class edit_report_today_stock_analysis(models.AbstractModel):
             sum_amt = 0
             for table_line in docs.mapped('invoice_line_ids').filtered(lambda r: r.product_id == item):
                 if table_line.product_uom_id.display_name != "Units":
-                    sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                    sum_qty += table_line.quantity * table_line.product_uom_id.factor
                 else:
                     sum_qty += table_line.quantity
                 sum_amt += table_line.price_subtotal
             if sum_qty > 0:
-                pids.append({'item':item, 'ttl_qty':round((sum_qty/item.uom_id.factor_inv),2), 'ttl_amt':round(sum_amt,2)})
+                pids.append({'item':item, 'ttl_qty':round((sum_qty/item.uom_id.factor),2), 'ttl_amt':round(sum_amt,2)})
         total = sum(temp['ttl_amt'] for temp in pids)
 #         raise UserError(total)
         
@@ -1310,7 +1310,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
         temp = None
         country = None
         state = None
-        user_ids = self.env['res.partner'].search([],order='display_name asc')
+        user_ids = self.env['res.partner'].search([],order='complete_name asc')
         docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         if data['filter_country_id']:
             user_ids = user_ids.filtered(lambda r: r.country_id.id in data['filter_country_id'])
@@ -1324,7 +1324,7 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
             
         docs = docs.filtered(lambda r: r.partner_id in user_ids)
         
-        products = self.env['product.product'].search([],order='display_name asc')
+        products = self.env['product.product'].search([],order='name asc')
         product_cats_ids = []
         
         if data['product_cats_ids']:
@@ -1338,12 +1338,12 @@ class edit_report_stock_analysis_by_mon_and_cus(models.AbstractModel):
                 for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                     cat = doc.x_studio_invoice_category
                     if table_line.product_uom_id.display_name != "Units":
-                        sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                        sum_qty += table_line.quantity * table_line.product_uom_id.factor
                     else:
                         sum_qty += table_line.quantity
 #                     sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'cat':cat,'name':product,'qty':round((sum_qty/product.uom_id.factor_inv),2)})
+                temp.append({'id':product.id,'cat':cat,'name':product,'qty':round((sum_qty/product.uom_id.factor),2)})
         return {
             'lst':sorted(temp, key = lambda i: (i['name'].default_code)),
             'country': country,
@@ -1368,16 +1368,16 @@ class edit_report_stock_anlys_by_mon_and_cust_col(models.AbstractModel):
         
         # filter the invoice record/docs by customer;        
         if data['user_ids']:
-            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='display_name asc')
+            user_ids = self.env['res.partner'].search([('id', 'in', data['user_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.partner_id in user_ids) # from stock_mon_cust  
 
         # product list
-        products = self.env['product.product'].search([],order='display_name asc')       
+        products = self.env['product.product'].search([],order='name asc')       
 
         # filter the invoice record/docs by product category;    
         product_cats_ids = []        
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='completet_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids) # from stock_an_mon_cust
 
         # generate user-chosen dates and start/end date;     
@@ -1397,11 +1397,11 @@ class edit_report_stock_anlys_by_mon_and_cust_col(models.AbstractModel):
                 for doc in docc.sorted(lambda r: r.x_studio_invoice_category,reverse=False):                 
                     for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                         if table_line.product_uom_id.display_name != "Units":
-                                sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv                       
+                                sum_qty += table_line.quantity * table_line.product_uom_id.factor                       
                         else:
                                 sum_qty += table_line.quantity                                
-                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor_inv),2)})                   
-                ttl_qty += round((sum_qty/product.uom_id.factor_inv),2)                        
+                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor),2)})                   
+                ttl_qty += round((sum_qty/product.uom_id.factor),2)                        
             if ttl_qty > 0:        
                 temp.append({'id':product.id,'name':product,'qty':ttlbydate, 'total':ttl_qty})
         return {
@@ -1425,19 +1425,19 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
         temp = []
             
         if data['product_ids']:
-            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
-            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='name asc')
         for product in products:
             sum_qty = 0
             for doc in docs.filtered(lambda r: r.state=='posted'):
                 for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                     if table_line.product_uom_id.display_name != "Units":
-                        sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                        sum_qty += table_line.quantity * table_line.product_uom_id.factor
                     else:
                         sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'name':product,'qty':round((sum_qty/product.uom_id.factor_inv),2)})
+                temp.append({'id':product.id,'name':product,'qty':round((sum_qty/product.uom_id.factor),2)})
         return {
             'lst':sorted(temp, key = lambda i: i['name'].default_code)
             }
@@ -1457,9 +1457,9 @@ class edit_report_stock_analysis_by_month_col(models.AbstractModel):
         
         # filter products based on selected product list
         if data['product_ids']:
-            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
-            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='name asc')
         
         # change selected date range to list of months 
         start_date =datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')
@@ -1477,11 +1477,11 @@ class edit_report_stock_analysis_by_month_col(models.AbstractModel):
                 for doc in docs.filtered(lambda x: x.invoice_date.strftime('%b/%Y') == date.strftime('%b/%Y')):              
                     for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                         if table_line.product_uom_id.display_name != "Units":
-                            sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                            sum_qty += table_line.quantity * table_line.product_uom_id.factor
                         else:
                             sum_qty += table_line.quantity
-                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor_inv),2)}) 
-                ttl_qty += round((sum_qty/product.uom_id.factor_inv),2)
+                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor),2)}) 
+                ttl_qty += round((sum_qty/product.uom_id.factor),2)
             if ttl_qty > 0:
                 temp.append({'id':product.id, 'name':product,'qty':ttlbydate, 'total':ttl_qty})
         return {
@@ -1501,18 +1501,18 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
         state = None
         product_cats_ids=[]
         customers = None
-        user_ids = self.env['res.partner'].search([],order='display_name asc')
+        user_ids = self.env['res.partner'].search([],order='complete_name asc')
         # filter invoices based on selected date range, type, and state
         docs = self.env['account.move'].search([('state', '=', 'posted'),('move_type', '=', 'out_invoice'),('invoice_date', '>=',datetime.strptime(data['s_month']+'/'+data['s_year'], '%m/%Y')),('invoice_date', '<',datetime.strptime(data['e_month']+'/'+data['e_year'], '%m/%Y')+relativedelta(months = 1))])
         
         # filter products based on selected product list
         
         if data['product_ids']:
-            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
-            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='name asc')
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)        
             
         # filter users based on state and filter invoices based on filtered users
@@ -1521,7 +1521,7 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
             state = self.env['res.country.state'].search([('id', 'in', data['filter_state_id'])],limit=1).name 
         if data['user_ids']:
             user_ids = user_ids.filtered(lambda r:r.id in data['user_ids'])
-            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')  
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc')  
 
         docs = docs.filtered(lambda r: r.partner_id in user_ids)
         
@@ -1542,11 +1542,11 @@ class edit_report_stock_analysis_by_month_columns(models.AbstractModel):
                     for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                         cat = doc.x_studio_invoice_category
                         if table_line.product_uom_id.display_name != "Units":
-                            sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                            sum_qty += table_line.quantity * table_line.product_uom_id.factor
                         else:
                             sum_qty += table_line.quantity
-                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor_inv),2)}) 
-                ttl_qty += round((sum_qty/product.uom_id.factor_inv),2)
+                ttlbydate.append({'date':date, 'qtybydate':round((sum_qty/product.uom_id.factor),2)}) 
+                ttl_qty += round((sum_qty/product.uom_id.factor),2)
             if ttl_qty > 0:
                 temp.append({'id':product.id,'cat':cat,'name':product,'qty':ttlbydate, 'total':ttl_qty})
         return {
@@ -1572,19 +1572,19 @@ class edit_report_monthly_stock_analysis(models.AbstractModel):
         temp = []
             
         if data['product_ids']:
-            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
-            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='name asc')
         for product in products:
             sum_qty = 0
             for doc in docs.filtered(lambda r: r.state=='posted'):
                 for table_line in doc.invoice_line_ids.filtered(lambda r: r.product_id.id == product.id and r.product_id.display_name != "Other Charges" and r.product_id.display_name != "Special Discount"):
                     if table_line.product_uom_id.display_name != "Units":
-                        sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                        sum_qty += table_line.quantity * table_line.product_uom_id.factor
                     else:
                         sum_qty += table_line.quantity
             if sum_qty > 0:
-                temp.append({'id':product.id,'name':product,'qty':round((sum_qty/product.uom_id.factor_inv),2)})
+                temp.append({'id':product.id,'name':product,'qty':round((sum_qty/product.uom_id.factor),2)})
         return {
             'lst':sorted(temp, key = lambda i: i['name'].default_code)
             }
@@ -1618,13 +1618,13 @@ class edit_report_stock_analysis_by_date(models.AbstractModel):
                         for table_line in doc.invoice_line_ids:
                             if table_line.product_id.display_name == item.display_name and table_line.name != "Special Discount" and table_line.name != "Other Charges":
                                 if table_line.product_uom_id.display_name != "Units":
-                                    sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
+                                    sum_qty += table_line.quantity * table_line.product_uom_id.factor
                                 else:
                                     sum_qty += table_line.quantity
                                 i_name = table_line.product_id
                 if i_name != None:
-                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date})
-                    sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
+                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor),2),'date':date})
+                    sub_ttl_qty += sum_qty/i_name.uom_id.factor
             if sub_ttl_qty > 0:
                 pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].default_code, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':round(sub_ttl_qty,2)})
         return {
@@ -1701,7 +1701,7 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
             docs = docs.filtered(lambda r: r.picking_type_id.id in data['filter_stock_picking_type'])
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc')
         
         # get current date and time
         now = datetime.now()
@@ -1715,7 +1715,7 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
         ctime = now.time().strftime('%H:%M:%S')
 
         if docs:
-            doc_prod_list = docs.mapped('move_ids_without_package.product_id')
+            doc_prod_list = docs.mapped('move_ids.product_id') #no move_ids_without_package in odoo 19
             if data['product_ids']:
                 doc_prod_list = doc_prod_list.filtered(lambda r: r.id in data['product_ids'])
             if doc_prod_list:
@@ -1736,13 +1736,13 @@ class edit_report_stock_trans_prod_qty_list_by_date(models.AbstractModel):
                         docc = docs.filtered(lambda r: r.scheduled_date.strftime('%d/%m/%Y') == date)
                         for doc in docc.sorted(key=lambda x: x.name, reverse=False):
                             ttl_demand_qty = ttl_done_qty = 0
-                            for table_line in doc.move_ids_without_package.filtered(lambda x: x.product_id.id == product.id):
+                            for table_line in doc.move_ids.filtered(lambda x: x.product_id.id == product.id):
                                 if table_line.product_id.uom_id.display_name != table_line.product_uom.display_name:
-                                    ttl_demand_qty += round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)
-                                    ttl_done_qty += round((table_line.quantity_done * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)
+                                    ttl_demand_qty += round((table_line.product_uom_qty * table_line.product_id.uom_id.factor) / table_line.product_uom.factor, 2)
+                                    ttl_done_qty += round((table_line.quantity * table_line.product_id.uom_id.factor) / table_line.product_uom.factor, 2)
                                 else:
                                     ttl_demand_qty += table_line.product_uom_qty
-                                    ttl_done_qty += table_line.quantity_done
+                                    ttl_done_qty += table_line.quantity
                             if ttl_demand_qty != 0 or ttl_done_qty != 0:
                                 temp.append({'stock_picking_no': doc.name, 'demand_qty': ttl_demand_qty, 'done_qty': ttl_done_qty})
                                 sub_ttl_demand_qty += ttl_demand_qty
@@ -1872,9 +1872,9 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
         picking_types = list(set(docs.mapped('picking_type_id')))
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)],order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)],order='complete_name asc')
         else:
-            customers = self.env['res.partner'].search([('customer_rank', '>', 0)],order='display_name asc')
+            customers = self.env['res.partner'].search([('customer_rank', '>', 0)],order='complete_name asc')
         locations = list(set(docs.mapped('location_id')))
         
         total_demand = 0
@@ -1882,7 +1882,7 @@ class edit_report_stock_transfer_dtl_info(models.AbstractModel):
         for location in locations:
             for product in products:
                 total_demand = sum(table_line.product_uom_qty for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_ids.filtered(lambda r: r.product_id == product))
-                total_done = sum(table_line.quantity_done for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_ids.filtered(lambda r: r.product_id == product))
+                total_done = sum(table_line.quantity for doc in docs.filtered(lambda r: r.location_id == location) for table_line in doc.move_ids.filtered(lambda r: r.product_id == product))
                 temp.append({'location':location, 'product':product, 'ttl_done':total_done, 'ttl_demand':total_demand})
         return {
             'filter_post_stock': data['filter_post_stock'],
@@ -2018,39 +2018,40 @@ class edit_report_purchase_stock_analysis_by_date(models.AbstractModel):
         temp = []
         tmp = []
         user_id = None
-        if data['user_id']:
-            docs = docs.filtered(lambda r: r.partner_id.id == data['user_id'])
-            user_id = docs.mapped('partner_id')[0]
-        dates = [doc.invoice_date.strftime('%m/%d/%Y') for doc in docs if doc.state=='posted']
-        dates = list(set(dates))
-        dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
-        items = []
-        if data['product_ids']:
-            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='default_code asc')
-        else:
-            items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
-        for item in items:    
-            temp_dtl = []
-            temp = []
-            sub_ttl_qty=0
-            for date in dates:
-                sum_qty=0
-                i_name = None
-                for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
-                    if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
-                        for table_line in doc.invoice_line_ids:
-                            if table_line.product_id == item and table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges":
-                                if table_line.product_uom_id.display_name != "Units":
-                                    sum_qty += table_line.quantity * table_line.product_uom_id.factor_inv
-                                else:
-                                    sum_qty += table_line.quantity
-#                                 sum_qty+=table_line.quantity
-                                i_name = table_line.product_id
-                if i_name != None:
-                    temp.append({'id':id,'name':i_name,'qty':(sum_qty/i_name.uom_id.factor_inv),'date':date})
-                    sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
-            if sub_ttl_qty > 0:
-                pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].default_code, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
+        if docs:
+            if data['user_id']:
+                docs = docs.filtered(lambda r: r.partner_id.id == data['user_id'])
+                user_id = docs.mapped('partner_id')[0]
+            dates = [doc.invoice_date.strftime('%m/%d/%Y') for doc in docs if doc.state=='posted']
+            dates = list(set(dates))
+            dates.sort(key = lambda date: datetime.strptime(date, '%m/%d/%Y'))
+            items = []
+            if data['product_ids']:
+                items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='default_code asc')
+            else:
+                items = sorted(list(set(docs.mapped('invoice_line_ids.product_id'))))
+            for item in items:    
+                temp_dtl = []
+                temp = []
+                sub_ttl_qty=0
+                for date in dates:
+                    sum_qty=0
+                    i_name = None
+                    for doc in docs.sorted(key=lambda x:x.invoice_date,reverse=False):
+                        if doc.state=='posted' and date == doc.invoice_date.strftime('%m/%d/%Y'):
+                            for table_line in doc.invoice_line_ids:
+                                if table_line.product_id == item and table_line.product_id.display_name != "Special Discount" and table_line.product_id.display_name != "Other Charges":
+                                    if table_line.product_uom_id.display_name != "Units":
+                                        sum_qty += table_line.quantity * table_line.product_uom_id.factor
+                                    else:
+                                        sum_qty += table_line.quantity
+    #                                 sum_qty+=table_line.quantity
+                                    i_name = table_line.product_id
+                    if i_name != None:
+                        temp.append({'id':id,'name':i_name,'qty':(sum_qty/i_name.uom_id.factor),'date':date})
+                        sub_ttl_qty += sum_qty/i_name.uom_id.factor
+                if sub_ttl_qty > 0:
+                    pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].default_code, datetime.strptime(i['date'], '%m/%d/%Y'))),'ttl_qty':sub_ttl_qty})
         return {
             'docs':docs,
             'user_id':user_id,
@@ -2078,7 +2079,7 @@ class edit_report_purchase_report_by_inv_cat(models.AbstractModel):
             
         query = """
                 SELECT                                              
-                    usr.display_name as vendor, 
+                    usr.complete_name as vendor, 
                     cat.name as category,  
                     SUM(ai.amount_total_signed) AS total_amount 
                 FROM
@@ -2100,16 +2101,16 @@ class edit_report_purchase_report_by_inv_cat(models.AbstractModel):
         'state': state,
             } 
         if data['user_ids']: 
-            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('supplier_rank', '>', 0)], order='display_name asc').ids      
+            users = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('supplier_rank', '>', 0)], order='complete_name asc').ids      
             params.update({'user_list':tuple(users)}) 
             query += "AND ai.partner_id in %(user_list)s" 
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc').ids
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc').ids
             params.update({'cat_list':tuple(product_cats_ids)})
             query += "AND ai.x_studio_invoice_category in %(cat_list)s"
         query += """
             GROUP BY
-                usr.display_name, cat.name
+                usr.complete_name, cat.name
                 """            
         self.env.cr.execute(query, params)
         docs = self.env.cr.dictfetchall()            
@@ -2276,10 +2277,10 @@ class edit_report_daily_sales_report_by_pdt_cat(models.AbstractModel):
             'product_cats_ids':product_cats_ids
        }
 
-#     Daily Sales Repory by Invoice Category
+#     Daily Sales Report by Invoice Category
 class edit_report_daily_sales_report_by_inv_cat(models.AbstractModel):
     _name = "report.popular_reports.report_daily_sales_report_by_inv_cat"
-    _description="Daily Sales Repory by Invoice Category Editing"
+    _description="Daily Sales Report by Invoice Category Editing"
     
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -2294,7 +2295,7 @@ class edit_report_daily_sales_report_by_inv_cat(models.AbstractModel):
             docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date'])])
         product_cats_ids = None
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         return {
             'docs': docs,
@@ -2432,16 +2433,16 @@ class edit_report_outstanding_inv_report_by_cust(models.AbstractModel):
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
 #             docs = docs.search([('partner_id', 'in', data['user_ids'])])
-            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)],order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)],order='complete_name asc')
         else:
-            customers = self.env['res.partner'].search([('customer_rank', '>', 0)],order='display_name asc')
+            customers = self.env['res.partner'].search([('customer_rank', '>', 0)],order='complete_name asc')
 
         product_cats_ids = []
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc')
         return {
             'filter_post': data['filter_post'],
             'docs': docs,
@@ -2471,17 +2472,17 @@ class edit_report_outstanding_inv_report_by_due(models.AbstractModel):
 
         product_cats_ids = []
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         else:
-            product_cats_ids = self.env['product.category'].search([], order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([], order='complete_name asc')
 
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc')
         else:
             uids = docs.mapped('partner_id.id')
-            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')      
+            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='complete_name asc')      
 
         return {
             'filter_post': data['filter_post'],
@@ -2522,16 +2523,16 @@ class edit_report_outstanding_inv_report_by_month(models.AbstractModel):
 
         # filter invoices based on the selected product category
         if data['product_cats_ids']:
-            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='display_name asc')
+            category = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])], order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in category)
             
         # filter invoices based on the selected customers
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
-            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='display_name asc')
+            customers = self.env['res.partner'].search([('id', 'in', data['user_ids']), ('customer_rank', '>', 0)], order='complete_name asc')
         else:
             uids = docs.mapped('partner_id.id')
-            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='display_name asc')         
+            customers = self.env['res.partner'].search([('id', 'in', uids), ('customer_rank', '>', 0)], order='complete_name asc')         
 
         return {
             'filter_post': data['filter_post'],
@@ -2556,10 +2557,10 @@ class edit_report_inv_payment_tracking(models.AbstractModel):
         
         product_cats_ids = []
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc')
         if data['checked_amt_due']:
             docs = docs.filtered(lambda r: abs(r.amount_residual_signed) > 0)
         
@@ -2678,16 +2679,16 @@ class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
                     if date == doc.create_date.strftime('%m/%d/%Y'):
                         for table_line in doc.order_line:
                             if table_line.product_id.display_name == item.display_name and table_line.name != "Special Discount" and table_line.name != "Other Charges":
-                                if table_line.product_uom.display_name != "Units":
-                                    sum_qty += table_line.product_uom_qty * table_line.product_uom.factor_inv
+                                if table_line.product_uom_id.display_name != "Units":
+                                    sum_qty += table_line.product_uom_qty * table_line.product_uom_id.factor
                                 else:
                                     sum_qty += table_line.product_uom_qty
                                 i_name = table_line.product_id
                                 if doc.x_studio_pre_invoice_date:
                                     i_pre_inv_date = doc.x_studio_pre_invoice_date
                 if i_name != None:
-                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor_inv),2),'date':date, 'pre_inv_date':i_pre_inv_date})
-                    sub_ttl_qty += sum_qty/i_name.uom_id.factor_inv
+                    temp.append({'id':id,'name':i_name,'qty':round((sum_qty/i_name.uom_id.factor),2),'date':date, 'pre_inv_date':i_pre_inv_date})
+                    sub_ttl_qty += sum_qty/i_name.uom_id.factor
             if sub_ttl_qty > 0:
                 pids.append({'c_name':item,'items':sorted(temp, key = lambda i: (i['name'].display_name, datetime.strptime(i['date'], '%m/%d/%Y'), i['pre_inv_date'])),'ttl_qty':round(sub_ttl_qty,2)})
         return {
@@ -2754,7 +2755,7 @@ class edit_report_sales_quot_report_by_client(models.AbstractModel):
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
             
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
 #             product_cats = list(set(product_cats_ids.mapped('display_name')))
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         return {
@@ -2775,9 +2776,9 @@ class edit_report_sales_quot_report_by_p_code(models.AbstractModel):
         product_ids = []
         product_cats_ids = []
         if data['product_ids']:
-            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc').ids
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='name asc').ids
         else:
-            product_ids = self.env['product.product'].search([],order='display_name asc').ids
+            product_ids = self.env['product.product'].search([],order='name asc').ids
         if data['filter_post_quot'] == '1':
             docs = self.env['sale.order'].search([('create_date', '>=',data['start_date']),('create_date', '<=',data['end_date']),('state', '=', 'cancel')])
         elif data['filter_post_quot'] == '2':
@@ -2795,9 +2796,9 @@ class edit_report_sales_quot_report_by_p_code(models.AbstractModel):
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
             
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc').ids
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc').ids
         else:
-            product_cats_ids = self.env['product.category'].search([],order='display_name asc').ids
+            product_cats_ids = self.env['product.category'].search([],order='complete_name asc').ids
         return {
             'filter_post_quot': data['filter_post_quot'],
             'docs': docs,
@@ -3081,7 +3082,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                     FROM product_product as pp
                     LEFT JOIN product_template as pt on pt.id = pp.product_tmpl_id
                     LEFT JOIN uom_uom as uu on uu.id = pt.uom_id
-                    WHERE pt.type = 'product'
+                    WHERE pt.type = 'consu'
+                    AND pt.is_storable = True
                     AND pt.active = true
                     AND pt.company_id in  %(company)s
                     
@@ -3636,7 +3638,7 @@ class edit_report_stock_focus(models.AbstractModel):
             product_ids = p_docs.mapped('invoice_line_ids.product_id.id')
             product_ids = product_ids+c_docs.mapped('invoice_line_ids.product_id.id')
             product_ids = list(set(product_ids))
-        products = self.env['product.product'].search([('type', '=', 'product'),('id', 'in', product_ids)]).with_context(dict(to_date=datetime.strptime(data['c_end_date'], '%Y-%m-%d') + relativedelta(days = 1), location= data['stock_location']),order='display_name asc')
+        products = self.env['product.product'].search([('type', '=', 'consu'),('is_storable', '=', True),('id', 'in', product_ids)]).with_context(dict(to_date=datetime.strptime(data['c_end_date'], '%Y-%m-%d') + relativedelta(days = 1), location= data['stock_location']),order='name asc')
         stock_loc = self.env['stock.location'].search([('id', '=', data['stock_location'])],limit=1)
         ttl_date = datetime.strptime(data['end_date'], '%Y-%m-%d') - datetime.strptime(data['start_date'], '%Y-%m-%d') + relativedelta(days = 1)
         ttl_date_c = datetime.strptime(data['c_end_date'], '%Y-%m-%d') - datetime.strptime(data['c_start_date'], '%Y-%m-%d') + relativedelta(days = 1)
@@ -3739,7 +3741,7 @@ class edit_report_mo_prod_qty_listing_by_date(models.AbstractModel):
         lst = []
 
         # filter MO based on the selected date range and state
-        domain = [('date_planned_start', '>=', data['start_date']), ('date_planned_start', '<=', data['end_date'])]
+        domain = [('date_start', '>=', data['start_date']), ('date_start', '<=', data['end_date'])]
         if data['status']:
             domain += [('state', '=', data['status'])]
         mo_docs = self.env['mrp.production'].search(domain)
@@ -3761,13 +3763,13 @@ class edit_report_mo_prod_qty_listing_by_date(models.AbstractModel):
             if doc_prod_list:
                 pids = [prod.id for prod in doc_prod_list]
                 if data['product_ids']:
-                    products = self.env['product.product'].search([('id', 'in', data['product_ids']), ('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='display_name asc')
+                    products = self.env['product.product'].search([('id', 'in', data['product_ids']), ('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='name asc')
                 else:
-                    products = self.env['product.product'].search([('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='display_name asc')
+                    products = self.env['product.product'].search([('id', 'in', pids), ('type', '!=', 'service'), ('name', 'not in', ['Other Charges', 'Special Discount'])], order='name asc')
         
                 if products:
                     # get date list
-                    dates = [doc.date_planned_start.strftime('%d/%m/%Y') for doc in mo_docs]
+                    dates = [doc.date_start.strftime('%d/%m/%Y') for doc in mo_docs]
                     dates = list(set(dates))
                     dates.sort(key = lambda date: datetime.strptime(date, '%d/%m/%Y'))
 
@@ -3778,12 +3780,12 @@ class edit_report_mo_prod_qty_listing_by_date(models.AbstractModel):
                         for date in dates:
                             temp = []
                             sub_ttl_qty = 0
-                            docc = mo_docs.filtered(lambda r: r.date_planned_start.strftime('%d/%m/%Y') == date)
+                            docc = mo_docs.filtered(lambda r: r.date_start.strftime('%d/%m/%Y') == date)
                             for doc in docc.sorted(key=lambda x: x.name, reverse=False):
                                 ttl_qty = 0
                                 for table_line in doc.finished_move_line_ids.filtered(lambda x: x.product_id.id == product.id):
                                     if table_line.product_id.uom_id.display_name != table_line.product_uom_id.display_name:
-                                        ttl_qty += round((table_line.qty_done * table_line.product_id.uom_id.factor_inv) / table_line.product_uom_id.factor_inv, 2)
+                                        ttl_qty += round((table_line.qty_done * table_line.product_id.uom_id.factor) / table_line.product_uom_id.factor, 2)
                                     else:
                                         ttl_qty += table_line.qty_done
                                 if ttl_qty != 0:
