@@ -11186,18 +11186,18 @@
                 <table class="table table-sm o_report_block_table" style="padding: 0.5em; width: 75%; margin: auto;">
                   <thead>
                     <tr>
-                      <th style="text-align:left;">
+                      <th style="text-align:left;font-weight: bold;">
                         <span>Date</span>
                       </th>
-                      <th style="text-align:center;">
+                      <th style="text-align:center;font-weight: bold;">
                         <span>PO Number</span>
                       </th>                      
-                      <th style="text-align:right;">
+                      <th style="text-align:right;font-weight: bold;">
                         <span>Quantity</span>
                       </th>                     
                     </tr>
                   </thead>
-									<tbody style="border-top:1px solid #ddd;">
+									<tbody style="border-top:1px solid #ddd;border-bottom:1px solid #ddd;">
 										<tr>
 											<t t-foreach="prod['qty_per_date']" t-as="item">
 												<tr>
@@ -11217,7 +11217,7 @@
 														</t>
 													</td>
 												</tr>
-												<tr style="background-color: #f2f2f2;">
+												<tr style="background-color: #f2f2f2;border-bottom:1px solid #ddd;border-top:1px solid #ddd;">
 													<td colspan="2" style="text-align:left;">
 														<span>Sub Total</span>
 													</td>
@@ -11229,7 +11229,7 @@
 											</t>
 										</tr>
 										<tr style="border-bottom:2px solid #ddd;">
-											<th colspan="2" style="text-align:left; border-top:2px solid #ddd;">
+											<th colspan="2" style="text-align:left; border-top:1px solid #ddd;">
 												<span>Grand Total</span>
 											</th>
 											<th style="text-align:right; border-top:2px solid #ddd;">

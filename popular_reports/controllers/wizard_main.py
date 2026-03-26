@@ -2911,9 +2911,9 @@ class edit_report_purchase_order_report_date_prod(models.AbstractModel):
         
         # filter products based on selected product list and filtered docs        
         if data['product_ids']:
-            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
-            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            products = self.env['product.product'].search([('name','not in',['Other Charges','Special Discount'])],order='name asc')
         if docs != None:
             doc_prod_list = sorted(list(set(docs.mapped('order_line.product_id'))))
             doc_prod_list = [prod.id for prod in doc_prod_list]
@@ -2947,8 +2947,8 @@ class edit_report_purchase_order_report_date_prod(models.AbstractModel):
                 for doc in docc.sorted(key=lambda x: x.name,reverse=False): 
                     ttl_qty = 0
                     for table_line in doc.order_line.filtered(lambda x: x.product_id.id == product.id):
-                        if table_line.product_id.uom_id.display_name != table_line.product_uom.display_name:
-                            ttl_qty += round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)
+                        if table_line.product_id.uom_id.display_name != table_line.product_uom_id.display_name:
+                            ttl_qty += round(table_line.product_uom_qty * table_line.product_id.uom_id.factor / table_line.product_uom_id.factor, 2)
                         else:
                             ttl_qty += table_line.product_uom_qty                        
                     if ttl_qty != 0:
