@@ -10799,37 +10799,37 @@
                             </div>
                         </div>
                         <br/>
-                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
+                        <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;border-top:1px solid #ddd; border-bottom:1px solid #ddd;">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th style="font-weight: bold;">
                                         <span>Order Date</span>
                                     </th>
-                                    <th>
+                                    <th style="font-weight: bold;">
                                         <span>PO Number</span>
                                     </th>
-                                    <th>
+                                    <th style="font-weight: bold;">
                                         <span>Vendor Name</span>
                                     </th>
-                                    <th>
+                                    <th style="font-weight: bold;">
                                         <span>Drop Ship Address</span>
                                     </th>
-                                    <th>
+                                    <th style="font-weight: bold;">
                                         <span>Product Name</span>
                                     </th>
-                                    <th>
+                                    <th style="font-weight: bold;">
                                         <span>Quantity</span>
                                     </th>
-                                    <th style="text-align:center;">
+                                    <th style="font-weight: bold;">
                                         <span>UM</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right; font-weight: bold;">
                                         <span>Price</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right; font-weight: bold;">
                                         <span>Net Amount</span>
                                     </th>
-                                    <th>
+                                    <th style="text-align:center;font-weight: bold;">
                                         <span>Status</span>
                                     </th>
                                 </tr>
@@ -10865,9 +10865,9 @@
                                                     <span t-field="table_line.product_id"/>
                                                 </td>
                                                 <td style="text-align:right;">
-                                                    <t t-if="table_line.product_id.uom_id.display_name != table_line.product_uom.display_name">
+                                                    <t t-if="table_line.product_id.uom_id.display_name != table_line.product_uom_id.display_name">
                                                         <!-- <span t-esc="round((table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv, 2)"/> -->
-                                                        <span t-esc="(table_line.product_uom_qty * table_line.product_id.uom_id.factor_inv) / table_line.product_uom.factor_inv" t-options="{'widget': 'float', 'precision': 2}"/>
+                                                        <span t-esc="(table_line.product_uom_qty * table_line.product_id.uom_id.factor) / table_line.product_uom_id.factor" t-options="{'widget': 'float', 'precision': 2}"/>
                                                     </t>
                                                     <t t-else="">
                                                         <!-- <span t-esc="round(table_line.product_uom_qty, 2)"/> -->
@@ -10875,7 +10875,7 @@
                                                     </t>
                                                 </td>
                                                 <td style="text-align:center;">
-                                                    <span t-field="table_line.product_uom"/>
+                                                    <span t-field="table_line.product_uom_id"/>
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <span t-field="table_line.price_unit"/>
