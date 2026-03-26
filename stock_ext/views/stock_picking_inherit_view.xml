@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <!-- Locate the field you want to modify -->
                 <field name="picking_type_id" position="attributes">
-                    <attribute name="readonly">state == 'draft'</attribute>
+                    <attribute name="readonly">state != 'draft'</attribute>
                 </field>
             </field>
         </record>
