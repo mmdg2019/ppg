@@ -15,5 +15,5 @@ class PurchaseOrder(models.Model):
                 if float_is_zero(line.qty_to_invoice, precision_digits=precision):
                     raise UserError(_('There is no invoiceable line. If a product has a control policy based on received quantity, please make sure that a quantity has been received.'))
 
-        super(PurchaseOrder, self).action_create_invoice(attachment_ids=attachment_ids)
+        return super(PurchaseOrder, self).action_create_invoice(attachment_ids=attachment_ids)
 
