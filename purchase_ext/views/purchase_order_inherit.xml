@@ -32,5 +32,20 @@
                 </xpath>
             </field>
         </record>
+
+        <!-- add Create Bill button on purchase order form -->
+        <record id="purchase_orde_form_inherit_create_bill" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.create.bill</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml"> 
+                <xpath expr="//form/header/button[@name='action_acknowledge']" position="after">
+                    <!-- seen when billing status is nothing to bill or fully billed -->
+                    <button name="action_create_invoice" type="object" string="Create Bill" invisible="state != 'purchase' or invoice_status not in ('no','invoiced') or not order_line"/>
+                    <!-- seen when billing status is waiting bill -->
+                    <button name="action_create_invoice" type="object" string="Create Bill" invisible="state != 'purchase' or invoice_status in ('no','invoiced')"/>
+                </xpath>   
+            </field>
+        </record>
     </data>
 </odoo>
