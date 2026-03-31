@@ -55,7 +55,7 @@ class AccountMoveLine(models.Model):
     # sort the invoices to be reconciled by due date, aml date,  aml id, currency_id and amount in currency
     @api.model
     def _optimize_reconciliation_plan(self, reconciliation_plan, shadowed_aml_values=None):
-        results = super(AccountMoveLine, self)._optimize_reconciliation_plan(reconciliation_plan, shadowed_aml_values=None)
+        results = super(AccountMoveLine, self)._optimize_reconciliation_plan(reconciliation_plan, shadowed_aml_values=shadowed_aml_values)
         amls = results[0][0]['amls']
         if self.env.context.get('reduced_line_sorting'):
                 sorted_amls = amls.sorted(key=lambda aml: (
