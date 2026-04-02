@@ -19,7 +19,7 @@
     "author": "Aktiv Software",
     "description": """Custom Inventory Adjustments for multi products""",
     "license": "AGPL-3",
-    "depends": ["stock", 'account'],
+    "depends": ["web", "base", "stock", 'account'],
     "data": [
         "security/ir.model.access.csv",
         "security/security.xml",
@@ -29,10 +29,9 @@
         "report/stock_report_views.xml",
         "report/stock_report.xml",
     ],
-    "assets": {
-        "web.assets_backend": [
-            "/ak_inventory_adjustments/static/src/xml/*.xml",
-            "/ak_inventory_adjustments/static/src/js/*.js",
+    'assets': {
+        'web.assets_backend': [
+            'ak_inventory_adjustments/static/src/**/*',
         ]
     },
     "images": ["static/description/banner.jpg"],
