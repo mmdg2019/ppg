@@ -27,7 +27,12 @@ Account Customization
         'views/account_journal_inherit.xml',
         'views/account_move_line_inherit.xml',
         'views/account_payment_inherit.xml',
-    ],    
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'account_ext/static/src/components/**/*',
+        ],
+    }, 
     'installable': True,
     'auto_install': False,
 }
