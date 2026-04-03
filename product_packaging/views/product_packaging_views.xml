@@ -3,12 +3,13 @@
         <field name="name">product.packaging.form</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <form string="Product Packaging" create="false">
+            <form string="Product Packaging" class="hide_create_btn">
                 <sheet>
                     <group>
                         <field name="name"/>
                         <field name="uom_ids" widget="many2many_tags"/>
                         <field name="uom_id"/>
+                        <field name="company_id"/>
                         <field name="sale_ok"/>
                         <field name="purchase_ok"/>
                     </group>
@@ -20,10 +21,11 @@
         <field name="name">product.packaging.list</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <list string="Product Packaging" create="false">
+            <list string="Product Packaging" class="hide_create_btn">
                 <field name="name"/>
                 <field name="uom_ids" widget="many2many_tags"/>
                 <field name="uom_id"/>
+                <field name="company_id"/>
                 <field name="sale_ok"/>
                 <field name="purchase_ok"/>
             </list>
