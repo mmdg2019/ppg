@@ -110,6 +110,9 @@
         <record model="ir.ui.menu" id="account.menu_board_journal_1">
            <field name="action" eval="False"/>
         </record>
+        <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
+            <field name="domain">[('move_type', 'in', ['out_invoice'])]</field>
+        </record>
         
     </data>
 </odoo>
