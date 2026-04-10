@@ -71,3 +71,9 @@ class SaleOrder(models.Model):
                 price_list_lines = self.pricelist_id.item_ids.filtered(lambda r: r.product_tmpl_id.product_variant_id.id == ol.product_id.id)
                 if price_list_lines and price_list_lines[0].x_studio_original_sales_price == 0.0:
                     raise ValidationError(_('The product "%s" has price ZERO.', ol.product_id.display_name))
+
+    # 10.4.2026: remove SO number from invoice's "ref" field so that only invoice number is shown in outstanding debits/credits widget section
+    def _prepare_invoice(self):
+        values = super(SaleOrder, self)._prepare_invoice()
+        values['ref'] = self.client_order_ref or ''
+        return values
