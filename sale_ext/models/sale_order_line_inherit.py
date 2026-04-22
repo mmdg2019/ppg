@@ -14,27 +14,26 @@ class SaleOrderLine(models.Model):
             if line.product_packaging_id:
                 line.product_packaging_qty = int(line.product_packaging_qty)
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        # check for products with zero original sales price on pricelist (for SO imports)
-        # this code should also cover if the import records have "price_unit" field with value = 0
-        for vals in vals_list:
-            if 'product_id' in vals and 'order_id' in vals and 'price_unit' in vals:
-                source_order = self.env['sale.order'].browse(vals.get('order_id'))
-                product = self.env['product.product'].browse(vals.get('product_id'))
-                if source_order and not source_order.x_studio_editing_price_status and vals.get('product_id') not in (2350, 2351): # no need to consider "Other Charges" and "Special Discount"
-                    if vals.get('price_unit') == 0.0:
-                        raise ValidationError(_('The product "%s" has price ZERO.', product.display_name))
-        return super().create(vals_list)
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        # in ".../addons/sale/models/sale_order_line.py", "price_unit" is updated via "_reset_price_unit()" whenever product changes;
+        # now, no need for that; "price_unit" will always be computed via compute();
+        pass 
 
-    def write(self, values):
-        # check for products with zero original sales price on pricelist (for SO imports)
-        # this code should also cover if the import records have "price_unit" field with value = 0
-        for rec in self:
-            if 'price_unit' in values:
-                source_order = self.env['sale.order'].browse(rec.order_id.id)
-                product = self.env['product.product'].browse(values.get('product_id') if 'product_id' in values else rec.product_id.id)
-                if source_order and not source_order.x_studio_editing_price_status and product.id not in (2350, 2351):
-                    if values.get('price_unit') == 0.0:
-                        raise ValidationError(_('The product "%s" has price ZERO.', product.display_name))   
-        return super().write(values)
+    @api.depends('product_id', 'product_uom_id', 'product_uom_qty')
+    def _compute_price_unit(self):
+        super(SaleOrderLine, self)._compute_price_unit()
+        for line in self:
+            if line.order_id and not line.order_id.x_studio_editing_price_status and line.product_id and line.product_id.id not in (2350, 2351): # no need to consider "Other Charges" and "Special Discount"
+                product_price_list = line.order_id.pricelist_id.item_ids.filtered(lambda x: x.product_tmpl_id.product_variant_id.id == line.product_id.id)
+                if product_price_list:
+                    if line.product_id.uom_id != line.product_uom_id:
+                        sales_price = (product_price_list[0].x_studio_original_sales_price / line.product_id.uom_id.factor) * line.product_uom_id.factor
+                    else:
+                        sales_price = product_price_list[0].x_studio_original_sales_price
+                    if sales_price == 0.0:
+                        raise ValidationError(_('The product "%s" has price ZERO.', line.product_id.display_name))
+                    line.price_unit = sales_price
+                    line.discount = product_price_list[0].percent_price
+                else:
+                    raise ValidationError(_('No pricelist for the product "%s"!', line.product_id.display_name))
