@@ -38,5 +38,19 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="sale_order_form_inherit_unit_price" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.unit.price</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="before">
+                    <field name="sales_unit_price" readonly="not x_studio_editing_price_status" force_save="1"/>
+                </xpath>
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="attributes">
+                    <attribute name="optional">hide</attribute>                   
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
