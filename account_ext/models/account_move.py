@@ -196,9 +196,12 @@ class AccountMove(models.Model):
         #     ('partner_id', '=', self.partner_id.id),
         #     ('invoice_due_state', '=', 'third_due')])
         for record in self:
-            if not record.partner_id.show_credit_due_access:
-                if record.partner_id.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
-                    raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+            if record.move_type == 'entry' and record.origin_payment_id and record.origin_payment_id.journal_id.type in ('cash', 'bank'): # assume that this move comes from payment
+                continue
+            else:
+                if not record.partner_id.show_credit_due_access:
+                    if record.partner_id.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                        raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(AccountMove, self).action_post()
 
     # recompute due date in case the preferred invoice date was set on SO: modified to be compatible with Odoo V16
