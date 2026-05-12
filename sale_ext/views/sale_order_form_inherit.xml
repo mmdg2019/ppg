@@ -44,7 +44,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="before">
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="before">                    
+                    <field name="package_uom_id" invisible="not product_id"/>                    
+                    <field name="package_uom_qty" invisible="not product_id or not package_uom_id"/>
                     <field name="sales_unit_price" readonly="not x_studio_editing_price_status" force_save="1"/>
                 </xpath>
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="attributes">

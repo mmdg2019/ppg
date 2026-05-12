@@ -8,6 +8,8 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'      
 
     sales_unit_price = fields.Float(string="Sales Unit Price") # original sales price from price list 
+    package_uom_id = fields.Many2one('uom.uom', string="Packaging", domain='[("id", "in", allowed_uom_ids), ("id", "!=", product_uom_id)]')    
+    package_uom_qty = fields.Float(string="No. of Package", compute = '_compute_package_uom_qty', store = True, readonly = False, precompute = True)
 
     @api.depends('product_packaging_id', 'product_uom', 'product_uom_qty')
     def _compute_product_packaging_qty(self):   
@@ -15,6 +17,17 @@ class SaleOrderLine(models.Model):
         for line in self:
             if line.product_packaging_id:
                 line.product_packaging_qty = int(line.product_packaging_qty)
+
+    @api.depends('package_uom_id', 'product_uom_id', 'product_uom_qty')
+    def _compute_package_uom_qty(self):
+        for line in self:
+            if not line.package_uom_id:
+                line.package_uom_qty = False
+            else:
+                packaging_uom = line.package_uom_id.relative_uom_id
+                packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_uom_qty, packaging_uom)                
+                line.package_uom_qty = int(
+                    packaging_uom_qty / line.package_uom_id.relative_factor)               
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -51,3 +64,17 @@ class SaleOrderLine(models.Model):
             if line.order_id and line.order_id.x_studio_editing_price_status  and line.order_id.locked == False and line.product_id and line.product_id.id not in (2350, 2351):
                 line.price_unit = line.sales_unit_price * line.product_uom_id.relative_factor   
 
+   
+    @api.depends('display_type', 'product_id','package_uom_qty')
+    def _compute_product_uom_qty(self):
+        super()._compute_product_uom_qty()
+        for line in self:
+            if line.display_type:
+                line.product_uom_qty = 0.0
+                continue
+           
+            if line.package_uom_qty:    
+                packaging_uom = line.package_uom_id.relative_uom_id  
+                line.product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id)   
+   
+                 
