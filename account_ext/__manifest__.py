@@ -9,7 +9,7 @@
 
 Account Customization
     """,
-    'depends': ['base', 'account_reports', 'account', 'account_asset','sale', 'ppg_credit_permission'],
+    'depends': ['base', 'account_reports', 'account', 'account_asset','sale', 'ppg_credit_permission', 'account_accountant'],
     'data': [
         'security/security.xml',   
         'security/ir.model.access.csv',
@@ -27,6 +27,7 @@ Account Customization
         'views/account_journal_inherit.xml',
         'views/account_move_line_inherit.xml',
         'views/account_payment_inherit.xml',
+        'wizard/account_reconcile_wizard_inherit.xml',
     ],
     'assets': {
         'web.assets_backend': [
