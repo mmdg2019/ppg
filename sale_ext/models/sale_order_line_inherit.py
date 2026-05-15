@@ -9,7 +9,7 @@ class SaleOrderLine(models.Model):
 
     sales_unit_price = fields.Float(string="Sales Unit Price") # original sales price from price list 
     package_uom_id = fields.Many2one('uom.uom', string="Packaging", domain='[("id", "in", allowed_uom_ids), ("id", "!=", product_uom_id)]')    
-    package_uom_qty = fields.Float(string="No. of Package", compute = '_compute_package_uom_qty', store = True, readonly = False, precompute = True)
+    package_uom_qty = fields.Float(string="No. of Package", compute = '_compute_package_uom_qty', readonly = False)
 
     @api.depends('product_packaging_id', 'product_uom', 'product_uom_qty')
     def _compute_product_packaging_qty(self):   
@@ -22,7 +22,10 @@ class SaleOrderLine(models.Model):
     def _compute_package_uom_qty(self):
         for line in self:
             if not line.package_uom_id:
-                line.package_uom_qty = False
+                if line.product_id.uom_ids:
+                    line.package_uom_id = line.product_id.uom_ids
+                else:
+                    line.package_uom_qty = False
             else:
                 packaging_uom = line.package_uom_id.relative_uom_id
                 packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_uom_qty, packaging_uom)                
