@@ -22,15 +22,17 @@ class SaleOrderLine(models.Model):
     def _compute_package_uom_qty(self):
         for line in self:
             if not line.package_uom_id:
-                if line.product_id.uom_ids:
+                if line.product_id.uom_ids and line.order_id.locked == False:                
                     line.package_uom_id = line.product_id.uom_ids
                 else:
-                    line.package_uom_qty = False
+                    if line.order_id.locked == False:
+                        line.package_uom_qty = False
             else:
-                packaging_uom = line.package_uom_id.relative_uom_id
-                packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_uom_qty, packaging_uom)                
-                line.package_uom_qty = int(
-                    packaging_uom_qty / line.package_uom_id.relative_factor)               
+                if line.order_id.locked == False:
+                    packaging_uom = line.package_uom_id.relative_uom_id
+                    packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_uom_qty, packaging_uom)                
+                    line.package_uom_qty = int(
+                        packaging_uom_qty / line.package_uom_id.relative_factor)               
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
@@ -76,7 +78,7 @@ class SaleOrderLine(models.Model):
                 line.product_uom_qty = 0.0
                 continue
            
-            if line.package_uom_qty:    
+            if line.package_uom_qty and line.order_id.locked == False:    
                 packaging_uom = line.package_uom_id.relative_uom_id  
                 line.product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id)   
    
