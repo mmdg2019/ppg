@@ -14,7 +14,10 @@
                 </xpath>  -->
                 <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_uom_id']" position="after">
                     <field name="package_uom_id" invisible="not product_id"/>
-                    <field name="package_uom_qty" invisible="not product_id or not package_uom_id"/>
+                    <field name="package_uom_qty" widget="float_zero_decimal" invisible="not product_id or not package_uom_id"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_uom_id']" position="attributes">
+                    <attribute name="domain">[('id', 'not in', packaging_uom_ids)]</attribute>
                 </xpath>
             </field>
         </record>

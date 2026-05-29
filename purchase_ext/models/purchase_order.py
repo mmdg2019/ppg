@@ -22,7 +22,8 @@ class PurchaseOrderLine(models.Model):
 
     allowed_package_uom = fields.Many2one('uom.uom', string="Allowed Package UoM", compute = '_compute_allowed_package_uom')
     package_uom_id = fields.Many2one('uom.uom', string="Packaging", domain="[('id', '=', allowed_package_uom)]")
-    package_uom_qty = fields.Float(string="No. of Package", compute = '_compute_package_uom_qty', readonly = False)
+    package_uom_qty = fields.Float(string="No. of Package")
+    packaging_uom_ids = fields.Many2many('uom.uom', string = "Packaing UoMs", compute = '_compute_packaging_uom_ids')
 
     @api.depends('product_id')
     def _compute_allowed_package_uom(self):
@@ -31,22 +32,26 @@ class PurchaseOrderLine(models.Model):
                 line.allowed_package_uom = line.product_id.uom_ids[0]
             else:
                 line.allowed_package_uom = False
-
-    @api.depends('package_uom_id', 'product_uom_id', 'product_qty')
-    def _compute_package_uom_qty(self):
+    
+    @api.depends('product_id')
+    def _compute_packaging_uom_ids(self):
         for line in self:
-            if not line.package_uom_id:
-                if line.product_id.uom_ids and line.order_id.locked == False:                
-                    line.package_uom_id = line.product_id.uom_ids[0]
-                else:
-                    if line.order_id.locked == False:
-                        line.package_uom_qty = False
-            else:
-                if line.order_id.locked == False:
+            line.packaging_uom_ids = self.env['product.template'].sudo().search([('uom_ids', '!=', False)]).mapped('uom_ids').ids
+
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        super(PurchaseOrderLine, self).onchange_product_id()
+        for line in self:
+            if line.product_id.uom_ids and line.order_id.locked == False:
+                line.package_uom_id = line.product_id.uom_ids[0]
+   
+    @api.onchange('package_uom_id', 'product_uom_id', 'product_qty')
+    def _onchange_package_uom_qty(self):
+        for line in self:           
+                if line.package_uom_id and line.order_id.locked == False: 
                     packaging_uom = line.package_uom_id.relative_uom_id
                     packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_qty, packaging_uom)                
-                    line.package_uom_qty = int(
-                        packaging_uom_qty / line.package_uom_id.relative_factor) 
+                    line.package_uom_qty = packaging_uom_qty / line.package_uom_id.relative_factor
 
     def _update_product_qty_from_package_uom_qty(self):
         for line in self:
@@ -60,20 +65,36 @@ class PurchaseOrderLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        lines = super().create(vals_list)
-        lines._update_product_qty_from_package_uom_qty()
-
-        return lines
+        for vals in vals_list:
+            if vals.get('product_id') and vals.get('product_uom_id') and vals.get('product_qty'):
+                if self.env.context.get('import_file'):
+                    product = self.env['product.product'].browse(vals.get('product_id'))
+                    product_uom = self.env['uom.uom'].browse(vals.get('product_uom_id'))
+                    if product.uom_ids:
+                        packaging = product.uom_ids[0]
+                        packaging_qty = product_uom._compute_quantity(vals.get('product_qty'), packaging.relative_uom_id)
+                        vals['package_uom_id'] = product.uom_ids[0].id
+                        vals['package_uom_qty'] = packaging_qty / packaging.relative_factor
+       
+        return super(PurchaseOrderLine, self).create(vals_list)
 
     def write(self, vals):
-        res = super().write(vals)
+        
+        values = vals
+        if 'package_uom_id' in values and self.env.context.get('import_file'):
+            packaging = self.env['uom.uom'].browse(vals.get('package_uom_id'))
+            packaging_uom = packaging.relative_uom_id
+            if 'product_uom_id' in values:
+                product_uom = self.env['uom.uom'].browse(vals.get('product_uom_id'))
+            else:
+                product_uom = self.product_uom_id
+            if 'prouct_qty' in values:
+                product_qty = vals.get('product_qty')
+            else:
+                product_qty = self.product_uom_qty
+            packaging_qty = product_uom._compute_quantity(product_qty, packaging_uom)
 
-        fields_trigger = {
-            'package_uom_id',
-            'package_uom_qty',
-        }
-        if fields_trigger.intersection(vals):
-            self._update_product_qty_from_package_uom_qty()
+            values['package_uom_qty'] = packaging_qty / packaging.relative_factor
 
-        return res 
+        return super(PurchaseOrderLine, self).write(values) 
 
