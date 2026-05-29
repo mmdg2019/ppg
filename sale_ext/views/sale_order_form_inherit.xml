@@ -46,11 +46,14 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="before">                    
                     <field name="package_uom_id" invisible="not product_id"/>                    
-                    <field name="package_uom_qty" invisible="not product_id or not package_uom_id"/>
-                    <field name="sales_unit_price" readonly="not x_studio_editing_price_status" force_save="1"/>
+                    <field name="package_uom_qty" widget="float_zero_decimal" invisible="not product_id or not package_uom_id"/>
+                    <field name="sales_unit_price" readonly="not x_studio_editing_price_status" column_invisible="1"/>
                 </xpath>
-                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="attributes">
+                <!-- <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='price_unit']" position="attributes">
                     <attribute name="optional">hide</attribute>                   
+                </xpath> -->
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_uom_id']" position="attributes">
+                    <attribute name="domain">[('id', 'not in', packaging_uom_ids)]</attribute> 
                 </xpath>
             </field>
         </record>

@@ -25,6 +25,11 @@ Long description of module's purpose
         # 'views/dropshipping_for_so_inherit.xml',
         'views/sale_order_form_inherit.xml',
     ],
+    'assets': {
+    'web.assets_backend': [
+        'sale_ext/static/src/js/float_zero_decimal.js',
+    ],
+},
     # only loaded in demonstration mode
     'demo': [
         # 'demo/demo.xml',
