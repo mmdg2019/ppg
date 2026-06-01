@@ -1,37 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="cell_template_general_ledger_report" inherit_id="account_reports.cell_template" primary="True">
-        <xpath expr="//table/tr/td[3]" position="attributes">
-            <attribute name="t-att-style">"'padding-right:0; padding-top:0; padding-bottom:0; ' + (style)"</attribute>
-        </xpath>
-    </template>
-
-    <template id="line_template_general_ledger_report_inherit" inherit_id="account_reports.line_template_general_ledger_report">
-        <xpath expr="//div[hasclass('o_account_report_column_value')]/t[@t-call]" position="replace">
-            <t t-call="{{cell.get('template', 'account_ext.cell_template_general_ledger_report')}}">
-                <t t-set="calling_line_dict_id" t-value="line['id']"/>
-                <t t-set="style" t-value="cell.get('style')"/>
-                <t t-set="title" t-value="cell.get('title')"/>
-                <t t-set="classes" t-value="'o_account_report_line ' + cell_classes"/>
-                <t t-set="context" t-value="context"/>
-            </t>
-        </xpath>
-    </template>
-
-    <template id="main_table_header_general_ledger_report" inherit_id="account_reports.main_table_header" primary="True">
-        <xpath expr="//thead/t[2]/th/t[@t-call]" position="replace">
-            <t t-call="{{cell.get('template', 'account_ext.cell_template_general_ledger_report')}}"/>
-        </xpath>
-    </template>
-
     <record id="account_reports.general_ledger_report" model="account.report">
-        <field name="main_table_header_template">account_ext.main_table_header_general_ledger_report</field>
         <field name="column_ids">
             <record id="general_ledger_report_creditor_debitor" model="account.report.column">
                 <field name="name">Creditor/Debitor</field>
                 <field name="expression_label">creditor_debitor</field>
-                <field name="figure_type">none</field>
+                <field name="figure_type">string</field>
+            </record>
+        </field>
+        <field name="line_ids">
+            <record id="account_reports.general_ledger_custom_engine_line" model="account.report.line">
+                <field name="expression_ids">
+                    <record id="general_ledger_line_creditor_debitor" model="account.report.expression">
+                        <field name="label">creditor_debitor</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_general_ledger</field>
+                        <field name="subformula">creditor_debitor</field>
+                    </record>
+                </field>
             </record>
         </field>
     </record>

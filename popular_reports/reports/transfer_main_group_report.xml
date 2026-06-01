@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+        <!-- <report
                 string="Transfer Main Group"
                 id="action_print_transfer_main_group"
                 model="stock.picking"
@@ -9,8 +9,17 @@
                 name="popular_reports.report_transfer_main_group"
                 file="popular_reports.report_transfer_main_group"
                 print_report_name="'Transfer Main Group'"
-            />
-
+            /> -->
+        <record id="action_print_transfer_main_group" model="ir.actions.report">
+           <field name="name">Transfer Main Group</field>
+           <field name="model">stock.picking</field>
+           <field name="report_type">qweb-html</field>
+           <field name="report_name">popular_reports.report_transfer_main_group</field>
+           <field name="report_file">popular_reports.report_transfer_main_group</field>
+           <field name="print_report_name">'Transfer Main Group'</field>
+           <field name="binding_model_id" ref="stock.model_stock_picking"/>
+           <field name="binding_type">report</field>
+        </record>
 	<template id="report_transfer_main_group_document">
         <div class="page h5">
             <div class="row" style="margin-top:20px">
@@ -44,10 +53,14 @@
                 <div t-if="doc.state" class="col-auto" name="div_sched_date">
                     <strong>Shipping Date:</strong>
                     <t t-if="doc.state == 'done'">
-                        <p t-field="doc.scheduled_date"/>
+                        <p>
+                            <t t-esc="context_timestamp(doc.scheduled_date).strftime('%d/%m/%Y %H:%M:%S') if doc.scheduled_date else ''"/>
+                        </p>
                     </t>
                     <t t-if="doc.state != 'done'">
-                        <p t-field="doc.scheduled_date"/>
+                        <p>
+                            <t t-esc="context_timestamp(doc.scheduled_date).strftime('%d/%m/%Y %H:%M:%S') if doc.scheduled_date else ''"/>
+                        </p>
                     </t>
                 </div>
                 <div class="row justify-content-end" t-if="doc.sudo().sale_id.client_order_ref">
@@ -73,11 +86,11 @@
                     <tr t-foreach="lines" t-as="move">
                         <td>
                             <span t-field="move.product_id.name"/>
-                            <t t-if="move.product_id.packaging_ids">
+                            <t t-if="move.product_id.uom_ids">
                             (
-                            <span t-if="move.product_id.packaging_ids[0].qty>0" t-esc="int(move.product_uom_qty / move.product_id.packaging_ids[0].qty)"/>
+                            <span t-if="move.product_id.uom_ids[0].relative_factor>0" t-esc="int(move.product_uom_qty * move.product_id.uom_ids[0].relative_factor)"/>
                             <span t-else="" t-esc="int(move.product_uom_qty)"/>
-                            <span t-esc="move.product_id.packaging_ids[0].display_name"/>)
+                            <span t-esc="move.product_id.uom_ids[0].name"/>)
 
                             </t>
                             <p t-if="move.description_picking != move.product_id.name">
@@ -110,11 +123,11 @@
                     <tr t-foreach="doc.move_line_ids" t-as="move_line">
                         <td>
                             <span t-field="move_line.product_id.name"/>
-                            <t t-if="move_line.product_id.packaging_ids">
+                            <t t-if="move_line.product_id.uom_ids">
                                 (
-                                <span t-if="move_line.product_id.packaging_ids[0].qty>0" t-esc="int(move_line.qty_done / move_line.product_id.packaging_ids[0].qty)"/>
+                                <span t-if="move_line.product_id.uom_ids[0].relative_factor>0" t-esc="int(move_line.qty_done * move_line.product_id.uom_ids[0].relative_factor)"/>
                                 <span t-else="" t-esc="int(move_line.qty_done)"/>
-                                <span t-esc="move_line.product_id.packaging_ids[0].display_name"/>)
+                                <span t-esc="move_line.product_id.uom_ids[0].name"/>)
 
                             </t>
                             <p t-if="move_line.move_id.description_picking != move_line.product_id.name">

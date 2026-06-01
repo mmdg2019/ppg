@@ -1,0 +1,58 @@
+<odoo>
+    <data>
+        <!-- Product Packaging Logic Changes -->
+        <record id="view_purchase_order_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/> 
+            <field name="arch" type="xml">                          
+                <!-- <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/list/field[@name='product_packaging_qty']" position="attributes">
+                    <attribute name="string">No. of Package</attribute>
+                </xpath> 
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/list/field[@name='product_packaging_qty']" position="before">               
+                    <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/list[1]/field[@name='product_packaging_id']" position="move"/>
+                </xpath>  -->
+                <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_uom_id']" position="after">
+                    <field name="package_uom_id" invisible="not product_id"/>
+                    <field name="package_uom_qty" widget="float_zero_decimal" invisible="not product_id or not package_uom_id"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_uom_id']" position="attributes">
+                    <attribute name="domain">[('id', 'not in', packaging_uom_ids)]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- For Warehouse Manager -->
+        <record id="purchase_order_view_form_inherit_purchase_stock" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.purchase.stock</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_stock.purchase_order_view_form_inherit"/>
+            <field name="arch" type="xml"> 
+                <xpath expr="//form/header/button[@name='action_view_picking']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>               
+                <xpath expr="//div[hasclass('oe_button_box')]/button[@name='action_view_picking']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>
+                <xpath expr="//field[@name='incoming_picking_count']" position="attributes">
+                    <attribute name="groups"></attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- add Create Bill button on purchase order form -->
+        <record id="purchase_orde_form_inherit_create_bill" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.create.bill</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml"> 
+                <xpath expr="//form/header/button[@name='action_acknowledge']" position="after">
+                    <!-- seen when billing status is nothing to bill or fully billed -->
+                    <button name="action_create_invoice" type="object" string="Create Bill" invisible="state != 'purchase' or invoice_status not in ('no','invoiced') or not order_line"/>
+                    <!-- seen when billing status is waiting bill -->
+                    <button name="action_create_invoice" type="object" string="Create Bill" invisible="state != 'purchase' or invoice_status in ('no','invoiced')"/>
+                </xpath>   
+            </field>
+        </record>
+    </data>
+</odoo>

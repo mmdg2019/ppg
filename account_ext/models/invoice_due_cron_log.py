@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
 from pytz import timezone, UTC
@@ -30,7 +29,7 @@ class InvoiceDueCronLog(models.Model):
         ''' This function is called by a cron job that will check the invoice due cron log for unpaid invoices and
         send email if the success log for today was not found.
         '''
-        local = self._context.get('tz', 'Asia/Yangon')
+        local = self.env.context.get('tz', 'Asia/Yangon')
         local_tz = timezone(local)
         current_date = UTC.localize(fields.Datetime.now(), is_dst=True).astimezone(tz=local_tz)
         today = current_date.date()

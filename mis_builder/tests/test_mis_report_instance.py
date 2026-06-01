@@ -314,9 +314,6 @@ class TestMisReportInstance(common.HttpCase):
                 ],
             )
         )
-        self.report_instance.period_ids[1].comparison_column_ids = [
-            (4, self.report_instance.period_ids[0].id, None)
-        ]
         # same for report 2
         self.report_instance_2 = self.env["mis.report.instance"].create(
             dict(
@@ -386,15 +383,14 @@ class TestMisReportInstance(common.HttpCase):
                 account = self.env["account.account"].browse(row.account_id)
                 self.assertEqual(
                     row.label,
-                    "%s %s [%s]"
-                    % (account.code, account.name, account.company_id.name),
+                    f"{account.code} {account.name} [{account.company_id.name}]",
                 )
         self.report_instance.write({"multi_company": False})
         matrix = self.report_instance._compute_matrix()
         for row in matrix.iter_rows():
             if row.account_id:
                 account = self.env["account.account"].browse(row.account_id)
-                self.assertEqual(row.label, "{} {}".format(account.code, account.name))
+                self.assertEqual(row.label, f"{account.code} {account.name}")
 
     def test_evaluate(self):
         company = self.env.ref("base.main_company")
@@ -416,7 +412,7 @@ class TestMisReportInstance(common.HttpCase):
             .search(
                 [
                     ("code", "=like", "200%"),
-                    ("company_id", "=", self.env.ref("base.main_company").id),
+                    ("company_ids", "in", [self.env.ref("base.main_company").id]),
                 ]
             )
             .ids
@@ -433,10 +429,8 @@ class TestMisReportInstance(common.HttpCase):
             "account_id": account.id,
         }
         action_name = self.report_instance._get_drilldown_action_name(args)
-        expected_name = "{kpi} - {account} - {period}".format(
-            kpi=self.kpi1.description,
-            account=account.display_name,
-            period=period.display_name,
+        expected_name = (
+            f"{self.kpi1.description} - {account.display_name} - {period.display_name}"
         )
         assert action_name == expected_name
 
@@ -447,11 +441,54 @@ class TestMisReportInstance(common.HttpCase):
             "kpi_id": self.kpi1.id,
         }
         action_name = self.report_instance._get_drilldown_action_name(args)
-        expected_name = "{kpi} - {period}".format(
-            kpi=self.kpi1.description,
-            period=period.display_name,
-        )
+        expected_name = f"{self.kpi1.description} - {period.display_name}"
         assert action_name == expected_name
+
+    def test_drilldown_views(self):
+        IrUiView = self.env["ir.ui.view"]
+        model_name = "account.move.line"
+        IrUiView.search([("model", "=", model_name)]).unlink()
+        IrUiView.create(
+            [
+                {
+                    "name": "mis_report_test_drilldown_views_chart",
+                    "model": model_name,
+                    "arch": "<graph><field name='name'/></graph>",
+                },
+                {
+                    "name": "mis_report_test_drilldown_views_list",
+                    "model": model_name,
+                    "arch": "<pivot><field name='name'/></pivot>",
+                },
+            ]
+        )
+        action = self.report_instance.drilldown(
+            dict(expr="balp[200%]", period_id=self.report_instance.period_ids[0].id)
+        )
+        self.assertEqual(action["view_mode"], "pivot,graph")
+        self.assertEqual(action["views"], [[False, "pivot"], [False, "graph"]])
+        IrUiView.create(
+            [
+                {
+                    "name": "mis_report_test_drilldown_views_form",
+                    "model": model_name,
+                    "arch": "<form><field name='name'/></form>",
+                },
+                {
+                    "name": "mis_report_test_drilldown_views_list",
+                    "model": model_name,
+                    "arch": "<list><field name='name'/></list>",
+                },
+            ]
+        )
+        action = self.report_instance.drilldown(
+            dict(expr="balp[200%]", period_id=self.report_instance.period_ids[0].id)
+        )
+        self.assertEqual(action["view_mode"], "list,form,pivot,graph")
+        self.assertEqual(
+            action["views"],
+            [[False, "list"], [False, "form"], [False, "pivot"], [False, "graph"]],
+        )
 
     def test_qweb(self):
         self.report_instance.print_pdf()  # get action
@@ -465,12 +502,18 @@ class TestMisReportInstance(common.HttpCase):
 
     def test_xlsx(self):
         self.report_instance.export_xls()  # get action
-        test_reports.try_report(
-            self.env.cr,
-            self.env.uid,
-            "mis_builder.mis_report_instance_xlsx",
-            [self.report_instance.id],
-            report_type="xlsx",
+        with self.assertLogs("odoo.tools.test_reports", level="WARNING") as log_catcher:
+            test_reports.try_report(
+                self.env.cr,
+                self.env.uid,
+                "mis_builder.mis_report_instance_xlsx",
+                [self.report_instance.id],
+                report_type="xlsx",
+            )
+        self.assertIn(
+            'Report mis_builder.mis_report_instance_xlsx produced a "xlsx" chunk, '
+            "cannot examine it",
+            log_catcher.output[0],
         )
 
     def test_get_kpis_by_account_id(self):
@@ -479,7 +522,7 @@ class TestMisReportInstance(common.HttpCase):
             .search(
                 [
                     ("code", "=like", "200%"),
-                    ("company_id", "=", self.env.ref("base.main_company").id),
+                    ("company_ids", "in", [self.env.ref("base.main_company").id]),
                 ]
             )
             .ids
@@ -568,10 +611,9 @@ class TestMisReportInstance(common.HttpCase):
         self.assertFalse(self.report_instance.company_ids)
 
     def test_mis_report_analytic_filters(self):
-        # Check that matrix has no values when using a filter with a non
-        # existing account
+        # Check that matrix has no values when using a filter with a non existing value
         matrix = self.report_instance.with_context(
-            mis_report_filters={"analytic_account_id": {"value": 999}}
+            analytic_domain=[("partner_id", "=", -1)]
         )._compute_matrix()
         for row in matrix.iter_rows():
             vals = [c.val for c in row.iter_cells()]
@@ -589,3 +631,32 @@ class TestMisReportInstance(common.HttpCase):
     def test_raise_when_wrong_tuple_length_with_subkpis(self):
         with self.assertRaises(SubKPITupleLengthError):
             self.report_instance_3.compute()
+
+    def test_unprivileged(self):
+        test_user = common.new_test_user(
+            self.env, "mis_you", groups="base.group_user,account.group_account_readonly"
+        )
+        self.report_instance.with_user(test_user).compute()
+
+    def test_query_company(self):
+        c1 = self.report_instance.company_id
+
+        query = self.report.query_ids
+        self.assertEqual(len(query), 1)
+
+        period = self.report_instance.period_ids[0]
+        domain = period.with_company(c1)._get_additional_query_filter(query)
+
+        self.assertEqual(domain, [])
+
+        query.company_field_id = self.env["ir.model.fields"].search(
+            [("name", "=", "company_id"), ("model", "=", "res.partner")]
+        )
+
+        domain = period.with_company(c1)._get_additional_query_filter(query)
+
+        self.assertEqual(domain, [("company_id", "in", c1.ids)])
+
+    def test_copy_mis_report_instance(self):
+        new_instance = self.report_instance.copy()
+        self.assertEqual(new_instance.name, f"{self.report_instance.name} (copy)")

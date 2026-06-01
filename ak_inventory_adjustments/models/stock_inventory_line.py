@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 
 from odoo import _, api, fields, models
@@ -75,18 +74,13 @@ class InventoryLine(models.Model):
     
     product_qty = fields.Float(
         "Counted Quantity",
-        readonly=True,
-        states={
-            "confirm": [("readonly", False)],
-            "waiting_for_approval": [("readonly", False)],
-        },
         digits="Product Unit of Measure",
         default=0,
     )
     categ_id = fields.Many2one(related="product_id.categ_id", store=True)
-    package_id = fields.Many2one(
-        "stock.quant.package", "Pack", index=True, check_company=True
-    )
+    # package_id = fields.Many2one(
+    #     "stock.quant.package", "Pack", index=True, check_company=True
+    # )
     package_id_domain = fields.Char(
         compute="_compute_package_id_domain", readonly=True, store=False
     )
@@ -117,17 +111,12 @@ class InventoryLine(models.Model):
     )
 
     company_id = fields.Many2one(
-        "res.company",
-        "Company",
         related="inventory_id.company_id",
-        index=True,
-        readonly=True,
-        store=True,
+        store=True, index=True, precompute=True
     )
     state = fields.Selection(string="Status", related="inventory_id.state")
     theoretical_qty = fields.Float(
-        "Theoretical Quantity", digits="Product Unit of Measure", readonly=True
-    )
+        "Theoretical Quantity", digits="Product Unit of Measure", )
     difference_qty = fields.Float(
         "Difference",
         compute="_compute_difference",
@@ -154,7 +143,7 @@ class InventoryLine(models.Model):
     def _get_move_values(self, qty, location_id, location_dest_id, out):
         self.ensure_one()
         return {
-            "name": _("INV:") + (self.inventory_id.name or ""),
+            "reference": _("INV:") + (self.inventory_id.name or ""),
             "product_id": self.product_id.id,
             "product_uom": self.product_uom_id.id,
             "product_uom_qty": qty,
@@ -166,6 +155,7 @@ class InventoryLine(models.Model):
             "restrict_partner_id": self.partner_id.id,
             "location_id": location_id,
             "location_dest_id": location_dest_id,
+            'picked': True,
             "move_line_ids": [
                 (
                     0,
@@ -173,11 +163,11 @@ class InventoryLine(models.Model):
                     {
                         "product_id": self.product_id.id,
                         "lot_id": self.prod_lot_id.id,
-                        "reserved_uom_qty": 0,  # bypass reservation here
+                        # "reserved_uom_qty": 0,  # bypass reservation here
                         "product_uom_id": self.product_uom_id.id,
                         "qty_done": qty,
-                        "package_id": out and self.package_id.id or False,
-                        "result_package_id": (not out) and self.package_id.id or False,
+                        # "package_id": out and self.package_id.id or False,
+                        # "result_package_id": (not out) and self.package_id.id or False,
                         "location_id": location_id,
                         "location_dest_id": location_dest_id,
                         "owner_id": self.partner_id.id,
@@ -232,7 +222,7 @@ class InventoryLine(models.Model):
                     line.product_id.id,
                     line.location_id.id,
                     line.prod_lot_id.id,
-                    line.package_id.id,
+                    # line.package_id.id,
                     line.partner_id.id,
                 ),
                 0,
@@ -254,7 +244,7 @@ class InventoryLine(models.Model):
         "product_uom_id",
         "prod_lot_id",
         "partner_id",
-        "package_id",
+        # "package_id",
     )
     def _onchange_quantity_context(self):
         if self.product_id:
@@ -263,13 +253,13 @@ class InventoryLine(models.Model):
         if (
             self.product_id
             and self.location_id
-            and self.product_id.uom_id.category_id == self.product_uom_id.category_id
+            and self.product_id.uom_id == self.product_uom_id
         ):  # TDE FIXME: last part added because crash
             theoretical_qty = self.product_id.get_theoretical_quantity(
                 self.product_id.id,
                 self.location_id.id,
                 lot_id=self.prod_lot_id.id,
-                package_id=self.package_id.id,
+                # package_id=self.package_id.id,
                 owner_id=self.partner_id.id,
                 to_uom=self.product_uom_id.id,
             )
@@ -318,7 +308,7 @@ class InventoryLine(models.Model):
                     values["product_id"],
                     values["location_id"],
                     lot_id=values.get("prod_lot_id"),
-                    package_id=values.get("package_id"),
+                    # package_id=values.get("package_id"),
                     owner_id=values.get("partner_id"),
                     to_uom=values.get("product_uom_id"),
                 )
@@ -341,9 +331,9 @@ class InventoryLine(models.Model):
             "|",
             ("partner_id", "in", self.partner_id.ids),
             ("partner_id", "=", None),
-            "|",
-            ("package_id", "in", self.package_id.ids),
-            ("package_id", "=", None),
+            # "|",
+            # ("package_id", "in", self.package_id.ids),
+            # ("package_id", "=", None),
             "|",
             ("prod_lot_id", "in", self.prod_lot_id.ids),
             ("prod_lot_id", "=", None),
@@ -355,22 +345,31 @@ class InventoryLine(models.Model):
             "product_id",
             "location_id",
             "partner_id",
-            "package_id",
+            # "package_id",
             "prod_lot_id",
             "inventory_id",
         ]
+
         lines_count = {}
-        for group in self.read_group(
-            domain, ["product_id"], groupby_fields, lazy=False
+        for product, location, partner, prod_lot, inventory, count in self._read_group(
+            domain,
+            groupby_fields,
+            ["id:count"],
         ):
-            key = tuple([group[field] and group[field][0] for field in groupby_fields])
-            lines_count[key] = group["__count"]
+            key = (
+                product.id if product else False,
+                location.id if location else False,
+                partner.id if partner else False,
+                prod_lot.id if prod_lot else False,
+                inventory.id if inventory else False,
+            )
+            lines_count[key] = count
         for line in self:
             key = (
                 line.product_id.id,
                 line.location_id.id,
                 line.partner_id.id,
-                line.package_id.id,
+                # line.package_id.id,
                 line.prod_lot_id.id,
                 line.inventory_id.id,
             )
@@ -388,9 +387,9 @@ class InventoryLine(models.Model):
         their quantity.
         """
         for line in self:
-            if line.product_id.type != "product":
+            if line.product_id.type != "consu":
                 raise ValidationError(
-                    _("You can only adjust storable products.")
+                    _("You can only adjust Gopods products.")
                     + "\n\n%s -> %s" % (line.product_id, line.product_id.type)
                 )
 
@@ -405,7 +404,7 @@ class InventoryLine(models.Model):
                     line.product_id,
                     line.location_id,
                     lot_id=line.prod_lot_id,
-                    package_id=line.package_id,
+                    # package_id=line.package_id,
                     owner_id=line.partner_id,
                     strict=True,
                 )
