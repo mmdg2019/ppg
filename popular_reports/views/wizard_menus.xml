@@ -22,9 +22,9 @@
 
     <menuitem name="Popular Reports"
               parent="popular_reports.popular_reports_main_menu"
-              id="popular_reports_sub_menu_1"
+              id="popular_reports.popular_reports_sub_menu_1"
               action="popular_report_wizard_act"
-              sequence="1"/>
+              sequence="0"/>
 
     <menuitem name="Sales Invoice Reports"
               parent="popular_reports.popular_reports_main_menu"
