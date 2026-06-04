@@ -12,6 +12,7 @@ class SaleOrderLine(models.Model):
     allowed_package_uom = fields.Many2one('uom.uom', string="Allowed Package UoM", compute = '_compute_allowed_package_uom')
     package_uom_qty = fields.Float(string="No. of Package", readonly = False)
     packaging_uom_ids = fields.Many2many('uom.uom', string = "Packaing UoMs", compute = '_compute_packaging_uom_ids')
+    onchange_source = fields.Char(store=False)
    
     @api.depends('product_packaging_id', 'product_uom', 'product_uom_qty')
     def _compute_product_packaging_qty(self):   
@@ -32,15 +33,23 @@ class SaleOrderLine(models.Model):
                 line.allowed_package_uom = line.product_id.uom_ids[0]
             else:
                 line.allowed_package_uom = False
+    
+    @api.onchange('product_uom_id')
+    def _onchange_onchange_source(self):
+        self.onchange_source = 'product_uom_id'
 
     @api.onchange('package_uom_id', 'product_uom_id', 'product_uom_qty')
     def _onchange_package_uom_qty(self):
         for line in self:            
             if line.package_uom_id:
-                # if line.order_id.locked == False:
+                if self.onchange_source == 'product_uom_qty':
+                    self.onchange_source = False
+                    return
+                else:
                     packaging_uom = line.package_uom_id.relative_uom_id
                     packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_uom_qty, packaging_uom)
-                    line.package_uom_qty = packaging_uom_qty / line.package_uom_id.relative_factor             
+                    line.package_uom_qty = int(packaging_uom_qty / line.package_uom_id.relative_factor) 
+                    self.onchange_source = 'package_uom_qty'           
                 
 
     @api.onchange('product_id')
@@ -62,11 +71,19 @@ class SaleOrderLine(models.Model):
                         sales_price = product_price_list[0].x_studio_original_sales_price
                     if sales_price == 0.0:
                         raise ValidationError(_('The product "%s" has price ZERO.', line.product_id.display_name))
-                    # line.sales_unit_price = product_price_list[0].x_studio_original_sales_price
-                    if line.product_id.uom_ids and line.order_id.locked == False:                
-                        line.package_uom_id = line.product_id.uom_ids[0]                        
+                                           
                     line.price_unit = sales_price
                     line.discount = product_price_list[0].percent_price
+                    if line.product_id and line.product_uom_qty and line.product_uom_id:
+                        packaging_qty = line.product_id.uom_id._compute_quantity(line.product_id.uom_ids[0].relative_factor, line.product_uom_id) 
+                        if line.product_uom_qty and packaging_qty:
+                            qty = float_round(line.product_uom_qty / packaging_qty, precision_rounding=1.0,
+                                  rounding_method="HALF-UP") * packaging_qty
+                            rounded_qty = qty if float_compare(qty, line.product_uom_qty, precision_rounding=line.product_id.uom_id.rounding) else line.product_uom_qty
+                        else:
+                            rounded_qty = line.product_uom_qty
+                        if rounded_qty == line.product_uom_qty:                      
+                            line.package_uom_id = line.product_id.uom_ids[0] or line.package_uom_id 
                 else:
                     raise ValidationError(_('No pricelist for the product "%s"!', line.product_id.display_name))   
    
@@ -78,9 +95,18 @@ class SaleOrderLine(models.Model):
                 line.product_uom_qty = 0.0
                 continue
            
-            if line.package_uom_qty and line.order_id.locked == False:    
-                packaging_uom = line.package_uom_id.relative_uom_id  
-                line.product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id)   
+            if line.package_uom_qty and line.order_id.locked == False:   
+                if self.onchange_source == 'package_uom_qty':
+                    self.onchange_source == False
+                    return 
+                else:
+                    packaging_uom = line.package_uom_id.relative_uom_id  
+                    # line.product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id) 
+                    # test
+                    product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id) 
+                    if float_compare(product_uom_qty, line.product_uom_qty, precision_rounding=line.product_uom_id.rounding) != 0:
+                        line.product_uom_qty = product_uom_qty  
+                        self.onchange_source = 'product_uom_qty'    
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -93,7 +119,7 @@ class SaleOrderLine(models.Model):
                         packaging = product.uom_ids[0]
                         packaging_qty = product_uom._compute_quantity(vals.get('product_uom_qty'), packaging.relative_uom_id)
                         vals['package_uom_id'] = product.uom_ids[0].id
-                        vals['package_uom_qty'] = packaging_qty / packaging.relative_factor               
+                        vals['package_uom_qty'] = int(packaging_qty / packaging.relative_factor)               
 
         lines = super().create(vals_list)
 
@@ -114,7 +140,7 @@ class SaleOrderLine(models.Model):
                 product_uom_qty = self.product_uom_qty
             packaging_qty = product_uom._compute_quantity(product_uom_qty, packaging_uom)
 
-            values['package_uom_qty'] = packaging_qty / packaging.relative_factor if packaging.relative_factor else 0
+            values['package_uom_qty'] = int(packaging_qty / packaging.relative_factor) if packaging.relative_factor else 0
 
         return super(SaleOrderLine, self).write(values)   
 
