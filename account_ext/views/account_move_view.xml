@@ -84,6 +84,9 @@
                 <xpath expr="//sheet/widget[@name='web_ribbon'][3]" position="attributes">
                     <attribute name="invisible">state == 'draft' or payment_state != 'paid' or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')</attribute>
                 </xpath>
+                <xpath expr="//sheet/notebook/page[@name='invoice_tab']/field[@name='invoice_line_ids']/list/field[@name='price_unit']" position="attributes">
+                    <attribute name="options">{'digits': [16, 2]}</attribute>  
+                </xpath>                
             </field>
         </record>
 
