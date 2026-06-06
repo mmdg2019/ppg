@@ -74,7 +74,7 @@ class SaleOrderLine(models.Model):
                                            
                     line.price_unit = sales_price
                     line.discount = product_price_list[0].percent_price
-                    if line.product_id and line.product_uom_qty and line.product_uom_id:
+                    if line.product_id and line.product_uom_qty and line.product_uom_id and line.product_id.uom_ids:
                         packaging_qty = line.product_id.uom_id._compute_quantity(line.product_id.uom_ids[0].relative_factor, line.product_uom_id) 
                         if line.product_uom_qty and packaging_qty:
                             qty = float_round(line.product_uom_qty / packaging_qty, precision_rounding=1.0,
@@ -95,14 +95,12 @@ class SaleOrderLine(models.Model):
                 line.product_uom_qty = 0.0
                 continue
            
-            if line.package_uom_qty and line.order_id.locked == False:   
+            if line.package_uom_id and line.package_uom_qty and line.order_id.locked == False:   
                 if self.onchange_source == 'package_uom_qty':
                     self.onchange_source == False
                     return 
                 else:
-                    packaging_uom = line.package_uom_id.relative_uom_id  
-                    # line.product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id) 
-                    # test
+                    packaging_uom = line.package_uom_id.relative_uom_id                      
                     product_uom_qty = packaging_uom._compute_quantity((line.package_uom_qty * line.package_uom_id.relative_factor), line.product_uom_id) 
                     if float_compare(product_uom_qty, line.product_uom_qty, precision_rounding=line.product_uom_id.rounding) != 0:
                         line.product_uom_qty = product_uom_qty  
