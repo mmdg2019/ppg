@@ -36,34 +36,34 @@
                 <hr width="100%" align="center" style="border: 1px solid #000; margin: 2px 0;"/>
                 <div class="row" style="margin-top:2px;">
                     <div class="col-6" style="margin-top:10px">
-                        <span t-field="doc.name" class="h3" style="font-size: 8pt;"/>
+                        <span t-field="doc.name" class="h3" style="font-size: 20pt;"/>
                     </div>
-                    <div class="col-6" style="font-size: 8pt; margin-bottom:2px;">
-                        <span t-field="doc.partner_id.contact_address"/>
+                    <div class="col-6" style="font-size: 12pt; margin-bottom:2px;">
+                        <span t-field="doc.partner_id.contact_address" style="font-size: 12pt;"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
                         <span/>
                     </div>
-                    <div class="col-6" style="font-size: 8pt;">
+                    <div class="col-6" style="font-size: 12pt;">
                         <span t-field="doc.partner_id.phone"/>
                     </div>
                 </div>
                 <div class="row mt-2 mb-2">
                   <div class="col-8">
                     <div class="row">
-                      <div t-if="doc.origin" class="col-6" name="div_origin" style="font-size: 8pt;">
+                      <div t-if="doc.origin" class="col-6" name="div_origin" style="font-size: 10pt;">
                           <strong>Order:</strong>
-                          <p t-field="doc.origin" style="font-size: 8pt;"/>
+                          <p t-field="doc.origin" style="font-size: 10pt;"/>
                       </div>
-                      <div t-if="doc.state" class="col-6" name="div_sched_date" style="font-size: 8pt;">
+                      <div t-if="doc.state" class="col-6" name="div_sched_date" style="font-size: 10pt;">
                           <strong>Shipping Date:</strong>
                           <t t-if="doc.state == 'done'">
-                              <p t-field="doc.scheduled_date" style="font-size: 8pt;"/>
+                              <p t-field="doc.scheduled_date" style="font-size: 10pt;"/>
                           </t>
                           <t t-if="doc.state != 'done'">
-                              <p t-field="doc.scheduled_date" style="font-size: 8pt;"/>
+                              <p t-field="doc.scheduled_date" style="font-size: 10pt;"/>
                           </t>
                       </div>
                       <div class="row justify-content-end" t-if="doc.sudo().sale_id.client_order_ref">
@@ -75,7 +75,7 @@
                     </div>
                   </div>
                   <div class="col-4">
-                    <div t-if="doc.car_number_id" class="col-auto" name="div_car_number" style="font-size: 10pt;">
+                    <div t-if="doc.car_number_id" class="col-auto" name="div_car_number" style="font-size: 15pt;">
                         <strong>Car Number:</strong>
                         <p t-field="doc.car_number_id"/>
                     </div>
@@ -125,6 +125,9 @@
                             <th name="lot_serial" t-if="has_serial_number" groups="stock.group_lot_on_delivery_slip" style="padding: 2px; width: 20%;">
                             Lot/Serial Number
                             </th>
+                            <th name="lot_serial" t-else="" style="padding: 2px; width: 20%;">
+                            
+                            </th>
                             <th name="th_sml_quantity" class="text-center" style="padding: 2px; width: 20%;">
                             <strong>Quantity</strong>
                             </th>
@@ -150,6 +153,9 @@
                             </td>
                             <td t-elif="has_serial_number" groups="stock.group_lot_on_delivery_slip" style="padding: 2px; font-size: inherit;">
                                 <span t-field="move_line.lot_id.name"/>
+                            </td>
+                            <td t-else=""  style="padding: 2px; font-size: inherit;">
+                                
                             </td>
                             <td class="text-center" style="padding: 2px; font-size: inherit;">
                                 <span t-field="move_line.qty_done" class="h3" style="font-size: 10pt;"/>
