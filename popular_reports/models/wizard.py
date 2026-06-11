@@ -84,25 +84,23 @@ class PopularReport(models.TransientModel):
         return 'posted'
     
     # for Stock In Out Balance Report
+    # dynamic domain does not work in Odoo 19; instead, must add a computed field and can lead to performance issue; 
+    # so now, product dropdown list shows all storable products and are not filtered by category (10.6.2026);
     filtered_prod_by_categ_ids = fields.Many2many(
         comodel_name='product.product',
         relation='wizard_filtered_product_rel',
         column1='wizard_id',
         column2='product_id',
-        string='Product Lists'
+        string='Product Lists',
+        domain=lambda self: [('type', '=', 'consu'), ('is_storable', '=', True), ('active', '=', True), ('company_id', '=', self.env.company.id)]
     )
     stock_picking_type_ids = fields.Many2many('stock.picking.type', string='Operation Type', domain=lambda self: [('company_id', '=', self.env.company.id)])
 
-    @api.onchange('product_cats')
-    def _onchange_product_cats(self):
-        prod_domain = [('type', '=', 'product'), ('company_id', '=', self.env.company.id)]
-        if self.product_cats:
-            prod_domain += [('categ_id', 'in', self.product_cats.ids)]
-        prod_ids = self.env['product.product'].search(prod_domain).ids
-        return {
-            'domain': {'filtered_prod_by_categ_ids': [('id', 'in', prod_ids)]},
-            'value': {'filtered_prod_by_categ_ids': False}
-        }
+    # filter out products unrelated to selected category
+    @api.onchange('product_cats', 'filtered_prod_by_categ_ids')
+    def _onchange_filtered_prod_by_categ_ids(self):
+        if self.product_cats and self.filtered_prod_by_categ_ids:
+            self.filtered_prod_by_categ_ids = self.filtered_prod_by_categ_ids.filtered(lambda r: r.categ_id.id in self.product_cats.ids)
 
 #     Sales Report by Product Code
     def print_report_sales_report_by_product_code(self):

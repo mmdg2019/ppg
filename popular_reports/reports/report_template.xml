@@ -11876,105 +11876,24 @@
                         <table class="table table-sm o_report_block_table" style="padding:0.5em; font-size:13px;">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" style="vertical-align:middle; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                    <th rowspan="2" style="vertical-align:middle; font-weight:bold; border:1px solid #ddd;">
                                         <span>Item Name</span>
                                     </th>
-                                    <th rowspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                    <th rowspan="2" style="vertical-align:middle; text-align:center; font-weight:bold; border:1px solid #ddd;">
                                         <span>UoM</span>
                                     </th>
-                                    <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                        <span>Opening Balance</span>
-                                    </th>
-                                    <t t-if="not op_types or (op_types and 'Receipt' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(+) Receipt</span>
+                                    <t t-foreach="t_head" t-as="theader">
+                                        <th colspan="2" style="vertical-align:middle; text-align:center; font-weight:bold; border:1px solid #ddd;">
+                                            <t t-esc="theader"/>
                                         </th>
                                     </t>
-                                    <t t-if="not op_types or (op_types and 'SR' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(+) Sales Return</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(+) Inventory Adjustment</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'MO' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(+) MO</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Inventory Adjustment</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'MO' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) MO</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'PR' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Purchase Return</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'Delivery' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Delivery Order</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Scrap</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'OIL' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Production Cost - Oil</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'PACK' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Production Cost - Packing</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'ACC' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Production Cost - Accessories</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'DMG' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Damage Consumption</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'RAW' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Production Cost - Raw Material</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="not op_types or (op_types and 'FGUsage' in op_types)">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>(-) Finished Usage</span>
-                                        </th>
-                                    </t>
-                                    <t t-if="op_types">
-                                        <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <span>Total Balance</span>
-                                        </th>
-                                    </t>
-                                    <th colspan="2" style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                        <span>Closing Balance</span>
-                                    </th>
                                 </tr>
                                 <tr>
-                                    <t t-foreach="loop" t-as="loop_index">
-                                        <th style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                    <t t-foreach="t_head" t-as="theader">
+                                        <th style="vertical-align:middle; text-align:center; font-weight:bold; border:1px solid #ddd;">
                                             <span>QTY</span>
                                         </th>
-                                        <th style="vertical-align:middle; text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                        <th style="vertical-align:middle; text-align:center; font-weight:bold; border:1px solid #ddd;">
                                             <span>AMT</span>
                                         </th>
                                     </t>
@@ -11984,305 +11903,35 @@
                                 <tbody style="border-top:1px solid #ddd;">
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
-                                            <td style="border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="doc['product']"/>
+                                            <td style="border:1px solid #ddd;">
+                                                <t t-esc="doc[2]"/>
                                             </td>
-                                            <td style="text-align:center; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="list(doc['uom'].values())[0]"/>
+                                            <td style="text-align:center; border:1px solid #ddd;">
+                                                <t t-esc="doc[3]"/>
                                             </td>
-                                            <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(doc['opening_qty'])"/>
-                                            </td>
-                                            <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(doc['opening_amt'])"/>
-                                            </td>
-                                            <t t-if="not op_types or (op_types and 'Receipt' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['receipt_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['receipt_amt'])"/>
+                                            <t t-foreach="doc[4:]" t-as="data">
+                                                <td style="text-align:right; border:1px solid #ddd;">
+                                                    <t t-esc="'{0:,.2f}'.format(data)"/>
                                                 </td>
                                             </t>
-                                            <t t-if="not op_types or (op_types and 'SR' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['sr_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['sr_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['adjust_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['adjust_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'MO' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['mo_in_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['mo_in_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['minus_adjust_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['minus_adjust_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'MO' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['mo_out_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['mo_out_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'PR' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['pr_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['pr_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'Delivery' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['delivery_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['delivery_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['scrap_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['scrap_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'OIL' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['oil_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['oil_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'PACK' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['pack_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['pack_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'ACC' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['acc_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['acc_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'DMG' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['dmg_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['dmg_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'RAW' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['raw_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['raw_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="not op_types or (op_types and 'FGUsage' in op_types)">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['fgusage_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['fgusage_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="op_types">
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['ttl_qty'])"/>
-                                                </td>
-                                                <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                    <t t-esc="'{0:,.2f}'.format(doc['ttl_amt'])"/>
-                                                </td>
-                                            </t>
-                                            <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(doc['closing_qty'])"/>
-                                            </td>
-                                            <td style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(doc['closing_amt'])"/>
-                                            </td>
                                         </tr>
                                     </t>
                                     <tr>
-                                        <th colspan="2" style="border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                        <th colspan="2" style="font-weight:bold; border:1px solid #ddd;">
                                             <span>Total</span>
                                         </th>
-                                        <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <t t-esc="'{0:,.2f}'.format(ttl['opening_qty'])"/>
-                                        </th>
-                                        <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <t t-esc="'{0:,.2f}'.format(ttl['opening_amt'])"/>
-                                        </th>
-                                        <t t-if="not op_types or (op_types and 'Receipt' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['receipt_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['receipt_amt'])"/>
+                                        <t t-foreach="grand_ttl" t-as="ttl">
+                                            <th style="text-align:right; font-weight:bold; border:1px solid #ddd;">
+                                                <t t-esc="'{0:,.2f}'.format(ttl)"/>
                                             </th>
                                         </t>
-                                        <t t-if="not op_types or (op_types and 'SR' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['sr_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['sr_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['adjust_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['adjust_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'MO' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['mo_in_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['mo_in_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['minus_adjust_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['minus_adjust_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'MO' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['mo_out_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['mo_out_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'PR' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['pr_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['pr_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'Delivery' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['delivery_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['delivery_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['scrap_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['scrap_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'OIL' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['oil_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['oil_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'PACK' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['pack_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['pack_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'ACC' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['acc_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['acc_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'DMG' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['dmg_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['dmg_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'RAW' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['raw_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['raw_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="not op_types or (op_types and 'FGUsage' in op_types)">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['fgusage_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['fgusage_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <t t-if="op_types">
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['ttl_qty'])"/>
-                                            </th>
-                                            <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                                <t t-esc="'{0:,.2f}'.format(ttl['ttl_amt'])"/>
-                                            </th>
-                                        </t>
-                                        <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <t t-esc="'{0:,.2f}'.format(ttl['closing_qty'])"/>
-                                        </th>
-                                        <th style="text-align:right; border-left:1px solid #ddd; border-right:1px solid #ddd;">
-                                            <t t-esc="'{0:,.2f}'.format(ttl['closing_amt'])"/>
-                                        </th>
                                     </tr>
                                 </tbody>
                             </t>
                             <t t-else="">
                                 <tbody style="border-top:1px solid #ddd;">
                                     <tr>
-                                        <td colspan="100" style="text-align:center; font-size: 20px; border-left:1px solid #ddd; border-right:1px solid #ddd;">
+                                        <td colspan="100" style="text-align:center; font-weight:bold; font-size: 20px; border:1px solid #ddd;">
                                             <span>
                                                 <b>No Results Found.</b>
                                             </span>
