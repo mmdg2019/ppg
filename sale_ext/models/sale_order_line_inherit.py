@@ -109,6 +109,9 @@ class SaleOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if not (self.env.user.has_group('sales.sales_managers') or self.env.user.has_group('sales_team.group_sale_manager')) and not self.env.context.get('import_file') and vals.get('product_id') not in (2350, 2351):                
+                discount = self.env['sale.order'].browse(vals.get('order_id')).pricelist_id.item_ids.filtered(lambda x: x.product_tmpl_id.product_variant_id.id == vals.get('product_id'))[0].percent_price                
+                vals['discount'] = discount
             if vals.get('product_id') and vals.get('product_uom_id') and vals.get('product_uom_qty'):
                 if self.env.context.get('import_file'):
                     product = self.env['product.product'].browse(vals.get('product_id'))
