@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='allow_partials']" position="after">
                 <field name="manual_disc_mode" invisible="edit_mode or allow_partials"/>
+                <field name="partner_id" invisible="allow_partials" options="{'no_open': True, 'no_create': True}"/>
             </xpath>
             <xpath expr="//field[@name='allow_partials']" position="attributes">
                 <attribute name="invisible">not display_allow_partials or manual_disc_mode</attribute>

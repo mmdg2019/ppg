@@ -5,7 +5,15 @@ from odoo.exceptions import UserError
 class AccountReconcileWizard(models.TransientModel):
     _inherit = 'account.reconcile.wizard'
 
+    @api.model
+    def _default_partner(self):
+        if self.env.context.get('active_model') != 'account.move.line':
+            return self.env['res.partner']
+        pids = self.env['account.move.line'].browse(self.env.context.get('active_ids', [])).mapped('move_id.partner_id')
+        return pids if len(pids) == 1 else self.env['res.partner']
+
     manual_disc_mode = fields.Boolean(string='Manual Discount', default=False, help='Tick if you want to give discount for multiple invoices/bills')
+    partner_id = fields.Many2one('res.partner', string='Partner', readonly=True, default=lambda self: self._default_partner())
 
     @api.depends('move_line_ids', 'manual_disc_mode')
     def _compute_edit_mode_amount_currency(self):
