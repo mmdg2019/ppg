@@ -43,11 +43,10 @@ class PurchaseOrderLine(models.Model):
     def _onchange_onchange_source(self):
         self.onchange_source = 'product_uom_id'
 
-    @api.onchange('product_id','proudct_uom_id','product_qty')
+    @api.onchange('product_id','product_uom_id','product_qty')
     def _onchange_package_uom_id(self):
         for line in self:
-            if line.product_id.uom_ids and line.order_id.locked == False:
-                # line.package_uom_id = line.product_id.uom_ids[0]
+            if line.product_id.uom_ids and line.order_id.locked == False:                
                 if line.product_id and line.product_uom_qty and line.product_uom_id:
                         packaging_qty = line.product_id.uom_id._compute_quantity(line.product_id.uom_ids[0].relative_factor, line.product_uom_id) 
                         if line.product_uom_qty and packaging_qty:
@@ -57,32 +56,12 @@ class PurchaseOrderLine(models.Model):
                         else:
                             rounded_qty = line.product_uom_qty
                         if rounded_qty == line.product_uom_qty:                      
-                            line.package_uom_id = line.product_id.uom_ids[0] or line.package_uom_id
-
-    @api.onchange('product_id')
-    def onchange_product_id(self):
-        super(PurchaseOrderLine, self).onchange_product_id()
-        # for line in self:
-        #     if line.product_id.uom_ids and line.order_id.locked == False:
-        #         # line.package_uom_id = line.product_id.uom_ids[0]
-        #         if line.product_id and line.product_uom_qty and line.product_uom_id:
-        #                 packaging_qty = line.product_id.uom_id._compute_quantity(line.product_id.uom_ids[0].relative_factor, line.product_uom_id) 
-        #                 if line.product_uom_qty and packaging_qty:
-        #                     qty = float_round(line.product_uom_qty / packaging_qty, precision_rounding=1.0,
-        #                           rounding_method="HALF-UP") * packaging_qty
-        #                     rounded_qty = qty if float_compare(qty, line.product_uom_qty, precision_rounding=line.product_id.uom_id.rounding) else line.product_uom_qty
-        #                 else:
-        #                     rounded_qty = line.product_uom_qty
-        #                 if rounded_qty == line.product_uom_qty:                      
-        #                     line.package_uom_id = line.product_id.uom_ids[0] or line.package_uom_id 
+                            line.package_uom_id = line.product_id.uom_ids[0] or line.package_uom_id    
    
     @api.onchange('package_uom_id', 'product_uom_id', 'product_qty')
     def _onchange_package_uom_qty(self):
-        for line in self:           
-                # if line.package_uom_id and line.order_id.locked == False: 
-                #     packaging_uom = line.package_uom_id.relative_uom_id
-                #     packaging_uom_qty = line.product_uom_id._compute_quantity(line.product_qty, packaging_uom)                
-                #     line.package_uom_qty = packaging_uom_qty / line.package_uom_id.relative_factor                        
+        for line in self:      
+                                     
             if line.package_uom_id:
                 if self.onchange_source == 'product_qty':
                     self.onchange_source = False
@@ -135,7 +114,7 @@ class PurchaseOrderLine(models.Model):
                 product_uom = self.env['uom.uom'].browse(vals.get('product_uom_id'))
             else:
                 product_uom = self.product_uom_id
-            if 'prouct_qty' in values:
+            if 'product_qty' in values:
                 product_qty = vals.get('product_qty')
             else:
                 product_qty = self.product_uom_qty
