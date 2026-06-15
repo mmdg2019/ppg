@@ -3516,8 +3516,8 @@ class edit_report_stock_unit_cost(models.AbstractModel):
                     pp.id, sm.id as move_id, 
                     COALESCE('[' || pp.default_code || '] ', '') || COALESCE(pt.name->>'en_US', pt.name::text, '') as prod_name,
                     quant.quantity as on_hand,
-                    sm.quantity_done as move_qty,
-                    valuation.unit_cost as unit_cost,
+                    sm.quantity as move_qty,
+                    sm.value as value,
                     quant.location_id 
                 from
                     product_product pp                    
@@ -3530,9 +3530,7 @@ class edit_report_stock_unit_cost(models.AbstractModel):
                 LEFT JOIN
                     stock_move sm on sm.product_id = quant.product_id                
                 LEFT JOIN
-                    stock_location loc on sm.location_dest_id = loc.id
-                LEFT JOIN
-                    stock_valuation_layer valuation on valuation.stock_move_id = sm.id                
+                    stock_location loc on sm.location_dest_id = loc.id              
                 WHERE
                     quant.quantity > 0
                     AND sm.state = 'done'
@@ -3548,19 +3546,19 @@ class edit_report_stock_unit_cost(models.AbstractModel):
             } 
         
         if data['product_ids']: 
-            products = self.env['product.product'].search([('id', 'in', data['product_ids'])], order='display_name asc').ids      
+            products = self.env['product.product'].search([('id', 'in', data['product_ids'])], order='name asc').ids      
             params.update({'products':tuple(products)}) 
             query += "AND pp.id in %(products)s" 
 
         query += """
             GROUP BY
-                pp.id, prod_name, sm.date, move_id, unit_cost, on_hand, move_qty, quant.location_id
+                pp.id, prod_name, sm.date, move_id, value, on_hand, move_qty, quant.location_id
             ORDER BY 
                 prod_name, sm.date desc
                 """            
         self.env.cr.execute(query, params)
         docs = self.env.cr.dictfetchall()  
-        docs = [row for row in docs if row['unit_cost'] != None]
+        docs = [row for row in docs if row['value'] != None]
         docs_list = []
         product_ids = list({row['id'] for row in docs})
         products = self.env['product.product'].search([('id', 'in', product_ids)])
@@ -3576,17 +3574,20 @@ class edit_report_stock_unit_cost(models.AbstractModel):
                     if qty_available >= move['move_qty']:
                         qty_available -= move['move_qty']
                         move['qty'] = move['move_qty']
-                        move['ttl_value'] = move['unit_cost'] * move['move_qty']
+                        move['ttl_value'] = move['value']
+                        move['unit_cost'] = move['value'] / move['move_qty'] if move['move_qty'] != 0.0 else 0.0
                         docs_list.append(move)
                     else: 
                         move['qty'] = qty_available
-                        move['ttl_value'] = move['unit_cost'] * qty_available
+                        move['ttl_value'] = (move['value'] / move['move_qty']) * qty_available if move['move_qty'] != 0.0 else 0.0
+                        move['unit_cost'] = (move['value'] / move['move_qty']) if move['move_qty'] != 0.0 else 0.0
                         docs_list.append(move)
                         break                                        
        
         docs_sorted = sorted(docs_list, key=itemgetter('prod_name', 'unit_cost'))
         result = []
-        grand_total_quantity = grand_total_amount = total_free_qty = total_incoming = total_outgoing = 0 
+        # grand_total_quantity = grand_total_amount = total_free_qty = total_incoming = total_outgoing = 0 
+        grand_total_quantity = grand_total_amount = 0
         for (prod_name, unit_cost), group in groupby(docs_sorted, key=itemgetter('prod_name', 'unit_cost')):
             group_list = list(group)
             total_qty = sum(r['qty'] for r in group_list)
@@ -3605,4 +3606,5 @@ class edit_report_stock_unit_cost(models.AbstractModel):
             'grand_total_amount': grand_total_amount,
             'grand_total_quantity': grand_total_quantity                                    
         }
+
 

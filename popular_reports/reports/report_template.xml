@@ -11993,34 +11993,34 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em;font-size: 13px;">
                             <thead >
                                 <tr>                                                                    
-                                    <th>
+                                    <th style="font-weight:bold;">
                                         <span>Product</span>
-                                    </th>                                                                     
-                                    <th style="text-align:right;" >
+                                    </th>
+                                    <th style="text-align:right;font-weight:bold;" >
                                         <span>Unit Cost</span>
-                                    </th>                                                                         
-                                    <th style="text-align:right;" >
+                                    </th>
+                                    <th style="text-align:right;font-weight:bold;" >
                                         <span>Total Value</span>
-                                    </th>                                   
-                                    <th style="text-align:right;">
+                                    </th>
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>Quantity On Hand</span>
-                                    </th> 
-                                    <th style="text-align:right;">
+                                    </th>
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>Free To Use</span>
-                                    </th> 
-                                    <th style="text-align:right;">
+                                    </th>
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>Incoming</span>
-                                    </th>  
-                                    <th style="text-align:right;">
+                                    </th>
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>Outgoing</span>
-                                    </th> 
-                                    <th>
+                                    </th>
+                                    <th style="font-weight:bold;">
                                         <span>Unit of Measure</span>
-                                    </th> 
+                                    </th>
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody style="border-top:2px solid #ddd;">  
+                                <tbody style="border-top:2px solid #ddd;border-bottom:1px solid #ddd;">  
                                     <t t-set="sub" t-value="0"/>
                                     <t t-set="sub_name" t-value="first"/>
                                     <t t-set="user_id" t-value="0"/>
