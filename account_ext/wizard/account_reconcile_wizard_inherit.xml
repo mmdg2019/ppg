@@ -27,6 +27,9 @@
             <xpath expr="//field[@name='edit_mode_amount_currency']" position="attributes">
                 <attribute name="required">edit_mode or manual_disc_mode</attribute>
             </xpath>
+            <xpath expr="//footer/button[@name='reconcile_open']" position="after">
+                <button string="Advance discount" class="btn-primary" name="advanced_discount" type="object" data-hotkey="o"/>
+            </xpath>
         </field>
     </record>
 </odoo>

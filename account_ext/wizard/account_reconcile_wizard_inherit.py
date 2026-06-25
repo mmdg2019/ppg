@@ -52,3 +52,75 @@ class AccountReconcileWizard(models.TransientModel):
             self.allow_partials = False # to make sure do_write_off=True in parent's reconcile()
             self.is_write_off_required = True # to make sure do_write_off=True in parent's reconcile()
         return super(AccountReconcileWizard, self).reconcile()
+
+    def _create_discount_journal_lines(self, partner=None):
+        if not partner:
+            partner = self.env['res.partner']
+        to_partner = self.to_partner_id if self.is_rec_pay_account else partner
+        tax_data = self._compute_write_off_taxes_data(to_partner) if self.tax_id else None
+        amount_currency = self.edit_mode_amount_currency or self.amount_currency
+        amount = self.edit_mode_amount or self.amount
+        line_ids_commands = [
+            Command.create({
+                'name': self.label or _('Write-Off'),
+                'account_id': self.reco_account_id.id,
+                'partner_id': partner.id,
+                'currency_id': self.reco_currency_id.id,
+                'amount_currency': amount_currency,
+                'balance': amount,
+            }),
+            Command.create({
+                'name': self.label,
+                'account_id': self.account_id.id,
+                'partner_id': to_partner.id,
+                'currency_id': self.reco_currency_id.id,
+                'tax_ids': self.tax_id.ids,
+                'tax_tag_ids': None if not tax_data else tax_data['base_tax_tag_ids'],
+                'amount_currency': -amount_currency if not tax_data else -tax_data['base_amount_currency'],
+                'balance': -amount if not tax_data else -tax_data['base_amount'],
+            }),
+        ]
+        # Add taxes lines to the write-off lines, one per repartition line
+        if tax_data:
+            for tax_datum in tax_data['tax_lines_data']:
+                line_ids_commands.append(Command.create({
+                    'name': self.tax_id.name,
+                    'account_id': tax_datum['tax_account_id'],
+                    'partner_id': to_partner.id,
+                    'currency_id': self.reco_currency_id.id,
+                    'tax_tag_ids': tax_datum['tax_tag_ids'],
+                    'amount_currency': tax_datum['tax_amount_currency'],
+                    'balance': tax_datum['tax_amount'],
+                }))
+        return line_ids_commands
+
+    def advanced_discount(self):
+        
+        """ Generate discount journal entry for selected payment."""
+        self.ensure_one()
+        move_lines_to_reconcile = self.move_line_ids._origin   
+        for line in move_lines_to_reconcile:
+            if line.journal_id.name != 'Cash':
+                raise UserError(_("Please choose only payments for advance discont"))
+        partners = self.move_line_ids.partner_id
+        if len(partners) != 1:
+            raise UserError(_("Please Choose payments with same partner"))
+        partner = partners
+        account_move_vals = {
+            'journal_id': self.journal_id.id,
+            'company_id': self.company_id.id,
+            'date': self._get_date_after_lock_date() or self.date,
+            'move_type': 'entry',
+            'checked': not self.to_check,
+            'line_ids': self._create_discount_journal_lines(partner=partner)
+        }
+        account_move = self.env['account.move'].with_context(
+            skip_invoice_sync=True,
+            skip_invoice_line_sync=True,
+        ).create(account_move_vals)
+        account_move.action_post()
+        new_move_lines = account_move.line_ids[0]
+        move_lines_to_reconcile += new_move_lines
+        return move_lines_to_reconcile
+
+        
