@@ -36,7 +36,7 @@ class ProductProduct(models.Model):
                     [('product_id', 'in', product_ids_lot_valuated)], ['product_id'], ['id:recordset']):
                 lots.with_context(disable_auto_revaluation=True).standard_price = product.standard_price
         # Product cost change [Inventory Valuation] auto journal entry
-        if old_price.get(self) and self.standard_price or self.categ_id.property_cost_method == 'fifo':
+        if old_price.get(self) and self.standard_price and self.categ_id.property_cost_method != 'fifo':
             self.entry_move_create( old_price.get(self), self.standard_price)
         return
 
@@ -79,7 +79,7 @@ class ProductProduct(models.Model):
         account_move = self.with_context(allowed_company_ids=self.env.company.ids).env['account.move'].create(
             moves_vals)
         # self._save_closing_id(account_move.id)
-        # account_move._post()
+        account_move._post()
 
     def entry_move_line_vals(self, stock_variation, stock_valuation, balance, product_id=False):
         '''
