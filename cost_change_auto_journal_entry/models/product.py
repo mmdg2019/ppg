@@ -36,7 +36,7 @@ class ProductProduct(models.Model):
                     [('product_id', 'in', product_ids_lot_valuated)], ['product_id'], ['id:recordset']):
                 lots.with_context(disable_auto_revaluation=True).standard_price = product.standard_price
         # Product cost change [Inventory Valuation] auto journal entry
-        if old_price.get(self) and self.standard_price and self.categ_id.property_cost_method != 'fifo' and self.categ_id.property_valuation == 'real_time':
+        if old_price.get(self) and self.standard_price and self.categ_id.property_cost_method != 'fifo':
             self.entry_move_create( old_price.get(self), self.standard_price)
         return
 
