@@ -28,7 +28,13 @@
                 <attribute name="required">edit_mode or manual_disc_mode</attribute>
             </xpath>
             <xpath expr="//footer/button[@name='reconcile_open']" position="after">
-                <button string="Advance discount" class="btn-primary" name="advanced_discount" type="object" data-hotkey="o"/>
+                <button string="Advance Discount" class="btn-primary" invisible="not is_payment" name="advanced_discount" type="object" data-hotkey="o"/>
+            </xpath>
+            <xpath expr="//footer/button[@name='reconcile_open']" position="attributes">
+                <attribute name="invisible">is_payment</attribute>
+            </xpath>
+            <xpath expr="//footer/button[@name='reconcile']" position="attributes">
+                <attribute name="invisible">is_payment</attribute>
             </xpath>
         </field>
     </record>

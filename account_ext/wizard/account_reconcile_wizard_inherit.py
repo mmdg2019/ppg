@@ -14,6 +14,7 @@ class AccountReconcileWizard(models.TransientModel):
 
     manual_disc_mode = fields.Boolean(string='Manual Discount', default=False, help='Tick if you want to give discount for multiple invoices/bills')
     partner_id = fields.Many2one('res.partner', string='Partner', readonly=True, default=lambda self: self._default_partner())
+    is_payment = fields.Boolean(string='Is Payment', compute='_compute_is_payment')
 
     @api.depends('move_line_ids', 'manual_disc_mode')
     def _compute_edit_mode_amount_currency(self):
@@ -22,6 +23,15 @@ class AccountReconcileWizard(models.TransientModel):
                 wizard.edit_mode_amount_currency = wizard.amount_currency
             else:
                 wizard.edit_mode_amount_currency = 0.0
+    
+    @api.depends('move_line_ids')
+    def _compute_is_payment(self):
+        for wizard in self:
+            wizard.is_payment = False
+            journals = wizard.move_line_ids.journal_id
+            if len(journals) == 1 and wizard.move_line_ids[0].journal_id.name == 'Cash':        
+                wizard.is_payment = True
+
 
     @api.constrains('edit_mode_amount_currency')
     def _check_min_max_edit_mode_amount_currency(self):
@@ -98,10 +108,7 @@ class AccountReconcileWizard(models.TransientModel):
         
         """ Generate discount journal entry for selected payment."""
         self.ensure_one()
-        move_lines_to_reconcile = self.move_line_ids._origin   
-        for line in move_lines_to_reconcile:
-            if line.journal_id.name != 'Cash':
-                raise UserError(_("Please choose only payments for advance discont"))
+        move_lines_to_reconcile = self.move_line_ids._origin         
         partners = self.move_line_ids.partner_id
         if len(partners) != 1:
             raise UserError(_("Please Choose payments with same partner"))
