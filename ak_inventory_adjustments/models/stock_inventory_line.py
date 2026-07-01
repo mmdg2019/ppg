@@ -27,9 +27,13 @@ class InventoryLine(models.Model):
     def _domain_product_id(self):
         if self.env.context.get('active_model') == 'stock.inventory':
             inventory = self.env['stock.inventory'].browse(self.env.context.get('active_id'))
+        # change type='product' to type='product' and is_storable=True as no 'product' in product type in odoo 19
+        #     if inventory.exists() and len(inventory.product_ids) > 1:
+        #         return "[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id), ('id', 'in', %s)]" % inventory.product_ids.ids
+        # return "[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
             if inventory.exists() and len(inventory.product_ids) > 1:
-                return "[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id), ('id', 'in', %s)]" % inventory.product_ids.ids
-        return "[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+                return "[('type', '=', 'consu'), ('is_storable', '=', True ), '|', ('company_id', '=', False), ('company_id', '=', company_id), ('id', 'in', %s)]" % inventory.product_ids.ids
+        return "[('type', '=', 'consu'), ('is_storable', '=', True ), '|', ('company_id', '=', False), ('company_id', '=', company_id)]"
     
 
     # @api.depends("inventory_id.product_ids")
