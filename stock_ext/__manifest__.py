@@ -17,13 +17,14 @@ Long description of module's purpose
     'version': '19.0.1.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock'],
+    'depends': ['base', 'stock', 'stock_account'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         # 'views/stock_inventory_line_inherit.xml',
         'views/stock_picking_inherit_view.xml',
+        'views/stock_move_line_inherit.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
