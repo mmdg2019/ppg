@@ -57,7 +57,7 @@ class ProductProduct(models.Model):
             valuation_list = self.entry_move_line_vals(
                 accounts['stock_valuation'],
                 accounts['stock_variation'],
-                balance, self
+                balance, old_price, new_price, self
             )
         else:
             #Standard Cost
@@ -65,7 +65,7 @@ class ProductProduct(models.Model):
             valuation_list = self.entry_move_line_vals(
                 accounts['stock_variation'],
                 accounts['stock_valuation'],
-                balance, self
+                balance, old_price, new_price, self
             )
         if not balance:
             return False
@@ -85,7 +85,7 @@ class ProductProduct(models.Model):
         # self._save_closing_id(account_move.id)
         account_move._post()
 
-    def entry_move_line_vals(self, stock_variation, stock_valuation, balance, product_id=False):
+    def entry_move_line_vals(self, stock_variation, stock_valuation, balance, old_price, new_price, product_id=False):
         '''
         Example :
         For Balance (+)
@@ -113,13 +113,13 @@ class ProductProduct(models.Model):
             balance = abs(balance)
         return [{
             'account_id': stock_valuation.id,
-            'name': f'Cost Change Valuation: {product_id.display_name}',
+            'name': f'{self.env.user.name} changed cost from {old_price} to {new_price} - {product_id.display_name}',
             'debit': 0,
             'credit': balance,
             'product_id': product_id.id,
         }, {
             'account_id': stock_variation.id,
-            'name': f'Cost Change Valuation: {product_id.display_name}',
+            'name': f'{self.env.user.name} changed cost from {old_price} to {new_price} - {product_id.display_name}',
             'debit': balance,
             'credit': 0,
             'product_id': product_id.id,
