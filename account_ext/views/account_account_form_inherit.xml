@@ -8,7 +8,9 @@
             <!-- Locate the group field -->
             <xpath expr="//field[@name='group_id']" position="attributes">
                 <attribute name="readonly">False</attribute>
-                <attribute name="required">True</attribute>               
+                <attribute name="required">True</attribute>  
+                <!-- remove group access of group_id field -->
+                <attribute name="groups"></attribute>             
             </xpath>    
             <!-- <xpath expr="//field[@name='allowed_journal_ids']" position="after">
                 <field name ="old_current_assets"/>
