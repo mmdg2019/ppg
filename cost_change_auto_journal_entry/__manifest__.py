@@ -6,7 +6,7 @@
     'summary': 'Inventory',
     'author': "Digipower",
     'website': "https://www.digipowermm.com",
-    'sequence': 11,
+    'sequence': 12,
     'description': """ Product Cost Change Auto Journal Entry """,
     'category': 'Supply Chain/Inventory',
     'depends': ['base_setup', 'stock_account'],
