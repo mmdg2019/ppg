@@ -4,7 +4,6 @@
 import logging
 from collections import OrderedDict, defaultdict
 
-from odoo import _
 from odoo.exceptions import UserError
 
 from .accounting_none import AccountingNone
@@ -15,8 +14,7 @@ from .simple_array import SimpleArray
 _logger = logging.getLogger(__name__)
 
 
-class KpiMatrixRow(object):
-
+class KpiMatrixRow:
     # TODO: ultimately, the kpi matrix will become ignorant of KPI's and
     #       accounts and know about rows, columns, sub columns and styles only.
     #       It is already ignorant of period and only knowns about columns.
@@ -44,13 +42,6 @@ class KpiMatrixRow(object):
         else:
             return self._matrix.get_account_name(self.account_id)
 
-    @property
-    def row_id(self):
-        if not self.account_id:
-            return self.kpi.name
-        else:
-            return "{}:{}".format(self.kpi.name, self.account_id)
-
     def iter_cell_tuples(self, cols=None):
         if cols is None:
             cols = self._matrix.iter_cols()
@@ -70,7 +61,7 @@ class KpiMatrixRow(object):
         return True
 
 
-class KpiMatrixCol(object):
+class KpiMatrixCol:
     def __init__(self, key, label, description, locals_dict, subkpis):
         self.key = key
         self.label = label
@@ -101,7 +92,7 @@ class KpiMatrixCol(object):
         return self._cell_tuples_by_row.get(row)
 
 
-class KpiMatrixSubCol(object):
+class KpiMatrixSubCol:
     def __init__(self, col, label, description, index=0):
         self.col = col
         self.label = label
@@ -124,7 +115,7 @@ class KpiMatrixSubCol(object):
         return cell_tuple[self.index]
 
 
-class KpiMatrixCell(object):  # noqa: B903 (immutable data class)
+class KpiMatrixCell:  # noqa: B903 (immutable data class)
     def __init__(
         self,
         row,
@@ -144,9 +135,10 @@ class KpiMatrixCell(object):  # noqa: B903 (immutable data class)
         self.style_props = style_props
         self.drilldown_arg = drilldown_arg
         self.val_type = val_type
+        self.cell_id = KpiMatrix._pack_cell_id(self)
 
 
-class KpiMatrix(object):
+class KpiMatrix:
     def __init__(self, env, multi_company=False, account_model="account.account"):
         # cache language id for faster rendering
         lang_model = env["res.lang"]
@@ -235,7 +227,9 @@ class KpiMatrix(object):
         cell_tuple = []
         assert len(vals) == col.colspan
         assert len(drilldown_args) == col.colspan
-        for val, drilldown_arg, subcol in zip(vals, drilldown_args, col.iter_subcols()):
+        for val, drilldown_arg, subcol in zip(
+            vals, drilldown_args, col.iter_subcols(), strict=True
+        ):
             if isinstance(val, DataError):
                 val_rendered = val.name
                 val_comment = val.msg
@@ -244,13 +238,12 @@ class KpiMatrix(object):
                     self.lang, row.style_props, kpi.type, val
                 )
                 if row.kpi.multi and subcol.subkpi:
-                    val_comment = "{}.{} = {}".format(
-                        row.kpi.name,
-                        subcol.subkpi.name,
-                        row.kpi._get_expression_str_for_subkpi(subcol.subkpi),
+                    val_comment = (
+                        f"{row.kpi.name}.{subcol.subkpi.name} = "
+                        f"{row.kpi._get_expression_str_for_subkpi(subcol.subkpi)}"
                     )
                 else:
-                    val_comment = "{} = {}".format(row.kpi.name, row.kpi.expression)
+                    val_comment = f"{row.kpi.name} = {row.kpi.expression}"
             cell_style_props = row.style_props
             if row.kpi.style_expression:
                 # evaluate style expression
@@ -308,12 +301,14 @@ class KpiMatrix(object):
             common_subkpis = self._common_subkpis([col, base_col])
             if (col.subkpis or base_col.subkpis) and not common_subkpis:
                 raise UserError(
-                    _("Columns {} and {} are not comparable").format(
-                        col.description, base_col.description
+                    self.env._(
+                        "Columns %(descr)s and %(base_descr)s are not comparable",
+                        descr=col.description,
+                        base_descr=base_col.description,
                     )
                 )
             if not label:
-                label = "{} vs {}".format(col.label, base_col.label)
+                label = f"{col.label} vs {base_col.label}"
             comparison_col = KpiMatrixCol(
                 cmpcol_key,
                 label,
@@ -345,7 +340,10 @@ class KpiMatrix(object):
                     ]
                 comparison_cell_tuple = []
                 for val, base_val, comparison_subcol in zip(
-                    vals, base_vals, comparison_col.iter_subcols()
+                    vals,
+                    base_vals,
+                    comparison_col.iter_subcols(),
+                    strict=True,
                 ):
                     # TODO FIXME average factors
                     comparison = self._style_model.compare_and_render(
@@ -389,11 +387,12 @@ class KpiMatrix(object):
             common_subkpis = self._common_subkpis(sumcols)
             if any(c.subkpis for c in sumcols) and not common_subkpis:
                 raise UserError(
-                    _(
-                        "Sum cannot be computed in column {} "
+                    self.env._(
+                        "Sum cannot be computed in column %s "
                         "because the columns to sum have no "
-                        "common subkpis"
-                    ).format(label)
+                        "common subkpis",
+                        label,
+                    )
                 )
             sum_col = KpiMatrixCol(
                 sumcol_key,
@@ -441,8 +440,7 @@ class KpiMatrix(object):
             yield kpi_row
             detail_rows = self._detail_rows[kpi_row.kpi].values()
             detail_rows = sorted(detail_rows, key=lambda r: r.label)
-            for detail_row in detail_rows:
-                yield detail_row
+            yield from detail_rows
 
     def iter_cols(self):
         """Iterate columns in display order.
@@ -459,8 +457,7 @@ class KpiMatrix(object):
         and comparison.
         """
         for col in self.iter_cols():
-            for subcol in col.iter_subcols():
-                yield subcol
+            yield from col.iter_subcols()
 
     def _load_account_names(self):
         account_ids = set()
@@ -470,9 +467,9 @@ class KpiMatrix(object):
         self._account_names = {a.id: self._get_account_name(a) for a in accounts}
 
     def _get_account_name(self, account):
-        result = "{} {}".format(account.code, account.name)
+        result = f"{account.code} {account.name}"
         if self._multi_company:
-            result = "{} [{}]".format(result, account.company_id.name)
+            result = f"{result} [{account.company_id.name}]"
         return result
 
     def get_account_name(self, account_id):
@@ -506,8 +503,6 @@ class KpiMatrix(object):
             ) or row.style_props.hide_always:
                 continue
             row_data = {
-                "row_id": row.row_id,
-                "parent_row_id": (row.parent_row and row.parent_row.row_id or None),
                 "label": row.label,
                 "description": row.description,
                 "style": self._style_model.to_css_style(row.style_props),
@@ -523,12 +518,15 @@ class KpiMatrix(object):
                     else:
                         val = cell.val
                     col_data = {
+                        "cell_id": cell.cell_id,
                         "val": val,
                         "val_r": cell.val_rendered,
                         "val_c": cell.val_comment,
                         "style": self._style_model.to_css_style(
                             cell.style_props, no_indent=True
                         ),
+                        # notes can not be added on 'details by account' lines
+                        "can_be_annotated": not cell.row.account_id,
                     }
                     if cell.drilldown_arg:
                         col_data["drilldown_arg"] = cell.drilldown_arg
@@ -536,3 +534,33 @@ class KpiMatrix(object):
             body.append(row_data)
 
         return {"header": header, "body": body}
+
+    # Logic to convert semantic coordinates (period, kpi, subkpi)
+    # to visual coordinates (cell id) and back. The rendering logic musn't know
+    # about semantic concepts such as periods and kpis. Having these well identified
+    # methods allow us to easily spot where the conversion between the rendering and
+    # semantic domain occur.
+
+    @classmethod
+    def _make_cell_id(
+        cls, kpi_id: int, account_id: int | None, period_id: int, subkpi_id: int | None
+    ) -> str:
+        return f"{kpi_id}#{account_id or ''}#{period_id}#{subkpi_id or ''}"
+
+    @classmethod
+    def _pack_cell_id(cls, cell: KpiMatrixCell) -> str:
+        return cls._make_cell_id(
+            cell.row.kpi.id,
+            cell.row.account_id,
+            cell.subcol.col.key,
+            cell.subcol.subkpi and cell.subcol.subkpi.id,
+        )
+
+    @classmethod
+    def _unpack_cell_id(cls, cell_id: str) -> tuple[int, int | None, int, int | None]:
+        kpi_id, account_id, col_key, subkpi_id = cell_id.split("#")
+        kpi_id = int(kpi_id)
+        account_id = int(account_id) if account_id else None
+        period_id = int(col_key)
+        subkpi_id = int(subkpi_id) if subkpi_id else None
+        return kpi_id, account_id, period_id, subkpi_id

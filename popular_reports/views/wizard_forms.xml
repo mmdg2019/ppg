@@ -29,7 +29,7 @@
             <field name="arch" type="xml">
                 <form string="All Balance Listing (Total)">
                     <group string="Product">
-                        <field name="products" widget="many2many_tags" domain="[('type', '=', 'product')]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="products" widget="many2many_tags" domain="[('type', '=', 'consu'), ('is_storable', '=', True)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                         <field name="product_cats" widget="many2many_tags" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group string="Stock Location">
@@ -526,10 +526,10 @@
                         <field name="user" widget="many2many_tags"  domain="[('customer_rank','&gt;', 0)]" context="{'search_default_customer': 1,'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field name="products" widget="many2many_tags" attrs="{'invisible':[('product_cats','!=', [])]}" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field name="products" widget="many2many_tags" invisible="product_cats!= []" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group>
-                        <field string="Invoice Category" name="product_cats" widget="many2many_tags" attrs="{'invisible':[('products', '!=', [])]}" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
+                        <field string="Invoice Category" name="product_cats" widget="many2many_tags" invisible="products!=[]" domain="[('parent_id','=', False)]" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/>
                     </group>
                     <group col="2" colspan="2">
                         <field name="filter_country_id" widget="many2one_tags" invisible = "1" options="{'no_open':True,'no_create':1,'no_create_edit':1}"/> 

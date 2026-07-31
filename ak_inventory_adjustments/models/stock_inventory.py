@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import _, api, fields, models
 from odoo.addons.base.models.ir_model import MODULE_UNINSTALL_FLAG
 from odoo.exceptions import UserError
-from odoo.osv import expression
+from odoo.fields import Domain
 from odoo.tools.misc import OrderedSet
 from odoo.tools import float_compare
 import json
@@ -19,9 +18,7 @@ class StockInventory(models.Model):
     name = fields.Char(
         "Inventory Reference",
         default="Inventory",
-        readonly=True,
         required=True,
-        states={"draft": [("readonly", False)]},
     )
     date = fields.Datetime(
         "Inventory Date",
@@ -35,15 +32,11 @@ class StockInventory(models.Model):
         "stock.inventory.line",
         "inventory_id",
         string="Inventories",
-        copy=False,
-        readonly=False,
-        states={"done": [("readonly", True)]},
-    )
+        copy=False)
     move_ids = fields.One2many(
         "stock.move",
         "inventory_id",
         string="Created Moves",
-        states={"done": [("readonly", True)]},
     )
     state = fields.Selection(
         string="Status",
@@ -60,27 +53,19 @@ class StockInventory(models.Model):
         default="draft",
     )
     company_id = fields.Many2one(
-        "res.company",
-        "Company",
-        readonly=True,
-        index=True,
-        required=True,
-        states={"draft": [("readonly", False)]},
-        default=lambda self: self.env.company,
-    )
+        comodel_name='res.company',
+        required=True, index=True,
+        default=lambda self: self.env.company)
     location_ids = fields.Many2many(
         "stock.location",
         string="Locations",
-        readonly=True,
         check_company=True,
-        states={"draft": [("readonly", False)]},
         domain="[('company_id', '=', company_id), ('usage', 'in', ['internal', 'transit'])]",
     )
 
     product_ids = fields.Many2many(
         'product.product', string='Products', check_company=True,
-        domain="[('type', '=', 'product'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]", readonly=True,
-        states={'draft': [('readonly', False)]},
+        domain="[('type', '=', 'consu'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]",
         help="Specify Products to focus your inventory on particular Products.")
     start_empty = fields.Boolean('Empty Inventory',
         help="Allows to start with an empty inventory.")
@@ -126,7 +111,7 @@ class StockInventory(models.Model):
             inventory.has_account_moves = False
             if inventory.state == "done" and inventory.move_ids:
                 account_move = self.env["account.move"].search_count(
-                    [("stock_move_id.id", "in", inventory.move_ids.ids)]
+                    [("stock_move_ids", "in", inventory.move_ids.ids)]
                 )
                 inventory.has_account_moves = account_move > 0
 
@@ -137,8 +122,8 @@ class StockInventory(models.Model):
         )
         action_data.update(
             {
-                "domain": [("stock_move_id.id", "in", self.move_ids.ids)],
-                "context": dict(self._context, create=False),
+                "domain": [("stock_move_ids", "in", self.move_ids.ids)],
+                "context": dict(self.env.context, create=False),
             }
         )
         return action_data
@@ -147,7 +132,7 @@ class StockInventory(models.Model):
     def _onchange_company_id(self):
         # If the multilocation group is not active, default the location to the one of the main
         # warehouse.
-        if not self.user_has_groups("stock.group_stock_multi_locations"):
+        if not self.env.user.has_group("stock.group_stock_multi_locations"):
             warehouse = self.env["stock.warehouse"].search(
                 [("company_id", "=", self.company_id.id)], limit=1
             )
@@ -222,17 +207,17 @@ class StockInventory(models.Model):
                 "default_inventory_id": self.id,
             }
         )
-        if inventory_lines and not lines:
+        # if inventory_lines and not lines:
 
-            return {
-                "name": _("Tracked Products in Inventory Adjustment"),
-                "type": "ir.actions.act_window",
-                "view_mode": "form",
-                "views": [(False, "form")],
-                "res_model": "stock.track.confirmation",
-                "target": "new",
-                "context": ctx,
-            }
+        #     return {
+        #         "name": _("Tracked Products in Inventory Adjustment"),
+        #         "type": "ir.actions.act_window",
+        #         "view_mode": "form",
+        #         "views": [(False, "form")],
+        #         "res_model": "stock.track.confirmation",
+        #         "target": "new",
+        #         "context": ctx,
+        #     }
         self._action_done()
         self.line_ids._check_company()
         self._check_company()
@@ -312,7 +297,7 @@ class StockInventory(models.Model):
         self.ensure_one()
         action = {
             "type": "ir.actions.act_window",
-            "view_mode": "tree",
+            "view_mode": "list",
             "name": _("Inventory Lines"),
             "res_model": "stock.inventory.line",
         }
@@ -362,7 +347,7 @@ class StockInventory(models.Model):
         ).report_action(self)
 
     def _get_quantities(self):
-        """Return quantities group by product_id, location_id, lot_id, package_id and owner_id
+        """Return quantities group by product_id, location_id, lot_id and owner_id
 
         :return: a dict with keys as tuple of group by and quantity as value
         :rtype: dict
@@ -388,84 +373,28 @@ class StockInventory(models.Model):
             domain.append(("product_id.active", "=", True))
 
         if self.product_ids:
-            domain = expression.AND(
+            domain = Domain.AND(
                 [domain, [("product_id", "in", self.product_ids.ids)]]
             )
         # if self.product_cate_ids:
-        #     domain = expression.AND(
+        #     domain = Domain.AND(
         #         [domain, [("product_categ_id", "in", self.product_cate_ids.ids)]]
         #     )
 
-        fields = [
-            "product_id",
-            "location_id",
-            "lot_id",
-            "package_id",
-            "owner_id",
-            "quantity:sum",
-        ]
-        group_by = ["product_id", "location_id", "lot_id", "package_id", "owner_id"]
-        quants = self.env["stock.quant"].read_group(
-            domain, fields, group_by, lazy=False
+        group_by = ["product_id", "location_id", "lot_id", "owner_id"]
+        aggregates = ["quantity:sum"]
+        quants = self.env["stock.quant"]._read_group(
+            domain, group_by, aggregates
         )
         return {
             (
-                quant.get("product_id") and quant.get("product_id")[0] or False,
-                quant.get("location_id") and quant.get("location_id")[0] or False,
-                quant.get("lot_id") and quant.get("lot_id")[0] or False,
-                quant.get("package_id") and quant.get("package_id")[0] or False,
-                quant.get("owner_id") and quant.get("owner_id")[0] or False,
-            ): quant.get("quantity")
-            for quant in quants
+                product.id if product else False,
+                location.id if location else False,
+                lot.id if lot else False,
+                owner.id if owner else False,
+            ): quantity
+            for product, location, lot, owner, quantity in quants
         }
-
-    # def _get_exhausted_inventory_lines_vals(self, non_exhausted_set):
-    #     """Return the values of the inventory lines to create if the user
-    #     wants to include exhausted products. Exhausted products are products
-    #     without quantities or quantity equal to 0.
-
-    #     :param non_exhausted_set: set of tuple (product_id, location_id) of non exhausted product-location
-    #     :return: a list containing the `stock.inventory.line` values to create
-    #     :rtype: list
-    #     """
-    #     self.ensure_one()
-    #     if self.product_ids:
-    #         product_ids = self.product_ids.ids
-    #     else:
-    #         product_ids = self.env["product.product"].search_read(
-    #             [
-    #                 "|",
-    #                 ("company_id", "=", self.company_id.id),
-    #                 ("company_id", "=", False),
-    #                 ("type", "=", "product"),
-    #                 ("active", "=", True),
-    #             ],
-    #             ["id"],
-    #         )
-    #         product_ids = [p["id"] for p in product_ids]
-
-    #     if self.location_ids:
-    #         location_ids = self.location_ids.ids
-    #     else:
-    #         location_ids = (
-    #             self.env["stock.warehouse"]
-    #             .search([("company_id", "=", self.company_id.id)])
-    #             .lot_stock_id.ids
-    #         )
-
-    #     vals = []
-    #     for product_id in product_ids:
-    #         for location_id in location_ids:
-    #             if (product_id, location_id) not in non_exhausted_set:
-    #                 vals.append(
-    #                     {
-    #                         "inventory_id": self.id,
-    #                         "product_id": product_id,
-    #                         "location_id": location_id,
-    #                         "theoretical_qty": 0,
-    #                     }
-    #                 )
-    #     return vals
 
     def _get_inventory_lines_values(self):
         """Return the values of the inventory lines to create for this inventory.
@@ -478,7 +407,7 @@ class StockInventory(models.Model):
         vals = []
         product_ids = OrderedSet()
         for (
-            (product_id, location_id, lot_id, package_id, owner_id),
+            (product_id, location_id, lot_id, owner_id),
             quantity,
         ) in quants_groups.items():
             line_values = {
@@ -491,7 +420,6 @@ class StockInventory(models.Model):
                 "partner_id": owner_id,
                 "product_id": product_id,
                 "location_id": location_id,
-                "package_id": package_id,
             }
             product_ids.add(product_id)
             vals.append(line_values)

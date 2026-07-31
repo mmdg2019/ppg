@@ -1,13 +1,14 @@
 {
     "name": "PPG Township",
-    "version": "1.0",
+    "version": "19.0.1.0.0",
     "category": "Custom",
     "summary": "Manage Township Information",
     "description": """
         This module provides functionality to manage township information, including creating, updating, and deleting townships.
     """,
-    "author": "Your Name",
-    "website": "https://www.example.com",
+    'license': 'AGPL-3',
+    "author": "Digi Power",
+    "website": "https://www.digipowermm.com",
     "depends": [
         "base",
         "base_address_extended",
@@ -22,5 +23,4 @@
     "installable": True,
     "application": True,
     "auto_install": False,
-    "license": "LGPL-3",
 }
