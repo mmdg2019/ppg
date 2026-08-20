@@ -21,19 +21,19 @@
            <field name="binding_type">report</field>
         </record>
 	<template id="report_transfer_main_group_document">
-        <div class="page h5">
-            <div class="row" style="margin-top:20px">
+        <div class="page h5" style="font-size:14pt; margin: 0; padding: 0;">
+            <div class="row" style="margin: 0; padding: 0;">
                 <div class="col-6">
                     <img t-if="doc.company_id.x_studio_print_slip_header_image" class="img-fluid" t-att-src="image_data_uri(doc.company_id.x_studio_print_slip_header_image)" alt="Logo"/>
                 </div>
-                <div class="col-6" style="font-size: 60px; text-align:center;vertical-align: middle;margin-top:90px;">
+                <div class="col-6" style="font-size: 30px; text-align:center;vertical-align: middle;margin-top:90px;">
                     <b><span t-field="doc.partner_id.name"/></b>
                 </div>
             </div>
             <hr width="100%" align="center" style="border: 2px solid #000"/>
             <div class="row">
-                <div class="col-6" style="margin-top:40px">
-                    <span t-field="doc.name" class="h3" style="margin-top:40px"/>
+                <div class="col-6" style="margin-top:10px">
+                    <span t-field="doc.name" class="h3" style="margin-top:10px"/>
                 </div>
                 
             </div>
@@ -71,7 +71,7 @@
                 </div>
             </div>
             <table class="table table-sm" t-if="doc.state!='done'" name="stock_move_table">
-                <thead>
+                <thead style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
                     <tr>
                         <th name="th_sm_product">
                         <strong>Product</strong>
@@ -81,7 +81,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
                     <t t-set="lines" t-value="doc.move_ids.filtered(lambda x: x.product_uom_qty)"/>
                     <tr t-foreach="lines" t-as="move">
                         <td>
@@ -106,7 +106,7 @@
             </table>
             <table class="table table-sm mt48" t-if="doc.move_line_ids and doc.state=='done'" name="stock_move_line_table">
                 <t t-set="has_serial_number" t-value="doc.move_line_ids.mapped('lot_id')"/>
-                <thead>
+                <thead style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
                     <tr>
                         <th name="th_sml_product">
                         <strong>Product</strong>
@@ -119,7 +119,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd;">
                     <tr t-foreach="doc.move_line_ids" t-as="move_line">
                         <td>
                             <span t-field="move_line.product_id.name"/>
