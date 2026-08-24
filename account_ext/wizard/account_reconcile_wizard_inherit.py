@@ -31,6 +31,9 @@ class AccountReconcileWizard(models.TransientModel):
             journals = wizard.move_line_ids.journal_id
             if len(journals) == 1 and wizard.move_line_ids[0].journal_id.name == 'Cash':        
                 wizard.is_payment = True
+            elif len(journals) == 1 and wizard.move_line_ids[0].journal_id.name == 'Discount':
+                if not wizard.partner_id:
+                    wizard.partner_id = self.env['account.move.line'].browse(self.env.context.get('active_ids', [])).mapped('partner_id')
 
 
     @api.constrains('edit_mode_amount_currency')
