@@ -12,3 +12,5 @@ from . import account_account_inherit
 from . import account_journal_inherit
 from . import account_payment_inherit
 from . import account_profit_and_loss
+
+from . import payment_transaction
