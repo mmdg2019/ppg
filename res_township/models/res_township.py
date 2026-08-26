@@ -4,11 +4,11 @@ class Township(models.Model):
     _name = 'res.township'
     _description = 'Township'
 
-    name = fields.Char(string='Township Name', required=True )
-    code = fields.Char(string='Township Code', required=True)
+    name = fields.Char(string='Township Name', required=False)
+    code = fields.Char(string='Township Code', required=False)
     country_id = fields.Many2one('res.country', string='Country', required=True, default=lambda self: self.env['res.country'].search([('code', '=', 'MM')], limit=1))
-    state_id = fields.Many2one('res.country.state', string='State', required=True, domain="[('country_id', '=', country_id)]")
-    city_id = fields.Many2one('res.city', string='City', required=True, domain="[('state_id', '=', state_id)]")
+    state_id = fields.Many2one('res.country.state', string='State', required=False, domain="[('country_id', '=', country_id)]")
+    city_id = fields.Many2one('res.city', string='City', required=False, domain="[('state_id', '=', state_id)]")
     active = fields.Boolean(string='Active', default=True)
 
 
