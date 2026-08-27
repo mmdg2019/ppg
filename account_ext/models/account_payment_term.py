@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from odoo import api, exceptions, fields, models, _
 
@@ -10,6 +9,7 @@ class AccountPaymentTerm(models.Model):
     due_factor = fields.Integer('Due Computation Factor')
 
     
-    _sql_constraints = [
-        ('check_due_factor', 'CHECK(due_factor>=0)', 'Due computation factor must be strictly positive.')
-    ]
+    _check_due_factor = models.Constraint(
+        'CHECK(due_factor>=0)',
+        "Due computation factor must be strictly positive.",
+    )

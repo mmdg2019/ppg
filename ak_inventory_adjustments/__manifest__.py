@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Part of Odoo, Aktiv Software PVT. LTD.
 # See LICENSE file for full copyright & licensing details.
 
@@ -15,12 +14,12 @@
     "name": "Inventory Adjustments",
     "category": "Inventory/Inventory",
     "summary": """Custom Inventory Adjustments""",
-    "version": "16.0.1.0.0",
+    "version": "19.0.1.0.0",
     "website": "http://www.aktivsoftware.com",
     "author": "Aktiv Software",
     "description": """Custom Inventory Adjustments for multi products""",
     "license": "AGPL-3",
-    "depends": ["stock", 'account',"web_domain_field"],
+    "depends": ["web", "base", "stock", 'account'],
     "data": [
         "security/ir.model.access.csv",
         "security/security.xml",
@@ -30,10 +29,9 @@
         "report/stock_report_views.xml",
         "report/stock_report.xml",
     ],
-    "assets": {
-        "web.assets_backend": [
-            "/ak_inventory_adjustments/static/src/xml/*.xml",
-            "/ak_inventory_adjustments/static/src/js/*.js",
+    'assets': {
+        'web.assets_backend': [
+            'ak_inventory_adjustments/static/src/**/*',
         ]
     },
     "images": ["static/description/banner.jpg"],

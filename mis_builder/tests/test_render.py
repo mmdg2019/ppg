@@ -20,16 +20,16 @@ class TestRendering(common.TransactionCase):
             .search([("code", "=", "en_US")])[0]
         )
 
-    def _render(self, value, type=TYPE_NUM):
+    def _render(self, value, var_type=TYPE_NUM):
         style_props = self.style_obj.merge([self.style])
-        return self.style_obj.render(self.lang, style_props, type, value)
+        return self.style_obj.render(self.lang, style_props, var_type, value)
 
     def _compare_and_render(
-        self, value, base_value, type=TYPE_NUM, compare_method=CMP_PCT
+        self, value, base_value, var_type=TYPE_NUM, compare_method=CMP_PCT
     ):
         style_props = self.style_obj.merge([self.style])
         r = self.style_obj.compare_and_render(
-            self.lang, style_props, type, compare_method, value, base_value
+            self.lang, style_props, var_type, compare_method, value, base_value
         )[:2]
         if r[0]:
             return (round(r[0], 8), r[1])
@@ -90,6 +90,13 @@ class TestRendering(common.TransactionCase):
         self.style.divider = "1e-6"
         self.style.dp = 0
         self.assertEqual("1,000,000", self._render(1))
+
+    def test_render_ieee754(self):
+        self.style.dp_inherit = False
+        self.style.dp = 1
+        self.assertEqual("9.5", self._render(9.45))
+        self.assertEqual("9.6", self._render(9.55))
+        self.assertEqual("10.0", self._render(9.95))
 
     def test_render_pct(self):
         self.assertEqual("100\xa0%", self._render(1, TYPE_PCT))
@@ -268,7 +275,7 @@ class TestRendering(common.TransactionCase):
             {
                 "italic": True,
                 "bold": True,
-                "size": 9,
+                "font_size": 9,
                 "font_color": "#FF0000",
                 "bg_color": "#0000FF",
                 "num_format": '"p "#,##0.00" s"',
@@ -281,7 +288,7 @@ class TestRendering(common.TransactionCase):
             {
                 "italic": True,
                 "bold": True,
-                "size": 9,
+                "font_size": 9,
                 "font_color": "#FF0000",
                 "bg_color": "#0000FF",
                 "num_format": '"p "#,##0.00" s"',
@@ -294,7 +301,7 @@ class TestRendering(common.TransactionCase):
             {
                 "italic": True,
                 "bold": True,
-                "size": 9,
+                "font_size": 9,
                 "font_color": "#FF0000",
                 "bg_color": "#0000FF",
                 "num_format": "0.00%",
@@ -308,8 +315,30 @@ class TestRendering(common.TransactionCase):
             {
                 "italic": True,
                 "bold": True,
-                "size": 9,
+                "font_size": 9,
                 "font_color": "#FF0000",
                 "bg_color": "#0000FF",
             },
         )
+
+    def test_description(self):
+        self.assertEqual(self.style.description.unescape(), "")
+
+        self.style.dp_inherit = False
+        self.style.dp = 4
+        self.assertEqual(self.style.description.unescape(), "Rounding : 4")
+        self.style.dp_inherit = True
+
+        self.style.color_inherit = False
+        self.style.color = "red"
+        self.assertEqual(
+            self.style.description.unescape(),
+            'Text color : <span style="background-color: red;'
+            " width: 15px; height: 15px; display: inline-block;"
+            ' border: 1px black solid; border-radius: 5px;"></span>',
+        )
+        self.style.color_inherit = True
+
+        self.style.prefix_inherit = False
+        self.style.prefix = "$"
+        self.assertEqual(self.style.description.unescape(), "Prefix : '<code>$</code>'")

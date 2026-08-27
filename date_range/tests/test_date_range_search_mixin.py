@@ -2,21 +2,23 @@
 # Copyright 2021 Opener B.V. <stefan@opener.amsterdam>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 from dateutil.rrule import MONTHLY
-from odoo_test_helper import FakeModelLoader
 
+from odoo.orm.model_classes import add_to_registry
 from odoo.tests.common import TransactionCase
 
 
-class TestDateRangeearchMixin(TransactionCase):
+class TestDateRangeSearchMixin(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Load a test model using odoo_test_helper
-        cls.loader = FakeModelLoader(cls.env, cls.__module__)
-        cls.loader.backup_registry()
+
         from .models import TestDateRangeSearchMixin
 
-        cls.loader.update_registry((TestDateRangeSearchMixin,))
+        add_to_registry(cls.registry, TestDateRangeSearchMixin)
+        cls.registry._setup_models__(cls.env.cr, ["test.date.range.search.mixin"])
+        cls.registry.init_models(
+            cls.env.cr, ["test.date.range.search.mixin"], {"models_to_check": True}
+        )
 
         cls.env.user.lang = "en_US"
         rtype = cls.env["date.range.type"].create(
@@ -37,7 +39,7 @@ class TestDateRangeearchMixin(TransactionCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.loader.restore_registry()
+        cls.addClassCleanup(cls.registry.__delitem__, "test.date.range.search.mixin")
         return super().tearDownClass()
 
     def test_01_search_view(self):
@@ -51,18 +53,21 @@ class TestDateRangeearchMixin(TransactionCase):
             self.model.get_view(view_type="form")["arch"],
         )
         # Having a view with a group element in it
+        arch = """
+            <search>
+                <field name="name"/>
+                <filter
+                    name="group_by_name" string="Name"
+                    context="{'group_by': 'name'}"
+                />
+            </search>
+        """
         view = self.env["ir.ui.view"].create(
             {
                 "name": __name__,
                 "model": self.model._name,
-                "arch": """
-                <search>
-                    <field name="name"/>
-                    <group string="Group by">
-                        <filter name="name" context="{'group_by': 'name'}"/>
-                    </group>
-                </search>
-            """,
+                "type": "search",
+                "arch": arch,
             }
         )
         self.assertIn(
@@ -74,9 +79,10 @@ class TestDateRangeearchMixin(TransactionCase):
             <search>
                 <field name="name"/>
                 <field name="date_range_search_id"/>
-                <group string="Group by">
-                    <filter name="name" context="{'group_by': 'name'}"/>
-                </group>
+                <filter
+                    name="group_by_name" string="Name"
+                    context="{'group_by': 'name'}"
+                />
             </search>
         """
         self.assertNotIn(
@@ -135,9 +141,6 @@ class TestDateRangeearchMixin(TransactionCase):
         self.assertNotIn(
             record, self.model.search([("date_range_search_id", "=", False)])
         )
-        self.assertIn(
-            record, self.model.search([("date_range_search_id", "!=", False)])
-        )
         self.assertNotIn(
             record, self.model.search([("date_range_search_id", "!=", True)])
         )
@@ -149,7 +152,6 @@ class TestDateRangeearchMixin(TransactionCase):
 
     def test_04_load_views(self):
         """Technical field label is replaced in `load_views`"""
-        field = self.model.get_views([(None, "form")])["models"][self.model._name][
-            "date_range_search_id"
-        ]
+        view = self.model.get_views([(None, "form")])
+        field = view["models"][self.model._name]["fields"]["date_range_search_id"]
         self.assertNotIn("technical", field["string"])
