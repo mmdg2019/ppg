@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_script_migration_stock_config_wizard,script.migration.stock.config.wizard,model_script_migration_stock_config_wizard,base.group_no_one,1,1,1,1
+access_script_migration_purchase_return_create_wizard,script.migration.purchase.return.create.wizard,model_script_migration_purchase_return_create_wizard,base.group_no_one,1,1,1,1
+access_script_migration_recycle_receipt_create_wizard,script.migration.recycle.receipt.create.wizard,model_script_migration_recycle_receipt_create_wizard,base.group_no_one,1,1,1,1
+access_script_migration_operation_type_wizard,script.migration.operation.type.wizard,model_script_migration_operation_type_wizard,base.group_no_one,1,1,1,1

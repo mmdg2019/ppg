@@ -12,6 +12,9 @@
     "data": [
         "security/ir.model.access.csv",
         "wizard/script_migration_stock_config_wizard_views.xml",
+        "wizard/purchase_return_create_wizard_views.xml",
+        "wizard/recycle_receipt_create_wizard_views.xml",
+        "wizard/script_migration_operation_type_wizard_view.xml",
     ],
     "installable": True,
     "application": False,
