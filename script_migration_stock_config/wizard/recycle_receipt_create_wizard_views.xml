@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_script_migration_recycle_receipt_create_wizard_form" model="ir.ui.view">
+        <field name="name">script.migration.recycle.receipt.create.wizard.form</field>
+        <field name="model">script.migration.recycle.receipt.create.wizard</field>
+        <field name="group_ids" eval="[(4, ref('base.group_no_one'))]"/>
+        <field name="arch" type="xml">
+            <form string="Recycle Receipt">
+                <sheet>
+                    <group>
+                        <field name="missing_account_summary" nolabel="1" readonly="1" invisible="not missing_account_summary"/>
+                        <field name="create_summary" nolabel="1" readonly="1" invisible="not create_summary"/>
+                        <field name="skip_summary" nolabel="1" readonly="1" invisible="not skip_summary"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_check" string="Check" type="object" class="oe_highlight"/>
+                    <button name="action_run" string="Run" type="object"/>
+                    <button string="Close" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_script_migration_recycle_receipt_create_wizard" model="ir.actions.act_window">
+        <field name="name">Recycle Receipt</field>
+        <field name="res_model">script.migration.recycle.receipt.create.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_script_migration_recycle_receipt_create_wizard_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
+        <field name="binding_type">action</field>
+        <field name="group_ids" eval="[(4, ref('base.group_no_one'))]"/>
+    </record>
+</odoo>

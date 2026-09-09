@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from datetime import *
 from dateutil.relativedelta import relativedelta
@@ -22,7 +21,7 @@ class SalesTarget(models.Model):
     end_date = fields.Date(string='End Date', required=True, tracking=True)
     company_id = fields.Many2one('res.company', 'Company', index=True, ondelete='cascade', readonly=True, default=lambda self: self.env.company.id)
 #                                  ,default= _compute_company_id)
-    sale_target_line_ids = fields.One2many('popular_reports.sale_target.line', 'sale_target_id' ,'Product List', auto_join=True, copy=True, check_company=True, tracking=True)
+    sale_target_line_ids = fields.One2many('popular_reports.sale_target.line', 'sale_target_id' ,'Product List', bypass_search_access=True, copy=True, check_company=True, tracking=True)
     sale_target_line_ids_count = fields.Integer(string='Sales Target Line Counts', compute = '_compute_sales_target_line')
     complete_name = fields.Char(
         'Complete Name', compute='_compute_complete_name',
@@ -40,9 +39,13 @@ class SalesTarget(models.Model):
 
     @api.depends('sale_target_line_ids')
     def _compute_sales_target_line(self):
-        results = self.env['popular_reports.sale_target.line'].read_group([('sale_target_id', 'in', self.ids)], ['sale_target_id'], ['sale_target_id'])
+        results = self.env['popular_reports.sale_target.line']._read_group([('sale_target_id', 'in', self.ids)], ['sale_target_id'], ['__count'])
         dic = {}
-        for x in results: dic[x['sale_target_id'][0]] = x['sale_target_id_count']
+        # 10.3.2026: the "results" returned from _read_group in Odoo 19 is not the same as in Odoo 16;
+        # e.g. Odoo 16: {'sale_target_id_count': 1, 'sale_target_id': (26, ...), '__domain': ['&', (...), (...)]}
+        # e.g. Odoo 19: [(popular_reports.sale_target(26,), 1)]
+        # for x in results: dic[x['sale_target_id'][0]] = x['sale_target_id_count']
+        for x in results: dic[x[0].id] = x[1]
         for record in self: record['sale_target_line_ids_count'] = dic.get(record.id, 0)
     
 #     @api.depends('sale_target_line_ids')
@@ -180,4 +183,4 @@ class SalesTargetLine(models.Model):
                         if len(result_invoice_report) > 0:
                             temp.ttl_sold_count = sum(result_invoice_report.mapped('quantity'))
 
-#         rst_sales_report = self.env['account.invoice.report'].read_group([('product_id','=',temp.product_id.id)], fields=['product_id','quantity'], groupby=['product_id'],lazy=False)
+#         rst_sales_report = self.env['account.invoice.report']._read_group([('product_id','=',temp.product_id.id)], fields=['product_id','quantity'], groupby=['product_id'],lazy=False)

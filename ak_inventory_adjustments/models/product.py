@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from odoo import api, models
 
 
@@ -20,7 +19,7 @@ class Product(models.Model):
         product_id.check_access_rule("read")
         location_id = self.env["stock.location"].browse(location_id)
         lot_id = self.env["stock.lot"].browse(lot_id)
-        package_id = self.env["stock.quant.package"].browse(package_id)
+        # package_id = self.env["stock.quant.package"].browse(package_id)
         owner_id = self.env["res.partner"].browse(owner_id)
         to_uom = self.env["uom.uom"].browse(to_uom)
         quants = self.env["stock.quant"]._gather(

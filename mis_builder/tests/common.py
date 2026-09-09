@@ -6,19 +6,6 @@ import doctest
 from odoo.tests import BaseCase, tagged
 
 
-def setup_test_model(env, model_cls):
-    model_cls._build_model(env.registry, env.cr)
-    env.registry.setup_models(env.cr)
-    env.registry.init_models(
-        env.cr, [model_cls._name], dict(env.context, update_custom_fields=True)
-    )
-
-
-def teardown_test_model(env, model_cls):
-    del env.registry.models[model_cls._name]
-    env.registry.setup_models(env.cr)
-
-
 def _zip(iter1, iter2):
     i = 0
     iter1 = iter(iter1)
@@ -40,10 +27,8 @@ def assert_matrix(matrix, expected):
             raise AssertionError("too many rows")
         for j, cell, expected_val in _zip(row.iter_cells(), expected_row):
             assert (
-                cell and cell.val
-            ) == expected_val, "{} != {} in row {} col {}".format(
-                cell and cell.val, expected_val, i, j
-            )
+                (cell and cell.val) == expected_val
+            ), f"{cell and cell.val} != {expected_val} in row {i} col {j}"
 
 
 @tagged("doctest")

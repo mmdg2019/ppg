@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data noupdate="0">
+<data>
 <!-- multi -->
     <record model="ir.rule" id="stock_inventory_line_comp_rule">
         <field name="name">Inventory Line multi-company</field>

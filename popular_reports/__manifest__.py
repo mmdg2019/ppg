@@ -1,11 +1,12 @@
 
 {
     'name': 'Popular Reports',
-    'version': '1.0.0.1',
+    'version': "19.0.1.0.0",
     'summary': "Reports for Popular Plastic Group",
     'description': "Report Collection for Popular Plastic Group",
-    'category': 'App',
-    'company': 'Digi Power',
+    'category': 'Popular Reports',
+    'license': 'AGPL-3',
+    'author': 'DIGI POWER',
     'website': 'https://www.digipowermm.com',
     'depends': [
         'account',
@@ -16,7 +17,9 @@
         'stock',
         'website',
         'website_sale',
-        'ppg_credit_permission'
+        'ppg_credit_permission',
+        'stock_barcode',
+        
     ],
     'data': [
         'security/security.xml',
@@ -26,7 +29,6 @@
         'views/wizard_view.xml',
         'views/export_sales_analysis_by_quantity_with_color_wizard_forms.xml',
         'views/wizard_forms.xml',
-        'views/wizard_menus.xml',
         'views/sale_target.xml',
         'views/wizard_view_detail.xml',
         'reports/popular_reports.xml',
@@ -38,9 +40,9 @@
         'reports/popular_delivery_order_slip2.xml',
         'reports/stock_transfer_operation_report_template.xml',
         'reports/export_sales_analysis_by_quantity_with_color_report_template.xml',
+        'views/wizard_menus.xml',
     ],
     'images': ['static/description/banner.png'],
-    'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,
     'application': True,

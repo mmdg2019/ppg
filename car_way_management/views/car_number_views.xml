@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Car Number Tree View -->
+    <!-- Car Number List View -->
     <record id="view_car_number_tree" model="ir.ui.view">
-        <field name="name">car.number.tree</field>
+        <field name="name">car.number.list</field>
         <field name="model">car.number</field>
         <field name="arch" type="xml">
-            <tree string="Car Numbers">
+            <list>
                 <field name="name" />
                 <field name="car_size" />
                 <field name="car_ton" />
@@ -13,7 +13,7 @@
                 <field name="car_width" />
                 <field name="car_height" />
                 <field name="active" />
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Car Number Form View -->
@@ -49,7 +49,7 @@
     <record id="action_car_number" model="ir.actions.act_window">
         <field name="name">Car Numbers</field>
         <field name="res_model">car.number</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add your first car number

@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import _, models
+from odoo import models
 
 
 class TrialBalanceXslx(models.AbstractModel):
@@ -14,44 +14,44 @@ class TrialBalanceXslx(models.AbstractModel):
 
     def _get_report_name(self, report, data=False):
         company_id = data.get("company_id", False)
-        report_name = _("Trial Balance")
+        report_name = self.env._("Trial Balance")
         if company_id:
             company = self.env["res.company"].browse(company_id)
-            suffix = " - {} - {}".format(company.name, company.currency_id.name)
+            suffix = f" - {company.name} - {company.currency_id.name}"
             report_name = report_name + suffix
         return report_name
 
     def _get_report_columns(self, report):
         if not report.show_partner_details:
             res = {
-                0: {"header": _("Code"), "field": "code", "width": 10},
-                1: {"header": _("Account"), "field": "name", "width": 60},
+                0: {"header": self.env._("Code"), "field": "code", "width": 10},
+                1: {"header": self.env._("Account"), "field": "name", "width": 60},
                 2: {
-                    "header": _("Initial balance"),
+                    "header": self.env._("Initial balance"),
                     "field": "initial_balance",
                     "type": "amount",
                     "width": 14,
                 },
                 3: {
-                    "header": _("Debit"),
+                    "header": self.env._("Debit"),
                     "field": "debit",
                     "type": "amount",
                     "width": 14,
                 },
                 4: {
-                    "header": _("Credit"),
+                    "header": self.env._("Credit"),
                     "field": "credit",
                     "type": "amount",
                     "width": 14,
                 },
                 5: {
-                    "header": _("Period balance"),
+                    "header": self.env._("Period balance"),
                     "field": "balance",
                     "type": "amount",
                     "width": 14,
                 },
                 6: {
-                    "header": _("Ending balance"),
+                    "header": self.env._("Ending balance"),
                     "field": "ending_balance",
                     "type": "amount",
                     "width": 14,
@@ -60,13 +60,13 @@ class TrialBalanceXslx(models.AbstractModel):
             if report.foreign_currency:
                 foreign_currency = {
                     7: {
-                        "header": _("Initial balance"),
+                        "header": self.env._("Initial balance"),
                         "field": "initial_currency_balance",
                         "type": "amount_currency",
                         "width": 14,
                     },
                     8: {
-                        "header": _("Ending balance"),
+                        "header": self.env._("Ending balance"),
                         "field": "ending_currency_balance",
                         "type": "amount_currency",
                         "width": 14,
@@ -76,33 +76,33 @@ class TrialBalanceXslx(models.AbstractModel):
             return res
         else:
             res = {
-                0: {"header": _("Partner"), "field": "name", "width": 70},
+                0: {"header": self.env._("Partner"), "field": "name", "width": 70},
                 1: {
-                    "header": _("Initial balance"),
+                    "header": self.env._("Initial balance"),
                     "field": "initial_balance",
                     "type": "amount",
                     "width": 14,
                 },
                 2: {
-                    "header": _("Debit"),
+                    "header": self.env._("Debit"),
                     "field": "debit",
                     "type": "amount",
                     "width": 14,
                 },
                 3: {
-                    "header": _("Credit"),
+                    "header": self.env._("Credit"),
                     "field": "credit",
                     "type": "amount",
                     "width": 14,
                 },
                 4: {
-                    "header": _("Period balance"),
+                    "header": self.env._("Period balance"),
                     "field": "balance",
                     "type": "amount",
                     "width": 14,
                 },
                 5: {
-                    "header": _("Ending balance"),
+                    "header": self.env._("Ending balance"),
                     "field": "ending_balance",
                     "type": "amount",
                     "width": 14,
@@ -111,13 +111,13 @@ class TrialBalanceXslx(models.AbstractModel):
             if report.foreign_currency:
                 foreign_currency = {
                     6: {
-                        "header": _("Initial balance"),
+                        "header": self.env._("Initial balance"),
                         "field": "initial_currency_balance",
                         "type": "amount_currency",
                         "width": 14,
                     },
                     7: {
-                        "header": _("Ending balance"),
+                        "header": self.env._("Ending balance"),
                         "field": "ending_currency_balance",
                         "type": "amount_currency",
                         "width": 14,
@@ -129,29 +129,32 @@ class TrialBalanceXslx(models.AbstractModel):
     def _get_report_filters(self, report):
         return [
             [
-                _("Date range filter"),
-                _("From: %(date_from)s To: %(date_to)s")
-                % ({"date_from": report.date_from, "date_to": report.date_to}),
+                self.env._("Date range filter"),
+                self.env._(
+                    "From: %(date_from)s To: %(date_to)s",
+                    date_from=report.date_from,
+                    date_to=report.date_to,
+                ),
             ],
             [
-                _("Target moves filter"),
-                _("All posted entries")
+                self.env._("Target moves filter"),
+                self.env._("All posted entries")
                 if report.target_move == "posted"
-                else _("All entries"),
+                else self.env._("All entries"),
             ],
             [
-                _("Account at 0 filter"),
-                _("Hide") if report.hide_account_at_0 else _("Show"),
+                self.env._("Account at 0 filter"),
+                self.env._("Hide") if report.hide_account_at_0 else self.env._("Show"),
             ],
             [
-                _("Show foreign currency"),
-                _("Yes") if report.foreign_currency else _("No"),
+                self.env._("Show foreign currency"),
+                self.env._("Yes") if report.foreign_currency else self.env._("No"),
             ],
             [
-                _("Limit hierarchy levels"),
-                _("Level %s") % (report.show_hierarchy_level)
+                self.env._("Limit hierarchy levels"),
+                self.env._("Level %(level)s", level=report.show_hierarchy_level)
                 if report.limit_hierarchy_level
-                else _("No limit"),
+                else self.env._("No limit"),
             ],
         ]
 
@@ -166,7 +169,9 @@ class TrialBalanceXslx(models.AbstractModel):
             "report.account_financial_report.trial_balance"
         ]._get_report_values(report, data)
         trial_balance = res_data["trial_balance"]
+        trial_balance_grouped = res_data["trial_balance_grouped"]
         total_amount = res_data["total_amount"]
+        total_amount_grouped = res_data["total_amount_grouped"]
         partners_data = res_data["partners_data"]
         accounts_data = res_data["accounts_data"]
         show_hierarchy = res_data["show_hierarchy"]
@@ -175,22 +180,44 @@ class TrialBalanceXslx(models.AbstractModel):
         foreign_currency = res_data["foreign_currency"]
         limit_hierarchy_level = res_data["limit_hierarchy_level"]
         hide_parent_hierarchy_level = res_data["hide_parent_hierarchy_level"]
+        grouped_by = res_data["grouped_by"]
         if not show_partner_details:
-            # Display array header for account lines
-            self.write_array_header(report_data)
-
-        # For each account
-        if not show_partner_details:
-            for balance in trial_balance:
-                if show_hierarchy and limit_hierarchy_level:
-                    if show_hierarchy_level > balance["level"] and (
-                        not hide_parent_hierarchy_level
-                        or (show_hierarchy_level - 1) == balance["level"]
-                    ):
-                        # Display account lines
+            if grouped_by:
+                # For each grouped
+                for grouped_item in trial_balance_grouped:
+                    self.write_array_title(grouped_item["name"], report_data)
+                    # Display array header for account lines
+                    self.write_array_header(report_data)
+                    # For each account
+                    for balance in grouped_item["account_data"]:
                         self.write_line_from_dict(balance, report_data)
-                else:
-                    self.write_line_from_dict(balance, report_data)
+                    # Footer with totals
+                    grouped_item["code"] = ""
+                    grouped_item["currency_id"] = False
+                    self.write_account_footer(
+                        grouped_item, self.env._("Total"), report_data
+                    )
+                    report_data["row_pos"] += 1
+                # Last line with totals
+                total_amount_grouped["currency_id"] = False
+                total_amount_grouped["code"] = ""
+                self.write_account_footer(
+                    total_amount_grouped, self.env._("TOTAL"), report_data
+                )
+            else:
+                # Display array header for account lines
+                self.write_array_header(report_data)
+                # For each account
+                for balance in trial_balance:
+                    if show_hierarchy and limit_hierarchy_level:
+                        if show_hierarchy_level > balance["level"] and (
+                            not hide_parent_hierarchy_level
+                            or (show_hierarchy_level - 1) == balance["level"]
+                        ):
+                            # Display account lines
+                            self.write_line_from_dict(balance, report_data)
+                    else:
+                        self.write_line_from_dict(balance, report_data)
         else:
             for account_id in total_amount:
                 # Write account title
@@ -257,7 +284,7 @@ class TrialBalanceXslx(models.AbstractModel):
             line_object.currency_id = line_object.report_account_id.currency_id
         elif type_object == "account":
             line_object.currency_id = line_object.currency_id
-        return super(TrialBalanceXslx, self).write_line(line_object, report_data)
+        return super().write_line(line_object, report_data)
 
     def write_account_footer(self, account, name_value, report_data):
         """Specific function to write account footer for Trial Balance"""

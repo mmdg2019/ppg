@@ -9,7 +9,7 @@
 <!--     <record id="popular_reports.popular_reports_main_menu" model="ir.ui.menu" context="{'studio': True}">
         <field name="action" eval="False"/>
         <field name="active" eval="True"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="group_ids" eval="[(6, 0, [])]"/>
         <field name="name">Popular Reports</field>
         <field name="parent_id" eval="False"/>
         <field name="sequence">10</field>
@@ -23,7 +23,7 @@
 <!--     <record id="popular_reports.sales_target_menu" model="ir.ui.menu" context="{'studio': True}">
         <field name="action" eval="False"/>
         <field name="active" eval="True"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="group_ids" eval="[(6, 0, [])]"/>
         <field name="name">Target &amp; Performance</field>
         <field name="parent_id" eval="False"/>
         <field name="sequence">10</field>
@@ -38,7 +38,7 @@
 <!--     <record id="popular_reports.sales_target_main_menu" model="ir.ui.menu" context="{'studio': True}">
         <field name="action" ref="popular_reports.sale_target_view"/>
         <field name="active" eval="True"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="group_ids" eval="[(6, 0, [])]"/>
         <field name="name">Main Menu</field>
         <field name="parent_id" ref="popular_reports.sales_target_menu"/>
         <field name="sequence">10</field>

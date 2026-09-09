@@ -5,13 +5,14 @@ import logging
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import DAILY, MONTHLY, WEEKLY, YEARLY
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
 class DateRangeType(models.Model):
     _name = "date.range.type"
     _description = "Date Range Type"
+    _order = "name,id"
 
     @api.model
     def _default_company(self):
@@ -27,7 +28,10 @@ class DateRangeType(models.Model):
         default=True,
     )
     company_id = fields.Many2one(
-        comodel_name="res.company", string="Company", index=1, default=_default_company
+        comodel_name="res.company",
+        string="Company",
+        index=1,
+        default=lambda self: self._default_company(),
     )
     date_range_ids = fields.One2many("date.range", "type_id", string="Ranges")
     date_ranges_exist = fields.Boolean(compute="_compute_date_ranges_exist")
@@ -67,13 +71,10 @@ class DateRangeType(models.Model):
         ]
     )
 
-    _sql_constraints = [
-        (
-            "date_range_type_uniq",
-            "unique (name,company_id)",
-            "A date range type must be unique per company !",
-        )
-    ]
+    _date_range_type_uniq = models.Constraint(
+        "unique (name,company_id)",
+        "A date range type must be unique per company !",
+    )
 
     @api.constrains("company_id")
     def _check_company_id(self):
@@ -83,15 +84,16 @@ class DateRangeType(models.Model):
                     continue
                 if bool(
                     rec.date_range_ids.filtered(
-                        lambda r: r.company_id and r.company_id != rec.company_id
+                        lambda r, drt=rec: r.company_id
+                        and r.company_id != drt.company_id
                     )
                 ):
                     raise ValidationError(
-                        _(
+                        self.env._(
                             "You cannot change the company, as this "
-                            "Date Range Type is assigned to Date Range '%s'."
+                            "Date Range Type is assigned to Date Range '%s'.",
+                            rec.date_range_ids.display_name,
                         )
-                        % (rec.date_range_ids.display_name)
                     )
 
     @api.depends("name_expr", "name_prefix")
@@ -143,6 +145,6 @@ class DateRangeType(models.Model):
                     wizard.action_apply(batch=True)
             except Exception as e:
                 logger.warning(
-                    "Error autogenerating ranges for date range type "
-                    "%s: %s" % (dr_type.name, e)
+                    f"Error autogenerating ranges for date range type "
+                    f"{dr_type.name}: {e}"
                 )
