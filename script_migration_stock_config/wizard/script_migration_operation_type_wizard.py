@@ -4,6 +4,7 @@ from openpyxl import load_workbook
 
 from odoo import fields, models, _
 from odoo.exceptions import UserError
+from odoo.tools.misc import file_path
 
 
 class ScriptMigrationOperationTypeWizard(models.TransientModel):
@@ -13,7 +14,7 @@ class ScriptMigrationOperationTypeWizard(models.TransientModel):
     _FLOW_CONFIG = {
         "purchase_return": {
             "title": "Purchase Return",
-            "excel_file": "/Users/waiyan/Downloads/Purchase Return (stock.picking.type).xlsx",
+            "excel_file": "static/data/Purchase Return (stock.picking.type).xlsx",
             "location_side": "destination",
             "operation_type_header": ("Operation Type",),
             "company_header": ("Company",),
@@ -59,25 +60,26 @@ class ScriptMigrationOperationTypeWizard(models.TransientModel):
             if not company:
                 continue
 
-            picking_type = self._find_picking_type(row["operation_type"], company)
+            picking_types = self._find_picking_type(row["operation_type"], company)
             target_location = self._find_expected_location(config, company)
             if not target_location:
                 self._append_unique(missing_locations, self._company_label(row))
                 continue
 
-            if not picking_type:
+            if not picking_types:
                 continue
 
-            current_location = picking_type[location_field]
-            if current_location != target_location:
-                updates.append(
-                    "%s - %s - %s"
-                    % (
-                        self._company_label(row),
-                        self._operation_type_label(row),
-                        self._location_label(current_location),
+            for picking_type in picking_types:
+                current_location = picking_type[location_field]
+                if current_location != target_location:
+                    updates.append(
+                        "%s - %s - %s"
+                        % (
+                            self._company_label(row),
+                            self._operation_type_label(row),
+                            self._location_label(current_location),
+                        )
                     )
-                )
 
         self.summary = self._format_summary([
             ("Update", updates),
@@ -94,23 +96,24 @@ class ScriptMigrationOperationTypeWizard(models.TransientModel):
 
         for row in self._iter_excel_rows(config):
             company = self._find_company(row["company"])
-            picking_type = self._find_picking_type(row["operation_type"], company) if company else False
+            picking_types = self._find_picking_type(row["operation_type"], company) if company else False
             target_location = self._find_expected_location(config, company) if company else False
 
-            if not company or not picking_type or not target_location:
+            if not company or not picking_types or not target_location:
                 self._append_unique(skipped, self._company_label(row))
                 continue
 
-            if picking_type[location_field] != target_location:
-                picking_type.write({location_field: target_location.id})
-                updated.append(
-                    "%s - %s - %s"
-                    % (
-                        self._company_label(row),
-                        self._operation_type_label(row),
-                        self._location_label(target_location),
+            for picking_type in picking_types:
+                if picking_type[location_field] != target_location:
+                    picking_type.write({location_field: target_location.id})
+                    updated.append(
+                        "%s - %s - %s"
+                        % (
+                            self._company_label(row),
+                            self._operation_type_label(row),
+                            self._location_label(target_location),
+                        )
                     )
-                )
 
         self.summary = self._format_summary([
             ("Update", updated),
@@ -120,7 +123,11 @@ class ScriptMigrationOperationTypeWizard(models.TransientModel):
 
     def _iter_excel_rows(self, config):
         try:
-            workbook = load_workbook(config["excel_file"], read_only=True, data_only=True)
+            source_path = file_path(
+                "script_migration_stock_config/%s" % config["excel_file"],
+                filter_ext=(".xlsx",),
+            )
+            workbook = load_workbook(source_path, read_only=True, data_only=True)
         except FileNotFoundError as error:
             raise UserError(_("Excel file not found: %s") % config["excel_file"]) from error
 
@@ -191,8 +198,8 @@ class ScriptMigrationOperationTypeWizard(models.TransientModel):
         picking_types = self._picking_type_model(company).search([
             ("name", "=", operation_type_name),
             ("company_id", "=", company.id),
-        ], limit=2)
-        return picking_types if len(picking_types) == 1 else self.env["stock.picking.type"]
+        ])
+        return picking_types
 
     def _find_expected_location(self, config, company):
         expected_location = config["expected_location"]

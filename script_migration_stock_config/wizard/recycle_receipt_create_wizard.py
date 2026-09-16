@@ -40,13 +40,18 @@ class RecycleReceiptCreateWizard(models.TransientModel):
                 skipped.append(self._row_label_with_account(row))
                 continue
 
+            parent = self._location_model(company).with_context(active_test=False).search([
+                ("name", "=", "Virtual Locations"),
+                ("usage", "=", "view"),
+                ("company_id", "=", False),
+                ("location_id", "=", False),
+            ], limit=1)
             values = {
                 "name": row["location"],
+                "location_id": parent.id,
                 "usage": usage,
                 "company_id": company.id,
             }
-            if parent:
-                values["location_id"] = parent.id
             if account:
                 values["valuation_account_id"] = account.id
 
