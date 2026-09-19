@@ -1,0 +1,1261 @@
+[
+  {
+    "company": 1,
+    "file": 3,
+    "standard": 331,
+    "assigned": 207,
+    "accounts": [
+      [
+        "395",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "1",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 7,
+    "file": 5,
+    "standard": 331,
+    "assigned": 209,
+    "accounts": [
+      [
+        "1912",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "7",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 55,
+    "file": 7,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 2,
+    "file": 9,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 10,
+    "file": 10,
+    "standard": 331,
+    "assigned": 193,
+    "accounts": [
+      [
+        "2694",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "10",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 11,
+    "file": 11,
+    "standard": 331,
+    "assigned": 182,
+    "accounts": [
+      [
+        "2476",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "11",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 3,
+    "file": 12,
+    "standard": 331,
+    "assigned": 88,
+    "accounts": [
+      [
+        "1155",
+        "501205",
+        "Price Difference ",
+        "Expenses",
+        "3",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 14,
+    "file": 13,
+    "standard": 331,
+    "assigned": 218,
+    "accounts": [
+      [
+        "3043",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "14",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 9,
+    "file": 14,
+    "standard": 331,
+    "assigned": 39,
+    "accounts": [
+      [
+        "2240",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "9",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 45,
+    "file": 15,
+    "standard": 331,
+    "assigned": 224,
+    "accounts": [
+      [
+        "8219",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "45",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 35,
+    "file": 16,
+    "standard": 331,
+    "assigned": 3,
+    "accounts": [
+      [
+        "6592",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "35",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 47,
+    "file": 17,
+    "standard": 331,
+    "assigned": 238,
+    "accounts": [
+      [
+        "8367",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "47",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 70,
+    "file": 18,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 96,
+    "file": 19,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 97,
+    "file": 20,
+    "standard": 305,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 98,
+    "file": 21,
+    "standard": 331,
+    "assigned": 5,
+    "accounts": [
+      [
+        "60218",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "98",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 99,
+    "file": 22,
+    "standard": 303,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 100,
+    "file": 23,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 101,
+    "file": 24,
+    "standard": 292,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 102,
+    "file": 25,
+    "standard": 301,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 103,
+    "file": 26,
+    "standard": 297,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 104,
+    "file": 27,
+    "standard": 294,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 105,
+    "file": 28,
+    "standard": 302,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 106,
+    "file": 29,
+    "standard": 300,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 107,
+    "file": 30,
+    "standard": 288,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 108,
+    "file": 31,
+    "standard": 306,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 109,
+    "file": 32,
+    "standard": 288,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 110,
+    "file": 33,
+    "standard": 303,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 111,
+    "file": 34,
+    "standard": 294,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 112,
+    "file": 35,
+    "standard": 285,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 113,
+    "file": 36,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 114,
+    "file": 37,
+    "standard": 300,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 115,
+    "file": 38,
+    "standard": 300,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 116,
+    "file": 39,
+    "standard": 303,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 117,
+    "file": 40,
+    "standard": 290,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 118,
+    "file": 41,
+    "standard": 331,
+    "assigned": 249,
+    "accounts": [
+      [
+        "77250",
+        "502004",
+        "Price Different",
+        "Expenses",
+        "118",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 119,
+    "file": 42,
+    "standard": 245,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 120,
+    "file": 43,
+    "standard": 299,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 121,
+    "file": 44,
+    "standard": 295,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 122,
+    "file": 45,
+    "standard": 331,
+    "assigned": 240,
+    "accounts": [
+      [
+        "77242",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "122",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 6,
+    "file": 46,
+    "standard": 331,
+    "assigned": 208,
+    "accounts": [
+      [
+        "1803",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "6",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 31,
+    "file": 47,
+    "standard": 331,
+    "assigned": 215,
+    "accounts": [
+      [
+        "5555",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "31",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 26,
+    "file": 48,
+    "standard": 331,
+    "assigned": 49,
+    "accounts": [
+      [
+        "4866",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "26",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 46,
+    "file": 49,
+    "standard": 331,
+    "assigned": 221,
+    "accounts": [
+      [
+        "8095",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "46",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 84,
+    "file": 50,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 50,
+    "file": 51,
+    "standard": 331,
+    "assigned": 2,
+    "accounts": [
+      [
+        "13564",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "50",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 86,
+    "file": 52,
+    "standard": 331,
+    "assigned": 3,
+    "accounts": [
+      [
+        "49949",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "86",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 65,
+    "file": 53,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 80,
+    "file": 54,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 49,
+    "file": 55,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 66,
+    "file": 56,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 64,
+    "file": 57,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 56,
+    "file": 58,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 57,
+    "file": 59,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 67,
+    "file": 60,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 59,
+    "file": 61,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 68,
+    "file": 62,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 58,
+    "file": 63,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 69,
+    "file": 64,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 60,
+    "file": 65,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 62,
+    "file": 66,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 61,
+    "file": 67,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 81,
+    "file": 68,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 83,
+    "file": 69,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 93,
+    "file": 70,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 63,
+    "file": 71,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 82,
+    "file": 72,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 94,
+    "file": 73,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 91,
+    "file": 74,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 48,
+    "file": 75,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 77,
+    "file": 76,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 4,
+    "file": 77,
+    "standard": 331,
+    "assigned": 214,
+    "accounts": [
+      [
+        "1577",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "4",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 18,
+    "file": 78,
+    "standard": 331,
+    "assigned": 9,
+    "accounts": [
+      [
+        "3275",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "18",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 17,
+    "file": 79,
+    "standard": 331,
+    "assigned": 3,
+    "accounts": [
+      [
+        "3159",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "17",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 15,
+    "file": 80,
+    "standard": 331,
+    "assigned": 200,
+    "accounts": [
+      [
+        "3739",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "15",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 16,
+    "file": 81,
+    "standard": 331,
+    "assigned": 16,
+    "accounts": [
+      [
+        "3623",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "16",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 5,
+    "file": 82,
+    "standard": 331,
+    "assigned": 202,
+    "accounts": [
+      [
+        "1694",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "5",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 76,
+    "file": 83,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 71,
+    "file": 84,
+    "standard": 331,
+    "assigned": 239,
+    "accounts": [
+      [
+        "37317",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "71",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 75,
+    "file": 85,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 74,
+    "file": 86,
+    "standard": 331,
+    "assigned": 2,
+    "accounts": [
+      [
+        "37771",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "74",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 90,
+    "file": 87,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 88,
+    "file": 88,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 87,
+    "file": 89,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 51,
+    "file": 90,
+    "standard": 331,
+    "assigned": 6,
+    "accounts": [
+      [
+        "13442",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "51",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 78,
+    "file": 91,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 89,
+    "file": 92,
+    "standard": 331,
+    "assigned": 279,
+    "accounts": [
+      [
+        "51637",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "89",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 52,
+    "file": 93,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 79,
+    "file": 94,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 44,
+    "file": 95,
+    "standard": 331,
+    "assigned": 0,
+    "accounts": []
+  },
+  {
+    "company": 73,
+    "file": 96,
+    "standard": 331,
+    "assigned": 1,
+    "accounts": [
+      [
+        "37549",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "73",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 72,
+    "file": 97,
+    "standard": 331,
+    "assigned": 236,
+    "accounts": [
+      [
+        "37660",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "72",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 8,
+    "file": 98,
+    "standard": 331,
+    "assigned": 211,
+    "accounts": [
+      [
+        "2021",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "8",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 36,
+    "file": 99,
+    "standard": 331,
+    "assigned": 5,
+    "accounts": [
+      [
+        "6470",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "36",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 13,
+    "file": 100,
+    "standard": 331,
+    "assigned": 210,
+    "accounts": [
+      [
+        "2923",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "13",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 43,
+    "file": 101,
+    "standard": 331,
+    "assigned": 218,
+    "accounts": [
+      [
+        "7706",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "43",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 28,
+    "file": 102,
+    "standard": 331,
+    "assigned": 245,
+    "accounts": [
+      [
+        "5869",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "28",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 34,
+    "file": 103,
+    "standard": 331,
+    "assigned": 4,
+    "accounts": [
+      [
+        "5982",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "34",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 85,
+    "file": 104,
+    "standard": 331,
+    "assigned": 1,
+    "accounts": [
+      [
+        "49705",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "85",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 37,
+    "file": 105,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "6714",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "37",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 42,
+    "file": 106,
+    "standard": 331,
+    "assigned": 220,
+    "accounts": [
+      [
+        "7582",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "42",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 41,
+    "file": 107,
+    "standard": 331,
+    "assigned": 218,
+    "accounts": [
+      [
+        "7458",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "41",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 29,
+    "file": 108,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "5822",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "29",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 33,
+    "file": 109,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "5667",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "33",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 38,
+    "file": 110,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "7202",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "38",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 95,
+    "file": 111,
+    "standard": 331,
+    "assigned": 5,
+    "accounts": [
+      [
+        "53946",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "95",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 12,
+    "file": 112,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "5833",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "12",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 32,
+    "file": 113,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "5779",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "32",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 54,
+    "file": 114,
+    "standard": 331,
+    "assigned": 223,
+    "accounts": [
+      [
+        "17906",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "54",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 27,
+    "file": 115,
+    "standard": 331,
+    "assigned": 246,
+    "accounts": [
+      [
+        "4993",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "27",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 40,
+    "file": 116,
+    "standard": 331,
+    "assigned": 220,
+    "accounts": [
+      [
+        "7334",
+        "502004",
+        "Price Difference ",
+        "Expenses",
+        "40",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 39,
+    "file": 117,
+    "standard": 331,
+    "assigned": 253,
+    "accounts": [
+      [
+        "7080",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "39",
+        ""
+      ]
+    ]
+  },
+  {
+    "company": 92,
+    "file": 118,
+    "standard": 331,
+    "assigned": 209,
+    "accounts": [
+      [
+        "52386",
+        "502004",
+        "Price Difference ",
+        "Cost of Revenue",
+        "92",
+        ""
+      ]
+    ]
+  }
+]

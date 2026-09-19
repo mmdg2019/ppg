@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_script_migration_stock_config_wizard_form" model="ir.ui.view">
+        <field name="name">script.migration.stock.config.wizard.form</field>
+        <field name="model">script.migration.stock.config.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Damage Receipt Loss Account Migration">
+                <group>
+                    <field name="check_summary" readonly="1" nolabel="1" placeholder="Click Check to preview matching Damage Receipt locations."/>
+                </group>
+                <footer>
+                    <button name="action_check" string="Check" type="object" class="btn-secondary"/>
+                    <button name="action_run" string="Run" type="object" class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_script_migration_stock_config_wizard" model="ir.actions.act_window">
+        <field name="name">Damage Receipt Loss Account Migration</field>
+        <field name="res_model">script.migration.stock.config.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_script_migration_stock_config_wizard_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">list</field>
+        <field name="group_ids" eval="[(4, ref('base.group_no_one'))]"/>
+    </record>
+</odoo>

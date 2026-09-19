@@ -1,0 +1,680 @@
+[
+  {
+    "company": 1,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 7,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 55,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 2,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 10,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 11,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 3,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 14,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 9,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 45,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 35,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 47,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 70,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 96,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 97,
+    "account_blank": 334,
+    "standard": 308,
+    "fifo": 26
+  },
+  {
+    "company": 98,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 99,
+    "account_blank": 334,
+    "standard": 306,
+    "fifo": 28
+  },
+  {
+    "company": 100,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 101,
+    "account_blank": 334,
+    "standard": 295,
+    "fifo": 39
+  },
+  {
+    "company": 102,
+    "account_blank": 334,
+    "standard": 304,
+    "fifo": 30
+  },
+  {
+    "company": 103,
+    "account_blank": 334,
+    "standard": 300,
+    "fifo": 34
+  },
+  {
+    "company": 104,
+    "account_blank": 334,
+    "standard": 297,
+    "fifo": 37
+  },
+  {
+    "company": 105,
+    "account_blank": 334,
+    "standard": 305,
+    "fifo": 29
+  },
+  {
+    "company": 106,
+    "account_blank": 334,
+    "standard": 303,
+    "fifo": 31
+  },
+  {
+    "company": 107,
+    "account_blank": 334,
+    "standard": 291,
+    "fifo": 43
+  },
+  {
+    "company": 108,
+    "account_blank": 334,
+    "standard": 309,
+    "fifo": 25
+  },
+  {
+    "company": 109,
+    "account_blank": 334,
+    "standard": 291,
+    "fifo": 43
+  },
+  {
+    "company": 110,
+    "account_blank": 334,
+    "standard": 306,
+    "fifo": 28
+  },
+  {
+    "company": 111,
+    "account_blank": 334,
+    "standard": 297,
+    "fifo": 37
+  },
+  {
+    "company": 112,
+    "account_blank": 334,
+    "standard": 288,
+    "fifo": 46
+  },
+  {
+    "company": 113,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 114,
+    "account_blank": 334,
+    "standard": 303,
+    "fifo": 31
+  },
+  {
+    "company": 115,
+    "account_blank": 334,
+    "standard": 303,
+    "fifo": 31
+  },
+  {
+    "company": 116,
+    "account_blank": 334,
+    "standard": 306,
+    "fifo": 28
+  },
+  {
+    "company": 117,
+    "account_blank": 334,
+    "standard": 293,
+    "fifo": 41
+  },
+  {
+    "company": 118,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 119,
+    "account_blank": 334,
+    "standard": 248,
+    "fifo": 86
+  },
+  {
+    "company": 120,
+    "account_blank": 334,
+    "standard": 302,
+    "fifo": 32
+  },
+  {
+    "company": 121,
+    "account_blank": 334,
+    "standard": 298,
+    "fifo": 36
+  },
+  {
+    "company": 122,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 6,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 31,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 26,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 46,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 84,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 50,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 86,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 65,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 80,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 49,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 66,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 64,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 56,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 57,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 67,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 59,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 68,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 58,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 69,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 60,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 62,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 61,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 81,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 83,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 93,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 63,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 82,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 94,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 91,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 48,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 77,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 4,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 18,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 17,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 15,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 16,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 5,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 76,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 71,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 75,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 74,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 90,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 88,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 87,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 51,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 78,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 89,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 52,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 79,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 44,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 73,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 72,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 8,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 36,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 13,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 43,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 28,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 34,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 85,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 37,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 42,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 41,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 29,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 33,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 38,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 95,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 12,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 32,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 54,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 27,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 40,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 39,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  },
+  {
+    "company": 92,
+    "account_blank": 334,
+    "standard": 334,
+    "fifo": 0
+  }
+]

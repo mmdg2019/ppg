@@ -1,0 +1,19 @@
+{
+  "completedAtUTC": "2026-09-19T09:28:07.686736+00:00",
+  "companies": 113,
+  "matchedSettings": 37403,
+  "changedToPeriodic": 29421,
+  "unchangedPerpetual": 7982,
+  "excludedTargetSettings": 339,
+  "targetSettingsVerified": 37742,
+  "mismatches": 0,
+  "sourceOnlyCategoryIds": [
+    2
+  ],
+  "targetOnlyCategoryIds": [
+    3638,
+    3639,
+    3640
+  ],
+  "verification": "Browser UI reread of all category identities in both valuation groups per company"
+}

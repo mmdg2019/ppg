@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_reconcile_wizard_account_ext_inherit" model="ir.ui.view">
+        <field name="name">account.reconcile.wizard.form.account_ext.inherit</field>
+        <field name="model">account.reconcile.wizard</field>
+        <field name="inherit_id" ref="account_accountant.view_account_reconcile_wizard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='allow_partials']" position="after">
+                <field name="manual_disc_mode" invisible="edit_mode or allow_partials"/>
+                <field name="partner_id" invisible="allow_partials" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='allow_partials']" position="attributes">
+                <attribute name="invisible">not display_allow_partials or manual_disc_mode</attribute>
+            </xpath>
+            <xpath expr="//label[@for='amount_currency']" position="attributes">
+                <attribute name="invisible">edit_mode or manual_disc_mode</attribute>
+            </xpath>
+            <xpath expr="//div[@name='regular_mode_amounts']" position="attributes">
+                <attribute name="invisible">edit_mode or manual_disc_mode</attribute>
+            </xpath>
+            <xpath expr="//label[@for='edit_mode_amount_currency']" position="attributes">
+                <attribute name="invisible">not edit_mode and not manual_disc_mode</attribute>
+            </xpath>
+            <xpath expr="//div[@name='edit_mode_amounts']" position="attributes">
+                <attribute name="invisible">not edit_mode and not manual_disc_mode</attribute>
+            </xpath>
+            <xpath expr="//field[@name='edit_mode_amount_currency']" position="attributes">
+                <attribute name="required">edit_mode or manual_disc_mode</attribute>
+            </xpath>
+            <xpath expr="//footer/button[@name='reconcile_open']" position="after">
+                <button string="Advance Discount" class="btn-primary" invisible="not is_payment" name="advanced_discount" type="object" data-hotkey="o"/>
+            </xpath>
+            <xpath expr="//footer/button[@name='reconcile_open']" position="attributes">
+                <attribute name="invisible">is_payment</attribute>
+            </xpath>
+            <xpath expr="//footer/button[@name='reconcile']" position="attributes">
+                <attribute name="invisible">is_payment</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,470 @@
+[
+  {
+    "company": 1,
+    "changes": 207,
+    "code": "502004",
+    "sourceAccount": "395",
+    "targetAccount": "395",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 7,
+    "changes": 209,
+    "code": "502004",
+    "sourceAccount": "1912",
+    "targetAccount": "1912",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 10,
+    "changes": 193,
+    "code": "502004",
+    "sourceAccount": "2694",
+    "targetAccount": "2694",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 11,
+    "changes": 182,
+    "code": "502004",
+    "sourceAccount": "2476",
+    "targetAccount": "2476",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 3,
+    "changes": 88,
+    "code": "501205",
+    "sourceAccount": "1155",
+    "targetAccount": "1155",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 14,
+    "changes": 218,
+    "code": "502004",
+    "sourceAccount": "3043",
+    "targetAccount": "3043",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 9,
+    "changes": 39,
+    "code": "502004",
+    "sourceAccount": "2240",
+    "targetAccount": "2240",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 45,
+    "changes": 224,
+    "code": "502004",
+    "sourceAccount": "8219",
+    "targetAccount": "8219",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 35,
+    "changes": 3,
+    "code": "502004",
+    "sourceAccount": "6592",
+    "targetAccount": "6592",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 47,
+    "changes": 238,
+    "code": "502004",
+    "sourceAccount": "8367",
+    "targetAccount": "8367",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 98,
+    "changes": 5,
+    "code": "502004",
+    "sourceAccount": "60218",
+    "targetAccount": "60218",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 118,
+    "changes": 249,
+    "code": "502004",
+    "sourceAccount": "77250",
+    "targetAccount": "77250",
+    "type": "Expenses",
+    "name": "Price Different"
+  },
+  {
+    "company": 122,
+    "changes": 240,
+    "code": "502004",
+    "sourceAccount": "77242",
+    "targetAccount": "77242",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 6,
+    "changes": 208,
+    "code": "502004",
+    "sourceAccount": "1803",
+    "targetAccount": "1803",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 31,
+    "changes": 215,
+    "code": "502004",
+    "sourceAccount": "5555",
+    "targetAccount": "5555",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 26,
+    "changes": 49,
+    "code": "502004",
+    "sourceAccount": "4866",
+    "targetAccount": "4866",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 46,
+    "changes": 221,
+    "code": "502004",
+    "sourceAccount": "8095",
+    "targetAccount": "8095",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 50,
+    "changes": 2,
+    "code": "502004",
+    "sourceAccount": "13564",
+    "targetAccount": "13564",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 86,
+    "changes": 3,
+    "code": "502004",
+    "sourceAccount": "49949",
+    "targetAccount": "49949",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 4,
+    "changes": 214,
+    "code": "502004",
+    "sourceAccount": "1577",
+    "targetAccount": "1577",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 18,
+    "changes": 9,
+    "code": "502004",
+    "sourceAccount": "3275",
+    "targetAccount": "3275",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 17,
+    "changes": 3,
+    "code": "502004",
+    "sourceAccount": "3159",
+    "targetAccount": "3159",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 15,
+    "changes": 200,
+    "code": "502004",
+    "sourceAccount": "3739",
+    "targetAccount": "3739",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 16,
+    "changes": 16,
+    "code": "502004",
+    "sourceAccount": "3623",
+    "targetAccount": "3623",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 5,
+    "changes": 202,
+    "code": "502004",
+    "sourceAccount": "1694",
+    "targetAccount": "1694",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 71,
+    "changes": 239,
+    "code": "502004",
+    "sourceAccount": "37317",
+    "targetAccount": "37317",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 74,
+    "changes": 2,
+    "code": "502004",
+    "sourceAccount": "37771",
+    "targetAccount": "37771",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 51,
+    "changes": 6,
+    "code": "502004",
+    "sourceAccount": "13442",
+    "targetAccount": "13442",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 89,
+    "changes": 279,
+    "code": "502004",
+    "sourceAccount": "51637",
+    "targetAccount": "51637",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 73,
+    "changes": 1,
+    "code": "502004",
+    "sourceAccount": "37549",
+    "targetAccount": "37549",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 72,
+    "changes": 236,
+    "code": "502004",
+    "sourceAccount": "37660",
+    "targetAccount": "37660",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 8,
+    "changes": 211,
+    "code": "502004",
+    "sourceAccount": "2021",
+    "targetAccount": "2021",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 36,
+    "changes": 5,
+    "code": "502004",
+    "sourceAccount": "6470",
+    "targetAccount": "6470",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 13,
+    "changes": 210,
+    "code": "502004",
+    "sourceAccount": "2923",
+    "targetAccount": "2923",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 43,
+    "changes": 218,
+    "code": "502004",
+    "sourceAccount": "7706",
+    "targetAccount": "7706",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 28,
+    "changes": 245,
+    "code": "502004",
+    "sourceAccount": "5869",
+    "targetAccount": "5869",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 34,
+    "changes": 4,
+    "code": "502004",
+    "sourceAccount": "5982",
+    "targetAccount": "5982",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 85,
+    "changes": 1,
+    "code": "502004",
+    "sourceAccount": "49705",
+    "targetAccount": "49705",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 37,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "6714",
+    "targetAccount": "6714",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 42,
+    "changes": 220,
+    "code": "502004",
+    "sourceAccount": "7582",
+    "targetAccount": "7582",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 41,
+    "changes": 218,
+    "code": "502004",
+    "sourceAccount": "7458",
+    "targetAccount": "7458",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 29,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "5822",
+    "targetAccount": "5822",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 33,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "5667",
+    "targetAccount": "5667",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 38,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "7202",
+    "targetAccount": "7202",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 95,
+    "changes": 5,
+    "code": "502004",
+    "sourceAccount": "53946",
+    "targetAccount": "53946",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 12,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "5833",
+    "targetAccount": "5833",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 32,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "5779",
+    "targetAccount": "5779",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 54,
+    "changes": 223,
+    "code": "502004",
+    "sourceAccount": "17906",
+    "targetAccount": "17906",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 27,
+    "changes": 246,
+    "code": "502004",
+    "sourceAccount": "4993",
+    "targetAccount": "4993",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 40,
+    "changes": 220,
+    "code": "502004",
+    "sourceAccount": "7334",
+    "targetAccount": "7334",
+    "type": "Expenses",
+    "name": "Price Difference"
+  },
+  {
+    "company": 39,
+    "changes": 253,
+    "code": "502004",
+    "sourceAccount": "7080",
+    "targetAccount": "7080",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  },
+  {
+    "company": 92,
+    "changes": 209,
+    "code": "502004",
+    "sourceAccount": "52386",
+    "targetAccount": "52386",
+    "type": "Cost of Revenue",
+    "name": "Price Difference"
+  }
+]
