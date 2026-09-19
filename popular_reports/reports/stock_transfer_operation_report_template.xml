@@ -65,43 +65,43 @@
                         <table class="table table-sm o_report_block_table" style="padding: 0.5em; font-size: 13px;">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th style="font-weight:bold;">
                                         <span>Item Name</span>
                                     </th>
-                                    <th style="text-align:center;">
+                                    <th style="text-align:center;font-weight:bold;">
                                         <span>Unit of Measure (UoM)</span>
                                     </th>
-                                    <th style="text-align:right;">
-                                        <span>Opening Blance</span>
+                                    <th style="text-align:right;font-weight:bold;">
+                                        <span>Opening Balance</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>(+) Receipt</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>(+) Sales Return</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>(+) Inventory Adjustment</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>(-) Inventory Adjustment</span>
                                     </th>
-                                    <th style="text-align:right;">
-                                        <span>(-) Putchase Return</span>
+                                    <th style="text-align:right;font-weight:bold;">
+                                        <span>(-) Purchase Return</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>(-) Delivery Order</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>(-) Scrap</span>
                                     </th>
-                                    <th style="text-align:right;">
+                                    <th style="text-align:right;font-weight:bold;">
                                         <span>Closing Balance</span>
                                     </th>
                                 </tr>
                             </thead>
                             <t t-if="docs">
-                                <tbody style="border-top:1px solid #ddd;">
+                                <tbody style="border-top:1px solid #ddd;border-bottom:1px solid #ddd;">
                                     <t t-foreach="docs" t-as="doc">
                                         <tr>
                                             <td>

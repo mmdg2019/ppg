@@ -7,13 +7,13 @@ class ResPartner(models.Model):
     township_id = fields.Many2one(
         "res.township",
         string="Township",
-        required=True,
+        required=False,
         help="Township of the partner's address.",
     )
     city_id = fields.Many2one(
         "res.city",
         string="City",
-        required=True,
+        required=False,
         help="City of the partner's address.",
     )
 

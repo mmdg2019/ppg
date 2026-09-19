@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+        <!-- 19.3.2026: the following coding style does not work in Odoo 19 and rewrite below -->
+        <!-- <report
                 string="Main Group Purchase Order Slip"
                 id="action_print_main_group_purchase_order_slip"
                 model="purchase.order"
@@ -9,7 +10,17 @@
                 name="popular_reports.report_main_group_purchase_slip"
                 file="popular_reports.report_main_group_purchase_slip"
                 print_report_name="'Main Group Purchase Order Slip'"
-            />
+            /> -->
+        <record id="action_print_main_group_purchase_order_slip" model="ir.actions.report">
+           <field name="name">Main Group Purchase Order Slip</field>
+           <field name="model">purchase.order</field>
+           <field name="report_type">qweb-html</field>
+           <field name="report_name">popular_reports.report_main_group_purchase_slip</field>
+           <field name="report_file">popular_reports.report_main_group_purchase_slip</field>
+           <field name="print_report_name">'Main Group Purchase Order Slip'</field>
+           <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+           <field name="binding_type">report</field>
+       </record>
 
 	<template id="report_main_group_purchase_order_slip_document">
         <div class="page h5">
@@ -32,11 +43,11 @@
             <div class="row mt32 mb32">
                 <div class="col-auto" name="div_expt_date">
                     <strong>Confirmation Date:</strong>
-                    <p t-field="doc.date_order"/>
+                    <p t-esc="context_timestamp(doc.date_order).strftime('%d/%m/%Y %H:%M:%S')"/> <!-- 19.3.2026: changed datetime format and timezone -->
                 </div>
             </div>
             <table class="table table-sm" name="invoice_line_table">
-                <thead>
+                <thead style="border-bottom: 1px solid #ddd;"> <!--19.3.2026: changed bottom border line width -->
                     <tr>
                         <th name="th_sm_product">
                             <strong>Product</strong>
@@ -54,7 +65,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="border-bottom: 1px solid #ddd;"> <!--19.3.2026: changed bottom border line width -->
                     <t t-set="lines" t-value="doc.order_line.filtered(lambda x: x.product_uom_qty)"/>
                     <tr t-foreach="lines" t-as="table_line" t-if="table_line.product_id.name != &quot;Special Discount&quot; and table_line.product_id.name != &quot;Other Charges&quot; and table_line.product_uom_qty &gt; 0">
                         <td>
@@ -62,27 +73,28 @@
                         </td>
                         <td class="text-center">
                             <!-- <span t-field="table_line.x_studio_product_packaging"/> -->
-                            <span t-field="table_line.product_packaging_id"/>
+                            <!-- <span t-field="table_line.product_packaging_id"/> --> <!-- 19.3.2026: no packaging related info in Odoo 19 -->
                         </td>
                         <td class="text-center">
                             <!-- <span t-field="table_line.x_studio_no_of_package"/> -->
                             <!-- <span t-field="table_line.product_packaging_qty"/> -->
-                            <span t-esc="int(table_line.product_packaging_qty)"/>
+                            <!-- <span t-esc="int(table_line.product_packaging_qty)"/> --> <!-- 19.3.2026: no packaging related info in Odoo 19 -->
                         </td>
                         <td class="text-right">
                             <span t-field="table_line.product_qty" class="h3"/>
                         </td>
                         <td class="text-right">
-                            <span t-field="table_line.product_uom"/>
+                            <span t-field="table_line.product_uom_id"/> <!-- 19.3.2026: changed product_uom to product_uom_id -->
                         </td>
                         
                     </tr>
                 </tbody>
             </table>
             <div class="row mt32 mb32">
-                <div t-if="doc.notes" class="col-auto" name="div_origin">
+                <!-- 19.3.2026: changed 'notes' to 'note' -->
+                <div t-if="doc.note" class="col-auto" name="div_origin">
                     <strong>Notes:</strong>
-                    <p t-field="doc.notes"/>
+                    <p t-field="doc.note"/>
                 </div>
             </div>
         </div>

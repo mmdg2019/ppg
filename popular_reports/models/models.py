@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from datetime import *
 from dateutil.relativedelta import relativedelta
@@ -20,7 +19,7 @@ class popular_reports(models.Model):
     _rec_name = 'report_name'
     date = fields.Date(string='Date')
     report_name = fields.Char(string="Report Name")
-    report_file = fields.Binary('Report File',filters='*.xml')
+    report_file = fields.Binary('Report File', attachment=True)
     company_id = fields.Many2one('res.company')
     
     def export_stock_transfer_operation_report(self, company, c_date = datetime.now()):
@@ -38,7 +37,7 @@ class popular_reports(models.Model):
                '(-) Inventory Adjustment', '(-) Purchase Return', '(-) Delivery Order', '(-) Scrap', 'Closing Balance']
         
         # to avoid timezone mismatch
-        local_tz = timezone(self._context.get('tz', 'Asia/Yangon'))
+        local_tz = timezone(self.env.context.get('tz', 'Asia/Yangon'))
         c_date = UTC.localize(c_date, is_dst=True).astimezone(tz=local_tz)
         
         # get previous month of the given date
@@ -64,7 +63,7 @@ class popular_reports(models.Model):
             for col in range(len(cols)):
                 worksheet.write(row, col, cols[col])
             row+=1
-            products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='default_code asc')
+            products = self.env['product.product'].sudo().search([('type', '=', 'consu'), ('is_storable', '=', True), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='default_code asc')
             scraps = self.env['stock.scrap'].sudo().search([('state', '=','done'), ('date_done', '>=',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')),('date_done', '<',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y') + relativedelta(months = 1)), ('company_id', '=', company.id)]).with_context(force_company=company.id)
             docs = self.env['stock.move'].sudo().search([('state', '=','done'), ('date', '>=',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')),('date', '<',datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y')+ relativedelta(months = 1)), ('company_id', '=', company.id)])
             for product in products:
@@ -145,7 +144,7 @@ class popular_reports(models.Model):
             worksheet.write(row, 0, "Location Name:")
             worksheet.write(row, 1, stock.display_name)
             row+=1
-            products = self.env['product.product'].sudo().search([('type', '=', 'product'), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='default_code asc')
+            products = self.env['product.product'].sudo().search([('type', '=', 'consu'), ('is_storable', '=', True), ('company_id', '=', company.id)]).with_context(dict(to_date=datetime.strptime(c_date.strftime("%m/%Y"), '%m/%Y'), location = stock.id), order='default_code asc')
             stock_ttl = 0.0
             for product in products.filtered(lambda r: r.qty_available>0):
                 worksheet.write(row, 0, stock.display_name)
@@ -182,8 +181,8 @@ class popular_reports(models.Model):
 #         raise UserError(end_date)
         docs = self.env['account.move'].search([('move_type', '=', 'out_invoice'),('invoice_date', '>=',start_date),('invoice_date', '<=',end_date),('state', '=', 'posted'),('company_id', '=', company.id)])
 #         raise UserError(len(docs))
-        user_ids = sorted(list(set(docs.mapped('partner_id'))),key=lambda x: x.display_name)
-        product_cats_ids = sorted(list(set(docs.mapped('x_studio_invoice_category'))),key=lambda x: x.display_name)
+        user_ids = sorted(list(set(docs.mapped('partner_id'))),key=lambda x: x.complete_name)
+        product_cats_ids = sorted(list(set(docs.mapped('x_studio_invoice_category'))),key=lambda x: x.complete_name)
 #         data = {
 #             'filter_post':'3',
 #             'user_ids': None,

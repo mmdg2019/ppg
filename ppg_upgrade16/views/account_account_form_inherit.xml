@@ -20,7 +20,7 @@
         <field name="model">account.account</field>
         <field name="inherit_id" ref="account.view_account_list"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree//field[@name='account_type']" position="before">
+            <xpath expr="//list//field[@name='account_type']" position="before">
                 <field name="old_current_assets" />
                 <field name="group_id"/>
                 <field name="custom_group_id" optional="hide"/>
