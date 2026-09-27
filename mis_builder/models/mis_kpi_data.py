@@ -3,7 +3,7 @@
 
 from collections import defaultdict
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.osv import expression
 
@@ -26,7 +26,7 @@ class MisKpiData(models.AbstractModel):
     _name = "mis.kpi.data"
     _description = "MIS Kpi Data Abtract class"
 
-    name = fields.Char(compute="_compute_name", required=False, readonly=True)
+    name = fields.Char(compute="_compute_name", required=False)
     kpi_expression_id = fields.Many2one(
         comodel_name="mis.report.kpi.expression",
         required=True,
@@ -39,13 +39,11 @@ class MisKpiData(models.AbstractModel):
     seq1 = fields.Integer(
         related="kpi_expression_id.kpi_id.sequence",
         store=True,
-        readonly=True,
         string="KPI Sequence",
     )
     seq2 = fields.Integer(
         related="kpi_expression_id.subkpi_id.sequence",
         store=True,
-        readonly=True,
         string="Sub-KPI Sequence",
     )
 
@@ -62,11 +60,9 @@ class MisKpiData(models.AbstractModel):
                 subkpi_name = "." + subkpi_name
             else:
                 subkpi_name = ""
-            rec.name = "{}{}: {} - {}".format(
-                rec.kpi_expression_id.kpi_id.name,
-                subkpi_name,
-                rec.date_from,
-                rec.date_to,
+            rec.name = (
+                f"{rec.kpi_expression_id.kpi_id.name}{subkpi_name}: "
+                f"{rec.date_from} - {rec.date_to}"
             )
 
     @api.model
@@ -101,8 +97,11 @@ class MisKpiData(models.AbstractModel):
                 res_avg[item.kpi_expression_id].append((i_days, item.amount))
             else:
                 raise UserError(
-                    _("Unexpected accumulation method %s for %s.")
-                    % (item.kpi_expression_id.kpi_id.accumulation_method, item.name)
+                    self.env._(
+                        "Unexpected accumulation method %(method)s for %(name)s.",
+                        method=item.kpi_expression_id.kpi_id.accumulation_method,
+                        name=item.name,
+                    )
                 )
         # compute weighted average for ACC_AVG
         for kpi_expression, amounts in res_avg.items():

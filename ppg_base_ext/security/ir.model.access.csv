@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ppg_base_ext_ppg_base_ext,ppg_base_ext.ppg_base_ext,model_ppg_base_ext_ppg_base_ext,base.group_user,1,1,1,1

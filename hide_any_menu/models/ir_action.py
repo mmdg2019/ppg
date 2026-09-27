@@ -5,7 +5,7 @@ class IrActions(models.Model):
     _inherit = 'ir.actions.actions'
 
     @api.model
-    @tools.ormcache('frozenset(self.env.user.groups_id.ids)', 'model_name')
+    @tools.ormcache('frozenset(self.env.user.group_ids.ids)', 'model_name')
     def get_bindings(self, model_name):
         result = super(IrActions, self).get_bindings(model_name)
         lst = result.get('report')
@@ -16,12 +16,12 @@ class IrActions(models.Model):
                     for report in reports:
                         skip_report = False
                         for user in report.hide_user_ids:
-                            if user.id == self._uid:
+                            if user.id == self.env.uid:
                                 skip_report = True
                                 break
                         for group in report.hide_group_ids:
                             for user in group.users:
-                                if user.id == self._uid:
+                                if user.id == self.env.uid:
                                     skip_report = True
                                     break
                         if skip_report:

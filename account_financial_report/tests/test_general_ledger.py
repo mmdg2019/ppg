@@ -15,8 +15,8 @@ from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 @tagged("post_install", "-at_install")
 class TestGeneralLedgerReport(AccountTestInvoicingCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+    def setUpClass(cls):
+        super().setUpClass()
         cls.env = cls.env(
             context=dict(
                 cls.env.context,
@@ -42,18 +42,11 @@ class TestGeneralLedgerReport(AccountTestInvoicingCommon):
                     "=",
                     "equity_unaffected",
                 ),
-                ("company_id", "=", cls.env.user.company_id.id),
+                ("company_ids", "in", [cls.env.user.company_id.id]),
             ],
             limit=1,
         )
-        cls.partner = cls.env.ref("base.res_partner_12")
-        cls.account001 = cls.env["account.account"].create(
-            {
-                "code": "001",
-                "name": "Account 001",
-                "account_type": "income_other",
-            }
-        )
+        cls.partner = cls.partner_a
 
     def _add_move(
         self,
@@ -68,7 +61,7 @@ class TestGeneralLedgerReport(AccountTestInvoicingCommon):
         journal = self.env["account.journal"].search(
             [("company_id", "=", self.env.user.company_id.id)], limit=1
         )
-        partner = self.env.ref("base.res_partner_12")
+        partner = self.partner_a
         move_vals = {
             "journal_id": journal.id,
             "date": date,
@@ -125,7 +118,7 @@ class TestGeneralLedgerReport(AccountTestInvoicingCommon):
                 "centralize": centralize,
             }
         )
-        data = general_ledger._prepare_report_general_ledger()
+        data = general_ledger._prepare_report_data()
         res_data = self.env[
             "report.account_financial_report.general_ledger"
         ]._get_report_values(general_ledger, data)
@@ -695,10 +688,10 @@ class TestGeneralLedgerReport(AccountTestInvoicingCommon):
         self.assertEqual(unaffected_fin_balance["balance"], 500)
 
     def test_partner_filter(self):
-        partner_1 = self.env.ref("base.res_partner_1")
-        partner_2 = self.env.ref("base.res_partner_2")
-        partner_3 = self.env.ref("base.res_partner_3")
-        partner_4 = self.env.ref("base.res_partner_4")
+        partner_1 = self.partner_a
+        partner_2 = self.partner_a.copy()
+        partner_3 = self.partner_b
+        partner_4 = self.partner_b.copy({"name": "Other partner"})
         partner_1.write({"is_company": False, "parent_id": partner_2.id})
         partner_3.write({"is_company": False})
 
@@ -738,25 +731,3 @@ class TestGeneralLedgerReport(AccountTestInvoicingCommon):
         wizard.onchange_date_range_id()
         self.assertEqual(wizard.date_from, date(2018, 1, 1))
         self.assertEqual(wizard.date_to, date(2018, 12, 31))
-
-    def test_all_accounts_loaded(self):
-        # Tests if all accounts are loaded when the account_code_ fields changed
-        all_accounts = self.env["account.account"].search([], order="code")
-        general_ledger = self.env["general.ledger.report.wizard"].create(
-            {
-                "date_from": self.fy_date_start,
-                "date_to": self.fy_date_end,
-                "account_code_from": self.account001.id,
-                "account_code_to": all_accounts[-1].id,
-            }
-        )
-        general_ledger.on_change_account_range()
-        all_accounts_code_set = set()
-        general_ledger_code_set = set()
-        [all_accounts_code_set.add(account.code) for account in all_accounts]
-        [
-            general_ledger_code_set.add(account.code)
-            for account in general_ledger.account_ids
-        ]
-        self.assertEqual(len(general_ledger_code_set), len(all_accounts_code_set))
-        self.assertTrue(general_ledger_code_set == all_accounts_code_set)

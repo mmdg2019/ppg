@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-<report 
+<!-- <report 
             id="action_report_cost_sheet2" 
             model="cost.sheet.two" 
             string="Cost Sheet Two"
@@ -9,10 +9,10 @@
             name="sheet_new_two.report_cost_sheet2"
             file="sheet_new_two.report_cost_sheet2"
             print_report_name="'Cost Sheet - %s' % (object.name)"
-        />
+        /> -->
     
 
-<report 
+<!-- <report 
             id="action_report_cost_sheet_pdf" 
             model="cost.sheet.two" 
             string="Cost Sheet Two"
@@ -21,9 +21,27 @@
             file="sheet_new_two.report_cost_sheet2"
             print_report_name="'Cost Sheet - %s' % (object.name)"
             menu="False"
-        />
-    
-
+        /> -->
+<record id="action_report_cost_sheet2" model="ir.actions.report">
+    <field name="name">Cost Sheet Two</field>
+    <field name="model">cost.sheet.two</field>
+    <field name="report_type">qweb-html</field>
+    <field name="report_name">sheet_new_two.report_cost_sheet2</field>
+    <field name="report_file">sheet_new_two.report_cost_sheet2</field>
+    <field name="paperformat_id" ref="base.paperformat_batch_deposit"/>
+    <field name="binding_model_id" ref="model_cost_sheet_two"/>
+    <field name="binding_type">report</field>
+</record>
+<!-- <record id="action_report_cost_sheet_pdf" model="ir.actions.report">
+    <field name="name">Cost Sheet Two</field>
+    <field name="model">cost.sheet.two</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">sheet_new_two.report_cost_sheet2</field>
+    <field name="report_file">sheet_new_two.report_cost_sheet2</field>
+    <field name="paperformat_id" ref="base.paperformat_batch_deposit"/>
+    <field name="binding_model_id" ref="model_cost_sheet_two"/>
+    <field name="binding_type">report</field>
+</record> -->
 <!-- <record id="report_qweb_paperformat_dcr_2" model="report.paperformat">
         <field name="name">cost sheet2 paperformat</field>
         <field name="default" eval="True" />

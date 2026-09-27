@@ -22,9 +22,10 @@ class MrpBom(models.Model):
     name = fields.Char('Bom Name', required=True, )
     
 
-    _sql_constraints = [
-        ('name_uniq', 'unique (name)', "BOM name already exists !"),
-    ]
+    _name_uniq = models.Constraint(
+        'unique (name)',
+        "BOM name already exists !",
+    )
     
     def name_get(self):
         return [(bom.id, '%s%s' % (bom.code and '%s: ' % bom.code or '', bom.name)) for bom in self]
@@ -66,7 +67,7 @@ class CostSheet(models.Model):
     
     name = fields.Char(string ="Name",readonly=True,)
     
-    partner_id = fields.Many2one('res.partner', string='Partner',require = True)
+    partner_id = fields.Many2one('res.partner', string='Partner',required = True)
     
     avg_sale = fields.Boolean(string = "Average Sales Price")
     
@@ -290,7 +291,7 @@ class CostSheet(models.Model):
             'domain': [('costsheet_id','=',self.id)],
             'res_model': 'mrp.production',
             'view_id': False,
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'type': 'ir.actions.act_window',
         }
             

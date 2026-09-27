@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from datetime import datetime, date, timedelta
@@ -36,19 +35,20 @@ class SaleOrder(models.Model):
                     raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
         return super(SaleOrder, self).action_confirm()
 
-    @api.model
-    def create(self, vals):
-        if vals.get('partner_id'):
-            pid = self.env['res.partner'].browse(vals['partner_id'])
-            # due_invoice_count = self.env['account.move'].search_count([
-            #     ('move_type', '=', 'out_invoice'), 
-            #     ('partner_id', '=', pid.id),
-            #     ('invoice_due_state', '=', 'third_due')])
-            if not pid.show_credit_due_access:
-                if pid.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
-                # if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
-                    raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
-        return super(SaleOrder, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('partner_id'):
+                pid = self.env['res.partner'].browse(vals['partner_id'])
+                # due_invoice_count = self.env['account.move'].search_count([
+                #     ('move_type', '=', 'out_invoice'), 
+                #     ('partner_id', '=', pid.id),
+                #     ('invoice_due_state', '=', 'third_due')])
+                if not pid.show_credit_due_access:
+                    if pid.so_block_customer and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                    # if due_invoice_count > 0 and not self.env.user.has_group('ppg_credit_permission.group_credit_permission'):
+                        raise AccessError(_("You don't have the access rights to sell to customers with overdue invoices."))
+        return super(SaleOrder, self).create(vals_list)
 
     def write(self, values):
         if values.get('partner_id'):
@@ -64,8 +64,8 @@ class SaleOrder(models.Model):
         return super(SaleOrder, self).write(values)
 
     @api.onchange('partner_id', 'pricelist_id', 'x_studio_editing_price_status')
-    def _onchange_pricelist_edit_product_price(self):
-        if self.order_line and self.state not in ('done', 'cancel'):
+    def _onchange_partner_pricelist_edit_product_price(self):
+        if self.order_line and self.state != 'cancel':
             for line in self.order_line:
                 line._compute_price_unit()
 
@@ -74,3 +74,9 @@ class SaleOrder(models.Model):
         if self.order_line:
             for line in self.order_line:
                 line.x_studio_editing_price_status = self.x_studio_editing_price_status
+
+    # 10.4.2026: remove SO number from invoice's "ref" field so that only invoice number is shown in outstanding debits/credits widget section
+    def _prepare_invoice(self):
+        values = super(SaleOrder, self)._prepare_invoice()
+        values['ref'] = self.client_order_ref or ''
+        return values
