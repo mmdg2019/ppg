@@ -32,35 +32,34 @@ class ResUsers(models.Model):
         'ir.ui.menu', string="Hidden Menu",
         store=True, help='Select menu items that need to '
                          'be hidden to this user.')
-    is_show_specific_menu = fields.Boolean(string='Is Show Specific Menu',
-                                           compute='_compute_is_show_specific_menu',
-                                           help='Field determine to show the hide specific menu')
+    is_show_specific_menu = fields.Boolean(
+        string='Is Show Specific Menu',
+        compute='_compute_is_show_specific_menu',
+        help='Field determine to show the hide specific menu')
 
     def write(self, vals):
-        # Store old hide_menu_ids per record
-        old_hide_menu_map = {record.id: record.hide_menu_ids for record in self}
+        old_hide_menu_map = {}
+        if 'hide_menu_ids' in vals:
+            old_hide_menu_map = {record.id: record.hide_menu_ids for record in self}
+
         res = super().write(vals)
+
+        if 'hide_menu_ids' not in vals:
+            return res
+
         for record in self:
             old_hide_menu_ids = old_hide_menu_map.get(record.id,
                                                       self.env['ir.ui.menu'])
-            # Add new restrictions
-            for menu in record.hide_menu_ids:
-                menu.sudo().write({'restrict_user_ids': [fields.Command.link(record.id)]})
-            # Remove old ones that are no longer selected
+            added_menus = record.hide_menu_ids - old_hide_menu_ids
             removed_menus = old_hide_menu_ids - record.hide_menu_ids
+            for menu in added_menus:
+                menu.sudo().write({'restrict_user_ids': [fields.Command.link(record.id)]})
             for menu in removed_menus:
                 menu.sudo().write({'restrict_user_ids': [fields.Command.unlink(record.id)]})
         return res
 
-    @api.depends('group_ids')
+    @api.depends('role', 'share')
     def _compute_is_show_specific_menu(self):
-        """ compute function of the field is show specific menu """
-        group_id = self.env.ref('base.group_user')
+        """Hide the page for administrators and non-internal/share users."""
         for rec in self:
-            if group_id and group_id.id in rec.group_ids.ids:
-                rec.is_show_specific_menu = False
-            else:
-                for menu in rec.hide_menu_ids:
-                    menu.restrict_user_ids = [fields.Command.unlink(rec.id)]
-                rec.hide_menu_ids = [fields.Command.clear()]
-                rec.is_show_specific_menu = True
+            rec.is_show_specific_menu = rec.share or rec.role != 'group_user'
