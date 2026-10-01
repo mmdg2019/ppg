@@ -25,7 +25,7 @@ v19 တွင် unit မတူသော packaging များ၏ အမည်�
 
 Suffix ကို parentheses သို့မဟုတ် hyphen ပုံစံဖြင့်သာစစ်ပါတယ်။ Unit token ၏ letter case နှင့် နောက်ဆုံး period ကို normalize လုပ်ပြီး `unit/units/u`, `dozen/dozens/d`, `lb/lbs/pound/pounds`, `pkg/package/packages` alias groups ကိုသုံးပါတယ်။ အခြား unit တွင် actual base UoM name ကိုသာလက်ခံပြီး အတိုကောက်ကို ခန့်မှန်းမလုပ်ပါ။ Packaging name အဓိကပိုင်းကို အတိအကျစစ်ပြီး `(old)`, `(w)` ကဲ့သို့ unit မဟုတ်သော suffix ကို အလိုအလျောက်ဖြုတ်မထားပါ။
 
-Name match အပြင် Source/Target base UoM name၊ product membership၊ active UoM၊ unit root နှင့် product base UoM သို့ပြောင်းတွက်ထားသော contained quantity ကိုစစ်ပါတယ်။ ကိုက်ညီသော packaging UoM **တစ်ခုတည်း** ရှိမှလက်ခံပါတယ်။ Unit/size မတူခြင်း၊ match မရှိခြင်း၊ match တစ်ခုထက်ပိုခြင်းကို Conflict ဆက်ပြပါတယ်။ ဒီ rule ကို Validate နှင့် Apply နှစ်ခုလုံးမှာသုံးပါတယ်။
+Packaging name ၏ letter case ကိုလျစ်လျူရှုပါတယ် (`Bag Of 55` = `Bag of 55`)။ Name match အပြင် Source/Target base UoM name၊ product membership၊ active UoM၊ unit root နှင့် product base UoM သို့ပြောင်းတွက်ထားသော contained quantity ကိုစစ်ပါတယ်။ ကိုက်ညီသော packaging UoM **တစ်ခုတည်း** ရှိမှလက်ခံပါတယ်။ Unit/size မတူခြင်း၊ match မရှိခြင်း၊ match တစ်ခုထက်ပိုခြင်းကို Conflict ဆက်ပြပါတယ်။ Product ID ကိုအတိအကျစစ်ပြီး product code ၏ ရှေ့/နောက် whitespace ကိုသာလျစ်လျူရှုပါတယ်။ Code အလယ်ရှိ whitespace နှင့် letter case ကွာခြားမှုကိုလက်မခံပါ။ ဒီ rule ကို Validate နှင့် Apply နှစ်ခုလုံးမှာသုံးပါတယ်။
 
 ## Local setup
 

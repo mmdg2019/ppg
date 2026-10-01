@@ -23,9 +23,9 @@ def packaging_name_matches(source_name, target_name, base_uom_name):
     and uniqueness. Unknown suffixes are never removed indiscriminately.
     """
     source_name, target_name = source_name.strip(), target_name.strip()
-    if target_name == source_name:
+    if target_name.casefold() == source_name.casefold():
         return True
-    if not target_name.startswith(source_name):
+    if not target_name.casefold().startswith(source_name.casefold()):
         return False
     suffix = re.fullmatch(r'\s*\(([^()]+)\)|\s*-\s*([^()]+)', target_name[len(source_name):])
     if not suffix:
@@ -39,6 +39,11 @@ def packaging_name_matches(source_name, target_name, base_uom_name):
         if base in group:
             aliases.update(group)
     return normalize(suffix.group(1) or suffix.group(2)) in aliases
+
+
+def product_code_matches(source_code, target_code):
+    """Ignore export and target padding without changing the code itself."""
+    return (source_code or '').strip() == (target_code or '').strip()
 
 
 def parse_csv(raw, max_rows=MAX_ROWS):

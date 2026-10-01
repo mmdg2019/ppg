@@ -11,7 +11,7 @@ from odoo import api, fields, models, release
 from odoo.exceptions import AccessError, UserError, ValidationError
 from psycopg2 import sql
 
-from ..engine import MAX_BYTES, change_packaging, lock_snapshot, packaging_name_matches, parse_csv
+from ..engine import MAX_BYTES, change_packaging, lock_snapshot, packaging_name_matches, parse_csv, product_code_matches
 
 
 class RestoreJob(models.Model):
@@ -177,7 +177,7 @@ class RestoreJob(models.Model):
         checks = [
             (order.id == src['order_id'] and order.name == src['order_name'], 'Order identity mismatch'),
             (line.company_id.name == src['company_name'], 'Company name mismatch'),
-            (product.id == src['product_id'] and (product.default_code or '') == src['product_code'], 'Product identity mismatch'),
+            (product.id == src['product_id'] and product_code_matches(src['product_code'], product.default_code), 'Product identity mismatch'),
             (date == src['order_date_display'], 'Order date/time mismatch; check CSV export timezone'),
             (not line.display_type, 'Not a product line'),
             (line.product_uom_id.name == src['line_uom_name'], 'Line UoM mismatch'),

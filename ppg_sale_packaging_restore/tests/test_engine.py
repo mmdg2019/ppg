@@ -30,6 +30,12 @@ def payload(rows):
 
 
 class PackagingNameTest(unittest.TestCase):
+    def test_packaging_name_ignores_letter_case_but_not_size_or_unit(self):
+        self.assertTrue(engine.packaging_name_matches('Bag Of 55', 'Bag of 55-lb', 'lbs'))
+        self.assertTrue(engine.packaging_name_matches('Bag Of 55', 'Bag of 55', 'Units'))
+        self.assertFalse(engine.packaging_name_matches('Bag Of 55', 'Bag of 50-lb', 'lbs'))
+        self.assertFalse(engine.packaging_name_matches('Bag Of 55', 'Bag of 55 (D)', 'lbs'))
+
     def test_dozen_suffix_alias(self):
         self.assertTrue(engine.packaging_name_matches('Bag of 12', 'Bag of 12 (D)', 'Dozens'))
         self.assertTrue(engine.packaging_name_matches('Bag of 12', 'Bag of 12', 'Dozens'))
@@ -59,6 +65,12 @@ class PackagingNameTest(unittest.TestCase):
 
 
 class CsvTest(unittest.TestCase):
+    def test_product_code_ignores_outer_whitespace_only(self):
+        self.assertTrue(engine.product_code_matches(' Z00276(A) ', 'Z00276(A)'))
+        self.assertFalse(engine.product_code_matches('Z00276(A)', 'Z00276(B)'))
+        self.assertFalse(engine.product_code_matches('Z00276(A)', 'z00276(A)'))
+        self.assertFalse(engine.product_code_matches('Z00 276(A)', 'Z00276(A)'))
+
     def test_valid_multi_company(self):
         rows = engine.parse_csv(payload([source(), source(company_id='2', source_line_id='102')]))
         self.assertEqual([r['company_id'] for r in rows], [1, 2])
