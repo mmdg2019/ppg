@@ -1,0 +1,87 @@
+<odoo>
+    <record id="restore_job_list" model="ir.ui.view">
+        <field name="name">ppg.purchase.packaging.restore.job.list</field>
+        <field name="model">ppg.purchase.packaging.restore.job</field>
+        <field name="arch" type="xml">
+            <list delete="0" duplicate="0">
+                <field name="name"/><field name="company_ids" widget="many2many_tags"/>
+                <field name="date_start"/><field name="date_end"/>
+                <field name="state"/><field name="last_run_at"/><field name="last_run_by"/>
+            </list>
+        </field>
+    </record>
+    <record id="restore_job_form" model="ir.ui.view">
+        <field name="name">ppg.purchase.packaging.restore.job.form</field>
+        <field name="model">ppg.purchase.packaging.restore.job</field>
+        <field name="arch" type="xml">
+            <form delete="0" duplicate="0">
+                <header>
+                    <button name="action_load_csv" type="object" string="1. Load CSV" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_validate_next_batch" type="object" string="2. Validate Next Batch" invisible="state != 'loaded'"/>
+                    <button name="action_apply_next_batch" type="object" string="3. Apply Next Batch" invisible="state != 'loaded'"
+                            confirm="Apply SQL changes to Ready lines in the confirmed target database? Review the per-company summary first."/>
+                    <button name="action_verify_next_batch" type="object" string="4. Verify Next Batch" invisible="state != 'loaded'"/>
+                    <button name="action_rollback_next_batch" type="object" string="Rollback Next Batch" invisible="state != 'loaded'"
+                            confirm="Restore the previous packaging values for the next unchanged Applied lines?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="company_ids" widget="many2many_tags" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="date_start" readonly="state != 'draft'"/>
+                            <field name="date_end" readonly="state != 'draft'"/>
+                            <field name="source_timezone" readonly="state != 'draft'"/>
+                            <field name="source_language" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="target_database" readonly="state != 'draft'"/>
+                            <field name="batch_size"/>
+                            <field name="csv_file" filename="filename" readonly="state != 'draft'"/>
+                            <field name="filename" invisible="1"/>
+                            <field name="csv_sha256"/>
+                            <field name="last_run_at"/><field name="last_run_by"/>
+                        </group>
+                    </group>
+                    <group string="Per-company Preview and Progress"><field name="summary" nolabel="1"/></group>
+                    <div class="alert alert-info" role="alert">
+                        Load and Validate only write this job's audit records. Apply changes two packaging columns only.
+                        Finish all validation batches before Apply. Already Correct, Missing Target and Conflict rows are skipped.
+                        Default batch size is 300. Review validation results before manually applying any batch.
+                    </div>
+                    <field name="line_ids" readonly="1">
+                        <list create="0" edit="0" delete="0" default_order="source_line_id">
+                            <field name="company_id"/><field name="source_line_id"/><field name="state"/>
+                            <field name="target_uom_id"/><field name="message"/>
+                            <field name="applied_at"/><field name="verified_at"/><field name="verification_result"/>
+                        </list>
+                        <form create="0" edit="0" delete="0">
+                            <group><field name="company_id"/><field name="source_line_id"/><field name="state"/>
+                                <field name="target_uom_id"/><field name="message"/>
+                                <field name="applied_at"/><field name="applied_by"/>
+                                <field name="rolled_back_at"/><field name="rolled_back_by"/><field name="verified_at"/><field name="verification_result"/>
+                            </group>
+                            <notebook>
+                                <page string="Source"><field name="source"/></page>
+                                <page string="Before"><field name="before_values"/><field name="order_before"/></page>
+                                <page string="After"><field name="after_values"/></page>
+                            </notebook>
+                        </form>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="restore_job_action" model="ir.actions.act_window">
+        <field name="name">Purchase Packaging Restore</field>
+        <field name="res_model">ppg.purchase.packaging.restore.job</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="restore_job_menu" name="Purchase Packaging Restore" parent="purchase.menu_purchase_config"
+              action="restore_job_action" groups="base.group_no_one" sequence="95"/>
+    <!-- menuitem groups adds on upgrade; replace the old administrator group. -->
+    <record id="restore_job_menu" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_no_one')])]"/>
+    </record>
+</odoo>

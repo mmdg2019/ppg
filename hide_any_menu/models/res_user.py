@@ -10,14 +10,14 @@ class Users(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(Users, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(Users, self).create(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(Users, self).write(values)
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(Users, self).write(values)
 
 
 class ResGroups(models.Model):
@@ -29,14 +29,14 @@ class ResGroups(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(ResGroups, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(ResGroups, self).create(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(ResGroups, self).write(values)
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(ResGroups, self).write(values)
 
 
 class IrActionsReport(models.Model):
@@ -54,24 +54,24 @@ class IrUiMenu(models.Model):
 
     # Earlier user needs to restart server to take invisible effect
     # After multiple request from users added clear cache code so no need to restart server
-    @api.model
-    def create(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(IrUiMenu, self).create(values)
+    # @api.model
+    # def create(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(IrUiMenu, self).create(values)
 
-    def write(self, values):
-        self.env['ir.ui.menu'].clear_caches()
-        return super(IrUiMenu, self).write(values)
+    # def write(self, values):
+    #     self.env['ir.ui.menu'].clear_caches()
+    #     return super(IrUiMenu, self).write(values)
 
     @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
+    def search(self, args, offset=0, limit=None, order=None):
         if self.env.user == self.env.ref('base.user_root'):
-            return super(IrUiMenu, self).search(args, offset=0, limit=None, order=order, count=False)
+            return super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
         else:
-            menus = super(IrUiMenu, self).search(args, offset=0, limit=None, order=order, count=False)
+            menus = super(IrUiMenu, self).search(args, offset=0, limit=None, order=order)
             if menus:
                 menu_ids = [menu for menu in self.env.user.menu_ids]
-                menu_ids2 = [menu for group in self.env.user.groups_id for menu in group.menu_ids]
+                menu_ids2 = [menu for group in self.env.user.group_ids for menu in group.menu_ids]
                 for menu in list(set(menu_ids).union(menu_ids2)):
                     if menu in menus:
                         menus -= menu
@@ -79,7 +79,7 @@ class IrUiMenu(models.Model):
                     menus = menus[offset:]
                 if limit:
                     menus = menus[:limit]
-            return len(menus) if count else menus
+            return menus
 
 
 class IrModel(models.Model):
@@ -99,9 +99,11 @@ class FieldConfiguration(models.Model):
     readonly = fields.Boolean('ReadOnly', default=False)
     invisible = fields.Boolean('Invisible', default=False)
 
-    _sql_constraints = [
-        ('field_model_readonly_unique', 'UNIQUE ( field_id, model_id, readonly)',
-         _('Readonly Attribute Is Already Added To This Field, You Can Add Group To This Field!')),
-        ('model_field_invisible_uniq', 'UNIQUE (model_id, field_id, invisible)',
-         _('Invisible Attribute Is Already Added To This Field, You Can Add Group To This Field'))
-    ]
+    _field_model_readonly_unique = models.Constraint(
+        'UNIQUE( field_id, model_id, readonly)',
+        "Readonly Attribute Is Already Added To This Field, You Can Add Group To This Field!",
+    )
+    _model_field_invisible_uniq = models.Constraint(
+        'UNIQUE(model_id, field_id, invisible)',
+        "Invisible Attribute Is Already Added To This Field, You Can Add Group To This Field",
+    )

@@ -1,6 +1,6 @@
 {
     'name': 'Costsheet',
-    'version': '1.0.0',
+    'version': "19.0.1.0.0",
     'author': 'Laminaung',
     'license': 'AGPL-3',
     'category': 'Cost Sheet',

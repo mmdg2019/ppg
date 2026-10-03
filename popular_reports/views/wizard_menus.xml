@@ -6,51 +6,25 @@
               id="popular_reports.popular_reports_main_menu"
               web_icon="popular_reports,static/src/img/logo.png"
               sequence="10" />
-<!--     <record id="popular_reports.popular_reports_main_menu" model="ir.ui.menu" context="{'studio': True}">
-        <field name="action" eval="False"/>
-        <field name="active" eval="True"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="name">Popular Reports</field>
-        <field name="parent_id" eval="False"/>
-        <field name="sequence">10</field>
-        <field name="web_icon">g</field>
-    </record> -->
+
     <menuitem
               name="Target &amp; Performance"
               id="popular_reports.sales_target_menu"
               web_icon="popular_reports,static/src/img/sale_target.png"
               sequence="10" />
-<!--     <record id="popular_reports.sales_target_menu" model="ir.ui.menu" context="{'studio': True}">
-        <field name="action" eval="False"/>
-        <field name="active" eval="True"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="name">Target &amp; Performance</field>
-        <field name="parent_id" eval="False"/>
-        <field name="sequence">10</field>
-        <field name="web_icon">popular_reports,static/src/img/sale_target.png</field>
-    </record> -->
+
     <menuitem
               name="Main Menu"
               id="popular_reports.sales_target_main_menu"
               parent="popular_reports.sales_target_menu"
               action="popular_reports.sale_target_view"
               sequence="10" />
-<!--     <record id="popular_reports.sales_target_main_menu" model="ir.ui.menu" context="{'studio': True}">
-        <field name="action" ref="popular_reports.sale_target_view"/>
-        <field name="active" eval="True"/>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
-        <field name="name">Main Menu</field>
-        <field name="parent_id" ref="popular_reports.sales_target_menu"/>
-        <field name="sequence">10</field>
-        <field name="web_icon" eval="False"/>
-    </record> -->
-<!--     <data> -->
 
     <menuitem name="Popular Reports"
               parent="popular_reports.popular_reports_main_menu"
-              id="popular_reports_sub_menu_1"
+              id="popular_reports.popular_reports_sub_menu_1"
               action="popular_report_wizard_act"
-              sequence="1"/>
+              sequence="0"/>
 
     <menuitem name="Sales Invoice Reports"
               parent="popular_reports.popular_reports_main_menu"
@@ -261,7 +235,6 @@
               action="popular_reports.wizard_act_report_monthly_stock_analysis_report"
               sequence="7"/>
                   
-    <!-- tto -->
     <menuitem name="Stock Analysis by Month with Colors"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_analysis_by_month_col"
@@ -303,7 +276,6 @@
               action="popular_reports.wizard_act_report_stock_analysis_by_month_and_cust"
               sequence="18"/>
     
-    <!-- tto; change subsequent seq. no. up to 23 -->
     <menuitem name="Stock Analysis by Month and Customer with Colors"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_stock_anlys_by_mon_and_cust_col"
@@ -335,7 +307,7 @@
               id="popular_reports.menu_report_stock_focus"
               action="popular_reports.wizard_act_report_stock_focus"
               sequence="23"/>
-    <!-- tto -->
+
     <menuitem name="Factory Stock Transfer Report"
               parent="popular_reports.popular_reports_sub_menu_6"
               id="popular_reports.menu_report_factory_stock_transfer"
@@ -458,14 +430,6 @@
               action="popular_reports.wizard_act_report_purchase_order_report_by_date"
               sequence="1"/>
     
-    <!-- tto (old)-->
-<!--     <menuitem name="Purchase Order Report by Date and Product"
-              parent="popular_reports.popular_reports_sub_menu_4"
-              id="popular_reports.menu_report_purchase_order_report_date_prod"
-              action="popular_reports.wizard_act_report_purchase_order_report_date_prod"
-              sequence="2"/> -->
-    
-    <!-- tto (updated with new requirements)-->
     <menuitem name="Purchase Order Report by Date and Product"
               parent="popular_reports.popular_reports_sub_menu_4"
               id="popular_reports.menu_report_purchase_order_report_date_prod"
@@ -508,28 +472,4 @@
               sequence="1"/>
 
 </odoo>
-    
-    <!--         <menuitem name="Daily Sales Report by Product Category"
-                  parent="popular_reports.popular_reports_sub_menu_2"
-                  id="popular_reports.menu_report_daily_sales_report_by_pdt_cat"
-                  action="popular_reports.wizard_act_report_daily_sales_report_by_pdt_cat"
-                  sequence="3"/> -->
-        
-<!--         <menuitem name="Sales Analysis Report by State"
-                  parent="popular_reports.popular_reports_sub_menu_2"
-                  id="popular_reports.menu_report_sales_analysis_by_state"
-                  action="popular_reports.wizard_act_report_sales_analysis_by_state"
-                  sequence="4"/> -->
-<!--         <menuitem name="Sales Target Setting &amp; Performance"
-                  parent="popular_reports.popular_reports_sub_menu_2"
-                  id="popular_reports.menu_report_sale_target_view"
-                  action="popular_reports.sale_target_view"
-                  sequence="11"/> -->
-        
-        
-<!--         <menuitem name="Damage Sales Return Listing by Product Code"
-                  parent="popular_reports.popular_reports_sub_menu_7"
-                  id="popular_reports.menu_report_dmg_sales_rtrn_lst_by_product"
-                  action="popular_reports.wizard_act_report_dmg_sales_rtrn_lst_by_product"
-                  sequence="6"/> -->
         

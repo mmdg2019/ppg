@@ -6,7 +6,7 @@
         <field name="binding_model_id" ref="popular_reports.model_popular_reports_sale_target"/>
         <field name="binding_type">report</field>
         <field name="binding_view_types">list,form</field>
-        <field name="groups_id" eval="[(6, 0, [])]"/>
+        <field name="group_ids" eval="[(6, 0, [])]"/>
         <field name="model">popular_reports.sale_target</field>
         <field name="multi" eval="False"/>
         <field name="name">Sales Target &amp; Performance</field>

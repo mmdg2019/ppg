@@ -1,0 +1,38 @@
+<odoo>
+    <record id="action_restore_validate" model="ir.actions.server">
+        <field name="name">Packaging Restore: Validate Next Batch</field>
+        <field name="model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_view_types">form</field>
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_validate_next_batch()</field>
+    </record>
+    <record id="action_restore_apply" model="ir.actions.server">
+        <field name="name">Packaging Restore: Apply Next Batch (SQL)</field>
+        <field name="model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_view_types">form</field>
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_apply_next_batch()</field>
+    </record>
+    <record id="action_restore_verify" model="ir.actions.server">
+        <field name="name">Packaging Restore: Verify Next Batch</field>
+        <field name="model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_view_types">form</field>
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_verify_next_batch()</field>
+    </record>
+    <record id="action_restore_rollback" model="ir.actions.server">
+        <field name="name">Packaging Restore: Rollback Next Batch (SQL)</field>
+        <field name="model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_model_id" ref="model_ppg_packaging_restore_job"/>
+        <field name="binding_view_types">form</field>
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_rollback_next_batch()</field>
+    </record>
+</odoo>

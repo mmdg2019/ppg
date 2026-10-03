@@ -6,7 +6,7 @@ import numbers
 from collections import defaultdict
 from datetime import datetime
 
-from odoo import _, fields, models
+from odoo import api, fields, models
 
 from ..models.accounting_none import AccountingNone
 from ..models.data_error import DataError
@@ -26,10 +26,18 @@ class MisBuilderXlsx(models.AbstractModel):
     _description = "MIS Builder XLSX report"
     _inherit = "report.report_xlsx.abstract"
 
-    def generate_xlsx_report(self, workbook, data, objects):
+    @api.model
+    def _mis_builder_add_annotation(self, sheet, cell, row_pos, col_pos, notes):
+        """
+        Add anotation as a comment on cell in .xls
+        """
+        if cell and (annotation := notes.get(cell.cell_id, {}).get("text")):
+            sheet.write_comment(row_pos, col_pos, annotation)
 
+    def generate_xlsx_report(self, workbook, data, objects):
         # get the computed result of the report
         matrix = objects._compute_matrix()
+        notes = objects.get_notes_by_cell_id()
         style_obj = self.env["mis.report.style"]
 
         # create worksheet
@@ -53,8 +61,9 @@ class MisBuilderXlsx(models.AbstractModel):
         row_pos += 2
 
         # filters
-        if not objects.hide_analytic_filters:
-            for filter_description in objects.get_filter_descriptions_from_context():
+        filter_descriptions = objects.get_filter_descriptions()
+        if filter_descriptions:
+            for filter_description in objects.get_filter_descriptions():
                 sheet.write(row_pos, 0, filter_description)
                 row_pos += 1
             row_pos += 1
@@ -120,6 +129,7 @@ class MisBuilderXlsx(models.AbstractModel):
             )
             for cell in row.iter_cells():
                 col_pos += 1
+                self._mis_builder_add_annotation(sheet, cell, row_pos, col_pos, notes)
                 if not cell or cell.val is AccountingNone:
                     # TODO col/subcol format
                     sheet.write(row_pos, col_pos, "", row_format)
@@ -153,7 +163,7 @@ class MisBuilderXlsx(models.AbstractModel):
         # Add date/time footer
         row_pos += 1
         footer_format = workbook.add_format(
-            {"italic": True, "font_color": "#202020", "size": 9}
+            {"italic": True, "font_color": "#202020", "font_size": 9}
         )
         lang_model = self.env["res.lang"]
         lang = lang_model._lang_get(self.env.user.lang)
@@ -161,8 +171,10 @@ class MisBuilderXlsx(models.AbstractModel):
         now_tz = fields.Datetime.context_timestamp(
             self.env["res.users"], datetime.now()
         )
-        create_date = _("Generated on {} at {}").format(
-            now_tz.strftime(lang.date_format), now_tz.strftime(lang.time_format)
+        create_date = self.env._(
+            "Generated on %(gen_date)s at %(gen_time)s",
+            gen_date=now_tz.strftime(lang.date_format),
+            gen_time=now_tz.strftime(lang.time_format),
         )
         sheet.write(row_pos, 0, create_date, footer_format)
 

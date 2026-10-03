@@ -72,6 +72,7 @@ class AgedPartnerBalanceReport(models.AbstractModel):
         else:
             ag_pb_data[acc_id]["older"] += residual
             ag_pb_data[acc_id][prt_id]["older"] += residual
+
         days_difference = abs((today - due_date).days)
         for index, line in enumerate(interval_lines):
             lower_limit = 0 if not index else interval_lines[index - 1].inferior_limit
@@ -223,7 +224,7 @@ class AgedPartnerBalanceReport(models.AbstractModel):
                 elif not move_line["name"]:
                     ref_label = move_line["ref"]
                 else:
-                    ref_label = move_line["ref"] + str(" - ") + move_line["name"]
+                    ref_label = move_line["ref"] + " - " + move_line["name"]
                 move_line_data.update(
                     {
                         "line_rec": line_model.browse(move_line["id"]),
@@ -281,19 +282,24 @@ class AgedPartnerBalanceReport(models.AbstractModel):
             ml["120_days"] += amount
         else:
             ml["older"] += amount
-        days_difference = abs((today - due_date).days)
-        for index, interval_line in enumerate(interval_lines):
-            lower_limit = 0 if not index else interval_lines[index - 1].inferior_limit
-            next_line = interval_lines[index] if index < len(interval_lines) else None
-            interval_range = self._get_values_for_range_intervals(
-                lower_limit, next_line.inferior_limit
-            )
-            if (
-                days_difference in interval_range
-                or days_difference == interval_line.inferior_limit
-            ):
-                ml[interval_line] += amount
-                break
+        if due_date:
+            days_difference = abs((today - due_date).days)
+            for index, interval_line in enumerate(interval_lines):
+                lower_limit = (
+                    0 if not index else interval_lines[index - 1].inferior_limit
+                )
+                next_line = (
+                    interval_lines[index] if index < len(interval_lines) else None
+                )
+                interval_range = self._get_values_for_range_intervals(
+                    lower_limit, next_line.inferior_limit
+                )
+                if (
+                    days_difference in interval_range
+                    or days_difference == interval_line.inferior_limit
+                ):
+                    ml[interval_line] += amount
+                    break
 
     def _create_account_list(
         self,
@@ -403,6 +409,7 @@ class AgedPartnerBalanceReport(models.AbstractModel):
         return aged_partner_data
 
     def _get_report_values(self, docids, data):
+        res = super()._get_report_values(docids, data)
         wizard_id = data["wizard_id"]
         company = self.env["res.company"].browse(data["company_id"])
         company_id = data["company_id"]
@@ -416,7 +423,12 @@ class AgedPartnerBalanceReport(models.AbstractModel):
         aged_partner_configuration = self.env[
             "account.age.report.configuration"
         ].browse(data["age_partner_config_id"])
-        (ag_pb_data, accounts_data, partners_data, journals_data,) = self.with_context(
+        (
+            ag_pb_data,
+            accounts_data,
+            partners_data,
+            journals_data,
+        ) = self.with_context(
             age_partner_config=aged_partner_configuration
         )._get_move_lines_data(
             company_id,
@@ -440,18 +452,23 @@ class AgedPartnerBalanceReport(models.AbstractModel):
         aged_partner_data = self.with_context(
             age_partner_config=aged_partner_configuration
         )._calculate_percent(aged_partner_data)
-        return {
-            "doc_ids": [wizard_id],
-            "doc_model": "open.items.report.wizard",
-            "docs": self.env["open.items.report.wizard"].browse(wizard_id),
-            "company_name": company.display_name,
-            "currency_name": company.currency_id.name,
-            "date_at": date_at,
-            "only_posted_moves": only_posted_moves,
-            "aged_partner_balance": aged_partner_data,
-            "show_move_lines_details": show_move_line_details,
-            "age_partner_config": aged_partner_configuration,
-        }
+        res.update(
+            {
+                "doc_ids": [wizard_id],
+                "doc_model": "aged.partner.balance.report.wizard",
+                "docs": self.env["aged.partner.balance.report.wizard"].browse(
+                    wizard_id
+                ),
+                "company_name": company.display_name,
+                "currency_name": company.currency_id.name,
+                "date_at": date_at,
+                "only_posted_moves": only_posted_moves,
+                "aged_partner_balance": aged_partner_data,
+                "show_move_lines_details": show_move_line_details,
+                "age_partner_config": aged_partner_configuration,
+            }
+        )
+        return res
 
     def _get_ml_fields(self):
         return self.COMMON_ML_FIELDS + [
