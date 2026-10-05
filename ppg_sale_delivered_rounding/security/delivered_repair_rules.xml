@@ -1,0 +1,7 @@
+<odoo>
+    <record id="rule_delivered_repair_log_company" model="ir.rule">
+        <field name="name">Delivered repair history by company</field>
+        <field name="model_id" ref="model_ppg_delivered_repair_log"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
