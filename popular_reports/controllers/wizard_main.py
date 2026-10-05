@@ -2136,12 +2136,14 @@ class edit_report_cash_payment_listing_by_lumpsum(models.AbstractModel):
             docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
             docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
-        elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
-        elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
-        elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
+        elif data['filter_post_payment'] == '3': # extract payments with state = 'paid' instead of state = 'reconiled' for selected status = 'Reconciled' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '4': # extract payments with state = 'in_process' instead of state = 'sent' for selected status = 'Sent' 
+                    docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'in_process')])
+        elif data['filter_post_payment'] == '5': # extract payments with state = 'paid' instead of state = 'posted' for selected status = 'Validated' 
+                    docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '6':  
+                    docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'rejected')])
         else:
             docs = self.env['account.payment'].search([('partner_type', '=', 'supplier'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         # add customer filter to report
@@ -2164,12 +2166,14 @@ class edit_report_cash_receipt_listing_by_cust_no(models.AbstractModel):
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
-        elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
-        elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
-        elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
+        elif data['filter_post_payment'] == '3': # extract payments with state = 'paid' instead of state = 'reconiled' for selected status = 'Reconciled' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '4': # extract payments with state = 'in_process' instead of state = 'sent' for selected status = 'Sent' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'in_process')])
+        elif data['filter_post_payment'] == '5': # extract payments with state = 'paid' instead of state = 'posted' for selected status = 'Validated' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '6': # add rejected state to report status options
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'rejected')])
         else:
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         if data['user_ids']:
@@ -2191,12 +2195,14 @@ class edit_report_cash_receipt_listing_by_date(models.AbstractModel):
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
-        elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
-        elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
-        elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
+        elif data['filter_post_payment'] == '3':# extract payments with state = 'paid' instead of state = 'reconiled' for selected status = 'Reconciled' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '4': # extract payments with state = 'in_process' instead of state = 'sent' for selected status = 'Sent' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'in_process')])
+        elif data['filter_post_payment'] == '5':# extract payments with state = 'paid' instead of state = 'posted' for selected status = 'Validated' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '6':  # add rejected state to report status options 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'rejected')])
         else:
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         return {
@@ -2216,12 +2222,14 @@ class edit_report_cash_receipt_listing_by_r_no(models.AbstractModel):
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'cancelled')])
         elif data['filter_post_payment'] == '2':
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'draft')])
-        elif data['filter_post_payment'] == '3':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'reconciled')])
-        elif data['filter_post_payment'] == '4':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'sent')])
-        elif data['filter_post_payment'] == '5':
-            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
+        elif data['filter_post_payment'] == '3': # extract payments with state = 'paid' instead of state = 'reconiled' for selected status = 'Reconciled' 
+            docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '4': # extract payments with state = 'in_process' instead of state = 'sent' for selected status = 'Sent' 
+                    docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'in_process')])
+        elif data['filter_post_payment'] == '5': # extract payments with state = 'paid' instead of state = 'posted' for selected status = 'Validated' 
+                    docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
+        elif data['filter_post_payment'] == '6':  
+                    docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'rejected')])
         else:
             docs = self.env['account.payment'].search([('partner_type', '=', 'customer'),('date', '>=',data['start_date']),('date', '<=',data['end_date'])])
         return {
@@ -3374,10 +3382,11 @@ class edit_report_balance_statement(models.AbstractModel):
         # for purchase bill
         purchase_bill = self.env['account.move'].search([('move_type', '=', 'in_invoice'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')])
 #         raise UserError(data['end_date'])
-        #for cash receipt - from cash receipt listing by customer
-        cash_receipt = self.env['account.payment'].search([('payment_type', '=', 'inbound'),('partner_type', '=', 'customer'),('journal_id.name','=','Cash'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
+        #for cash receipt - from cash receipt listing by customer 
+        # change state to 'paid' for account.payment as no 'posted' state in v19 
+        cash_receipt = self.env['account.payment'].search([('payment_type', '=', 'inbound'),('partner_type', '=', 'customer'),('journal_id.name','=','Cash'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
         #for cash payment - from cash payment by lumpsum
-        cash_payment = self.env['account.payment'].search([('payment_type', '=', 'outbound'),('partner_type', '=', 'supplier'),('journal_id.name','=','Cash'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'posted')])
+        cash_payment = self.env['account.payment'].search([('payment_type', '=', 'outbound'),('partner_type', '=', 'supplier'),('journal_id.name','=','Cash'),('date', '>=',data['start_date']),('date', '<=',data['end_date']),('state', '=', 'paid')])
         #for damage return from vendor refund
         damage_return = self.env['account.move'].search([('move_type', '=', 'in_refund'),('invoice_date', '>=',data['start_date']),('invoice_date', '<=',data['end_date']),('state', '=', 'posted')],order='invoice_date asc')
         #sales return from customer credit notes

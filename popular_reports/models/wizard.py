@@ -23,7 +23,8 @@ class PopularReport(models.TransientModel):
     YEAR_LIST = [(str(i),str(i)) for i in range(2000, 2101)]
     POST_LIST = [('1','Cancel'),('2','Draft'),('3','Posted')]
     POST_CREDIT_LIST = [('1','Cancelled'),('2','Draft'),('3','Posted')]
-    POST_PAYMENT_LIST = [('1','Cancelled'),('2','Draft'),('3','Reconciled'),('4','Sent'),('5','Validated')]
+    # add rejected state to payment state selection list
+    POST_PAYMENT_LIST = [('1','Cancelled'),('2','Draft'),('3','Reconciled'),('4','Sent'),('5','Validated'), ('6', 'Rejected')]
     POST_STOCK_LIST = [('cancel','Cancelled'),('done','Done'),('draft','Draft'),('assigned','Ready'),('confirmed','Waiting'),('waiting','Waiting Another Operation')]
     POST_ORDER_LIST = [('1','Fully Invoice'),('2','Nothing to Invoice'),('3','To Invoice'),('4','Upselling Opportunity')]
     POST_QUOT_LIST = [('1','Cancelled'),('2','Locked'),('3','Quotation'),('4','Quotation Sent'),('5','Sales Order')]
