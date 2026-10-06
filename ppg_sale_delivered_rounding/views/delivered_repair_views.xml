@@ -1,0 +1,45 @@
+<odoo>
+    <record id="view_delivered_repair_wizard" model="ir.ui.view">
+        <field name="name">ppg.delivered.repair.wizard.form</field>
+        <field name="model">ppg.delivered.repair.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Repair Delivered Quantity">
+                <div class="alert alert-info" role="alert">Select the company and exact SOs. Check shows the proposed correction. Apply repairs only selected Ready lines and completes matching obsolete Upsell activities. Temporary results are eligible for automatic cleanup after 24 hours of inactivity.</div>
+                <group>
+                    <field name="company_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                    <field name="order_ids" widget="many2many_tags" domain="[('company_id', '=', company_id)]" options="{'no_create': True}" readonly="state == 'done'"/>
+                    <field name="order_references" placeholder="SO IDs or exact SO sequences, separated by commas" readonly="state == 'done'"/>
+                    <field name="state"/>
+                </group>
+                <field name="message" nolabel="1" invisible="not message"/>
+                <field name="line_ids" nolabel="1">
+                    <list editable="bottom" create="0" delete="0" decoration-success="state == 'applied'" decoration-warning="state == 'skipped'">
+                        <field name="selected" readonly="state != 'ready'"/>
+                        <field name="order_id"/>
+                        <field name="product_id"/>
+                        <field name="old_delivered" string="Delivered Before"/>
+                        <field name="proposed_delivered" string="Delivered After"/>
+                        <field name="uom_id" string="Unit"/>
+                        <field name="invoiced"/>
+                        <field name="old_invoice_status" string="Line Status Before"/>
+                        <field name="proposed_invoice_status" string="Line Status After"/>
+                        <field name="state"/>
+                        <field name="reason"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_check" type="object" string="Check" class="btn-primary"/>
+                    <button name="action_apply" type="object" string="Apply Correction" class="btn-primary" invisible="state != 'checked'"/>
+                    <button string="Close" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_delivered_repair" model="ir.actions.act_window">
+        <field name="name">Repair Delivered Quantity</field>
+        <field name="res_model">ppg.delivered.repair.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_delivered_repair" name="Repair Delivered Quantity" parent="sale.menu_sale_config" action="action_delivered_repair" groups="base.group_no_one" sequence="98"/>
+</odoo>
