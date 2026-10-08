@@ -35,6 +35,8 @@ class AccountReconcileWizard(models.TransientModel):
                 wizard.is_payment = True
                 if not wizard.partner_id:
                     wizard.partner_id = self.env['account.move.line'].browse(self.env.context.get('active_ids', [])).mapped('partner_id')
+            elif len(journals) ==1 and wizard.move_line_ids[0].journal_id.name == 'Vendor Bills':
+                wizard.is_payment = True
 
 
     @api.constrains('edit_mode_amount_currency')
@@ -68,32 +70,60 @@ class AccountReconcileWizard(models.TransientModel):
         return super(AccountReconcileWizard, self).reconcile()
 
     def _create_discount_journal_lines(self, partner=None):
+        is_bill = False
         if not partner:
             partner = self.env['res.partner']
         to_partner = self.to_partner_id if self.is_rec_pay_account else partner
         tax_data = self._compute_write_off_taxes_data(to_partner) if self.tax_id else None
-        amount_currency = self.edit_mode_amount_currency or self.amount_currency
+        if len(self.move_line_ids) == 1 and self.move_line_ids[0].journal_id.name == 'Vendor Bills':
+            is_bill = True
+        amount_currency = self.edit_mode_amount_currency or self.amount_currency 
         amount = self.edit_mode_amount or self.amount
-        line_ids_commands = [
-            Command.create({
-                'name': self.label or _('Write-Off'),
-                'account_id': self.reco_account_id.id,
-                'partner_id': partner.id,
-                'currency_id': self.reco_currency_id.id,
-                'amount_currency': amount_currency,
-                'balance': amount,
-            }),
-            Command.create({
-                'name': self.label,
-                'account_id': self.account_id.id,
-                'partner_id': to_partner.id,
-                'currency_id': self.reco_currency_id.id,
-                'tax_ids': self.tax_id.ids,
-                'tax_tag_ids': None if not tax_data else tax_data['base_tax_tag_ids'],
-                'amount_currency': -amount_currency if not tax_data else -tax_data['base_amount_currency'],
-                'balance': -amount if not tax_data else -tax_data['base_amount'],
-            }),
-        ]
+        # generate discount journal entries for customer payment and discount
+        if not is_bill:
+            line_ids_commands = [
+                Command.create({
+                    'name': self.label or _('Write-Off'),
+                    'account_id': self.reco_account_id.id,
+                    'partner_id': partner.id,
+                    'currency_id': self.reco_currency_id.id,
+                    'amount_currency': amount_currency,
+                    'balance': amount,
+                }),
+                Command.create({
+                    'name': self.label,
+                    'account_id': self.account_id.id,
+                    'partner_id': to_partner.id,
+                    'currency_id': self.reco_currency_id.id,
+                    'tax_ids': self.tax_id.ids,
+                    'tax_tag_ids': None if not tax_data else tax_data['base_tax_tag_ids'],
+                    'amount_currency': -amount_currency if not tax_data else -tax_data['base_amount_currency'],
+                    'balance': -amount if not tax_data else -tax_data['base_amount'],
+                }),
+            ]
+        #  generate discount journal entries for bill   
+        else:
+            line_ids_commands = [
+                        Command.create({
+                            'name': self.label or _('Write-Off'),
+                            'account_id': self.reco_account_id.id,
+                            'partner_id': partner.id,
+                            'currency_id': self.reco_currency_id.id,
+                            'amount_currency': -amount_currency,
+                            'balance': -amount,
+                        }),
+                        Command.create({
+                            'name': self.label,
+                            'account_id': self.account_id.id,
+                            'partner_id': to_partner.id,
+                            'currency_id': self.reco_currency_id.id,
+                            'tax_ids': self.tax_id.ids,
+                            'tax_tag_ids': None if not tax_data else tax_data['base_tax_tag_ids'],
+                            'amount_currency': amount_currency if not tax_data else -tax_data['base_amount_currency'],
+                            'balance': amount if not tax_data else -tax_data['base_amount'],
+                        }),
+                    ]
+            
         # Add taxes lines to the write-off lines, one per repartition line
         if tax_data:
             for tax_datum in tax_data['tax_lines_data']:
