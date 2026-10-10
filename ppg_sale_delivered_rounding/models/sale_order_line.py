@@ -36,10 +36,12 @@ class SaleOrderLine(models.Model):
             self.qty_delivered_method != 'stock_move'
             or not product.is_storable
             or not sales_uom or sales_uom == stock_uom
-            # Factor 1 also describes grams/hours/etc.; only count UOMs qualify.
-            or sales_uom != count_unit or stock_uom.factor <= sales_uom.factor
-            or not stock_uom.parent_path or not count_unit.parent_path
-            or not stock_uom._has_common_reference(count_unit)
+            # Accept any sales UOM in the count hierarchy (e.g. Units or Pcs).
+            # A matching factor alone also describes grams/hours, so it is unsafe.
+            or not sales_uom.parent_path or not stock_uom.parent_path or not count_unit.parent_path
+            or not sales_uom._has_common_reference(count_unit)
+            or not stock_uom._has_common_reference(sales_uom)
+            or stock_uom.factor <= sales_uom.factor
             or ordered <= 0 or delivered <= 0
             or not float_is_zero(ordered - round(ordered), precision_rounding=1e-9)
             # Do not turn an existing excess invoice into a credit/reinvoice proposal.
