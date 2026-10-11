@@ -156,6 +156,32 @@ class TestDeliveredRounding(TestSaleStockCommon):
         self.assertEqual(line.qty_delivered, 8)
         self.assertEqual(order.invoice_status, 'invoiced')
 
+    def test_pcs_sibling_uom_normalizes_without_changing_stock_or_invoice(self):
+        # Reproduce a Sales UOM named Pcs alongside Units under Box.
+        root = self.env['uom.uom'].create({'name': 'Box reference', 'relative_factor': 1})
+        self.uom_unit.relative_uom_id = root
+        self.env.ref('uom.product_uom_dozen').relative_uom_id = root
+        pcs = self.env['uom.uom'].create({
+            'name': 'Pcs', 'relative_factor': 1, 'relative_uom_id': root.id,
+        })
+        order, line, picking = self._order(sales_uom=pcs)
+        invoice = order._create_invoices()
+        invoice.action_post()
+        self._deliver(picking, .67)
+        self.assertEqual(picking.move_ids.quantity, .67)
+        self.assertEqual(invoice.invoice_line_ids.filtered(lambda l: l.product_id == line.product_id).quantity, 8)
+        self.assertEqual(line.qty_delivered, 8)
+        self.assertEqual(order.invoice_status, 'invoiced')
+
+    def test_other_count_sales_uom_normalizes_without_name_check(self):
+        pair = self.env['uom.uom'].create({
+            'name': 'Pair', 'relative_factor': 2, 'relative_uom_id': self.uom_unit.id,
+        })
+        order, line, picking = self._order(quantity=4, sales_uom=pair)
+        self._deliver(picking, .67)
+        self.assertEqual(picking.move_ids.quantity, .67)
+        self.assertEqual(line.qty_delivered, 4)
+
     def test_same_uom_is_unchanged(self):
         order, line, picking = self._order(quantity=.67, same_uom=True)
         self._deliver(picking, .67)

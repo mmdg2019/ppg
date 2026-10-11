@@ -1,6 +1,6 @@
 # PPG Sale Delivered Rounding
 
-Odoo 19 တွင် Sales Order ကို Units ဖြင့်ရောင်းပြီး Inventory ကို Dozens ကဲ့သို့သော UOM ဖြင့် ထုတ်သည့်အခါ ဖြစ်ပေါ်နိုင်သော Delivered quantity rounding ကွာဟမှုကို ပြင်ဆင်ပေးသည့် module ဖြစ်သည်။
+Odoo 19 တွင် Sales Order ကို Units၊ Pcs ကဲ့သို့ အရေအတွက်ရေတွက်သော UOM ဖြင့်ရောင်းပြီး Inventory ကို Dozens ကဲ့သို့သော UOM ဖြင့် ထုတ်သည့်အခါ ဖြစ်ပေါ်နိုင်သော Delivered quantity rounding ကွာဟမှုကို ပြင်ဆင်ပေးသည့် module ဖြစ်သည်။
 
 ## 1. Delivered Quantity အလိုအလျောက် ပြင်ဆင်ခြင်း
 
@@ -17,12 +17,14 @@ Odoo 19 တွင် Sales Order ကို Units ဖြင့်ရောင်�
 
 Product တစ်ခုချင်းစီအတွက် checkbox ဖွင့်ရန် မလိုပါ။ Company သို့မဟုတ် Product ID များကို code ထဲတွင် အသေသတ်မှတ်ထားခြင်း မရှိပါ။
 
+Sales UOM သည် `Units` record တစ်ခုတည်း ဖြစ်ရန် မလိုပါ။ `Pcs` ကဲ့သို့ Units နှင့် count-UOM reference တူသော UOM များကိုလည်း အောက်ပါ safeguards ပြည့်မှ ပြင်ဆင်ပေးသည်။ Weight၊ length၊ volume ကဲ့သို့သော သီးခြား reference အုပ်စုများကို အရေအတွက် rounding အဖြစ် မယူဆပါ။
+
 ## 2. အလိုအလျောက် ပြင်ဆင်နိုင်သော အခြေအနေများ
 
 အဓိက သတ်မှတ်ချက်များမှာ—
 
 - Stock ဖြင့် Delivered တွက်သော inventory-tracked product ဖြစ်ရမည်။
-- Sales UOM သည် Odoo standard Units ဖြစ်ရမည်။
+- Sales UOM သည် Odoo standard Units နှင့် count-UOM reference အုပ်စုတူရမည်။
 - Stock UOM သည် Units နှင့် တူညီသော UOM reference အုပ်စုထဲမှ ပိုကြီးသော unit ဖြစ်ရမည်။
 - Ordered quantity သည် အပေါင်းကိန်းပြည့် ဖြစ်ရမည်။
 - သက်ဆိုင်ရာ outgoing stock move တစ်ခုတည်းရှိပြီး Done ဖြစ်ရမည်။
