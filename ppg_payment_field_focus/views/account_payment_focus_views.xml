@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_account_payment_customer_focus" model="ir.ui.view">
+        <field name="name">account.payment.form.partner.focus</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_ext.view_register_payment_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group1']/field[@name='partner_id'][1]" position="attributes">
+                <attribute name="default_focus">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='group1']/field[@name='partner_id'][2]" position="attributes">
+                <attribute name="default_focus">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
