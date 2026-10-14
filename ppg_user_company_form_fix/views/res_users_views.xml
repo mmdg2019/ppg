@@ -10,4 +10,15 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_users_list_default_company" model="ir.ui.view">
+        <field name="name">res.users.list.default.company</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='role']" position="after">
+                <field name="company_id" string="Default Company" readonly="1" optional="show"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
