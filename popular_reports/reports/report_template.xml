@@ -10634,7 +10634,9 @@
                                                     <span t-field="table_line.product_id"/>
                                                 </td>
                                                 <td style="text-align:right;">
-                                                    <span t-field="table_line.price_unit"/>
+                                                    <!-- <span t-field="table_line.price_unit"/> -->
+                                                    <!-- taking only two decimal places for price_unit -->
+                                                    <span t-esc="table_line.price_unit" t-options="{'widget': 'float', 'precision': 2}"/>                                                    
                                                 </td>
                                                 <td style="text-align:right;">
                                                     <span t-field="table_line.quantity"/>
