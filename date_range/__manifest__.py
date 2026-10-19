@@ -18,13 +18,10 @@
         "wizard/date_range_generator.xml",
     ],
     "assets": {
-    "web.assets_backend": [
-        "date_range/static/src/js/condition_tree.esm.js",
-        "date_range/static/src/js/domain_selector.esm.js",
-        "date_range/static/src/js/tree_editor.esm.js",
-    ],
-},
-
+        "web.assets_backend": [
+            "date_range/static/src/js/*",
+        ],
+    },
     "development_status": "Mature",
     "maintainers": ["lmignon"],
 }
