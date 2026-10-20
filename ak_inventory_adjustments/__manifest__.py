@@ -31,9 +31,11 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'ak_inventory_adjustments/static/src/**/*',
+            'ak_inventory_adjustments/static/src/js/inventory_line_list_controller.js',
+            'ak_inventory_adjustments/static/src/xml/inventory_line_list_controller.xml',
         ]
     },
+
     "images": ["static/description/banner.jpg"],
     "installable": True,
     "application": False,
