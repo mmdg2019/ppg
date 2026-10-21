@@ -11832,8 +11832,9 @@
                     <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail.report_assets_snailmail"/>
                     <t t-if="env and env.context.get('snailmail_layout')" t-call-assets="snailmail_account_followup.followup_report_assets_snailmail"/>
                 </head>
-                <body>
-                    <div class="container-fluid" id="wrapwrap">
+                <body style="overflow-x: auto !important;">
+                    <!-- <div class="container-fluid" id="wrapwrap"> -->
+                    <div>
                         <div class="row" style="text-align:center; margin-bottom:12px;">
                             <div class="col">
                                 <b>
