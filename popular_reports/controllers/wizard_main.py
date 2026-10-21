@@ -3111,7 +3111,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
         self.env.cr.execute(query, params)
         docs = self.env.cr.dictfetchall()
 
-        domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
+        # domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
+        domain = [('type', '=', 'consu'), ('is_storable', '=', True), ('company_id', 'in', company_list)]
         if data['product_ids']:
             domain += [('id', 'in', (tuple(data['product_ids'])))]
         products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date= s_date), location= data['stock_location'], company_owned=True, order='default_code asc')
@@ -3124,7 +3125,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                     matching_dict.get('receipt_qty', 0.0) +
                     matching_dict.get('sr_qty', 0.0) +
                     matching_dict.get('adjust_qty', 0.0) -
-                    (matching_dict.get('min_adjust_qty', 0.0) - matching_dict.get('scrap_qty', 0.0)) -
+                    # (matching_dict.get('min_adjust_qty', 0.0) - matching_dict.get('scrap_qty', 0.0)) - # scrap should also be subtracted
+                    matching_dict.get('min_adjust_qty', 0.0) -
                     matching_dict.get('pr_qty', 0.0) -
                     matching_dict.get('delivery_qty', 0.0)
                 )
