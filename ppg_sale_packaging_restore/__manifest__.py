@@ -2,6 +2,8 @@
     'name': 'PPG Sales Packaging Restore',
     'version': '19.0.1.0.1',
     'summary': 'Manual, audited restoration of migrated sales packaging from CSV',
+    'author': "DIGI POWER",
+    'website': "https://www.digipowermm.com",
     'license': 'AGPL-3',
     'depends': ['sale_ext'],
     'data': [

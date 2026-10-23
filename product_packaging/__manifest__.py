@@ -3,6 +3,7 @@
     'version': '1.0',
     'summary': 'Manage product packaging options',
     'description': 'Module to manage different packaging options for products.',
+    'license': 'AGPL-3',
     'author': 'Digipower',
     'website': 'https://www.digipowermm.com',
     'category': 'Inventory',
