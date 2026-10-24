@@ -47,7 +47,8 @@ class PopularReport(models.TransientModel):
     location_dest = fields.Many2one('stock.location')
     filter_stock_picking_type = fields.Many2one('stock.picking.type')
     filter_country_id = fields.Many2one('res.country', string="Country",default=145)
-    filter_state_id = fields.Many2one('res.country.state', string="State", store=True)
+    # filter_state_id = fields.Many2one('res.country.state', string="State", store=True)
+    filter_state_id = fields.Many2one('res.country.state', string="State", domain = "[('country_id', '=', filter_country_id)]", store=True)
     checked_amt_due = fields.Boolean(string="Amount Due")
     no_of_days = fields.Integer(string="No. of Days")
 
