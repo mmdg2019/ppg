@@ -12,7 +12,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
     _inherit = 'account.general.ledger.report.handler'
 
 
-    # overrides the enterprise Odoo core function to add "Creditor/Debitor" column to GL in Odoo 19
+    # overrides the enterprise Odoo core function to add "Creditor/Debitor"/"Reference"/"Label" columns to GL in Odoo 19
     def _report_custom_engine_general_ledger(self, expressions, options, date_scope, current_groupby, next_groupby, offset=0, limit=None, warnings=None):
         def get_grouping_key(row, groupby):
             if groupby == 'id_with_accumulated_balance':
@@ -71,6 +71,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                 MIN(result_account.id) AS account_id,
 
                 MIN(account_move_line.name) AS line_name,
+                MIN(account_move_line.ref) AS move_ref,
                 MIN(%(account_name_select)s) AS account_name,
                 MIN(%(account_code_select)s) AS account_code,
                 """,
@@ -132,6 +133,8 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
         )
 
         rows_by_key = defaultdict(lambda: {
+            'move_ref': None,
+            'line_name': None,
             'date': None,
             'partner_name': None,
             'creditor_debitor': None,
@@ -165,6 +168,7 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
                         rows_by_key[aml_key]['account_code'] = row['account_code']
                         rows_by_key[aml_key]['account_name'] = row['account_name']
                         rows_by_key[aml_key]['move_name'] = row['move_name']
+                        rows_by_key[aml_key]['move_ref'] = row['move_ref']
                     if row['currency_id'] != self.env.company.currency_id.id:
                         rows_by_key[aml_key]['amount_currency'] = row['amount_currency']
                         rows_by_key[aml_key]['currency_id'] = row['currency_id']
@@ -184,3 +188,32 @@ class GeneralLedgerCustomHandler(models.AbstractModel):
             return rows_by_key[None]  # None is the key for total line as there is no groupby
 
         return [(key, entry) for key, entry in rows_by_key.items()]
+
+    def _get_custom_groupby_map(self):
+        original_map = super()._get_custom_groupby_map()
+        if 'id_with_accumulated_balance' in original_map:
+            """ PPG wants GL's first column to show only sequence. """
+            def custom_label_builder_ppg(grouping_keys):
+                """
+                Batch label builder used to rename balance lines.
+                """
+                keys_names_in_sequence = {}
+    
+                ids_to_browse = []
+                aml_keys = []
+                for grouping_key in grouping_keys:
+                    if 'balance_line' in grouping_key:
+                        keys_names_in_sequence[grouping_key] = _("Initial Balance")
+                    else:
+                        combined_key = json.loads(grouping_key)
+                        ids_to_browse.append(combined_key[1])
+                        aml_keys.append(grouping_key)
+    
+                records_unsorted = self.env['account.move.line'].browse(ids_to_browse)
+                for record, aml_key in zip(records_unsorted, aml_keys):
+                    keys_names_in_sequence[aml_key] = record.move_id.name # changed only this line
+    
+                return keys_names_in_sequence
+
+            original_map['id_with_accumulated_balance']['label_builder'] = custom_label_builder_ppg
+        return original_map
