@@ -1996,7 +1996,7 @@ class edit_report_purchase_inv_lst_by_inv_no(models.AbstractModel):
         if data['user_ids']:
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         if data['product_ids']:
-            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='display_name asc')
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])],order='name asc')
         else:
             product_ids = list(set(docs.mapped('invoice_line_ids.product_id')))
         return {
@@ -2360,7 +2360,7 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
             docs = docs.filtered(lambda r: r.partner_id.id in data['user_ids'])
         
         if data['product_cats_ids']:
-            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='display_name asc')
+            product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
         return {            
             'filter_post_credit': data['filter_post_credit'],
@@ -2672,7 +2672,7 @@ class edit_report_sales_quot_stock_analysis_by_d(models.AbstractModel):
         dates = sorted(list(set([date.strftime('%m/%d/%Y') for date in docs.mapped('create_date')])))
         items = []
         if data['product_ids']:
-            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='display_name asc')
+            items = self.env['product.product'].search([('id', 'in', data['product_ids']),('name','not in',['Other Charges','Special Discount'])],order='name asc')
         else:
             items = sorted(list(set(docs.mapped('order_line.product_id'))))
         for item in items:    
@@ -3111,7 +3111,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
         self.env.cr.execute(query, params)
         docs = self.env.cr.dictfetchall()
 
-        domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
+        # domain = [('type', '=', 'product'), ('company_id', 'in', company_list)]
+        domain = [('type', '=', 'consu'), ('is_storable', '=', True), ('company_id', 'in', company_list)]
         if data['product_ids']:
             domain += [('id', 'in', (tuple(data['product_ids'])))]
         products = self.env['product.product'].sudo().search(domain).with_context(dict(to_date= s_date), location= data['stock_location'], company_owned=True, order='default_code asc')
@@ -3124,7 +3125,8 @@ class edit_report_stock_trans_oprt(models.AbstractModel):
                     matching_dict.get('receipt_qty', 0.0) +
                     matching_dict.get('sr_qty', 0.0) +
                     matching_dict.get('adjust_qty', 0.0) -
-                    (matching_dict.get('min_adjust_qty', 0.0) - matching_dict.get('scrap_qty', 0.0)) -
+                    # (matching_dict.get('min_adjust_qty', 0.0) - matching_dict.get('scrap_qty', 0.0)) - # scrap should also be subtracted
+                    matching_dict.get('min_adjust_qty', 0.0) -
                     matching_dict.get('pr_qty', 0.0) -
                     matching_dict.get('delivery_qty', 0.0)
                 )
