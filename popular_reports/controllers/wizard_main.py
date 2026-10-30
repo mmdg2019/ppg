@@ -2362,8 +2362,13 @@ class edit_report_dmg_sales_rtrn_lst_by_cust_no(models.AbstractModel):
         if data['product_cats_ids']:
             product_cats_ids = self.env['product.category'].search([('id', 'in', data['product_cats_ids'])],order='complete_name asc')
             docs = docs.filtered(lambda r: r.x_studio_invoice_category in product_cats_ids)
+        if data['product_ids']:
+            product_ids = self.env['product.product'].search([('id', 'in', data['product_ids'])])
+        else:
+            product_ids = list(set(docs.mapped('invoice_line_ids.product_id')))
         return {            
             'filter_post_credit': data['filter_post_credit'],
+            'product_ids': product_ids,
             'docs': docs
        }
 
