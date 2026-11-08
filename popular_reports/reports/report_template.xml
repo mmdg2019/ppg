@@ -5889,39 +5889,41 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <t t-if="docs">
-                                <t t-set="sub_name" t-value=""/>
+                            <t t-if="docs">                                
                                 <t t-set="ttl" t-value="0"/>
                                 <t t-set="sub_total_currency_id" t-value="docs.currency_id"/>
-                                <t t-set="total_currency_id" t-value="docs.currency_id"/>
-                                <t t-set="sub_ttl" t-value="0"/>
+                                <t t-set="total_currency_id" t-value="docs.currency_id"/> 
                                 <t t-foreach="docs.sorted(key=lambda x: (x.partner_id.display_name,x.display_name),reverse=False)" t-as="doc">
-                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">
-                                        <t t-set="sub_ttl" t-value="sub_ttl + doc.amount_total_signed"/>
-                                        <t t-set="ttl" t-value="ttl + doc.amount_total_signed"/>
-                                        <t t-foreach="doc.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)" t-as="table_line">
+                                    <tbody style="border-top:1px solid #ddd; border-bottom:2px solid #ddd;">                                        
+                                        <t t-set="sub_ttl" t-value="0"/>   
+                                        <t t-set="doc_len" t-value="len(doc.invoice_line_ids.filtered(lambda x: x.product_id in product_ids))"/> 
+                                        <t t-set="index" t-value="doc_len"/>                                 
+                                        <t t-foreach="doc.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)" t-as="table_line" t-if="table_line.product_id in product_ids">
+                                            <t t-set="sub_ttl" t-value="sub_ttl + table_line.price_subtotal"/>
+                                            <t t-set="ttl" t-value="ttl + table_line.price_subtotal"/>                                            
+                                            <t t-set="index" t-value="index - 1"/>                                               
                                             <tr>
-                                                <td>
-                                                    <t t-if="table_line_first">
+                                                <td>                                                   
+                                                    <t t-if="doc_len == index + 1">
                                                         <span t-field="doc.partner_id.display_name"/>
-                                                    </t>
+                                                    </t>                                                   
                                                 </td>
-                                                <td>
-                                                    <t t-if="table_line_first">
+                                                <td>                                                   
+                                                    <t t-if="doc_len == index + 1">
                                                         <!-- <span t-field="doc.invoice_date"/> -->
                                                         <!-- <span t-esc="datetime.datetime.strptime(doc.invoice_date, '%Y-%m-%d').strftime('%d/%m/%Y')"/> -->
                                                         <span t-esc="doc.invoice_date.strftime('%d/%m/%Y')"/>
                                                     </t>
                                                 </td>
-                                                <td>
-                                                    <t t-if="table_line_first">
+                                                <td>                                                  
+                                                    <t t-if="doc_len == index + 1">
                                                         <span t-field="doc.display_name"/>
                                                     </t>
                                                 </td>
                                                 <td>
-                                                    <t t-if="table_line_first">
+                                                    <t t-if="doc_len == index + 1">
                                                         <span t-field="doc.x_studio_invoice_category"/>
-                                                    </t>
+                                                    </t> 
                                                 </td>
                                                 <td>
                                                     <span t-field="table_line.product_id"/>
@@ -5941,7 +5943,7 @@
                                                     <span t-field="table_line.price_subtotal"/>
                                                 </td>
                                             </tr>
-                                            <tr t-if="table_line_last">
+                                            <tr t-if="index == 0 and doc_len > 0">
                                                 <th colspan="6">
                                                     <span></span>
                                                 </th>
@@ -5949,8 +5951,8 @@
                                                     <span>Sub Total</span>
                                                 </th>
                                                 <th style="text-align:right;">
-                                                    <span>
-                                                        <t t-esc="abs(doc.amount_total_signed)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
+                                                    <span>                                                    
+                                                        <t t-esc="abs(sub_ttl)" t-options="{'widget': 'monetary', 'display_currency': sub_total_currency_id}"/>
                                                     </span>
                                                 </th>
                                             </tr>

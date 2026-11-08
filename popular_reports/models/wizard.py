@@ -724,6 +724,7 @@ class PopularReport(models.TransientModel):
     def print_report_dmg_sales_rtrn_lst_by_cust_no(self):
         data = {
             'filter_post_credit':self.filter_post_credit,
+            'product_ids': self.products.ids,
             'product_cats_ids': self.product_cats.ids,
             'user_ids': self.user.ids,
             'start_date': self.start_date, 
