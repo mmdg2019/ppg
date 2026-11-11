@@ -52,7 +52,7 @@ class AccountMoveLine(models.Model):
     def turn_as_asset(self):
         return super(AccountMoveLine, self).turn_as_asset()
     
-    # sort the invoices to be reconciled by due date, aml date,  aml id, currency_id and amount in currency
+    # Prioritize due date, then invoice date (accounting date for non-invoice entries).
     @api.model
     def _optimize_reconciliation_plan(self, reconciliation_plan, shadowed_aml_values=None):
         results = super(AccountMoveLine, self)._optimize_reconciliation_plan(reconciliation_plan, shadowed_aml_values=shadowed_aml_values)
@@ -61,7 +61,8 @@ class AccountMoveLine(models.Model):
                 sorted_amls = amls.sorted(key=lambda aml: (
                     aml._get_reconciliation_aml_field_value('date_maturity', shadowed_aml_values)
                         or aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
-                    aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
+                    aml._get_reconciliation_aml_field_value('invoice_date', shadowed_aml_values)
+                        or aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
                     aml._get_reconciliation_aml_field_value('id', shadowed_aml_values),    
                     aml._get_reconciliation_aml_field_value('currency_id', shadowed_aml_values),
                 ))
@@ -69,7 +70,8 @@ class AccountMoveLine(models.Model):
             sorted_amls = amls.sorted(key=lambda aml: (
                 aml._get_reconciliation_aml_field_value('date_maturity', shadowed_aml_values)
                     or aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
-                aml._get_reconciliation_aml_field_value('date', shadowed_aml_values), 
+                aml._get_reconciliation_aml_field_value('invoice_date', shadowed_aml_values)
+                    or aml._get_reconciliation_aml_field_value('date', shadowed_aml_values),
                 aml._get_reconciliation_aml_field_value('id', shadowed_aml_values),  
                 aml._get_reconciliation_aml_field_value('currency_id', shadowed_aml_values),
                 aml._get_reconciliation_aml_field_value('amount_currency', shadowed_aml_values),
