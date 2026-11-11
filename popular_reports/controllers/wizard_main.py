@@ -3305,7 +3305,8 @@ class edit_report_stock_in_out_bal(models.AbstractModel):
         non_zero_grand_ttl = []
         if docs:
             docs_list = [list(d.values()) for d in docs] # changed dict to list to make col. ttl. computation easy
-            docs_list = [row for row in docs_list if sum(row[4::2]) != 0] # remove rows with all qty col. are zero
+            # docs_list = [row for row in docs_list if sum(row[4::2]) != 0] # remove rows with all qty col. are zero
+            docs_list = [row for row in docs_list if not all(value==0 for value in row[4::2])] # remove rows with all qty col. are zero
             if docs_list:
                 if data['stock_picking_type_ids']: # to add opening qty/value to total balance
                     for d in docs_list:
