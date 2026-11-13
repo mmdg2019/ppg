@@ -16,6 +16,35 @@ class AccountReconcileWizard(models.TransientModel):
     partner_id = fields.Many2one('res.partner', string='Partner', readonly=True, default=lambda self: self._default_partner())
     is_payment = fields.Boolean(string='Is Payment', compute='_compute_is_payment')
 
+    # Field-level depends replaces the inherited compute dependencies. Journal/tax
+    # changes must revalidate a manually entered date, not reset it to today.
+    date = fields.Date(depends=['move_line_ids', 'company_id'], compute_sudo=False)
+
+    def _compute_date(self):
+        for wizard in self:
+            today = fields.Date.context_today(wizard)
+            if wizard.env.context.get('default_date'):
+                # Explicit caller dates behave like manual input: warn/adjust at
+                # posting rather than replacing them during initialization.
+                wizard.date = fields.Date.to_date(wizard.env.context['default_date'])
+                continue
+            if not wizard.move_line_ids or not wizard.company_id or not wizard.journal_id:
+                wizard.date = today
+                continue
+            move = self.env['account.move'].with_company(wizard.company_id).new({
+                'company_id': wizard.company_id.id,
+                'journal_id': wizard.journal_id.id,
+            })
+            wizard.date = move._get_accounting_date(today, bool(wizard.tax_id))
+
+    @api.depends(
+        'date', 'journal_id', 'journal_id.type', 'tax_id', 'company_id',
+        'company_id.fiscalyear_lock_date', 'company_id.tax_lock_date',
+        'company_id.hard_lock_date',
+    )
+    def _compute_lock_date_violated_warning_message(self):
+        super()._compute_lock_date_violated_warning_message()
+
     @api.depends('move_line_ids', 'manual_disc_mode')
     def _compute_edit_mode_amount_currency(self):
         for wizard in self:
@@ -135,5 +164,3 @@ class AccountReconcileWizard(models.TransientModel):
         new_move_lines = account_move.line_ids[0]
         move_lines_to_reconcile += new_move_lines
         return move_lines_to_reconcile
-
-        
